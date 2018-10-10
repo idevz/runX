@@ -33,7 +33,8 @@ a Vm, this runX is just for you.
 * Clone this runX and set this runX direct as a shared direct with your Vm which you want 
   to set up the environment.
 * Run `prlctl exec golang 'sudo -Hiu z set_up'` to setup it(this example is assume to set
-  up a Golang development environment, and your Vm id is 'golang').
+  up a Golang development environment, and your Vm id is 'golang'). 'z' is my username,
+  please change to yours.
 
 
 *tips:*
