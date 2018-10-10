@@ -1,0 +1,84 @@
+#!/bin/sh
+
+### BEGIN ###
+# Author: idevz
+# Since: 2018/03/12
+# Description:       Set up Golang development environment.
+# ./init.sh          Set up using $(pwd) as BASE_DIR, down which has go source and binaries.
+### END ###
+
+set -ex
+
+[ -z $PRLCTL_HOME ] && PRLCTL_HOME=/media/psf/runX
+[ $HOME != '/home/z' ] && echo 'Are U Z ?' && exit 1
+
+# BASE_DIR=$(dirname $(cd $(dirname "$0") && pwd -P)/$(basename "$0"))
+BASE_DIR=${BASE_DIR:-$(dirname $(cd $(dirname "$0") && pwd -P)/$(basename "$0"))}
+
+GOLANG_VERSION=${GV:-"go1.11.1"}
+INSTALLATION_TYPE=${IT:-"bin"}
+export GOROOT_BOOTSTRAP=${BASE_DIR}/bootstraps/go
+GOROOT_FINAL=/usr/local/${GOLANG_VERSION}
+
+PROFILE=$(
+	cat <<EOF
+#!/bin/sh
+
+### BEGIN ###
+# Author: idevz
+# Since: 2018/03/12
+# Description:       Setting enviroment variables for golang pvm.
+### END ###
+
+export GOROOT=${GOROOT_FINAL}
+export GOPATH=$MCODE/z/git/go
+
+alias ggr='go run'
+alias gtt='go test -covermode=count -coverprofile=covprofile && go tool cover -html=covprofile -o coverage.html'
+EOF
+)
+
+# boot from go1.4 source, didn't care which OS
+go_bootstrap() {
+	BOOT_ROOT=${BASE_DIR}/bootstraps
+	BOOT_SRC=${BOOT_ROOT}/"go1.4-bootstrap-20171003.tar.gz"
+	[ -d ${BOOT_ROOT}/go ] && rm -rf ${BOOT_ROOT}/go
+	cd ${BOOT_ROOT} &&
+		tar zxf ${BOOT_SRC} &&
+		cd go/src &&
+		export CGO_ENABLED=0 &&
+		./make.bash
+}
+[ ! -x ${GOROOT_BOOTSTRAP}/bin/go ] && go_bootstrap
+
+install_from_src() {
+	GOLANG_SRC="https://github.com/golang/go/archive/${GOLANG_VERSION}.tar.gz"
+	GO_SRC_ROOT=${BASE_DIR}/srcs
+	[ ! -f ${GO_SRC_ROOT}/${GOLANG_VERSION}.tar.gz ] &&
+		curl -fSL ${GOLANG_SRC} -o ${GO_SRC_ROOT}/${GOLANG_VERSION}.tar.gz
+	cd ${GO_SRC_ROOT} &&
+		tar zxf ${GOLANG_VERSION}.tar.gz &&
+		cd go-${GOLANG_VERSION}/src &&
+		export CGO_ENABLED=1 &&
+		sudo GOROOT_BOOTSTRAP=${BASE_DIR}/bootstraps/go \
+			./all.bash
+}
+
+install_from_binary() {
+	CURR_OS=$(uname | tr '[:upper:]' '[:lower:]')
+	GOLANG_BINARY="https://dl.google.com/go/${GOLANG_VERSION}.${CURR_OS}-amd64.tar.gz"
+	GO_BINARY_ROOT=${BASE_DIR}/binaries
+	[ ! -f ${GO_BINARY_ROOT}/${GOLANG_VERSION}.${CURR_OS}-amd64.tar.gz ] &&
+		curl -fSL ${GOLANG_BINARY} -o ${GO_BINARY_ROOT}/${GOLANG_VERSION}.${CURR_OS}-amd64.tar.gz
+	cd ${GO_BINARY_ROOT} &&
+		tar zxf ${GOLANG_VERSION}.${CURR_OS}-amd64.tar.gz
+
+}
+
+if [ ${INSTALLATION_TYPE} == "bin" ]; then
+	install_from_binary
+else
+	install_from_src
+fi
+
+create_profile "${PROFILE}"

@@ -50,3 +50,15 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# runX
+golang/binaries/go
+golang/binaries/go1.11.1.linux-amd64.tar.gz
+golang/srcs/go-go1.10.4
+golang/srcs/go1.10.4.tar.gz
+golang/bootstraps/go1.4-bootstrap-20171003.tar.gz
+go
+go1.*
+go-go1*
+
+.DS_Store

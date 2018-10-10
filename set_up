@@ -1,0 +1,27 @@
+#!/bin/sh
+
+### BEGIN ###
+# Author: idevz
+# Since: 2018/03/12
+# Description:   A framework for create a language development environment using parallels vm.
+# prlctl exec golang 'sudo -Hiu z set_up'
+### END ###
+
+set -e
+
+[ -z $PRLCTL_HOME ] && PRLCTL_HOME=/media/psf/runX
+[ $HOME != '/home/z' ] && echo 'Are U Z ?' && exit 1
+HOSTNAME=$(hostname)
+BASE_DIR=$(dirname $(cd $(dirname "$0") && pwd -P)/$(basename "$0"))
+
+# create a profile for each host such as envriment variable setting
+create_profile() {
+	[ -z $1 ] && echo "empty profile content." && exit 1
+	PROFILE_FILE=/etc/profile.d/idevz_prlctl_${HOSTNAME}.sh
+	[ -f ${PROFILE_FILE} ] && sudo rm ${PROFILE_FILE}
+	echo "$1" | sudo tee -a /etc/profile.d/idevz_prlctl_${HOSTNAME}.sh
+	# sudo sh -c "echo zzz >> /etc/profile"
+	sudo chmod +x ${PROFILE_FILE}
+}
+
+BASE_DIR=$BASE_DIR/${HOSTNAME} && . $BASE_DIR/init
