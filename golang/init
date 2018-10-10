@@ -5,9 +5,14 @@
 # Since: 2018/03/12
 # Description:       Set up Golang development environment.
 # ./init.sh          Set up using $(pwd) as BASE_DIR, down which has go source and binaries.
+#
+# Environment variables that control init:
+# GV: Golang version which you want to install.
+# IT: installation type which you want to using, like "bin" to install from binary packages,
+#     "src" to install from source, default using "bin".
 ### END ###
 
-set -ex
+set -e
 
 [ -z $PRLCTL_HOME ] && PRLCTL_HOME=/media/psf/runX
 [ $HOME != '/home/z' ] && echo 'Are U Z ?' && exit 1
@@ -31,10 +36,11 @@ PROFILE=$(
 ### END ###
 
 export GOROOT=${GOROOT_FINAL}
-export GOPATH=$MCODE/z/git/go
+export GOPATH=${GIT}/go:${MCODE}/z/idevz-go
+export PATH=${GIT}/go/bin:${MCODE}/z/idevz-go/bin:$PATH
 
 alias ggr='go run'
-alias gtt='go test -covermode=count -coverprofile=covprofile && go tool cover -html=covprofile -o coverage.html'
+alias ggt='go test -covermode=count -coverprofile=covprofile && go tool cover -html=covprofile -o coverage.html'
 EOF
 )
 
@@ -52,26 +58,39 @@ go_bootstrap() {
 [ ! -x ${GOROOT_BOOTSTRAP}/bin/go ] && go_bootstrap
 
 install_from_src() {
+	# download golang source from github
 	GOLANG_SRC="https://github.com/golang/go/archive/${GOLANG_VERSION}.tar.gz"
 	GO_SRC_ROOT=${BASE_DIR}/srcs
 	[ ! -f ${GO_SRC_ROOT}/${GOLANG_VERSION}.tar.gz ] &&
 		curl -fSL ${GOLANG_SRC} -o ${GO_SRC_ROOT}/${GOLANG_VERSION}.tar.gz
+
+	# clean the old installation of ${GOROOT_FINAL}
+	[ -d ${GOROOT_FINAL} ] && sudo rm -rf ${GOROOT_FINAL}
+
+	# install
 	cd ${GO_SRC_ROOT} &&
 		tar zxf ${GOLANG_VERSION}.tar.gz &&
 		cd go-${GOLANG_VERSION}/src &&
 		export CGO_ENABLED=1 &&
 		sudo GOROOT_BOOTSTRAP=${BASE_DIR}/bootstraps/go \
-			./all.bash
+			./all.bash &&
+		cd ${GO_SRC_ROOT} &&
+		sudo mv go-${GOLANG_VERSION} ${GOROOT_FINAL}
 }
 
 install_from_binary() {
+	# download golang binary distributions from golang offical site
 	CURR_OS=$(uname | tr '[:upper:]' '[:lower:]')
 	GOLANG_BINARY="https://dl.google.com/go/${GOLANG_VERSION}.${CURR_OS}-amd64.tar.gz"
 	GO_BINARY_ROOT=${BASE_DIR}/binaries
 	[ ! -f ${GO_BINARY_ROOT}/${GOLANG_VERSION}.${CURR_OS}-amd64.tar.gz ] &&
 		curl -fSL ${GOLANG_BINARY} -o ${GO_BINARY_ROOT}/${GOLANG_VERSION}.${CURR_OS}-amd64.tar.gz
+
+	# clean the old installation of ${GOROOT_FINAL}
+	[ -d ${GOROOT_FINAL} ] && sudo rm -rf ${GOROOT_FINAL}
 	cd ${GO_BINARY_ROOT} &&
-		tar zxf ${GOLANG_VERSION}.${CURR_OS}-amd64.tar.gz
+		tar zxf ${GOLANG_VERSION}.${CURR_OS}-amd64.tar.gz &&
+		sudo mv go ${GOROOT_FINAL}
 
 }
 

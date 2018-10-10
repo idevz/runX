@@ -34,7 +34,7 @@ a Vm, this runX is just for you.
   to set up the environment.
 * Run `prlctl exec golang 'sudo -Hiu z set_up'` to setup it(this example is assume to set
   up a Golang development environment, and your Vm id is 'golang'). 'z' is my username,
-  please change to yours.
+  please change to yours, and be sure that your username have a sudo permission.
 
 
 *tips:*

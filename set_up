@@ -16,7 +16,7 @@ BASE_DIR=$(dirname $(cd $(dirname "$0") && pwd -P)/$(basename "$0"))
 
 # create a profile for each host such as envriment variable setting
 create_profile() {
-	[ -z $1 ] && echo "empty profile content." && exit 1
+	[ -z "$1" ] && echo "empty profile content." && exit 1
 	PROFILE_FILE=/etc/profile.d/idevz_prlctl_${HOSTNAME}.sh
 	[ -f ${PROFILE_FILE} ] && sudo rm ${PROFILE_FILE}
 	echo "$1" | sudo tee -a /etc/profile.d/idevz_prlctl_${HOSTNAME}.sh
