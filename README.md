@@ -41,3 +41,11 @@ a Vm, this runX is just for you.
 
 * add export PRLCTL_HOME=/media/psf/runX to /etc/profile
 * auto generate a /etc/profile.d/idevz_prlctl_*.sh file for environment variables setting.
+
+
+### using commands
+
+* `./runX new golang` to clone and start a new vm from your base image.
+* `./runX setup golang` to set up your golang development environment base on your vm clone above.
+* `./runX ip golang` can got your golang vm's ip, then use to login, 
+  or run `./runX enter golang` login direct.

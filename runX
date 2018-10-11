@@ -1,0 +1,70 @@
+#!/bin/sh
+
+### BEGIN ###
+# Author: idevz
+# Since: 2018/03/12
+# Description:   A framework for create a language development environment using parallels vm.
+# prlctlc exec golang 'sudo -Hiu z set_up'
+#
+# Environment variables that control init:
+# BI: the base parallels image which you're using to setup, I build one from a nake centos7
+#     and also add the most common tools with my daily using.
+# PR: your parallels root which set to store your paramllels vms(pvms).
+### END ###
+
+# set -e
+
+BASE_IMAGE=${BI:-"centos7-base-1708"}
+PARALLELS_ROOT=${PR:-${HOME}"/Documents/Parallels"}
+
+xnotic() {
+	STATUS=1
+	[ ! -z ${2} ] && STATUS=${2}
+	echo
+	echo ${1} && echo && exit ${STATUS}
+
+}
+
+[ ! -d ${PARALLELS_ROOT} ] && mkdir -p ${PARALLELS_ROOT}
+type prlctl >/dev/null 2>&1 || xnotic "please make sure that your 'prlctl' works well."
+
+x_clone() {
+	[ -z ${1} ] && xnotic "need a name for your new vm."
+	prlctl clone ${BASE_IMAGE} --name ${1} --dst ${PARALLELS_ROOT}
+}
+
+_prlctl_exec() {
+	[ -z "${1}" ] && xnotic "need a name for your new vm."
+	[ -z "${2}" ] && xnotic "empty command."
+	prlctl exec ${1} ${2}
+}
+
+x_setup() {
+	_prlctl_exec ${1} 'sudo -Hiu z set_up'
+}
+
+x_show_ip() {
+	_prlctl_exec ${1} 'ip addr show'
+}
+
+__prlctl_x() {
+	prlctl ${1} ${2}
+}
+
+case ${1} in
+new)
+	x_clone ${2}
+	;;
+set_up)
+	x_setup ${2}
+	;;
+ip)
+	x_show_ip ${2}
+	;;
+stop | stp*)
+	__prlctl_x stop ${2}
+	;;
+*)
+	__prlctl_x ${1} ${2}
+	;;
+esac

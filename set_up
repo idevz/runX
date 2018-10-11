@@ -3,7 +3,7 @@
 ### BEGIN ###
 # Author: idevz
 # Since: 2018/03/12
-# Description:   A framework for create a language development environment using parallels vm.
+# Description:   An entrypoint script in the parallels vm.
 # prlctl exec golang 'sudo -Hiu z set_up'
 ### END ###
 
