@@ -12,7 +12,7 @@
 # PR: your parallels root which set to store your paramllels vms(pvms).
 ### END ###
 
-# set -e
+set -e
 
 BASE_IMAGE=${BI:-"centos7-base-1708"}
 PARALLELS_ROOT=${PR:-${HOME}"/Documents/Parallels"}
@@ -43,6 +43,10 @@ x_setup() {
 	_prlctl_exec ${1} 'sudo -Hiu z set_up'
 }
 
+x_recreate_profile() {
+	_prlctl_exec ${1} 'sudo -Hiu z set_up rp'
+}
+
 x_show_ip() {
 	_prlctl_exec ${1} 'ip addr show'
 }
@@ -57,6 +61,9 @@ new)
 	;;
 set_up)
 	x_setup ${2}
+	;;
+rp)
+	x_recreate_profile ${2}
 	;;
 ip)
 	x_show_ip ${2}

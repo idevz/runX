@@ -97,10 +97,12 @@ install_from_binary() {
 
 }
 
-if [ ${INSTALLATION_TYPE} == "bin" ]; then
-	install_from_binary
-else
-	install_from_src
-fi
+init() {
+	if [ ${INSTALLATION_TYPE} == "bin" ]; then
+		install_from_binary
+	else
+		install_from_src
+	fi
 
-create_profile "${PROFILE}"
+	create_profile "${PROFILE}"
+}

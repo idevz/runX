@@ -24,4 +24,13 @@ create_profile() {
 	sudo chmod +x ${PROFILE_FILE}
 }
 
-BASE_DIR=$BASE_DIR/${HOSTNAME} && . $BASE_DIR/init
+case ${1} in
+rp | recreate_profile)
+	BASE_DIR=$BASE_DIR/${HOSTNAME} && . $BASE_DIR/init
+	create_profile "${PROFILE}"
+	;;
+*)
+	BASE_DIR=$BASE_DIR/${HOSTNAME} && . $BASE_DIR/init
+	init
+	;;
+esac
