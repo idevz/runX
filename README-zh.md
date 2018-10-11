@@ -15,6 +15,7 @@ runX 是我自己用的一个小工具，日常工作涉及跨语言项目的开
 * 用来部署开发环境的源 pvm 需要将共享的 runX 项目添加到 PATH 环境变量下，保证我的 set_up 脚本
   能在新建的 pvm 上面执行类似 `prlctl exec golang 'sudo -Hiu z set_up'` 这样的命令
 * 部署所依赖的源文件放置示例可查看 .gitingore 文件
+* 部署后会生成 `/etc/profile.d/idevz_prlctl_${HOSTNAME}.sh` 文件来设置相应的环境变量
 
 ### why U need this runX
 ## how to Use
