@@ -10,12 +10,14 @@
 # BI: the base parallels image which you're using to setup, I build one from a nake centos7
 #     and also add the most common tools with my daily using.
 # PR: your parallels root which set to store your paramllels vms(pvms).
+# CAS: set if both clone and set up the pvm at one time, default is "yes" do both at once.
 ### END ###
 
 set -e
 
 BASE_IMAGE=${BI:-"centos7-base-1708"}
 PARALLELS_ROOT=${PR:-${HOME}"/Documents/Parallels"}
+CLONE_AND_SETUP=${CAS:-"yes"}
 
 xnotic() {
 	STATUS=1
@@ -25,12 +27,29 @@ xnotic() {
 
 }
 
+# SIGSTKFLT
+# SIGPOLL
+# SIGPWR
+# SIGILL SIGTRAP SIGABRT SIGBUS SIGFPE SIGKILL SIGUSR1 SIGSEGV SIGUSR2 SIGPIPE SIGALRM SIGTERM SIGCHLD SIGCONT SIGSTOP SIGTSTP SIGTTIN SIGTTOU SIGURG SIGXCPU SIGXFSZ SIGVTALRM SIGPROF SIGWINCH SIGSYS
+trap "runX_exit $LINENO $BASH_COMMAND; exit" SIGHUP SIGINT SIGQUIT
+runX_exit() {
+	echo
+	EXIT_MSG="something has happened"
+	logger -p notice "$(basename $0) - ${EXIT_MSG}"
+	echo
+	echo ${EXIT_MSG}
+	echo "$@"
+	echo
+}
+
 [ ! -d ${PARALLELS_ROOT} ] && mkdir -p ${PARALLELS_ROOT}
 type prlctl >/dev/null 2>&1 || xnotic "please make sure that your 'prlctl' works well."
 
 x_clone() {
 	[ -z ${1} ] && xnotic "need a name for your new vm."
 	prlctl clone ${BASE_IMAGE} --name ${1} --dst ${PARALLELS_ROOT}
+	sleep 1
+	prlctl start ${1}
 }
 
 _prlctl_exec() {
@@ -56,8 +75,54 @@ __prlctl_x() {
 }
 
 case ${1} in
+t)
+	echo "$@"
+	;;
 new)
 	x_clone ${2}
+	;;
+nx | newx)
+	HOST_FILE=$(pwd)/hosts
+	[ ! -f ${HOST_FILE} ] && xnotic "new x command need a hosts file which format like /etc/hosts."
+	PVM_LIST=$(prlctl list -a)
+	while read line; do
+		IP=$(echo ${line} | cut -f 1 -d ' ')
+		HOST_NAME=$(echo ${line} | awk '{print $2}')
+		echo "${PVM_LIST}" | grep -Eo " ${HOST_NAME}$" && continue
+		if [ ${CLONE_AND_SETUP} = 'yes' ]; then
+			[ -f $(pwd)/${HOST_NAME}/init ] &&
+				chmod +x $(pwd)/${HOST_NAME}/init &&
+				x_clone ${HOST_NAME}
+			VM_STATUS=$(prlctl exec ${HOST_NAME} ip addr show >/dev/null 2>&1) || VM_STATUS=1
+			echo "start check if the vms is already started."
+			until [ ${VM_STATUS} -eq 0 ]; do
+				VM_STATUS=$(prlctl exec ${HOST_NAME} ip addr show >/dev/null 2>&1) || VM_STATUS=1
+				sleep 1
+				echo -n "."
+			done
+			x_setup ${HOST_NAME}
+		else
+			x_clone ${HOST_NAME}
+		fi
+
+		# 修改 eth0 的设置
+		# cat /etc/sysconfig/network-scripts/ifcfg-eth0 | grep -Eo "UUID=(.*)"
+		# DEVICE="eth0"
+		# BOOTPROTO="static"
+		# BOOTPROTO="dhcp"
+		# HWADDR="E4:1F:13:BD:34:F4"
+		# NM_CONTROLLED="yes"
+		# ONBOOT="yes"
+		# IPADDR=10.74.2.78
+		# NETMASK=255.255.255.0
+		# GATEWAY=10.74.2.1
+	done <${HOST_FILE}
+	;;
+run)
+	shift
+	VM_NAME=${1}
+	shift
+	prlctl exec ${VM_NAME} $@
 	;;
 set_up)
 	x_setup ${2}
@@ -70,6 +135,10 @@ ip)
 	;;
 stop | stp*)
 	__prlctl_x stop ${2}
+	;;
+stopx | stpx*)
+	__prlctl_x stop ${2}
+	__prlctl_x delete ${2}
 	;;
 *)
 	__prlctl_x ${1} ${2}

@@ -1,0 +1,20 @@
+#!/bin/bash
+
+sp="/-\|"
+sc=0
+spin() {
+	printf "\b${sp:sc++:1}"
+	((sc == ${#sp})) && sc=0
+}
+endspin() {
+	printf "\r%s\n" "$@"
+}
+
+d=10
+until [ $d -eq 0 ]; do
+	spin
+	sleep .5
+	# echo $d
+	d=$((d - 1))
+done
+endspin "$@"
