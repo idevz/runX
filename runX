@@ -11,6 +11,7 @@
 #     and also add the most common tools with my daily using.
 # PR: your parallels root which set to store your paramllels vms(pvms).
 # CAS: set if both clone and set up the pvm at one time, default is "yes" do both at once.
+# USI: set if using static ip, or dhcp. default is "yes" to using static ip.
 ### END ###
 
 set -e
