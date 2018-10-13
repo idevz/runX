@@ -146,6 +146,7 @@ nx | newx)
 	[ ! -f ${HOST_FILE} ] && xnotic "new x command need a hosts file which format like /etc/hosts."
 	PVM_LIST=$(prlctl list -a)
 	while read line; do
+		echo ${line} | grep -Eo '#' && continue
 		STATIC_IP=$(echo ${line} | cut -f 1 -d ' ')
 		HOST_NAME=$(echo ${line} | awk '{print $2}')
 		echo "${PVM_LIST}" | grep -Eo " ${HOST_NAME}$" && continue
