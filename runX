@@ -87,7 +87,8 @@ x_clone() {
 			prlctl exec ${HOST_NAME} "echo '${HOST_NAME}' | sudo tee -a /etc/sysconfig/network"
 
 		ynotic "eth0 setting..."
-		prlctl exec ${HOST_NAME} sudo sed -i 's/BOOTPROTO=\"dhcp\"/BOOTPROTO=\"static\"/g' /etc/sysconfig/network-scripts/ifcfg-eth0
+		prlctl exec ${HOST_NAME} sudo sed -i 's/BOOTPROTO=\"dhcp\"/BOOTPROTO=\"static\"/g' \
+			/etc/sysconfig/network-scripts/ifcfg-eth0
 		GATEWAY_IP=$(echo ${STATIC_IP} | grep -Eo '.*[.]')1
 		EHT0_CFG=$(
 			cat <<CFG
@@ -96,7 +97,8 @@ NETMASK=255.255.255.0
 GATEWAY=${GATEWAY_IP}
 CFG
 		)
-		prlctl exec ${HOST_NAME} "sudo echo '${EHT0_CFG}' >> /etc/sysconfig/network-scripts/ifcfg-eth0"
+		prlctl exec ${HOST_NAME} \
+			"sudo echo '${EHT0_CFG}' >> /etc/sysconfig/network-scripts/ifcfg-eth0"
 
 		ynotic "/etc/resolv.conf setting..."
 		DNS_RESOLV_CFG=$(
@@ -143,7 +145,8 @@ new)
 nx | newx)
 	# using a hosts list is default to using static ip to clone pvms.
 	HOST_FILE=$(pwd)/hosts
-	[ ! -f ${HOST_FILE} ] && xnotic "new x command need a hosts file which format like /etc/hosts."
+	[ ! -f ${HOST_FILE} ] &&
+		xnotic "new x command need a hosts file which format like /etc/hosts."
 	PVM_LIST=$(prlctl list -a)
 	while read line; do
 		echo ${line} | grep -Eo '#' && continue
