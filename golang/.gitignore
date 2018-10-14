@@ -1,0 +1,11 @@
+# runX
+binaries/go
+binaries/go1.11.1.linux-amd64.tar.gz
+srcs/go-go1.10.4
+srcs/go1.10.4.tar.gz
+bootstraps/go1.4-bootstrap-20171003.tar.gz
+go
+go1.*
+go-go1*
+
+.DS_Store
