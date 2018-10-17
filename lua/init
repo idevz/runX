@@ -1,0 +1,75 @@
+#!/bin/sh
+
+### BEGIN ###
+# Author: idevz
+# Since: 2018/03/12
+# Description:       Set up Lua development environment.
+# ./init.sh          Set up using $(pwd) as BASE_DIR, down which has lua source and binaries.
+#
+# Environment variables that control init:
+# LV: Lua version which you want to install.
+### END ###
+
+set -e
+
+[ -z $PRLCTL_HOME ] && PRLCTL_HOME=/media/psf/runX
+[ $HOME != '/home/z' ] && echo 'Are U Z ?' && exit 1
+
+# BASE_DIR=$(dirname $(cd $(dirname "$0") && pwd -P)/$(basename "$0"))
+BASE_DIR=${BASE_DIR:-$(dirname $(cd $(dirname "$0") && pwd -P)/$(basename "$0"))}
+
+LUA_VERSION=${LV:-"lua-5.1.5"}
+LUA_ROOT=${LR:-"/usr/local/${LUA_VERSION}"}
+echo $LUA_ROOT
+PROFILE=$(
+	cat <<EOF
+#!/bin/sh
+
+### BEGIN ###
+# Author: idevz
+# Since: 2018/03/12
+# Description:       Setting enviroment variables for lua pvm.
+### END ###
+
+export LUA_ROOT=${LUA_ROOT}
+export PATH=${LUA_ROOT}/bin:\$PATH
+
+alias gdl='gdb ${LUA_ROOT}/bin/lua'
+alias gdlj='gdb ${LUAJIT_ROOT}/bin/luajit'
+EOF
+)
+
+# debug install prepare
+dp() {
+	sudo yum -y install readline-devel
+	# sudo debuginfo-install -y --skip-broken \
+	# ncurses-libs-5.9-14.20130511.el7_4.x86_64 readline-6.2-10.el7.x86_64
+}
+
+install_lua_from_src() {
+	PLAT=$(uname | tr '[:upper:]' '[:lower:]')
+	SED="sed -i "
+	[ ${PLAT} = 'darwin' ] &&
+		SED="sed -i '' "
+
+	[ -d ${LUA_ROOT} ] && sudo rm -rf ${LUA_ROOT}
+
+	LUA_SRC="http://www.lua.org/ftp/${LUA_VERSION}.tar.gz"
+	LUA_SRC_ROOT=${BASE_DIR}/srcs
+	[ ! -f ${LUA_SRC_ROOT}/${LUA_VERSION}.tar.gz ] &&
+		curl -fSL ${LUA_SRC} -o ${LUA_SRC_ROOT}/${LUA_VERSION}.tar.gz
+
+	[ -d ${LUA_SRC_ROOT}/${LUA_VERSION} ] && sudo rm -rf ${LUA_SRC_ROOT}/${LUA_VERSION}
+
+	cd ${LUA_SRC_ROOT} &&
+		tar zxf ${LUA_VERSION}.tar.gz &&
+		cd ${LUA_VERSION} &&
+		${SED} 's/^CC= gcc$/CC= gcc -ggdb/' src/Makefile &&
+		sudo make ${PLAT} install INSTALL_TOP=${LUA_ROOT}
+}
+
+init() {
+	dp
+	install_lua_from_src
+	create_profile "${PROFILE}"
+}
