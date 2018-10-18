@@ -1,3 +1,5 @@
 # runX
 srcs/lua*
+srcs/LuaJIT*
+
 .DS_Store

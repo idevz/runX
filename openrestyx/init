@@ -1,0 +1,182 @@
+#!/bin/sh
+
+### BEGIN ###
+# Author: idevz
+# Since: 2018/03/12
+# Description:       Set up OpenResty development environment.
+# ./init.sh          Set up using $(pwd) as BASE_DIR, down which has openresty source and binaries.
+#
+# Environment variables that control init:
+# LV: OpenResty version which you want to install.
+### END ###
+
+set -e
+
+[ -z $PRLCTL_HOME ] && PRLCTL_HOME=/media/psf/runX
+[ $HOME != '/home/z' ] && echo 'Are U Z ?' && exit 1
+
+# BASE_DIR=$(dirname $(cd $(dirname "$0") && pwd -P)/$(basename "$0"))
+BASE_DIR=${BASE_DIR:-$(dirname $(cd $(dirname "$0") && pwd -P)/$(basename "$0"))}
+
+OR_VERSION=${LV:-"openresty-5.1.5"}
+OR_ROOT=${LR:-"/usr/local/${OR_VERSION}"}
+OR_PREFIX=${OR_PREFIX:-"/usr/local/openresty"}
+DEFAULT_LUAJIT_PREFIX=/usr/local/luajit
+DEFAULT_LUAJIT_VERSION=${DEFAULT_LUAJIT_VERSION:-"2.1.0-beta3"}
+
+RESTY_VERSION=${RESTY_VERSION:-"1.13.6.2"}
+RESTY_LUAROCKS_VERSION=${RESTY_LUAROCKS_VERSION:-"2.4.3"}
+RESTY_OPENSSL_VERSION=${RESTY_OPENSSL_VERSION:-"1.0.2k"}
+RESTY_PCRE_VERSION=${RESTY_PCRE_VERSION:-"8.41"}
+RESTY_ZLIB_VERSION=${RESTY_ZLIB_VERSION:-"1.2.11"}
+RESTY_J=${RESTY_J:-"1"}
+_RESTY_CONFIG_DEPS="--with-openssl=/tmp/openssl-${RESTY_OPENSSL_VERSION} --with-pcre=/tmp/pcre-${RESTY_PCRE_VERSION}"
+RESTY_CONFIG_OPTIONS_MORE=""
+
+PROFILE=$(
+	cat <<EOF
+#!/bin/sh
+
+### BEGIN ###
+# Author: idevz
+# Since: 2018/03/12
+# Description:       Setting enviroment variables for openresty pvm.
+### END ###
+
+export OR_ROOT=${OR_ROOT}
+export PATH=${OR_ROOT}/bin:\$PATH
+
+alias gdl='gdb ${OR_ROOT}/bin/openresty'
+EOF
+)
+
+# debug install prepare
+dev_preparing() {
+	sudo yum install --nogpgcheck -y \
+		systemtap-sdt-devel readline-devel
+
+	ZLIB_PREFIX=${OR_PREFIX}/zlib
+	cd /tmp/zlib-${RESTY_ZLIB_VERSION} &&
+		./configure --prefix=${ZLIB_PREFIX} &&
+		make CFLAGS='-O3 -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN -g' \
+			SFLAGS='-O3 -fPIC -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN -g' &&
+		make install
+
+	OPENSSL_PREFIX=${OR_PREFIX}/openssl
+	cd /tmp/openssl-${RESTY_OPENSSL_VERSION} &&
+		./config \
+			no-threads no-asm \
+			enable-ssl3 enable-ssl3-method \
+			shared zlib -g -O0 -DPURIFY \
+			--prefix=${OPENSSL_PREFIX} \
+			--libdir=lib \
+			-I${ZLIB_PREFIX}/include \
+			-L${ZLIB_PREFIX}/lib \
+			-Wl,-rpath,${ZLIB_PREFIX}/lib:${OPENSSL_PREFIX}/lib &&
+		sed -i 's/ -O3 / -O0 /g' Makefile &&
+		make &&
+		make install_sw
+
+	PCRE_PREFIX=${OR_PREFIX}/pcre
+	cd /tmp/pcre-${RESTY_PCRE_VERSION} &&
+		./configure \
+			--prefix=${PCRE_PREFIX} \
+			--includedir=${PCRE_PREFIX}/include \
+			--disable-cpp \
+			--enable-jit \
+			--enable-utf \
+			--enable-unicode-properties &&
+		make V=1 &&
+		make install
+}
+
+or_for_debug() {
+	dev_preparing
+
+	cd /tmp/openresty-${RESTY_VERSION} &&
+		./configure \
+			--prefix=${OR_PREFIX} \
+			-j${RESTY_J} \
+			--with-debug \
+			--with-no-pool-patch \
+			--with-cc-opt="-I${ZLIB_PREFIX}/include -I${PCRE_PREFIX}/include -I${OPENSSL_PREFIX}/include -g -O0" \
+			--with-ld-opt=-Wl,-rpath="'""\\'"'\$\$ORIGIN/lib'"\\'""'"" -L${ZLIB_PREFIX}/lib -L${PCRE_PREFIX}/lib -L${OPENSSL_PREFIX}/lib -Wl,-rpath,${ZLIB_PREFIX}/lib:${PCRE_PREFIX}/lib:${OPENSSL_PREFIX}/lib" \
+			--with-pcre-jit \
+			--with-luajit-xcflags='-DLUAJIT_NUMMODE=2 -DLUAJIT_ENABLE_LUA52COMPAT -g -O0' \
+			--with-dtrace-probes \
+			--with-poll_module \
+			--with-file-aio \
+			--with-http_addition_module \
+			--with-http_auth_request_module \
+			--with-http_dav_module \
+			--with-http_flv_module \
+			--with-http_geoip_module=dynamic \
+			--with-http_gunzip_module \
+			--with-http_gzip_static_module \
+			--with-http_image_filter_module=dynamic \
+			--with-http_mp4_module \
+			--with-http_random_index_module \
+			--with-http_realip_module \
+			--with-http_secure_link_module \
+			--with-http_slice_module \
+			--with-http_ssl_module \
+			--with-http_stub_status_module \
+			--with-http_sub_module \
+			--with-http_v2_module \
+			--with-http_xslt_module=dynamic \
+			--with-ipv6 \
+			--with-mail \
+			--with-mail_ssl_module \
+			--with-md5-asm \
+			--with-sha1-asm \
+			--with-stream \
+			--with-stream_ssl_module \
+			--with-threads \
+			--user=root --group=root \
+			${RESTY_CONFIG_OPTIONS_MORE} &&
+		make -j${RESTY_J} &&
+		make -j${RESTY_J} install &&
+		mkdir -p ${OR_PREFIX}/nginx/sbin/lib &&
+		for DEP_F in $(ldd ${OR_PREFIX}/nginx/sbin/nginx | grep -Eo '(\/.*) |(/lib64/.*) '); do
+			cp ${DEP_F} ${OR_PREFIX}/nginx/sbin/lib/$(basename ${DEP_F})
+		done
+}
+
+install_openresty_from_src() {
+	PLAT=$(uname | tr '[:upper:]' '[:lower:]')
+	SED="sed -i "
+	[ ${PLAT} = 'darwin' ] &&
+		SED="sed -i '' "
+
+	[ -d ${OR_ROOT} ] && sudo rm -rf ${OR_ROOT}
+
+	OR_SRC="http://www.openresty.org/ftp/${OR_VERSION}.tar.gz"
+	OR_SRC_ROOT=${BASE_DIR}/srcs
+	[ ! -f ${OR_SRC_ROOT}/${OR_VERSION}.tar.gz ] &&
+		curl -fSL ${OR_SRC} -o ${OR_SRC_ROOT}/${OR_VERSION}.tar.gz
+
+	[ -d ${OR_SRC_ROOT}/${OR_VERSION} ] && sudo rm -rf ${OR_SRC_ROOT}/${OR_VERSION}
+
+	cd ${OR_SRC_ROOT} &&
+		tar zxf ${OR_VERSION}.tar.gz &&
+		cd ${OR_VERSION} &&
+		${SED} 's/^CC= gcc$/CC= gcc -ggdb/g;s/-O2/-O0/g' src/Makefile &&
+		sudo make ${PLAT} install INSTALL_TOP=${OR_ROOT}
+}
+
+init_gdb() {
+	cp -R ${BASE_DIR}/.gdbinit.d ${HOME}/.gdbinit.d/
+	cat >${HOME}/.gdbinit <<GDB_INIT
+set python print-stack full
+set history save on
+set history remove-duplicates 1
+set history filename ${PRLCTL_HOME}/$(hostname)/.gdbinit.d/.gdb_history
+source ${HOME}/.gdbinit.d/openresty.gdbinit
+GDB_INIT
+}
+
+init() {
+	dp
+	install_openresty_from_src
+	create_profile "${PROFILE}"
+}
