@@ -111,6 +111,7 @@ nameserver ${GATEWAY_IP}
 CFG
 		)
 		prlctl exec ${HOST_NAME} "sudo echo '${DNS_RESOLV_CFG}' >/etc/resolv.conf"
+		prlctl exec lua 'sudo ifdown eth0 && ifup eth0'
 	fi
 }
 
