@@ -54,8 +54,6 @@ export PATH USER LOGNAME MAIL HOSTNAME HISTSIZE HISTCONTROL
 
 export MCODE=/media/psf/code
 export GIT=$MCODE/z/git
-
-export PYTHONPATH=$MCODE/z/git/openresty-gdb-utils
 export PRLCTL_HOME=/media/psf/runX
 
 # By default, we want umask to get set. This sets it for login shell

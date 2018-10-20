@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 ### BEGIN ###
 # Author: idevz
@@ -18,7 +18,7 @@ BASE_DIR=${BASE_DIR:-$(dirname $(cd $(dirname "$0") && pwd -P)/$(basename "$0"))
 
 PROFILE=$(
 	cat <<EOF
-#!/bin/sh
+#!/usr/bin/env bash
 
 ### BEGIN ###
 # Author: idevz

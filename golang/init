@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 ### BEGIN ###
 # Author: idevz
@@ -30,7 +30,7 @@ GO_WORK_SPACES=${WS:-'${GIT}/go:${MCODE}/z/idevz-go'}
 
 PROFILE=$(
 	cat <<EOF
-#!/bin/sh
+#!/usr/bin/env bash
 
 ### BEGIN ###
 # Author: idevz

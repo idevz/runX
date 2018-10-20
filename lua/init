@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 ### BEGIN ###
 # Author: idevz
@@ -23,7 +23,7 @@ LUA_ROOT=${LR:-"/usr/local/${LUA_VERSION}"}
 
 PROFILE=$(
 	cat <<EOF
-#!/bin/sh
+#!/usr/bin/env bash
 
 ### BEGIN ###
 # Author: idevz
@@ -66,17 +66,6 @@ install_lua_from_src() {
 		cd ${LUA_VERSION} &&
 		${SED} 's/^CC= gcc$/CC= gcc -ggdb/g;s/-O2/-O0/g' src/Makefile &&
 		sudo make ${PLAT} install INSTALL_TOP=${LUA_ROOT}
-}
-
-init_gdb() {
-	cp -R ${BASE_DIR}/.gdbinit.d ${HOME}/.gdbinit.d/
-	cat >${HOME}/.gdbinit <<GDB_INIT
-set python print-stack full
-set history save on
-set history remove-duplicates 1
-set history filename ${PRLCTL_HOME}/$(hostname)/.gdbinit.d/.gdb_history
-source ${HOME}/.gdbinit.d/lua.gdbinit
-GDB_INIT
 }
 
 init() {
