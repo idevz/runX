@@ -14,6 +14,18 @@ set -e
 HOSTNAME=$(hostname)
 BASE_DIR=$(dirname $(cd $(dirname "$0") && pwd -P)/$(basename "$0"))
 
+xnotic() {
+	STATUS=1
+	[ ! -z ${2} ] && STATUS=${2}
+	echo
+	echo ${1} && echo && exit ${STATUS}
+}
+
+ynotic() {
+	echo
+	echo ${1}
+}
+
 # create a profile for each host such as envriment variable setting
 create_profile() {
 	[ -z "$1" ] && echo "empty profile content." && exit 1
@@ -24,24 +36,38 @@ create_profile() {
 	sudo chmod +x ${PROFILE_FILE}
 }
 
+check_file() {
+	FILE_NAME=$1
+	FILE_DIR=$(dirname ${FILE_NAME})
+	[ ! -d ${FILE_DIR} ] && mkdir -p ${FILE_DIR}
+	[ ! -f ${FILE_NAME} ] && touch ${FILE_NAME}
+}
+
 init_etc_profile() {
 	cat ${PRLCTL_HOME}/zsh/etc-profile | sudo tee /etc/profile >/dev/null 2>&1
 }
 
 init_zsh() {
+	HISTFILE=${PRLCTL_HOME}/zsh/$(hostname)${HOME}/.zsh_history
 	cp -f ${PRLCTL_HOME}/zsh/.zshrc ~/.zshrc
 	cat ${PRLCTL_HOME}/zsh/.zshrc | sudo tee /root/.zshrc >/dev/null 2>&1
+	echo ${HISTFILE}
+	check_file ${HISTFILE}
 }
 
 init_gdb() {
+	GDB_HISTORY_FILE=${PRLCTL_HOME}/gdb/$(hostname)/.gdb_history
+	GDB_BREAKPOINTS_FILE=${PRLCTL_HOME}/gdb/$(hostname)/$(whoami).bps
+	check_file ${GDB_HISTORY_FILE}
+	check_file ${GDB_BREAKPOINTS_FILE}
 	GDB_INIT_F=$(
 		cat <<GDB_INIT
 set history save on
-set history filename ${PRLCTL_HOME}/gdb/$(hostname)/.gdb_history
+set history filename ${GDB_HISTORY_FILE}
 
 define sbps
-	save breakpoints ${PRLCTL_HOME}/gdb/$(hostname)/$(whoami).bps
-	print "save the breakpoints to \"%s\"", "${PRLCTL_HOME}/gdb/$(hostname)/$(whoami).bps"
+	save breakpoints ${GDB_BREAKPOINTS_FILE}
+	print "save the breakpoints to \"%s\"", "${GDB_BREAKPOINTS_FILE}"
 end
 document sbps
     save break points
@@ -49,7 +75,7 @@ document sbps
 end
 
 define rbps
-	source ${PRLCTL_HOME}/gdb/$(hostname)/$(whoami).bps
+	source ${GDB_BREAKPOINTS_FILE}
 end
 document rbps
     load the break points
@@ -72,15 +98,19 @@ base_init() {
 }
 
 # check if already inited
-[ ! -f /home/already_init ] && base_init
+if [ ! -f /home/already_init ]; then
+	base_init
+else
+	xnotic "Already inited."
+fi
 
-case ${1} in
-rp | recreate_profile)
-	BASE_DIR=$BASE_DIR/${HOSTNAME} && . $BASE_DIR/init
-	create_profile "${PROFILE}"
-	;;
-*)
-	BASE_DIR=$BASE_DIR/${HOSTNAME} && . $BASE_DIR/init
-	init
-	;;
-esac
+# case ${1} in
+# rp | recreate_profile)
+# 	BASE_DIR=$BASE_DIR/${HOSTNAME} && . $BASE_DIR/init
+# 	create_profile "${PROFILE}"
+# 	;;
+# *)
+# 	BASE_DIR=$BASE_DIR/${HOSTNAME} && . $BASE_DIR/init
+# 	init
+# 	;;
+# esac
