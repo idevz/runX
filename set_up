@@ -9,60 +9,62 @@
 
 set -e
 
-[ -z $PRLCTL_HOME ] && PRLCTL_HOME=/media/psf/runX
-[ $HOME != '/home/z' ] && echo 'Are U Z ?' && exit 1
+[ -z "${PRLCTL_HOME}" ] && PRLCTL_HOME=/media/psf/runX
+[ "${HOME}" != '/home/z' ] && echo 'Are U Z ?' && exit 1
 HOSTNAME=$(hostname)
+# shellcheck disable=2046
 BASE_DIR=$(dirname $(cd $(dirname "$0") && pwd -P)/$(basename "$0"))
 
 xnotic() {
 	STATUS=1
-	[ ! -z ${2} ] && STATUS=${2}
+	[ ! -z "${2}" ] && STATUS=${2}
 	echo
-	echo ${1} && echo && exit ${STATUS}
+	echo "${1}" && echo && exit "${STATUS}"
 }
 
 ynotic() {
 	echo
-	echo ${1}
+	echo "${1}"
 }
 
 # create a profile for each host such as envriment variable setting
 create_profile() {
 	[ -z "$1" ] && echo "empty profile content." && exit 1
 	PROFILE_FILE=/etc/profile.d/idevz_prlctl_${HOSTNAME}.sh
-	[ -f ${PROFILE_FILE} ] && sudo rm ${PROFILE_FILE}
-	echo "$1" | sudo tee -a /etc/profile.d/idevz_prlctl_${HOSTNAME}.sh
+	[ -f "${PROFILE_FILE}" ] && sudo rm "${PROFILE_FILE}"
+	echo "$1" | sudo tee -a /etc/profile.d/idevz_prlctl_"${HOSTNAME}".sh
 	# sudo sh -c "echo zzz >> /etc/profile"
-	sudo chmod +x ${PROFILE_FILE}
+	sudo chmod +x "${PROFILE_FILE}"
 }
 
 check_file() {
 	FILE_NAME=$1
-	FILE_DIR=$(dirname ${FILE_NAME})
-	[ ! -d ${FILE_DIR} ] && mkdir -p ${FILE_DIR}
-	[ ! -f ${FILE_NAME} ] && touch ${FILE_NAME}
+	FILE_DIR=$(dirname "${FILE_NAME}")
+	[ ! -d "${FILE_DIR}" ] && mkdir -p "${FILE_DIR}"
+	[ ! -f "${FILE_NAME}" ] && touch "${FILE_NAME}"
 	ynotic "${FILE_NAME} checked."
 }
 
 init_etc_profile() {
-	cat ${PRLCTL_HOME}/zsh/etc-profile | sudo tee /etc/profile >/dev/null 2>&1
+	# shellcheck disable=2002
+	cat "${PRLCTL_HOME}"/zsh/etc-profile | sudo tee /etc/profile >/dev/null 2>&1
 }
 
 init_zsh() {
 	HISTFILE=${PRLCTL_HOME}/zsh/$(hostname)${HOME}/.zsh_history
 	cp -f ${PRLCTL_HOME}/zsh/.zshrc ~/.zshrc
-	cat ${PRLCTL_HOME}/zsh/.zshrc | sudo tee /root/.zshrc >/dev/null 2>&1
-	echo ${HISTFILE}
-	check_file ${HISTFILE}
+	# shellcheck disable=2002
+	cat "${PRLCTL_HOME}"/zsh/.zshrc | sudo tee /root/.zshrc >/dev/null 2>&1
+	check_file "${HISTFILE}"
 }
 
 init_gdb() {
 	GDB_HISTORY_FILE=${PRLCTL_HOME}/gdb/$(hostname)/.gdb_history
 	GDB_BREAKPOINTS_FILE=${PRLCTL_HOME}/gdb/$(hostname)/$(whoami).bps
 	GDB_INIT_FILE=${PRLCTL_HOME}/gdb/$(hostname)/.gdbinit
-	check_file ${GDB_HISTORY_FILE}
-	check_file ${GDB_BREAKPOINTS_FILE}
-	check_file ${GDB_INIT_FILE}
+	check_file "${GDB_HISTORY_FILE}"
+	check_file "${GDB_BREAKPOINTS_FILE}"
+	check_file "${GDB_INIT_FILE}"
 	GDB_INIT_F=$(
 		cat <<GDB_INIT
 set history save on
@@ -89,7 +91,7 @@ source ${GDB_INIT_FILE}
 source ${PRLCTL_HOME}/gdb/ext/tools.py
 GDB_INIT
 	)
-	echo "${GDB_INIT_F}" >${HOME}/.gdbinit
+	echo "${GDB_INIT_F}" >"${HOME}"/.gdbinit
 	echo "${GDB_INIT_F}" | sudo tee /root/.gdbinit >/dev/null 2>&1
 }
 
@@ -97,11 +99,11 @@ base_init() {
 	init_etc_profile
 	init_zsh
 	init_gdb
-	touch ${HOME}/already_init
+	touch "${HOME}"/already_init
 }
 
 # check if already inited
-if [ ! -f ${HOME}/already_init ]; then
+if [ ! -f "${HOME}"/already_init ]; then
 	base_init
 else
 	ynotic "Base init Already done before."
@@ -109,11 +111,13 @@ fi
 
 case ${1} in
 rp | recreate_profile)
-	BASE_DIR=$BASE_DIR/${HOSTNAME} && . $BASE_DIR/init
+	# shellcheck disable=1090
+	BASE_DIR=$BASE_DIR/${HOSTNAME} && . "${BASE_DIR}/init"
 	create_profile "${PROFILE}"
 	;;
 *)
-	BASE_DIR=$BASE_DIR/${HOSTNAME} && . $BASE_DIR/init
+	# shellcheck disable=1090
+	BASE_DIR=$BASE_DIR/${HOSTNAME} && . "${BASE_DIR}/init"
 	init
 	;;
 esac
