@@ -54,3 +54,6 @@ dkms.conf
 # runX
 
 .DS_Store
+*.bak
+.zsh_history
+.vscode
