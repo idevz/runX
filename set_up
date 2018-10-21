@@ -41,6 +41,7 @@ check_file() {
 	FILE_DIR=$(dirname ${FILE_NAME})
 	[ ! -d ${FILE_DIR} ] && mkdir -p ${FILE_DIR}
 	[ ! -f ${FILE_NAME} ] && touch ${FILE_NAME}
+	ynotic "${FILE_NAME} checked."
 }
 
 init_etc_profile() {
@@ -58,8 +59,10 @@ init_zsh() {
 init_gdb() {
 	GDB_HISTORY_FILE=${PRLCTL_HOME}/gdb/$(hostname)/.gdb_history
 	GDB_BREAKPOINTS_FILE=${PRLCTL_HOME}/gdb/$(hostname)/$(whoami).bps
+	GDB_INIT_FILE=${PRLCTL_HOME}/gdb/$(hostname)/.gdbinit
 	check_file ${GDB_HISTORY_FILE}
 	check_file ${GDB_BREAKPOINTS_FILE}
+	check_file ${GDB_INIT_FILE}
 	GDB_INIT_F=$(
 		cat <<GDB_INIT
 set history save on
@@ -82,26 +85,26 @@ document rbps
     Usage: rbps
 end
 
-source ${PRLCTL_HOME}/gdb/$(hostname)/.gdbinit
+source ${GDB_INIT_FILE}
 source ${PRLCTL_HOME}/gdb/ext/tools.py
 GDB_INIT
 	)
-	echo ${GDB_INIT_F} >${HOME}/.gdbinit
-	echo ${GDB_INIT_F} | sudo tee /root/.gdbinit >/dev/null 2>&1
+	echo "${GDB_INIT_F}" >${HOME}/.gdbinit
+	echo "${GDB_INIT_F}" | sudo tee /root/.gdbinit >/dev/null 2>&1
 }
 
 base_init() {
 	init_etc_profile
 	init_zsh
 	init_gdb
-	sudo touch /home/already_init
+	touch ${HOME}/already_init
 }
 
 # check if already inited
-if [ ! -f /home/already_init ]; then
+if [ ! -f ${HOME}/already_init ]; then
 	base_init
 else
-	xnotic "Already inited."
+	ynotic "Base init Already done before."
 fi
 
 # case ${1} in

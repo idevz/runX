@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+### BEGIN ###
+# Author: idevz
+# Since: 2018/03/12
+# Description:       Set up Golang development environment.
+# ./init.sh          Set up using $(pwd) as BASE_DIR, down which has go source and binaries.
+#
+# Environment variables that control init:
+# GV: Golang version which you want to install.
+# IT: installation type which you want to using, like "bin" to install from binary packages,
+#     "src" to install from source, default using "bin".
+# WS: your golang workspaces
+### END ###
+
+set -e
+
+[ -z $PRLCTL_HOME ] && PRLCTL_HOME=/media/psf/runX
+BASE_DIR=${BASE_DIR:-$(dirname $(cd $(dirname "$0") && pwd -P)/$(basename "$0"))}
+
+time_init() {
+	sudo timedatectl set-timezone Asia/Shanghai
+	sudo timedatectl set-ntp yes
+}

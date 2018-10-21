@@ -56,4 +56,5 @@ dkms.conf
 .DS_Store
 *.bak
 .zsh_history
+.gdb_history
 .vscode

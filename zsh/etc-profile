@@ -80,7 +80,7 @@ unset i
 unset -f pathmunge
 export LC_ALL=en_US.utf8
 
-export PATH=/usr/local/bin:$PRLCTL_HOME:$PATH
+export PATH=/usr/local/gdb-8.2/bin:/usr/local/bin:$PRLCTL_HOME:$PATH
 alias mcode="cd $MCODE"
 alias mac="ssh zhoujing2@10.211.55.2"
 alias ctime='sudo ntpdate us.pool.ntp.org'
