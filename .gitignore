@@ -58,3 +58,4 @@ dkms.conf
 .zsh_history
 .gdb_history
 .vscode
+*.bps

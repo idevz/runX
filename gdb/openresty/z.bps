@@ -1,9 +1,0 @@
-break ngx_http_lua_init
-break ngx_http_lua_init_vm
-break ngx_http_lua_new_state
-break main
-break ngx_daemon
-break luaD_call
-break luaD_precall
-break luaVjxecute
-break luaV_execute

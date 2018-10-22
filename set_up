@@ -12,6 +12,7 @@ set -e
 [ -z "${PRLCTL_HOME}" ] && PRLCTL_HOME=/media/psf/runX
 [ "${HOME}" != '/home/z' ] && echo 'Are U Z ?' && exit 1
 HOSTNAME=$(hostname)
+# https://github.com/koalaman/shellcheck
 # shellcheck disable=2046
 BASE_DIR=$(dirname $(cd $(dirname "$0") && pwd -P)/$(basename "$0"))
 
@@ -69,6 +70,7 @@ init_gdb() {
 		cat <<GDB_INIT
 set history save on
 set history filename ${GDB_HISTORY_FILE}
+source ${PRLCTL_HOME}/gdb/ext/gdb-dashboard/.gdbinit
 
 define sbps
 	save breakpoints ${GDB_BREAKPOINTS_FILE}
