@@ -15,7 +15,6 @@ set -ex
 [ -z $PRLCTL_HOME ] && PRLCTL_HOME=/media/psf/runX
 [ $HOME != '/home/z' ] && echo 'Are U Z ?' && exit 1
 
-# BASE_DIR=$(dirname $(cd $(dirname "$0") && pwd -P)/$(basename "$0"))
 BASE_DIR=${BASE_DIR:-$(dirname $(cd $(dirname "$0") && pwd -P)/$(basename "$0"))}
 OR_ENV=${OE:-"debug"}
 
@@ -215,7 +214,7 @@ or_for_prd() {
 
 	cd ${SRC_ROOT}/openresty-${RESTY_VERSION}-prd &&
 		./configure \
-			--prefix=${OR_PREFIX} \
+			--prefix=${OR_PREFIX}-prd \
 			-j${RESTY_J} ${_RESTY_CONFIG_DEPS} \
 			--with-ld-opt=-Wl,-rpath="'""\\'"'\$\$ORIGIN/lib'"\\'""'" \
 			--with-file-aio \

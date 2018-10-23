@@ -16,7 +16,6 @@ set -e
 [ -z $PRLCTL_HOME ] && PRLCTL_HOME=/media/psf/runX
 [ $HOME != '/home/z' ] && echo 'Are U Z ?' && exit 1
 
-# BASE_DIR=$(dirname $(cd $(dirname "$0") && pwd -P)/$(basename "$0"))
 BASE_DIR=${BASE_DIR:-$(dirname $(cd $(dirname "$0") && pwd -P)/$(basename "$0"))}
 
 PHP_VERSION=${PV:-"php-7.2.11"}

@@ -31,55 +31,64 @@ o() {
 	esac
 }
 
-# ssh login to the pvms throug the name you give
-# @TODO using associated array to cache the query results.
-i() {
-	TO_HOST=${1}
-	PVM_LIST="$(prlctl list -a)"
-	if [ $(echo ${PVM_LIST} | grep -Eo "${TO_HOST}$") ]; then
-		ssh z@$(prlctl exec ${TO_HOST} ip addr show | grep -Eo 'inet (10.*)\/24' | cut -d ' ' -f 2 | cut -d '/' -f1)
-	else
-		echo ${PVM_LIST} | grep -Eo ${TO_HOST} || xnotic "no such PVM: ${TO_HOST}"
-	fi
+prlctl_get_ip_by_host() {
+	HOST_NAME=${1}
+	[ -z "${HOST_NAME}" ] && xnotic "empty host name." && return
+	prlctl exec ${TO_HOST} ip addr show | grep -Eo 'inet (10.*)\/24' | cut -d ' ' -f 2 | cut -d '/' -f1
 }
 
-ii() {
-	case "${1}" in
-	-a | -b)
-		while getopts ab:c OPTS; do
-			case "${OPTS}" in
-			a)
-				echo "${OPTS}"
-				echo "${OPTIND}"
-				echo "${OPTARG}"
-				;;
-			b)
-				echo "${OPTS}"
-				echo "${OPTIND}"
-				echo "${OPTARG}"
-				;;
+i() {
+	while getopts t:d:c OPTS; do
+		case "${OPTS}" in
+		t)
+			prlctl stop "${OPTARG}" &
+			;;
+		d)
+			prlctl delete "${OPTARG}" &
+			;;
 
-			c)
-				echo "${OPTS}"
-				echo "${OPTIND}"
-				echo "${OPTARG}"
-				;;
-			\?)
-				echo "
+		c)
+			echo "${OPTS}"
+			echo "${OPTIND}"
+			echo "${OPTARG}"
+			;;
+		\?)
+			echo "
   usage:
-	-a
+	i -t pvm		# stop a pvm
+	i -d pvm 		# delete a pvm
 			"
-				;;
-			*)
-				echo "$@"
-				;;
-			esac
+			;;
+		esac
+		return
+	done
+
+	TO_HOST=${1}
+	[ -z "${PVM_LIST}" ] && PVM_LIST="$(prlctl list -a)" && START_TIME=$SECONDS
+	# update PVM_LIST once for 1h
+	# @TODO using associated array to cache the query results.
+	[ $(($SECONDS - $START_TIME)) -gt 3600 ] && PVM_LIST="$(prlctl list -a)"
+
+	if [ $(echo ${PVM_LIST} | grep "running" | grep -Eo "${TO_HOST}$") ]; then
+		ssh z@$(prlctl_get_ip_by_host ${1})
+	elif [ $(echo ${PVM_LIST} | grep "stopped" | grep -Eo "${TO_HOST}$") ]; then
+		prlctl start "${TO_HOST}"
+		# set -e make the shell script exit when any error happens. but except '&&' and '||'
+		VM_STATUS=$(prlctl exec "${TO_HOST}" ip addr show >/dev/null 2>&1) || VM_STATUS=1
+
+		xnotic "start check if the vms ${TO_HOST} is already started."
+
+		until $([ -z ${VM_STATUS} ]); do
+			# when pvm started, exec ip command eixt with code 0, but $() express return empty
+			# so VM_STATUS is empty, we use -z as a until end condition.
+			VM_STATUS=$(prlctl exec "${TO_HOST}" ip addr show >/dev/null 2>&1) || VM_STATUS=1
+			sleep 1
+			echo -n "."
 		done
-		;;
-	*)
-		echo "$@"
-		;;
-	esac
+		ssh z@$(prlctl_get_ip_by_host ${1})
+	else
+		xnotic "nothing to do with: ${TO_HOST}"
+	fi
 }
 
 alias og='o go'
