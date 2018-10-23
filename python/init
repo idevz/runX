@@ -1,0 +1,93 @@
+#!/usr/bin/env bash
+
+### BEGIN ###
+# Author: idevz
+# Since: 2018/03/12
+# Description:       Set up LORMP development environment.
+# ./init.sh          Set up using $(pwd) as BASE_DIR, download and install PYTHON, OpenResy.
+#
+# Environment variables that control init:
+# PV: Python version which you want to install.
+# https://www.python.org/ftp/python/3.7.1/Python-3.7.1.tar.xz
+### END ###
+
+set -e
+
+[ -z $PRLCTL_HOME ] && PRLCTL_HOME=/media/psf/runX
+[ $HOME != '/home/z' ] && echo 'Are U Z ?' && exit 1
+
+# BASE_DIR=$(dirname $(cd $(dirname "$0") && pwd -P)/$(basename "$0"))
+BASE_DIR=${BASE_DIR:-$(dirname $(cd $(dirname "$0") && pwd -P)/$(basename "$0"))}
+
+VERSION=${VERSION:-"3.7.1"}
+PYTHON_VERSION=${PV:-"Python-${VERSION}"}
+PYTHON_ROOT=${PR:-"/usr/local/${PYTHON_VERSION}"}
+
+PROFILE=$(
+	cat <<EOF
+#!/usr/bin/env bash
+
+### BEGIN ###
+# Author: idevz
+# Since: 2018/03/12
+# Description:       Setting enviroment variables for python pvm.
+### END ###
+
+export PYTHON_ROOT=${PYTHON_ROOT}
+export PATH=${PYTHON_ROOT}/bin:\$PATH
+
+alias gdpy='gdb ${PYTHON_ROOT}/bin/python3'
+EOF
+)
+
+install_python_from_src() {
+	[ -d ${PYTHON_ROOT} ] && sudo rm -rf ${PYTHON_ROOT}
+
+	PYTHON_SRC="https://www.python.org/ftp/python/${VERSION}/${PYTHON_VERSION}.tar.xz"
+	PYTHON_SRC_ROOT=${BASE_DIR}/srcs
+	[ ! -f ${PYTHON_SRC_ROOT}/${PYTHON_VERSION}.tar.xz ] &&
+		curl -fSL ${PYTHON_SRC} -o ${PYTHON_SRC_ROOT}/${PYTHON_VERSION}.tar.xz
+
+	cp ${PYTHON_SRC_ROOT}/${PYTHON_VERSION}.tar.xz /tmp/${PYTHON_VERSION}.tar.xz
+
+	[ -d /tmp/${PYTHON_VERSION} ] && sudo rm -rf /tmp/${PYTHON_VERSION}
+
+	# ln: failed to create hard link ‘libpython3.7dm.so
+	sudo yum install -y libffi-devel
+	cd /tmp &&
+		tar xf ${PYTHON_VERSION}.tar.xz &&
+		cd ${PYTHON_VERSION} &&
+		CXX="/usr/bin/g++" ./configure --prefix=${PYTHON_ROOT} --enable-shared \
+			--enable-ipv6 --enable-big-digits --with-pydebug --with-system-expat \
+			--with-system-ffi --with-ensurepip=yes \
+			LDFLAGS="-L${PYTHON_ROOT}/extlib/lib -Wl,--rpath=${PYTHON_ROOT}/lib -Wl,--rpath=${PYTHON_ROOT}/extlib/lib" \
+			CPPFLAGS="-I${PYTHON_ROOT}/extlib/include" &&
+		make CFLAGS=' -ggdb -o0' -j4 &&
+		sudo make install
+
+	# ldd $(which python3)
+
+	# CXX="/usr/bin/g++" ./configure ...: Avoid an annoying message during configuration.
+	# --with-system-expat: This switch enables linking against the system version of Expat.
+	# --with-system-ffi: This switch enables linking against system version of libffi.
+	# --with-ensurepip=yes : This switch enables building pip and setuptools packaging programs. setuptools is needed for building some Python modules.
+}
+
+install_or() {
+	OLD_BASE_DIR=${BASE_DIR}
+	OLD_PROFILE=${PROFILE}
+
+	BASE_DIR=${PRLCTL_HOME}/openresty && . "${BASE_DIR}/init"
+	or_for_debug
+	install_test_nginx
+	install_luarocks
+
+	BASE_DIR=${OLD_BASE_DIR}
+	PROFILE=${OLD_PROFILE}
+}
+
+init() {
+	install_or
+	install_python_from_src
+	create_profile "${PROFILE}"
+}

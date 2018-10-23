@@ -59,3 +59,4 @@ dkms.conf
 .gdb_history
 .vscode
 *.bps
+*/srcs/

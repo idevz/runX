@@ -1,0 +1,85 @@
+#!/usr/bin/env bash
+
+xnotic() {
+	echo
+	echo ${1}
+	echo
+}
+
+cdf() {
+	target=$(osascript -e 'tell application "Finder" to if (count of Finder windows) > 0 then get POSIX path of (target of front Finder window as text)')
+	if [ "$target" != "" ]; then
+		cd "$target"
+		pwd
+	else
+		echo 'No Finder window found' >&2
+	fi
+}
+
+o() {
+	case "${1}" in
+	go)
+		code $(echo $GOPATH | cut -f ${2} -d ":")
+		;;
+	gox)
+		export GOPATH=${2}:$GOPATH
+		code ${2}
+		;;
+	*)
+		code ${1}
+		;;
+	esac
+}
+
+# ssh login to the pvms throug the name you give
+# @TODO using associated array to cache the query results.
+i() {
+	TO_HOST=${1}
+	PVM_LIST="$(prlctl list -a)"
+	if [ $(echo ${PVM_LIST} | grep -Eo "${TO_HOST}$") ]; then
+		ssh z@$(prlctl exec ${TO_HOST} ip addr show | grep -Eo 'inet (10.*)\/24' | cut -d ' ' -f 2 | cut -d '/' -f1)
+	else
+		echo ${PVM_LIST} | grep -Eo ${TO_HOST} || xnotic "no such PVM: ${TO_HOST}"
+	fi
+}
+
+ii() {
+	case "${1}" in
+	-a | -b)
+		while getopts ab:c OPTS; do
+			case "${OPTS}" in
+			a)
+				echo "${OPTS}"
+				echo "${OPTIND}"
+				echo "${OPTARG}"
+				;;
+			b)
+				echo "${OPTS}"
+				echo "${OPTIND}"
+				echo "${OPTARG}"
+				;;
+
+			c)
+				echo "${OPTS}"
+				echo "${OPTIND}"
+				echo "${OPTARG}"
+				;;
+			\?)
+				echo "
+  usage:
+	-a
+			"
+				;;
+			*)
+				echo "$@"
+				;;
+			esac
+		done
+		;;
+	*)
+		echo "$@"
+		;;
+	esac
+}
+
+alias og='o go'

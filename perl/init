@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+### BEGIN ###
+# Author: idevz
+# Since: 2018/03/12
+# Description:       Set up OpenResty development environment.
+# ./init.sh          Set up using $(pwd) as BASE_DIR, down which has openresty source and binaries.
+#
+# Environment variables that control init:
+# LV: OpenResty version which you want to install.
+### END ###
+
+set -e
+
+[ -z $PRLCTL_HOME ] && PRLCTL_HOME=/media/psf/runX
+[ $HOME != '/home/z' ] && echo 'Are U Z ?' && exit 1

@@ -79,6 +79,8 @@ done
 unset i
 unset -f pathmunge
 export LC_ALL=en_US.utf8
+export LC_CTYPE=en_US.utf8
+# export LC_CTYPE=en_US.UTF-8
 
 export PATH=/usr/local/gdb-8.2/bin:/usr/local/bin:$PRLCTL_HOME:$PATH
 alias mcode="cd $MCODE"

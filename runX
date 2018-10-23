@@ -44,53 +44,53 @@ runX_exit() {
 	echo
 	EXIT_MSG="something has happened"
 	logger -p notice "$(basename $0) - ${EXIT_MSG}"
-	ynotic ${EXIT_MSG}
+	ynotic "${EXIT_MSG}"
 	ynotic "$@"
 }
 
-[ ! -d ${PARALLELS_ROOT} ] && mkdir -p ${PARALLELS_ROOT}
+[ ! -d ${PARALLELS_ROOT} ] && mkdir -p "${PARALLELS_ROOT}"
 type prlctl >/dev/null 2>&1 || xnotic "please make sure that your 'prlctl' works well."
 
 x_clone() {
-	[ -z ${1} ] && xnotic "need a name for your new vm."
-	[ ${USING_STATIC_IP} = 'yes' ] && [ -z ${2} ] && xnotic "need to set a static ip."
+	[ -z "${1}" ] && xnotic "need a name for your new vm."
+	[ "${USING_STATIC_IP}" = 'yes' ] && [ -z "${2}" ] && xnotic "need to set a static ip."
 	HOST_NAME=${1}
 
 	ynotic "start clone ${HOST_NAME}."
 
-	prlctl clone ${BASE_IMAGE} --name ${HOST_NAME} --dst ${PARALLELS_ROOT}
+	prlctl clone "${BASE_IMAGE}" --name "${HOST_NAME}" --dst "${PARALLELS_ROOT}"
 	sleep 1
-	prlctl start ${HOST_NAME}
+	prlctl start "${HOST_NAME}"
 
 	# set -e make the shell script exit when any error happens. but except '&&' and '||'
-	VM_STATUS=$(prlctl exec ${HOST_NAME} ip addr show >/dev/null 2>&1) || VM_STATUS=1
+	VM_STATUS=$(_prlctl_exec "${HOST_NAME}" ip addr show >/dev/null 2>&1) || VM_STATUS=1
 
 	ynotic "start check if the vms ${HOST_NAME} is already started."
 
 	until $([ -z ${VM_STATUS} ]); do
 		# when pvm started, exec ip command eixt with code 0, but $() express return empty
 		# so VM_STATUS is empty, we use -z as a until end condition.
-		VM_STATUS=$(prlctl exec ${HOST_NAME} ip addr show >/dev/null 2>&1) || VM_STATUS=1
+		VM_STATUS=$(_prlctl_exec "${HOST_NAME}" ip addr show >/dev/null 2>&1) || VM_STATUS=1
 		sleep 1
 		echo -n "."
 	done
 
 	ynotic "${HOST_NAME} has started."
 
-	if [ ${USING_STATIC_IP} = 'yes' ]; then
-		[ ! -z ${2} ] && STATIC_IP=${2}
+	if [ "${USING_STATIC_IP}" = 'yes' ]; then
+		[ ! -z "${2}" ] && STATIC_IP=${2}
 		ynotic "hostname setting..."
 
-		prlctl exec ${HOST_NAME} uname -a | grep -Eo '\.(el7)\.' >/dev/null 2>&1 &&
-			prlctl exec ${HOST_NAME} hostnamectl set-hostname ${HOST_NAME}
-		prlctl exec ${HOST_NAME} uname -a | grep -Eo '\.(el6)\.' >/dev/null 2>&1 &&
-			prlctl exec ${HOST_NAME} "echo '${HOST_NAME}' | sudo tee -a /etc/sysconfig/network"
+		_prlctl_exec "${HOST_NAME}" uname -a | grep -Eo '\.(el7)\.' >/dev/null 2>&1 &&
+			_prlctl_exec "${HOST_NAME}" hostnamectl set-hostname "${HOST_NAME}"
+		_prlctl_exec "${HOST_NAME}" uname -a | grep -Eo '\.(el6)\.' >/dev/null 2>&1 &&
+			_prlctl_exec "${HOST_NAME}" "echo '${HOST_NAME}' | sudo tee -a /etc/sysconfig/network"
 
 		ynotic "eth0 setting..."
-		# prlctl exec ${HOST_NAME} sudo sed -i 's/BOOTPROTO=\"dhcp\"/BOOTPROTO=\"static\"/g' \
+		# _prlctl_exec ${HOST_NAME} sudo sed -i 's/BOOTPROTO=\"dhcp\"/BOOTPROTO=\"static\"/g' \
 		# /etc/sysconfig/network-scripts/ifcfg-eth0
-		prlctl exec ${HOST_NAME} 'sudo sed -i.bak "/BOOTPROTO/d;/IPADDR/d;/NETMASK/d;/GATEWAY/d" /etc/sysconfig/network-scripts/ifcfg-eth0'
-		GATEWAY_IP=$(echo ${STATIC_IP} | grep -Eo '.*[.]')1
+		_prlctl_exec "${HOST_NAME}" 'sudo sed -i.bak "/BOOTPROTO/d;/IPADDR/d;/NETMASK/d;/GATEWAY/d" /etc/sysconfig/network-scripts/ifcfg-eth0'
+		GATEWAY_IP=$(echo "${STATIC_IP}" | grep -Eo '.*[.]')1
 		EHT0_CFG=$(
 			cat <<CFG
 BOOTPROTO="static"
@@ -99,7 +99,7 @@ NETMASK="255.255.255.0"
 GATEWAY="${GATEWAY_IP}"
 CFG
 		)
-		prlctl exec ${HOST_NAME} \
+		_prlctl_exec ${HOST_NAME} \
 			"sudo echo '${EHT0_CFG}' >> /etc/sysconfig/network-scripts/ifcfg-eth0"
 
 		ynotic "/etc/resolv.conf setting..."
@@ -110,31 +110,33 @@ search localdomain
 nameserver ${GATEWAY_IP}
 CFG
 		)
-		prlctl exec ${HOST_NAME} "sudo echo '${DNS_RESOLV_CFG}' >/etc/resolv.conf"
-		prlctl exec lua 'sudo ifdown eth0 && ifup eth0'
+		_prlctl_exec ${HOST_NAME} "sudo echo '${DNS_RESOLV_CFG}' >/etc/resolv.conf"
+		_prlctl_exec ${HOST_NAME} 'sudo ifdown eth0 && ifup eth0'
 	fi
 }
 
 _prlctl_exec() {
 	[ -z "${1}" ] && xnotic "need a name for your new vm."
 	[ -z "${2}" ] && xnotic "empty command."
-	prlctl exec ${1} ${2}
+	# https://stackoverflow.com/questions/33192114/problems-with-prlctl-exec-inside-emacs-shell-mode-window
+	# why add `</dev/null` to redirect the std in ?
+	prlctl exec "$@" </dev/null
 }
 
 x_setup() {
-	_prlctl_exec ${1} 'sudo -Hiu z set_up'
+	_prlctl_exec "${1}" 'sudo -Hiu z set_up'
 }
 
 x_recreate_profile() {
-	_prlctl_exec ${1} 'sudo -Hiu z set_up rp'
+	_prlctl_exec "${1}" 'sudo -Hiu z set_up rp'
 }
 
 x_show_ip() {
-	_prlctl_exec ${1} 'ip addr show'
+	_prlctl_exec "${1}" 'ip addr show'
 }
 
 __prlctl_x() {
-	prlctl ${1} ${2}
+	prlctl "${1}" "${2}"
 }
 
 case ${1} in
@@ -163,38 +165,37 @@ nx | newx)
 			[ -f ${PVM_INIT_SHELL} ] &&
 				chmod +x ${PVM_INIT_SHELL} &&
 				x_clone ${HOST_NAME} ${STATIC_IP}
-			echo
-			echo "start set up your pvm."
-			echo
+			ynotic "start set up your pvm."
 			x_setup ${HOST_NAME}
+			ynotic "pvm ${HOST_NAME} set up sucessed."
 		else
 			x_clone ${HOST_NAME} ${STATIC_IP}
 		fi
-	done <${HOST_FILE}
+	done <"${HOST_FILE}"
 	;;
 run)
 	shift
 	VM_NAME=${1}
 	shift
-	prlctl exec ${VM_NAME} $@
+	_prlctl_exec "${VM_NAME}" "$@"
 	;;
 set_up)
-	x_setup ${2}
+	x_setup "${2}"
 	;;
 rp)
-	x_recreate_profile ${2}
+	x_recreate_profile "${2}"
 	;;
 ip)
-	x_show_ip ${2}
+	x_show_ip "${2}"
 	;;
 stop | stp*)
-	__prlctl_x stop ${2}
+	__prlctl_x stop "${2}"
 	;;
 stopx | stpx*)
-	__prlctl_x stop ${2}
-	__prlctl_x delete ${2}
+	__prlctl_x stop "${2}"
+	__prlctl_x delete "${2}"
 	;;
 *)
-	__prlctl_x ${1} ${2}
+	__prlctl_x "${1}" "${2}"
 	;;
 esac

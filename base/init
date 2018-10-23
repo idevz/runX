@@ -22,3 +22,5 @@ time_init() {
 	sudo timedatectl set-timezone Asia/Shanghai
 	sudo timedatectl set-ntp yes
 }
+
+sudo yum install -y patch

@@ -1,0 +1,321 @@
+#!/usr/bin/env bash
+
+### BEGIN ###
+# Author: idevz
+# Since: 2018/03/12
+# Description:       Set up OpenResty development environment.
+# ./init.sh          Set up using $(pwd) as BASE_DIR, down which has openresty source and binaries.
+#
+# Environment variables that control init:
+# LV: OpenResty version which you want to install.
+### END ###
+
+set -ex
+
+[ -z $PRLCTL_HOME ] && PRLCTL_HOME=/media/psf/runX
+[ $HOME != '/home/z' ] && echo 'Are U Z ?' && exit 1
+
+# BASE_DIR=$(dirname $(cd $(dirname "$0") && pwd -P)/$(basename "$0"))
+BASE_DIR=${BASE_DIR:-$(dirname $(cd $(dirname "$0") && pwd -P)/$(basename "$0"))}
+OR_ENV=${OE:-"debug"}
+
+SRC_ROOT=${BASE_DIR}/srcs
+OR_VERSION=${LV:-"openresty-1.13.6.2"}
+OR_ROOT=OR_PREFIX="/usr/local/${OR_VERSION}"
+DEFAULT_LUAJIT_PREFIX=/usr/local/luajit
+DEFAULT_LUAJIT_VERSION=${DEFAULT_LUAJIT_VERSION:-"2.1.0-beta3"}
+
+RESTY_VERSION=${RESTY_VERSION:-"1.13.6.2"}
+RESTY_LUAROCKS_VERSION=${RESTY_LUAROCKS_VERSION:-"2.4.3"}
+RESTY_OPENSSL_VERSION=${RESTY_OPENSSL_VERSION:-"1.0.2k"}
+RESTY_PCRE_VERSION=${RESTY_PCRE_VERSION:-"8.41"}
+RESTY_ZLIB_VERSION=${RESTY_ZLIB_VERSION:-"1.2.11"}
+RESTY_J=${RESTY_J:-"4"}
+_RESTY_CONFIG_DEPS="--with-openssl=${SRC_ROOT}/openssl-${RESTY_OPENSSL_VERSION} --with-pcre=${SRC_ROOT}/pcre-${RESTY_PCRE_VERSION}"
+RESTY_CONFIG_OPTIONS_MORE=""
+
+sudo yum install --nogpgcheck -y \
+	systemtap-sdt-devel readline-devel libxslt-devel gd-devel geoip-devel \
+	unzip patch \
+	perl perl-ExtUtils-Embed \
+	which less strace cpanm
+
+local_pkg_preparing() {
+	cd ${SRC_ROOT}
+	[ -d openssl-${RESTY_OPENSSL_VERSION} ] && rm -rf openssl-${RESTY_OPENSSL_VERSION}
+	tar xzf openssl-${RESTY_OPENSSL_VERSION}.tar.gz
+	[ -d pcre-${RESTY_PCRE_VERSION} ] && rm -rf pcre-${RESTY_PCRE_VERSION}
+	tar xzf pcre-${RESTY_PCRE_VERSION}.tar.gz
+	[ -d zlib-${RESTY_ZLIB_VERSION} ] && rm -rf zlib-${RESTY_ZLIB_VERSION}
+	tar xzf zlib-${RESTY_ZLIB_VERSION}.tar.gz
+	[ -d luarocks-${RESTY_LUAROCKS_VERSION} ] && rm -rf luarocks-${RESTY_LUAROCKS_VERSION}
+	tar xzf luarocks-${RESTY_LUAROCKS_VERSION}.tar.gz
+}
+
+# debug install prepare
+dev_preparing() {
+	local_pkg_preparing
+
+	OR_ENV=${1}
+	cd ${SRC_ROOT}
+	[ -d openresty-${RESTY_VERSION} ] && rm -rf openresty-${RESTY_VERSION}
+	[ -d openresty-${RESTY_VERSION}-${OR_ENV} ] && rm -rf openresty-${RESTY_VERSION}-${OR_ENV}
+	tar xzf openresty-${RESTY_VERSION}.tar.gz && mv openresty-${RESTY_VERSION} openresty-${RESTY_VERSION}-${OR_ENV}
+
+	OR_PREFIX="/usr/local/${OR_VERSION}-${OR_ENV}"
+	ZLIB_PREFIX=${OR_PREFIX}/zlib
+	cd ${SRC_ROOT}/zlib-${RESTY_ZLIB_VERSION} &&
+		./configure --prefix=${ZLIB_PREFIX} &&
+		make CFLAGS='-O3 -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN -g' \
+			SFLAGS='-O3 -fPIC -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN -g' &&
+		sudo make install
+
+	OPENSSL_PREFIX=${OR_PREFIX}/openssl
+	cd ${SRC_ROOT}/openssl-${RESTY_OPENSSL_VERSION} &&
+		./config \
+			no-threads no-asm \
+			enable-ssl3 enable-ssl3-method \
+			shared zlib -g -O0 -DPURIFY \
+			--prefix=${OPENSSL_PREFIX} \
+			--libdir=lib \
+			-I${ZLIB_PREFIX}/include \
+			-L${ZLIB_PREFIX}/lib \
+			-Wl,-rpath,${ZLIB_PREFIX}/lib:${OPENSSL_PREFIX}/lib &&
+		sed -i 's/ -O3 / -O0 /g' Makefile &&
+		make &&
+		sudo make install_sw
+
+	PCRE_PREFIX=${OR_PREFIX}/pcre
+	cd ${SRC_ROOT}/pcre-${RESTY_PCRE_VERSION} &&
+		./configure \
+			--prefix=${PCRE_PREFIX} \
+			--includedir=${PCRE_PREFIX}/include \
+			--disable-cpp \
+			--enable-jit \
+			--enable-utf \
+			--enable-unicode-properties &&
+		make V=1 &&
+		sudo make install
+}
+
+or_for_debug() {
+	dev_preparing 'debug'
+
+	cd ${SRC_ROOT}/openresty-${RESTY_VERSION}-debug &&
+		./configure \
+			--prefix=${OR_PREFIX} \
+			-j${RESTY_J} \
+			--with-debug \
+			--with-no-pool-patch \
+			--with-cc-opt="-I${ZLIB_PREFIX}/include -I${PCRE_PREFIX}/include -I${OPENSSL_PREFIX}/include -g -O0" \
+			--with-ld-opt=-Wl,-rpath="'""\\'"'\$\$ORIGIN/lib'"\\'""'"" -L${ZLIB_PREFIX}/lib -L${PCRE_PREFIX}/lib -L${OPENSSL_PREFIX}/lib -Wl,-rpath,${ZLIB_PREFIX}/lib:${PCRE_PREFIX}/lib:${OPENSSL_PREFIX}/lib" \
+			--with-pcre-jit \
+			--with-luajit-xcflags='-DLUAJIT_NUMMODE=2 -DLUAJIT_ENABLE_LUA52COMPAT -g -O0' \
+			--with-dtrace-probes \
+			--with-poll_module \
+			--with-file-aio \
+			--with-http_addition_module \
+			--with-http_auth_request_module \
+			--with-http_dav_module \
+			--with-http_flv_module \
+			--with-http_geoip_module=dynamic \
+			--with-http_gunzip_module \
+			--with-http_gzip_static_module \
+			--with-http_image_filter_module=dynamic \
+			--with-http_mp4_module \
+			--with-http_random_index_module \
+			--with-http_realip_module \
+			--with-http_secure_link_module \
+			--with-http_slice_module \
+			--with-http_ssl_module \
+			--with-http_stub_status_module \
+			--with-http_sub_module \
+			--with-http_v2_module \
+			--with-http_xslt_module=dynamic \
+			--with-mail \
+			--with-mail_ssl_module \
+			--with-stream \
+			--with-stream_ssl_module \
+			--with-threads \
+			--user=root --group=root \
+			${RESTY_CONFIG_OPTIONS_MORE} &&
+		make -j${RESTY_J} &&
+		sudo make -j${RESTY_J} install &&
+		sudo mkdir -p ${OR_PREFIX}/nginx/sbin/lib &&
+		for DEP_F in $(ldd ${OR_PREFIX}/nginx/sbin/nginx | grep -Eo '(\/.*) |(/lib64/.*) '); do
+			sudo cp ${DEP_F} ${OR_PREFIX}/nginx/sbin/lib/$(basename ${DEP_F})
+		done
+}
+
+install_default_luajit() {
+	cd ${SRC_ROOT} &&
+		tar xzf LuaJIT-${DEFAULT_LUAJIT_VERSION}.tar.gz
+	cd ${SRC_ROOT}/LuaJIT-${DEFAULT_LUAJIT_VERSION} &&
+		make PREFIX=${DEFAULT_LUAJIT_PREFIX} &&
+		sudo make install PREFIX=${DEFAULT_LUAJIT_PREFIX}
+}
+
+or_for_valgrind() {
+	sudo yum install --nogpgcheck -y systemtap-sdt-devel valgrind-devel
+
+	dev_preparing 'valgrind'
+
+	install_default_luajit
+
+	cd ${SRC_ROOT}/openresty-${RESTY_VERSION}-valgrind &&
+		./configure \
+			--prefix=${OR_PREFIX} \
+			-j${RESTY_J} \
+			--with-debug \
+			--with-no-pool-patch \
+			--with-cc-opt="-I${ZLIB_PREFIX}/include -I${PCRE_PREFIX}/include -I${OPENSSL_PREFIX}/include -g -O0" \
+			--with-ld-opt=-Wl,-rpath="'""\\'"'\$\$ORIGIN/lib'"\\'""'"" -L${ZLIB_PREFIX}/lib -L${PCRE_PREFIX}/lib -L${OPENSSL_PREFIX}/lib -Wl,-rpath,${ZLIB_PREFIX}/lib:${PCRE_PREFIX}/lib:${OPENSSL_PREFIX}/lib" \
+			--with-pcre-jit \
+			--with-luajit-xcflags='-DLUAJIT_NUMMODE=2 -DLUAJIT_ENABLE_LUA52COMPAT -DLUAJIT_USE_VALGRIND -DLUAJIT_USE_SYSMALLOC -g -O0' \
+			--with-dtrace-probes \
+			--with-poll_module \
+			--with-file-aio \
+			--with-http_addition_module \
+			--with-http_auth_request_module \
+			--with-http_dav_module \
+			--with-http_flv_module \
+			--with-http_geoip_module=dynamic \
+			--with-http_gunzip_module \
+			--with-http_gzip_static_module \
+			--with-http_image_filter_module=dynamic \
+			--with-http_mp4_module \
+			--with-http_random_index_module \
+			--with-http_realip_module \
+			--with-http_secure_link_module \
+			--with-http_slice_module \
+			--with-http_ssl_module \
+			--with-http_stub_status_module \
+			--with-http_sub_module \
+			--with-http_v2_module \
+			--with-http_xslt_module=dynamic \
+			--with-mail \
+			--with-mail_ssl_module \
+			--with-stream \
+			--with-stream_ssl_module \
+			--with-threads \
+			${RESTY_CONFIG_OPTIONS_MORE} &&
+		make -j${RESTY_J} &&
+		sudo make -j${RESTY_J} install
+}
+
+or_for_prd() {
+	# --with-ld-opt="-Wl,-rpath='\\'\\\$\\\$ORIGIN/lib\\''"
+	cd ${SRC_ROOT}
+	[ -d openssl-${RESTY_OPENSSL_VERSION} ] && rm -rf openssl-${RESTY_OPENSSL_VERSION}
+	tar xzf openssl-${RESTY_OPENSSL_VERSION}.tar.gz
+	[ -d pcre-${RESTY_PCRE_VERSION} ] && rm -rf pcre-${RESTY_PCRE_VERSION}
+	tar xzf pcre-${RESTY_PCRE_VERSION}.tar.gz
+	[ -d openresty-${RESTY_VERSION} ] && rm -rf openresty-${RESTY_VERSION}
+	tar xzf openresty-${RESTY_VERSION}.tar.gz && mv openresty-${RESTY_VERSION} openresty-${RESTY_VERSION}-prd
+
+	cd ${SRC_ROOT}/openresty-${RESTY_VERSION}-prd &&
+		./configure \
+			--prefix=${OR_PREFIX} \
+			-j${RESTY_J} ${_RESTY_CONFIG_DEPS} \
+			--with-ld-opt=-Wl,-rpath="'""\\'"'\$\$ORIGIN/lib'"\\'""'" \
+			--with-file-aio \
+			--with-http_addition_module \
+			--with-http_auth_request_module \
+			--with-http_dav_module \
+			--with-http_flv_module \
+			--with-http_geoip_module=dynamic \
+			--with-http_gunzip_module \
+			--with-http_gzip_static_module \
+			--with-http_image_filter_module=dynamic \
+			--with-http_mp4_module \
+			--with-http_random_index_module \
+			--with-http_realip_module \
+			--with-http_secure_link_module \
+			--with-http_slice_module \
+			--with-http_ssl_module \
+			--with-http_stub_status_module \
+			--with-http_sub_module \
+			--with-http_v2_module \
+			--with-http_xslt_module=dynamic \
+			--with-mail \
+			--with-mail_ssl_module \
+			--with-pcre-jit \
+			--with-stream \
+			--with-stream_ssl_module \
+			--with-threads \
+			--user=root --group=root \
+			${RESTY_CONFIG_OPTIONS_MORE} &&
+		make -j${RESTY_J} &&
+		sudo make -j${RESTY_J} install &&
+		sudo mkdir -p ${OR_PREFIX}/nginx/sbin/lib &&
+		for DEP_F in $(ldd ${OR_PREFIX}/nginx/sbin/nginx | grep -Eo '(\/.*) |(/lib64/.*) '); do
+			sudo cp ${DEP_F} ${OR_PREFIX}/nginx/sbin/lib/$(basename ${DEP_F})
+		done
+}
+
+install_weighttp() {
+	sudo yum install --nogpgcheck -y gcc make libev-devel expect
+	cd ${SRC_ROOT} &&
+		curl -fSL http://cgit.lighttpd.net/weighttp.git/snapshot/weighttp-master.tar.gz -o weighttp-master.tar.gz &&
+		tar xzf weighttp-master.tar.gz &&
+		cd weighttp-master/ &&
+		./waf configure &&
+		./waf build &&
+		sudo ./waf install &&
+		cd -
+}
+
+install_test_nginx() {
+	sudo curl -fSL http://xrl.us/cpanm -o /usr/bin/cpanm &&
+		sudo chmod +x /usr/bin/cpanm
+	cpanm --force Test::Nginx
+	cpanm --force Digest::SHA
+	install_weighttp
+}
+
+install_luarocks() {
+	X_LUAJIT_PREFIX=${OR_PREFIX}/luajit
+	if [ "${OR_ENV}" == "valgrind" ]; then
+		X_LUAJIT_PREFIX=${DEFAULT_LUAJIT_PREFIX}
+	fi
+	cd ${SRC_ROOT}/luarocks-${RESTY_LUAROCKS_VERSION} &&
+		./configure \
+			--prefix=${X_LUAJIT_PREFIX} \
+			--with-lua=${X_LUAJIT_PREFIX} \
+			--lua-suffix=jit-2.1.0-beta3 \
+			--with-lua-include=${X_LUAJIT_PREFIX}/include/luajit-2.1 &&
+		make build &&
+		sudo make install
+}
+
+install_openresty_from_src() {
+	for or4env in debug valgrind prd; do
+		[ -d "/usr/local/${OR_VERSION}-${or4env}" ] && sudo rm -rf "/usr/local/${OR_VERSION}-${or4env}"
+		or_for_${or4env}
+	done
+}
+
+PROFILE=$(
+	cat <<EOF
+#!/usr/bin/env bash
+
+### BEGIN ###
+# Author: idevz
+# Since: 2018/03/12
+# Description:       Setting enviroment variables for openresty pvm.
+### END ###
+
+export OR_ROOT=${OR_ROOT}
+export PATH=${OR_ROOT}/bin:\$PATH
+
+alias gdl='gdb ${OR_ROOT}/bin/openresty'
+EOF
+)
+
+init() {
+	install_openresty_from_src
+	install_weighttp
+	install_test_nginx
+	install_luarocks
+	create_profile "${PROFILE}"
+}
