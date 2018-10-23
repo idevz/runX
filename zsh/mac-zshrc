@@ -72,36 +72,44 @@ _waiting_til_done() {
 }
 
 i() {
-	while getopts "t:d:s:" OPTS; do
+	while getopts "t:d:s:c:" OPTS; do
 		case "${OPTS}" in
 		t)
-			prlctl stop "${OPTARG}" &
+			IFS=',| |;' read -rA HOST_NAMES <<<"${OPTARG}"
+			for HOST_NAME in ${HOST_NAMES}; do
+				prlctl stop "${HOST_NAME}" &
+			done
 			;;
 		d)
-			local HOST_NAME=${OPTARG}
-			if _check_pvm_is_alive "${HOST_NAME}"; then
-				prlctl stop "${HOST_NAME}" &
-				xnotic "waiting for ${HOST_NAME} stopping."
-				xnotic "deleting ..."
-				_waiting_til_done prlctl delete "${HOST_NAME}" >/dev/null 2>&1
-				# VM_STATUS=$(prlctl delete "${HOST_NAME}" >/dev/null 2>&1) || VM_STATUS=1
-				# until $([ -z ${VM_STATUS} ]); do
-				# 	# when pvm started, exec ip command eixt with code 0, but $() express return empty
-				# 	# so VM_STATUS is empty, we use -z as a until end condition.
-				# 	VM_STATUS=$(prlctl delete "${HOST_NAME}" >/dev/null 2>&1) || VM_STATUS=1
-				# 	sleep 1
-				# 	echo -n "."
-				# done
-			else
-				if ! _check_pvm_is_exist "${HOST_NAME}"; then
-					xnotic "there is no pvm named ${HOST_NAME}"
+			IFS=',| |;' read -rA HOST_NAMES <<<"${OPTARG}"
+			for HOST_NAME in ${HOST_NAMES}; do
+				if _check_pvm_is_alive "${HOST_NAME}"; then
+					prlctl stop "${HOST_NAME}" &
+					xnotic "waiting for ${HOST_NAME} stopping."
+					xnotic "deleting ..."
+					# _waiting_til_done prlctl delete "${HOST_NAME}" >/dev/null 2>&1
+					VM_STATUS=$(prlctl delete "${HOST_NAME}" >/dev/null 2>&1) || VM_STATUS=1
+					until $([ -z ${VM_STATUS} ]); do
+						# when pvm started, exec ip command eixt with code 0, but $() express return empty
+						# so VM_STATUS is empty, we use -z as a until end condition.
+						VM_STATUS=$(prlctl delete "${HOST_NAME}" >/dev/null 2>&1) || VM_STATUS=1
+						sleep 1
+						echo -n "."
+					done
 				else
-					prlctl delete "${HOST_NAME}" &
+					if ! _check_pvm_is_exist "${HOST_NAME}"; then
+						xnotic "there is no pvm named ${HOST_NAME}"
+					else
+						prlctl delete "${HOST_NAME}" &
+					fi
 				fi
-			fi
+			done
 			;;
 		s)
-			prlctl start "${OPTARG}" &
+			IFS=',| |;' read -rA HOST_NAMES <<<"${OPTARG}"
+			for HOST_NAME in ${HOST_NAMES}; do
+				prlctl start "${HOST_NAME}" &
+			done
 			;;
 		c)
 			echo "${OPTS}"

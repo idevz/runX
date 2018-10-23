@@ -20,7 +20,7 @@ OR_ENV=${OE:-"debug"}
 
 SRC_ROOT=${BASE_DIR}/srcs
 OR_VERSION=${LV:-"openresty-1.13.6.2"}
-OR_ROOT=OR_PREFIX="/usr/local/${OR_VERSION}"
+OR_ROOT="/usr/local/${OR_VERSION}"
 DEFAULT_LUAJIT_PREFIX=/usr/local/luajit
 DEFAULT_LUAJIT_VERSION=${DEFAULT_LUAJIT_VERSION:-"2.1.0-beta3"}
 
@@ -210,11 +210,13 @@ or_for_prd() {
 	[ -d pcre-${RESTY_PCRE_VERSION} ] && rm -rf pcre-${RESTY_PCRE_VERSION}
 	tar xzf pcre-${RESTY_PCRE_VERSION}.tar.gz
 	[ -d openresty-${RESTY_VERSION} ] && rm -rf openresty-${RESTY_VERSION}
+	[ -d openresty-${RESTY_VERSION}-prd ] && rm -rf openresty-${RESTY_VERSION}-prd
 	tar xzf openresty-${RESTY_VERSION}.tar.gz && mv openresty-${RESTY_VERSION} openresty-${RESTY_VERSION}-prd
 
+	OR_PREFIX="openresty-${RESTY_VERSION}-prd"
 	cd ${SRC_ROOT}/openresty-${RESTY_VERSION}-prd &&
 		./configure \
-			--prefix=${OR_PREFIX}-prd \
+			--prefix=${OR_PREFIX} \
 			-j${RESTY_J} ${_RESTY_CONFIG_DEPS} \
 			--with-ld-opt=-Wl,-rpath="'""\\'"'\$\$ORIGIN/lib'"\\'""'" \
 			--with-file-aio \

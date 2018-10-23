@@ -59,4 +59,6 @@ dkms.conf
 .gdb_history
 .vscode
 *.bps
+old.z.root.zsh_history
+old.z.zsh_history
 */srcs/
