@@ -20,7 +20,6 @@ OR_ENV=${OE:-"debug"}
 
 SRC_ROOT=${BASE_DIR}/srcs
 OR_VERSION=${LV:-"openresty-1.13.6.2"}
-OR_ROOT="/usr/local/${OR_VERSION}"
 DEFAULT_LUAJIT_PREFIX=/usr/local/luajit
 DEFAULT_LUAJIT_VERSION=${DEFAULT_LUAJIT_VERSION:-"2.1.0-beta3"}
 
@@ -290,8 +289,7 @@ install_luarocks() {
 }
 
 install_openresty_from_src() {
-	# for or4env in debug valgrind prd; do
-	for or4env in prd; do
+	for or4env in debug valgrind prd; do
 		[ -d "/usr/local/${OR_VERSION}-${or4env}" ] && sudo rm -rf "/usr/local/${OR_VERSION}-${or4env}"
 		or_for_${or4env}
 	done
@@ -307,17 +305,20 @@ PROFILE=$(
 # Description:       Setting enviroment variables for openresty pvm.
 ### END ###
 
-export OR_ROOT=${OR_ROOT}
-export PATH=${OR_ROOT}/bin:\$PATH
+export PRD_OR_ROOT=/usr/local/${OR_VERSION}-prd
+export DBG_OR_ROOT=/usr/local/${OR_VERSION}-debug
+export VGD_OR_ROOT=/usr/local/${OR_VERSION}-valgrind
 
-alias gdl='gdb ${OR_ROOT}/bin/openresty'
+alias prd_or='[ -z ${OLD_PATH} ] && OLD_PATH=${PATH}; export PATH=${PRD_OR_ROOT}/bin:${OLD_PATH}'
+alias dgb_or='[ -z ${OLD_PATH} ] && OLD_PATH=${PATH}; export PATH=${DBG_OR_ROOT}/bin:${OLD_PATH}'
+alias vgd_or='[ -z ${OLD_PATH} ] && OLD_PATH=${PATH}; export PATH=${VGD_OR_ROOT}/bin:${OLD_PATH}'
 EOF
 )
 
 init() {
 	install_openresty_from_src
-	# install_weighttp
-	# install_test_nginx
-	# install_luarocks
-	# create_profile "${PROFILE}"
+	install_weighttp
+	install_test_nginx
+	install_luarocks
+	create_profile "${PROFILE}"
 }

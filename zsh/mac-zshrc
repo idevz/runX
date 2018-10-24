@@ -59,13 +59,7 @@ _check_pvm_is_alive() {
 }
 
 _waiting_til_done() {
-	echo "$@"
-	echo
-	echo
-	VM_STATUS=$("$@") || VM_STATUS=1
-
-	until $([ -z ${VM_STATUS} ]); do
-		VM_STATUS=$("$@") || VM_STATUS=1
+	until "$@" >/dev/null 2>&1; do
 		sleep 1
 		echo -n "."
 	done
@@ -87,15 +81,7 @@ i() {
 					prlctl stop "${HOST_NAME}" &
 					xnotic "waiting for ${HOST_NAME} stopping."
 					xnotic "deleting ..."
-					# _waiting_til_done prlctl delete "${HOST_NAME}" >/dev/null 2>&1
-					VM_STATUS=$(prlctl delete "${HOST_NAME}" >/dev/null 2>&1) || VM_STATUS=1
-					until $([ -z ${VM_STATUS} ]); do
-						# when pvm started, exec ip command eixt with code 0, but $() express return empty
-						# so VM_STATUS is empty, we use -z as a until end condition.
-						VM_STATUS=$(prlctl delete "${HOST_NAME}" >/dev/null 2>&1) || VM_STATUS=1
-						sleep 1
-						echo -n "."
-					done
+					_waiting_til_done prlctl delete "${HOST_NAME}"
 				else
 					if ! _check_pvm_is_exist "${HOST_NAME}"; then
 						xnotic "there is no pvm named ${HOST_NAME}"
@@ -136,25 +122,13 @@ i() {
 		prlctl start "${TO_HOST}"
 
 		xnotic "start check if the vms ${TO_HOST} is already started."
-		# @TODO _waiting_til_done is not work for prlctl.
-		# @TODO non of echo in _waiting_til_done would be print.
-		# _waiting_til_done prlctl exec "${TO_HOST}" ip addr show >/dev/null 2>&1
-		# set -e make the shell script exit when any error happens. but except '&&' and '||'
-		VM_STATUS=$(prlctl exec "${TO_HOST}" ip addr show >/dev/null 2>&1) || VM_STATUS=1
-
-		until $([ -z ${VM_STATUS} ]); do
-			# when pvm started, exec ip command eixt with code 0, but $() express return empty
-			# so VM_STATUS is empty, we use -z as a until end condition.
-			VM_STATUS=$(prlctl exec "${TO_HOST}" ip addr show >/dev/null 2>&1) || VM_STATUS=1
-			sleep 1
-			echo -n "."
-		done
+		_waiting_til_done prlctl exec "${TO_HOST}" ip addr show
 
 		xnotic "waite for the ssh port open."
 
 		local CHECK_HOST=$(_prlctl_get_ip_by_host ${TO_HOST})
 		local CHECK_PORT=22
-		_waiting_til_done nc -z ${CHECK_HOST} ${CHECK_PORT} >/dev/null 2>&1
+		_waiting_til_done nc -z ${CHECK_HOST} ${CHECK_PORT}
 		ssh z@${CHECK_HOST}
 	else
 		xnotic "nothing to do with: ${TO_HOST}"
