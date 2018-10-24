@@ -31,11 +31,13 @@ RESTY_ZLIB_VERSION=${RESTY_ZLIB_VERSION:-"1.2.11"}
 RESTY_J=${RESTY_J:-"4"}
 RESTY_CONFIG_OPTIONS_MORE=""
 
-sudo yum install --nogpgcheck -y \
-	systemtap-sdt-devel readline-devel libxslt-devel gd-devel geoip-devel \
-	unzip patch \
-	perl perl-ExtUtils-Embed \
-	which less strace cpanm
+yum_base_preparing() {
+	sudo yum install --nogpgcheck -y \
+		systemtap-sdt-devel readline-devel libxslt-devel gd-devel geoip-devel \
+		unzip patch \
+		perl perl-ExtUtils-Embed \
+		which less strace cpanm
+}
 
 local_pkg_preparing() {
 	cd ${SRC_ROOT}
@@ -309,13 +311,15 @@ export PRD_OR_ROOT=/usr/local/${OR_VERSION}-prd
 export DBG_OR_ROOT=/usr/local/${OR_VERSION}-debug
 export VGD_OR_ROOT=/usr/local/${OR_VERSION}-valgrind
 
-alias prd_or='[ -z ${OLD_PATH} ] && OLD_PATH=${PATH}; export PATH=${PRD_OR_ROOT}/bin:${OLD_PATH}'
-alias dgb_or='[ -z ${OLD_PATH} ] && OLD_PATH=${PATH}; export PATH=${DBG_OR_ROOT}/bin:${OLD_PATH}'
-alias vgd_or='[ -z ${OLD_PATH} ] && OLD_PATH=${PATH}; export PATH=${VGD_OR_ROOT}/bin:${OLD_PATH}'
+alias prd_or='[ -z \${OLD_PATH} ] && OLD_PATH=\${PATH}; export PATH=\${PRD_OR_ROOT}/bin:\${OLD_PATH}'
+alias dbg_or='[ -z \${OLD_PATH} ] && OLD_PATH=\${PATH}; export PATH=\${DBG_OR_ROOT}/bin:\${OLD_PATH}'
+alias vgd_or='[ -z \${OLD_PATH} ] && OLD_PATH=\${PATH}; export PATH=\${VGD_OR_ROOT}/bin:\${OLD_PATH}'
+
 EOF
 )
 
 init() {
+	yum_base_preparing
 	install_openresty_from_src
 	install_weighttp
 	install_test_nginx

@@ -49,6 +49,7 @@ check_file() {
 init_etc_profile() {
 	# shellcheck disable=2002
 	cat "${PRLCTL_HOME}"/zsh/etc-profile | sudo tee /etc/profile >/dev/null 2>&1
+	cat "${PRLCTL_HOME}"/zsh/etc-sudoers | sudo tee /etc/sudoers >/dev/null 2>&1
 }
 
 init_zsh() {
@@ -101,17 +102,18 @@ base_init() {
 	init_etc_profile
 	init_zsh
 	init_gdb
-	touch "${HOME}"/already_init
+	touch ${PRLCTL_HOME}/zsh/$(hostname)${HOME}/already_init_base
 }
 
-# check if already inited
-if [ ! -f "${HOME}"/already_init ]; then
-	base_init
-else
-	ynotic "Base init Already done before."
-fi
-
 case ${1} in
+bi | base_init)
+	# check if already inited
+	if [ ! -f ${PRLCTL_HOME}/zsh/$(hostname)${HOME}/already_init_base ]; then
+		base_init
+	else
+		ynotic "Base init Already done before."
+	fi
+	;;
 rp | recreate_profile)
 	# shellcheck disable=1090
 	BASE_DIR=$BASE_DIR/${HOSTNAME} && . "${BASE_DIR}/init"

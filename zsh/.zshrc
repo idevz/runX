@@ -2,7 +2,8 @@
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
-export ZSH="${HOME}/.oh-my-zsh"
+# export ZSH="${HOME}/.oh-my-zsh"
+export ZSH="${PRLCTL_HOME}/zsh/.oh-my-zsh"
 export HISTFILE=${PRLCTL_HOME}/zsh/$(hostname)${HOME}/.zsh_history
 
 # Set name of the theme to load. Optionally, if you set this to "random"
@@ -97,3 +98,4 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 export PERLDB_OPTS=HistFile=$HOME/.perldb.history
+[ -f ${PRLCTL_HOME}/zsh/$(hostname)/.zshrc ] && source ${PRLCTL_HOME}/zsh/$(hostname)/.zshrc

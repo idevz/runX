@@ -182,9 +182,6 @@ run)
 set_up)
 	x_setup "${2}"
 	;;
-rp)
-	x_recreate_profile "${2}"
-	;;
 ip)
 	x_show_ip "${2}"
 	;;
@@ -196,6 +193,23 @@ stopx | stpx*)
 	__prlctl_x delete "${2}"
 	;;
 *)
-	__prlctl_x "${1}" "${2}"
+	# exec set_up commands
+	CMD=${1}
+	HOST_NAME=${2}
+	source "${PRLCTL_HOME}/zsh/mac-zshrc"
+	if _check_pvm_is_alive "${HOST_NAME}"; then
+		_prlctl_exec "${HOST_NAME}" "sudo -Hiu z set_up ${CMD}"
+		xnotic "set_up executing sucessed ..."
+	else
+		if ! _check_pvm_is_exist "${HOST_NAME}"; then
+			xnotic "there is no pvm named ${HOST_NAME}"
+		else
+			prlctl start "${HOST_NAME}"
+			xnotic "starting the vms ${HOST_NAME} ..."
+			_waiting_til_done prlctl exec "${HOST_NAME}" ip addr show
+			_prlctl_exec "${HOST_NAME}" "sudo -Hiu z set_up ${CMD}"
+			xnotic "set_up executing sucessed ..."
+		fi
+	fi
 	;;
 esac

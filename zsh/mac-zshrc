@@ -66,15 +66,18 @@ _waiting_til_done() {
 }
 
 i() {
-	while getopts "t:d:s:c:" OPTS; do
+	while getopts "t:d:s:c:r" OPTS; do
 		case "${OPTS}" in
 		t)
+			OLD_IFS=${IFS}
 			IFS=',| |;' read -rA HOST_NAMES <<<"${OPTARG}"
 			for HOST_NAME in ${HOST_NAMES}; do
 				prlctl stop "${HOST_NAME}" &
 			done
+			IFS=${OLD_IFS}
 			;;
 		d)
+			OLD_IFS=${IFS}
 			IFS=',| |;' read -rA HOST_NAMES <<<"${OPTARG}"
 			for HOST_NAME in ${HOST_NAMES}; do
 				if _check_pvm_is_alive "${HOST_NAME}"; then
@@ -90,17 +93,23 @@ i() {
 					fi
 				fi
 			done
+			IFS=${OLD_IFS}
 			;;
 		s)
+			OLD_IFS=${IFS}
 			IFS=',| |;' read -rA HOST_NAMES <<<"${OPTARG}"
 			for HOST_NAME in ${HOST_NAMES}; do
 				prlctl start "${HOST_NAME}" &
 			done
+			IFS=${OLD_IFS}
 			;;
 		c)
 			echo "${OPTS}"
 			echo "${OPTIND}"
 			echo "${OPTARG}"
+			;;
+		r)
+			${PRLCTL_HOME}/runX nx >/dev/null 2>${PRLCTL_HOME}/runnig.err &
 			;;
 		\?)
 			echo "

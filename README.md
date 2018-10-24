@@ -49,3 +49,17 @@ a Vm, this runX is just for you.
 * `./runX setup golang` to set up your golang development environment base on your vm clone above.
 * `./runX ip golang` can got your golang vm's ip, then use to login, 
   or run `./runX enter golang` login direct.
+
+
+## many wonderful things
+
+I think there're many wonderful things of runX, at least now I had found those below:
+
+* some base tools like gdb, zsh and so on. we can have a base config file like `.zshrc` 
+  as `$PRLCTL_HOME/zsh/.zshrc`, and also can have the one pvm alone, like `$PRLCTL_HOME/zsh/$(host)/.zshrc`
+* for more in zsh, we using only one `.oh-my-zsh`
+* we could alawys have the basic `etc-profile` and `etc-sudoers` templete. We set `Defaults   env_keep += "HOME PRLCTL_HOME GIT MCODE PATH"`
+  to keep the `PRLCTL_HOME GIT MCODE PATH` from nomal users like `z` to the administration account `root`.
+* we setup a basic `.gdbinit` through the `set_up` shell script, provide some generic 
+  functions like `sbps`, `rbps` and so on. `${PRLCTL_HOME}/gdb/$(hostname)/$(whoami).bps` is
+  the default breakpoint saving file.
