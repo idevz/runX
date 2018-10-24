@@ -1,35 +1,5 @@
-#!/usr/bin/env bash
-
-xnotic() {
-	echo
-	echo ${1}
-	echo
-}
-
-cdf() {
-	target=$(osascript -e 'tell application "Finder" to if (count of Finder windows) > 0 then get POSIX path of (target of front Finder window as text)')
-	if [ "$target" != "" ]; then
-		cd "$target"
-		pwd
-	else
-		echo 'No Finder window found' >&2
-	fi
-}
-
-o() {
-	case "${1}" in
-	go)
-		code $(echo $GOPATH | cut -f ${2} -d ":")
-		;;
-	gox)
-		export GOPATH=${2}:$GOPATH
-		code ${2}
-		;;
-	*)
-		code ${1}
-		;;
-	esac
-}
+# zshrc funcs for mac os
+[ -f ${PRLCTL_HOME}/zsh/zsh-funcs ] && source ${PRLCTL_HOME}/zsh/zsh-funcs
 
 _prlctl_get_ip_by_host() {
 	local HOST_NAME=${1}
@@ -146,4 +116,4 @@ i() {
 	fi
 }
 
-alias og='o go'
+[ ! -z ${GOPATH} ] && export_go_path

@@ -67,6 +67,8 @@ plugins=(
 	git
 )
 
+[ -f ${PRLCTL_HOME}/zsh/zsh-funcs ] && source ${PRLCTL_HOME}/zsh/zsh-funcs
+[ -f ${PRLCTL_HOME}/zsh/$(hostname)/.zshrc ] && source ${PRLCTL_HOME}/zsh/$(hostname)/.zshrc
 source $ZSH/oh-my-zsh.sh
 
 # User configuration
@@ -98,4 +100,3 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 export PERLDB_OPTS=HistFile=$HOME/.perldb.history
-[ -f ${PRLCTL_HOME}/zsh/$(hostname)/.zshrc ] && source ${PRLCTL_HOME}/zsh/$(hostname)/.zshrc
