@@ -30,7 +30,6 @@ RESTY_OPENSSL_VERSION=${RESTY_OPENSSL_VERSION:-"1.0.2k"}
 RESTY_PCRE_VERSION=${RESTY_PCRE_VERSION:-"8.41"}
 RESTY_ZLIB_VERSION=${RESTY_ZLIB_VERSION:-"1.2.11"}
 RESTY_J=${RESTY_J:-"4"}
-_RESTY_CONFIG_DEPS="--with-openssl=${SRC_ROOT}/openssl-${RESTY_OPENSSL_VERSION} --with-pcre=${SRC_ROOT}/pcre-${RESTY_PCRE_VERSION}"
 RESTY_CONFIG_OPTIONS_MORE=""
 
 sudo yum install --nogpgcheck -y \
@@ -213,7 +212,8 @@ or_for_prd() {
 	[ -d openresty-${RESTY_VERSION}-prd ] && rm -rf openresty-${RESTY_VERSION}-prd
 	tar xzf openresty-${RESTY_VERSION}.tar.gz && mv openresty-${RESTY_VERSION} openresty-${RESTY_VERSION}-prd
 
-	OR_PREFIX="openresty-${RESTY_VERSION}-prd"
+	OR_PREFIX="/usr/local/${OR_VERSION}-prd"
+	_RESTY_CONFIG_DEPS="--with-openssl=${SRC_ROOT}/openssl-${RESTY_OPENSSL_VERSION} --with-pcre=${SRC_ROOT}/pcre-${RESTY_PCRE_VERSION}"
 	cd ${SRC_ROOT}/openresty-${RESTY_VERSION}-prd &&
 		./configure \
 			--prefix=${OR_PREFIX} \
@@ -290,7 +290,8 @@ install_luarocks() {
 }
 
 install_openresty_from_src() {
-	for or4env in debug valgrind prd; do
+	# for or4env in debug valgrind prd; do
+	for or4env in prd; do
 		[ -d "/usr/local/${OR_VERSION}-${or4env}" ] && sudo rm -rf "/usr/local/${OR_VERSION}-${or4env}"
 		or_for_${or4env}
 	done
@@ -315,8 +316,8 @@ EOF
 
 init() {
 	install_openresty_from_src
-	install_weighttp
-	install_test_nginx
-	install_luarocks
-	create_profile "${PROFILE}"
+	# install_weighttp
+	# install_test_nginx
+	# install_luarocks
+	# create_profile "${PROFILE}"
 }
