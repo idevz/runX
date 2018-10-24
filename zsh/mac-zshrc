@@ -109,7 +109,9 @@ i() {
 			echo "${OPTARG}"
 			;;
 		r)
-			${PRLCTL_HOME}/runX nx >/dev/null 2>${PRLCTL_HOME}/runnig.err &
+			cd ${PRLCTL_HOME}
+			./runX nx >/dev/null 2>./runnig.err &
+			cd -
 			;;
 		\?)
 			echo "

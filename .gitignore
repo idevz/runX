@@ -62,6 +62,7 @@ dkms.conf
 old.z.root.zsh_history
 old.z.zsh_history
 */srcs/
+*.zj
 
 zsh/.oh-my-zsh
 already_init_base
