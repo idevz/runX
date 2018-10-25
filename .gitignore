@@ -64,6 +64,6 @@ old.z.zsh_history
 */srcs/
 *.zj
 
-zsh/.oh-my-zsh
+shell/.oh-my*
 already_init_base
 runnig.err

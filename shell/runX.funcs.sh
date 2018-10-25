@@ -1,9 +1,15 @@
-# zsh functions
+#!/usr/bin/env bash
 
 xnotic() {
 	echo
 	echo ${1}
 	echo
+}
+
+runXdebug() {
+	set -x
+	"$@"
+	set +x
 }
 
 ######################################## Golang funcs ########################################
@@ -34,19 +40,6 @@ xnotic() {
 		esac
 		return
 	done
-}
-
-export_go_pathx() {
-	# @TODO why sourc error about read -ra or -rA
-	echo $SHELL
-	OLD_IFS=${IFS}
-	IFS=':' read -rA GOPATHES <<<"${GOPATH}"
-	GOPATH_INDEX=1
-	for gopath in ${GOPATHES}; do
-		export G${GOPATH_INDEX}=${gopath}
-		GOPATH_INDEX=$((${GOPATH_INDEX} + 1))
-	done
-	IFS=${OLD_IFS}
 }
 
 [ ! -z ${GOPATH} ] && export_go_path() {

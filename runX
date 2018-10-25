@@ -194,9 +194,10 @@ stopx | stpx*)
 	;;
 *)
 	# exec set_up commands
+	# set -x
 	CMD=${1}
 	HOST_NAME=${2}
-	source "${PRLCTL_HOME}/zsh/mac-zshrc"
+	source "${PRLCTL_HOME}/shell/runX.host.sh"
 	if _check_pvm_is_alive "${HOST_NAME}"; then
 		_prlctl_exec "${HOST_NAME}" "sudo -Hiu z set_up ${CMD}"
 		xnotic "set_up executing sucessed ..."
@@ -211,5 +212,6 @@ stopx | stpx*)
 			xnotic "set_up executing sucessed ..."
 		fi
 	fi
+	# set +x
 	;;
 esac

@@ -48,26 +48,26 @@ check_file() {
 
 init_etc_profile() {
 	# shellcheck disable=2002
-	cat "${PRLCTL_HOME}"/zsh/etc-profile | sudo tee /etc/profile >/dev/null 2>&1
-	cat "${PRLCTL_HOME}"/zsh/etc-sudoers | sudo tee /etc/sudoers >/dev/null 2>&1
+	cat "${PRLCTL_HOME}"/shell/etc-profile | sudo tee /etc/profile >/dev/null 2>&1
+	cat "${PRLCTL_HOME}"/shell/etc-sudoers | sudo tee /etc/sudoers >/dev/null 2>&1
 }
 
 init_zsh() {
-	HISTFILE=${PRLCTL_HOME}/zsh/$(hostname)${HOME}/.zsh_history
-	cp -f ${PRLCTL_HOME}/zsh/.zshrc ~/.zshrc
+	HISTFILE=${PRLCTL_HOME}/shell/$(hostname)${HOME}/.zsh_history
+	cp -f ${PRLCTL_HOME}/shell/runX.zshrc ~/.zshrc
 	# shellcheck disable=2002
-	cat "${PRLCTL_HOME}"/zsh/.zshrc | sudo tee /root/.zshrc >/dev/null 2>&1
+	cat "${PRLCTL_HOME}"/shell/runX.zshrc | sudo tee /root/.zshrc >/dev/null 2>&1
 	check_file "${HISTFILE}"
 }
 
 init_gdb() {
 	GDB_HISTORY_FILE=${PRLCTL_HOME}/gdb/$(hostname)/.gdb_history
 	GDB_BREAKPOINTS_FILE=${PRLCTL_HOME}/gdb/$(hostname)/$(whoami).bps
-	GDB_INIT_FILE=${PRLCTL_HOME}/gdb/$(hostname)/.gdbinit
+	GDB_INIT_FILE_NAME=${PRLCTL_HOME}/gdb/$(hostname)/.gdbinit
 	check_file "${GDB_HISTORY_FILE}"
 	check_file "${GDB_BREAKPOINTS_FILE}"
-	check_file "${GDB_INIT_FILE}"
-	GDB_INIT_F=$(
+	check_file "${GDB_INIT_FILE_NAME}"
+	GDB_INIT_CONTENT=$(
 		cat <<GDB_INIT
 set history save on
 set history filename ${GDB_HISTORY_FILE}
@@ -90,25 +90,25 @@ document rbps
     Usage: rbps
 end
 
-source ${GDB_INIT_FILE}
+source ${GDB_INIT_FILE_NAME}
 source ${PRLCTL_HOME}/gdb/ext/tools.py
 GDB_INIT
 	)
-	echo "${GDB_INIT_F}" >"${HOME}"/.gdbinit
-	echo "${GDB_INIT_F}" | sudo tee /root/.gdbinit >/dev/null 2>&1
+	echo "${GDB_INIT_CONTENT}" >"${HOME}"/.gdbinit
+	echo "${GDB_INIT_CONTENT}" | sudo tee /root/.gdbinit >/dev/null 2>&1
 }
 
 base_init() {
 	init_etc_profile
 	init_zsh
 	init_gdb
-	touch ${PRLCTL_HOME}/zsh/$(hostname)${HOME}/already_init_base
+	touch ${PRLCTL_HOME}/shell/$(hostname)${HOME}/already_init_base
 }
 
 case ${1} in
 bi | base_init)
 	# check if already inited
-	if [ ! -f ${PRLCTL_HOME}/zsh/$(hostname)${HOME}/already_init_base ]; then
+	if [ ! -f ${PRLCTL_HOME}/shell/$(hostname)${HOME}/already_init_base ]; then
 		base_init
 	else
 		ynotic "Base init Already done before."

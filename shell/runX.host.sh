@@ -1,6 +1,5 @@
-# zshrc funcs for mac os
-[ -f ${PRLCTL_HOME}/zsh/zsh-funcs ] && source ${PRLCTL_HOME}/zsh/zsh-funcs
-
+#!/usr/bin/env bash
+[ -f ${PRLCTL_HOME}/shell/runX.funcs.sh ] && source ${PRLCTL_HOME}/shell/runX.funcs.sh
 _prlctl_get_ip_by_host() {
 	local HOST_NAME=${1}
 	[ -z "${HOST_NAME}" ] && xnotic "empty host name." && return
