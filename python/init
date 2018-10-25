@@ -23,23 +23,6 @@ VERSION=${VERSION:-"3.7.1"}
 PYTHON_VERSION=${PV:-"Python-${VERSION}"}
 PYTHON_ROOT=${PR:-"/usr/local/${PYTHON_VERSION}"}
 
-PROFILE=$(
-	cat <<EOF
-#!/usr/bin/env bash
-
-### BEGIN ###
-# Author: idevz
-# Since: 2018/03/12
-# Description:       Setting enviroment variables for python pvm.
-### END ###
-
-export PYTHON_ROOT=${PYTHON_ROOT}
-export PATH=${PYTHON_ROOT}/bin:\$PATH
-
-alias gdpy='gdb ${PYTHON_ROOT}/bin/python3'
-EOF
-)
-
 install_python_from_src() {
 	[ -d ${PYTHON_ROOT} ] && sudo rm -rf ${PYTHON_ROOT}
 
@@ -73,14 +56,33 @@ install_python_from_src() {
 	# --with-ensurepip=yes : This switch enables building pip and setuptools packaging programs. setuptools is needed for building some Python modules.
 }
 
+PROFILE=$(
+	cat <<EOF
+#!/usr/bin/env bash
+
+### BEGIN ###
+# Author: idevz
+# Since: 2018/03/12
+# Description:       Setting enviroment variables for python pvm.
+### END ###
+
+export PYTHON_ROOT=${PYTHON_ROOT}
+export PATH=${PYTHON_ROOT}/bin:\$PATH
+
+alias gdpy='gdb ${PYTHON_ROOT}/bin/python3'
+EOF
+)
+
 install_or() {
 	OLD_BASE_DIR=${BASE_DIR}
 	OLD_PROFILE=${PROFILE}
 
 	BASE_DIR=${PRLCTL_HOME}/openresty && . "${BASE_DIR}/init"
+	yum_base_preparing
 	or_for_debug
 	install_test_nginx
 	install_luarocks
+	create_profile "${PROFILE}" "openresty"
 
 	BASE_DIR=${OLD_BASE_DIR}
 	PROFILE=${OLD_PROFILE}

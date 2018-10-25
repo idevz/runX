@@ -21,22 +21,6 @@ BASE_DIR=${BASE_DIR:-$(dirname $(cd $(dirname "$0") && pwd -P)/$(basename "$0"))
 PHP_VERSION=${PV:-"php-7.2.11"}
 PHP_ROOT=${LR:-"/usr/local/${PHP_VERSION}"}
 
-PROFILE=$(
-	cat <<EOF
-#!/usr/bin/env bash
-
-### BEGIN ###
-# Author: idevz
-# Since: 2018/03/12
-# Description:       Setting enviroment variables for lormp pvm.
-### END ###
-
-export PHP_ROOT=${PHP_ROOT}
-export PATH=${PHP_ROOT}/bin:${PHP_ROOT}/sbin:\$PATH
-
-EOF
-)
-
 install_php_from_src() {
 	sudo yum install -y openssl-devel curl-devel
 	[ -d ${PHP_ROOT} ] && sudo rm -rf ${PHP_ROOT}
@@ -62,14 +46,32 @@ install_php_from_src() {
 		sudo make install
 }
 
+PROFILE=$(
+	cat <<EOF
+#!/usr/bin/env bash
+
+### BEGIN ###
+# Author: idevz
+# Since: 2018/03/12
+# Description:       Setting enviroment variables for lormp pvm.
+### END ###
+
+export PHP_ROOT=${PHP_ROOT}
+export PATH=${PHP_ROOT}/bin:${PHP_ROOT}/sbin:\$PATH
+
+EOF
+)
+
 install_or() {
 	OLD_BASE_DIR=${BASE_DIR}
 	OLD_PROFILE=${PROFILE}
 
 	BASE_DIR=${PRLCTL_HOME}/openresty && . "${BASE_DIR}/init"
+	yum_base_preparing
 	or_for_debug
 	install_test_nginx
 	install_luarocks
+	create_profile "${PROFILE}" "openresty"
 
 	BASE_DIR=${OLD_BASE_DIR}
 	PROFILE=${OLD_PROFILE}

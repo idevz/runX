@@ -63,6 +63,7 @@ old.z.root.zsh_history
 old.z.zsh_history
 */srcs/
 *.zj
+*.wb.conf
 
 shell/.oh-my-zsh
 already_init_base

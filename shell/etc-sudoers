@@ -78,7 +78,7 @@ Defaults    env_keep += "LC_TIME LC_ALL LANGUAGE LINGUAS _XKB_CHARSET XAUTHORITY
 # Defaults   env_keep += "HOME"
 Defaults   env_keep += "HOME PRLCTL_HOME GIT MCODE PATH"
 
-Defaults    secure_path = /sbin:/bin:/usr/sbin:/usr/bin:/media/psf/run_path
+Defaults    secure_path = /sbin:/bin:/usr/sbin:/usr/bin:/media/psf/runX
 
 ## Next comes the main part: which users can run what software on
 ## which machines (the sudoers file can be shared between multiple

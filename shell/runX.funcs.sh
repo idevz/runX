@@ -6,10 +6,21 @@ xnotic() {
 	echo
 }
 
+# x pkill openresty
+# a good way to "workaround" the `secure_path` setted in the `/etc/sudoers` file
+[ $(uname) = 'Linux' ] && x() {
+	sudo env "PATH=$PATH" "$@"
+}
+
 runXdebug() {
 	set -x
 	"$@"
 	set +x
+}
+
+#@TODO add a clean history tool to clean the all the .zsh_history from all pvms
+clean_history() {
+	decleri -A parttens
 }
 
 ######################################## Golang funcs ########################################
