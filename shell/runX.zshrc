@@ -3,8 +3,9 @@
 
 # Path to your oh-my-zsh installation.
 # export ZSH="${HOME}/.oh-my-zsh"
+HOSTNAME=$(hostname)
 export ZSH="${PRLCTL_HOME}/shell/.oh-my-zsh"
-export HISTFILE=${PRLCTL_HOME}/shell/$(hostname)${HOME}/.zsh_history
+export HISTFILE="${PRLCTL_HOME}/shell/${HOSTNAME}${HOME}/.zsh_history"
 
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
@@ -67,11 +68,12 @@ plugins=(
 	git
 )
 
-[ -f ${PRLCTL_HOME}/shell/runX.funcs.sh ] && source ${PRLCTL_HOME}/shell/runX.funcs.sh
-[ -f ${PRLCTL_HOME}/shell/$(hostname)/pvm.sh ] && source ${PRLCTL_HOME}/shell/$(hostname)/pvm.sh
+[ -f "${PRLCTL_HOME}/shell/runX.funcs.sh" ] && source "${PRLCTL_HOME}/shell/runX.funcs.sh"
+[ -f "${PRLCTL_HOME}/shell/${HOSTNAME}/pvm.sh" ] && source "${PRLCTL_HOME}/shell/${HOSTNAME}/pvm.sh"
 source $ZSH/oh-my-zsh.sh
 
 # User configuration
+export RUN_PATH="${PRLCTL_HOME}/runpath/${HOSTNAME}"
 
 # export MANPATH="/usr/local/man:$MANPATH"
 

@@ -3,7 +3,11 @@
 _prlctl_get_ip_by_host() {
 	local HOST_NAME=${1}
 	[ -z "${HOST_NAME}" ] && xnotic "empty host name." && return
-	prlctl exec ${HOST_NAME} ip addr show | grep -Eo 'inet (10.*)\/24' | cut -d ' ' -f 2 | cut -d '/' -f1
+	IP=$(prlctl exec ${HOST_NAME} ip addr show 2>/dev/null | grep -Eo 'inet (10.*)\/24' | cut -d ' ' -f 2 | cut -d '/' -f1)
+	if [ -z "${IP}" ]; then
+		[ ! -z "${PRLCTL_HOME}" ] && IP=$(cat "${PRLCTL_HOME}/deploy/hosts" | grep "${HOST_NAME}" | cut -d ' ' -f1)
+	fi
+	echo ${IP}
 }
 
 _check_pvm_is_exist() {
@@ -35,7 +39,7 @@ _waiting_til_done() {
 }
 
 i() {
-	while getopts "t:d:s:c:r" OPTS; do
+	while getopts "t:d:s:c:i:r" OPTS; do
 		case "${OPTS}" in
 		t)
 			OLD_IFS=${IFS}
@@ -76,6 +80,13 @@ i() {
 			echo "${OPTS}"
 			echo "${OPTIND}"
 			echo "${OPTARG}"
+			;;
+		i)
+			for HOST_NAME in $(echo ${OPTARG//,/ }); do
+				IP_TMP=$(_prlctl_get_ip_by_host ${HOST_NAME})
+				# http://wiki.bash-hackers.org/commands/builtin/printf
+				printf '%-15s%-15s\n' ${HOST_NAME} ${IP_TMP}
+			done | column -t
 			;;
 		r)
 			cd ${PRLCTL_HOME}
