@@ -103,6 +103,9 @@ GDB_INIT
 }
 
 base_init() {
+	# in my pvms I didn't care about the firewall
+	sudo systemctl stop firewalld.service
+	sudo systemctl disable firewalld.service
 	init_etc_profile
 	init_zsh
 	init_gdb
