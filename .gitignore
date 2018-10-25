@@ -61,7 +61,7 @@ dkms.conf
 *.bps
 old.z.root.zsh_history
 old.z.zsh_history
-*/srcs/
+srcs/
 *.zj
 *.wb.conf
 

@@ -23,8 +23,7 @@ clean_history() {
 	decleri -A parttens
 }
 
-######################################## Golang funcs ########################################
-
+#-----------------------------------------  Golang funcs  -----------------------------------------#
 [ ! -z ${GOPATH} ] && g() {
 	while getopts "o:t:l" OPTS; do
 		case "${OPTS}" in
@@ -60,5 +59,33 @@ clean_history() {
 		GOPATH_INDEX=$((${GOPATH_INDEX} + 1))
 	done
 }
+#---------------------------------------- Golang funcs End ----------------------------------------#
 
-######################################## Golang funcs End ########################################
+#-------------------------------------------  PHP funcs  ------------------------------------------#
+has_php() {
+	which php-fpm >/dev/null 2>&1
+}
+
+has_php && p() {
+	while getopts "udt" OPTS; do
+		case "${OPTS}" in
+		u)
+			x php-fpm -p "${RUN_PATH}/fpm.d" -c "${RUN_PATH}/fpm.d/etc"
+			xnotic "php-fpm sucess start , cmd like:"
+			xnotic "	php-fpm -p ${RUN_PATH}/fpm.d -c ${RUN_PATH}/fpm.d/etc"
+
+			x openresty -p "${RUN_PATH}/ngx.d"
+			xnotic "openresty sucess start, cmd like:"
+			xnotic "	openresty -p ${RUN_PATH}/ngx.d"
+			;;
+		d)
+			x pkill openresty
+			xnotic "php-fpm sucess stoped."
+
+			x pkill php-fpm
+			xnotic "openresty sucess stoped."
+			;;
+		esac
+	done
+}
+#------------------------------------------ PHP funcs End -----------------------------------------#

@@ -12,7 +12,6 @@
 
 set -e
 
-[ -z $PRLCTL_HOME ] && PRLCTL_HOME=/media/psf/runX
 [ $HOME != '/home/z' ] && echo 'Are U Z ?' && exit 1
 
 # BASE_DIR=$(dirname $(cd $(dirname "$0") && pwd -P)/$(basename "$0"))
@@ -20,24 +19,6 @@ BASE_DIR=${BASE_DIR:-$(dirname $(cd $(dirname "$0") && pwd -P)/$(basename "$0"))
 
 LUA_VERSION=${LV:-"lua-5.1.5"}
 LUA_ROOT=${LR:-"/usr/local/${LUA_VERSION}"}
-
-PROFILE=$(
-	cat <<EOF
-#!/usr/bin/env bash
-
-### BEGIN ###
-# Author: idevz
-# Since: 2018/03/12
-# Description:       Setting enviroment variables for lua pvm.
-### END ###
-
-export LUA_ROOT=${LUA_ROOT}
-export PATH=${LUA_ROOT}/bin:\$PATH
-
-alias gdl='gdb ${LUA_ROOT}/bin/lua'
-alias gdlj='gdb ${LUAJIT_ROOT}/bin/luajit'
-EOF
-)
 
 # debug install prepare
 dp() {
@@ -67,6 +48,24 @@ install_lua_from_src() {
 		${SED} 's/^CC= gcc$/CC= gcc -ggdb/g;s/-O2/-O0/g' src/Makefile &&
 		sudo make ${PLAT} install INSTALL_TOP=${LUA_ROOT}
 }
+
+PROFILE=$(
+	cat <<EOF
+#!/usr/bin/env bash
+
+### BEGIN ###
+# Author: idevz
+# Since: 2018/03/12
+# Description:       Setting enviroment variables for lua pvm.
+### END ###
+
+export LUA_ROOT=${LUA_ROOT}
+export PATH=${LUA_ROOT}/bin:\$PATH
+
+alias gdl='gdb ${LUA_ROOT}/bin/lua'
+alias gdlj='gdb ${LUAJIT_ROOT}/bin/luajit'
+EOF
+)
 
 init() {
 	dp

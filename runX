@@ -20,6 +20,7 @@ BASE_IMAGE=${BI:-"centos7-base-1708"}
 PARALLELS_ROOT=${PR:-${HOME}"/Documents/Parallels"}
 CLONE_AND_SETUP=${CAS:-"yes"}
 USING_STATIC_IP=${USI:-"yes"}
+BASE_DIR=$(dirname $(cd $(dirname "$0") && pwd -P)/$(basename "$0"))
 
 xnotic() {
 	STATUS=1
@@ -149,7 +150,7 @@ new)
 	;;
 nx | newx)
 	# using a hosts list is default to using static ip to clone pvms.
-	HOST_FILE=$(pwd)/hosts
+	HOST_FILE="${BASE_DIR}/deploy/hosts"
 	[ ! -f ${HOST_FILE} ] &&
 		xnotic "new x command need a hosts file which format like /etc/hosts."
 	PVM_LIST=$(prlctl list -a)
@@ -160,7 +161,7 @@ nx | newx)
 		echo "${PVM_LIST}" | grep -Eo " ${HOST_NAME}$" && continue
 
 		if [ ${CLONE_AND_SETUP} = 'yes' ]; then
-			PVM_INIT_SHELL=$(pwd)/${HOST_NAME}/init
+			PVM_INIT_SHELL="${BASE_DIR}/deploy/${HOST_NAME}/init"
 			[ ! -f ${PVM_INIT_SHELL} ] && continue
 			[ -f ${PVM_INIT_SHELL} ] &&
 				chmod +x ${PVM_INIT_SHELL} &&
@@ -197,7 +198,7 @@ stopx | stpx*)
 	# set -x
 	CMD=${1}
 	HOST_NAME=${2}
-	source "${PRLCTL_HOME}/shell/runX.host.sh"
+	source "${BASE_DIR}/shell/runX.host.sh"
 	if _check_pvm_is_alive "${HOST_NAME}"; then
 		_prlctl_exec "${HOST_NAME}" "sudo -Hiu z set_up ${CMD}"
 		xnotic "set_up executing sucessed ..."
