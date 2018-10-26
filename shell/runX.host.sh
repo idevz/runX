@@ -126,4 +126,21 @@ i() {
 	fi
 }
 
+rx() {
+
+	case "${1}" in
+	o)
+		shift
+		local HOST_NAME="openresty"
+		local IP=$(_prlctl_get_ip_by_host ${TO_HOST})
+		ssh z@${IP} "$@"
+		# restydoc ngx_lua
+
+		# restydoc -s content_by_lua
+
+		# restydoc -s proxy_pass
+		;;
+	esac
+}
+
 [ ! -z ${GOPATH} ] && export_go_path

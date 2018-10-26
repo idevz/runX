@@ -65,6 +65,7 @@ srcs/
 *.zj
 *.wb.conf
 
+code/
 shell/.oh-my-zsh
 already_init_base
 runnig.err
