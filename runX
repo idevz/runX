@@ -23,7 +23,7 @@ USING_STATIC_IP=${USI:-"yes"}
 BASE_DIR=$(dirname $(cd $(dirname "$0") && pwd -P)/$(basename "$0"))
 
 xnotic() {
-	STATUS=1
+	local STATUS=1
 	[ ! -z ${2} ] && STATUS=${2}
 	echo
 	echo ${1} && echo && exit ${STATUS}
@@ -43,7 +43,7 @@ ynotic() {
 trap "runX_exit $LINENO $BASH_COMMAND; exit" SIGHUP SIGINT SIGQUIT
 runX_exit() {
 	echo
-	EXIT_MSG="something has happened"
+	local EXIT_MSG="something has happened"
 	logger -p notice "$(basename $0) - ${EXIT_MSG}"
 	ynotic "${EXIT_MSG}"
 	ynotic "$@"
@@ -55,7 +55,7 @@ type prlctl >/dev/null 2>&1 || xnotic "please make sure that your 'prlctl' works
 x_clone() {
 	[ -z "${1}" ] && xnotic "need a name for your new vm."
 	[ "${USING_STATIC_IP}" = 'yes' ] && [ -z "${2}" ] && xnotic "need to set a static ip."
-	HOST_NAME=${1}
+	local HOST_NAME=${1}
 
 	ynotic "start clone ${HOST_NAME}."
 

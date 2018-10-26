@@ -43,8 +43,17 @@ clean_history() {
 			;;
 		\?)
 			echo "
-  Usage:
-	-o 1
+g is a tool for g programing.
+
+Usage:
+
+	g options [arguments]
+
+The options are:
+
+	-o       using code to open the gopath, eg. 'g -o 1' open the first gopath
+	-t       cd to the gopath, eg. 'g -t 1' cd to the first gopath
+	-l       show all the gopathes
 		"
 			;;
 		esac

@@ -1,0 +1,16 @@
+[Unit]
+Description=PHP-fpm server
+After=remote-fs.target php-fpm.service
+Requires=php-fpm.service
+AssertPathExists=/srv/webserver
+
+[Service]
+Type=notify
+ExecStart=php-fpm
+Nice=5
+
+[Install]
+WantedBy=multi-user.target
+# http://0pointer.de/public/systemd-man/systemd.unit.html
+# https://medium.com/@benmorel/creating-a-linux-service-with-systemd-611b5c8b91d6
+# https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/system_administrators_guide/sect-managing_services_with_systemd-unit_files
