@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-
+# tools for pvms which deploy though runX.
 xnotic() {
 	echo
 	echo ${1}
@@ -43,7 +43,7 @@ clean_history() {
 			;;
 		\?)
 			echo "
-g is a tool for g programing.
+g is a tool for golang programing.
 
 Usage:
 
@@ -93,6 +93,23 @@ has_php && p() {
 
 			x pkill php-fpm
 			xnotic "openresty sucess stoped."
+			;;
+		\?)
+			echo "
+p is a tool for php programing.
+
+Usage:
+
+	p options [arguments]
+
+The options are:
+
+	-u       start the php-fpm and openresty service.
+	         php-fpm run path is ${RUN_PATH}/fpm.d
+			 php ini path is ${RUN_PATH}/fpm.d/etc
+			 openresty run path is ${RUN_PATH}/ngx.d
+	-d       down both openresty and php-fpm service.
+		"
 			;;
 		esac
 	done

@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# tools for host where prlctl is.
 [ -f ${PRLCTL_HOME}/shell/runX.funcs.sh ] && source ${PRLCTL_HOME}/shell/runX.funcs.sh
 _prlctl_get_ip_by_host() {
 	local HOST_NAME=${1}
@@ -39,7 +40,7 @@ _waiting_til_done() {
 }
 
 i() {
-	while getopts "t:d:s:c:i:r" OPTS; do
+	while getopts "t:d:s:c:i:rl" OPTS; do
 		case "${OPTS}" in
 		t)
 			OLD_IFS=${IFS}
@@ -93,11 +94,25 @@ i() {
 			./runX nx >/dev/null 2>./runnig.err &
 			cd -
 			;;
+		l)
+			prlctl list ${2}
+			;;
 		\?)
 			echo "
-  usage:
-	i -t pvm		# stop a pvm
-	i -d pvm 		# delete a pvm
+i is a tool for manage the pvms such as login, stop, start and so on.
+
+Usage:
+
+	i options pvm1[,pvm2]
+
+The options are:
+
+	-t       stop the pvms		 
+	-d       delete the pvms
+	-s       start the pvms
+	-i       list the ip of the pvms
+	-r       exec the $(runX nx) command to deploy a pvm
+	-l       list the pvms
 			"
 			;;
 		esac
