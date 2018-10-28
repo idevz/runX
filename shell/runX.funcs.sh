@@ -12,6 +12,17 @@ xnotic() {
 	sudo env "PATH=$PATH" "$@"
 }
 
+hz_ns() {
+	TIMES=${1}
+	while [ "${TIMES}" -gt 0 ]; do
+		sudo netstat -natpl | grep '10.211.55.7:80.*TIME_WAIT' | wc -l
+		echo
+
+		sleep 1
+		TIMES=$((${TIMES} - 1))
+	done
+}
+
 runXdebug() {
 	set -x
 	"$@"
@@ -76,7 +87,7 @@ has_php() {
 }
 
 has_php && p() {
-	while getopts "udt" OPTS; do
+	while getopts "udrt" OPTS; do
 		case "${OPTS}" in
 		u)
 			x php-fpm -p "${RUN_PATH}/fpm.d" -c "${RUN_PATH}/fpm.d/etc"
@@ -94,6 +105,22 @@ has_php && p() {
 			x pkill php-fpm
 			xnotic "openresty sucess stoped."
 			;;
+		r)
+			x pkill openresty
+			xnotic "php-fpm sucess stoped."
+
+			x pkill php-fpm
+			xnotic "openresty sucess stoped."
+
+			x php-fpm -p "${RUN_PATH}/fpm.d" -c "${RUN_PATH}/fpm.d/etc"
+			xnotic "php-fpm sucess start , cmd like:"
+			xnotic "	php-fpm -p ${RUN_PATH}/fpm.d -c ${RUN_PATH}/fpm.d/etc"
+
+			x openresty -p "${RUN_PATH}/ngx.d"
+			xnotic "openresty sucess start, cmd like:"
+			xnotic "	openresty -p ${RUN_PATH}/ngx.d"
+			;;
+
 		\?)
 			echo "
 p is a tool for php programing.

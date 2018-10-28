@@ -55,6 +55,8 @@ export PATH USER LOGNAME MAIL HOSTNAME HISTSIZE HISTCONTROL
 export MCODE=/media/psf/code
 export GIT=$MCODE/z/git
 export PRLCTL_HOME=/media/psf/runX
+export RUN_PATH="${PRLCTL_HOME}/runpath/${HOSTNAME}"
+
 
 # By default, we want umask to get set. This sets it for login shell
 # Current threshold for system reserved uid/gids is 200

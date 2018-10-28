@@ -54,11 +54,31 @@ motan-service:
     HTTP_REQUEST_METHOD: GET
     URL_FORMAT: http://10.211.55.7/server.php
     basicRefer: test-mesh-basicService
+  api-test:
+    path: com.weibo.ApiTestService
+    export: "motan2:9100"
+    provider: http
+    HTTP_REQUEST_METHOD: GET
+    URL_FORMAT: http://i.api.toutiao.weibo.cn/pub/comm_timeline?access_token=2.00rLP4ACQ4QiNC0155b57b23afnZuD&cate_id=0&imei=1
+    basicRefer: test-mesh-basicService
+  s-test:
+    path: com.weibo.STestService
+    export: "motan2:9100"
+    provider: http
+    HTTP_REQUEST_METHOD: GET
+    URL_FORMAT: http://127.0.0.1:8000
+    basicRefer: test-mesh-basicService
 
 http-service:
   mytest-motan2:
     anyFuncName,Hello:
       URL_FORMAT: http://10.211.55.7/server.php
+  s-test:
+    anyFuncName,Hello:
+      URL_FORMAT: http://127.0.0.1:8000
+  api-test:
+    Hello:
+      URL_FORMAT: http://i.api.toutiao.weibo.cn/pub/comm_timeline?access_token=2.00rLP4ACQ4QiNC0155b57b23afnZuD&cate_id=0&imei=1
 
 #conf of services
 # motan-service:

@@ -264,6 +264,7 @@ install_weighttp() {
 		./waf configure &&
 		./waf build &&
 		sudo ./waf install &&
+		# sudo ln -sf /media/psf/runX/deploy/openresty/srcs/weighttp-master/build/default/weighttp /usr/local/bin/weighttp
 		cd -
 }
 

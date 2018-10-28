@@ -3,7 +3,6 @@
 
 # Path to your oh-my-zsh installation.
 # export ZSH="${HOME}/.oh-my-zsh"
-HOSTNAME=$(hostname)
 export ZSH="${PRLCTL_HOME}/shell/.oh-my-zsh"
 export HISTFILE="${PRLCTL_HOME}/shell/${HOSTNAME}${HOME}/.zsh_history"
 
@@ -73,7 +72,6 @@ plugins=(
 source $ZSH/oh-my-zsh.sh
 
 # User configuration
-export RUN_PATH="${PRLCTL_HOME}/runpath/${HOSTNAME}"
 
 # export MANPATH="/usr/local/man:$MANPATH"
 
