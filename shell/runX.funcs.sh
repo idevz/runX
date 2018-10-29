@@ -15,10 +15,17 @@ xnotic() {
 hz_ns() {
 	TIMES=${1}
 	while [ "${TIMES}" -gt 0 ]; do
-		sudo netstat -natpl | grep '10.211.55.7:80.*TIME_WAIT' | wc -l
+		# sudo netstat -natpl | grep '10.211.55.7:80.*TIME_WAIT' | wc -l
+		# sudo netstat -natpl | grep -i TIME_WAIT | wc -l
+		echo 'TIME_WAIT'
+		sudo netstat -antp | grep '10.211.55.7:80' | grep 'TIME_WAIT' | wc -l
+		echo 'ESTABLISHED'
+		sudo netstat -antp | grep '10.211.55.7:80' | grep 'ESTABLISHED' | wc -l
+		echo
+		echo
 		echo
 
-		sleep 1
+		sleep .5
 		TIMES=$((${TIMES} - 1))
 	done
 }
