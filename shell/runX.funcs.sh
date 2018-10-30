@@ -18,9 +18,13 @@ hz_ns() {
 		# sudo netstat -natpl | grep '10.211.55.7:80.*TIME_WAIT' | wc -l
 		# sudo netstat -natpl | grep -i TIME_WAIT | wc -l
 		echo 'TIME_WAIT'
-		sudo netstat -antp | grep '10.211.55.7:80' | grep 'TIME_WAIT' | wc -l
+		sudo netstat -antp | grep 'TIME_WAIT' | wc -l
 		echo 'ESTABLISHED'
-		sudo netstat -antp | grep '10.211.55.7:80' | grep 'ESTABLISHED' | wc -l
+		sudo netstat -antp | grep 'ESTABLISHED' | wc -l
+		echo '127.0.0.1:80-TIME_WAIT'
+		sudo netstat -antp | grep -Ev 'LISTEN|sshd' | grep 'TIME_WAIT' | wc -l
+		echo '127.0.0.1:80-ESTABLISHED'
+		sudo netstat -antp | grep -Ev 'LISTEN|sshd' | grep 'ESTABLISHED' | wc -l
 		echo
 		echo
 		echo

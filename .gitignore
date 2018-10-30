@@ -1,5 +1,5 @@
 # Prerequisites
-*.d
+# *.d
 
 # Object files
 *.o
@@ -64,6 +64,7 @@ old.z.zsh_history
 srcs/
 *.zj
 *.wb.conf
+*logs
 
 code/
 shell/.oh-my-zsh
