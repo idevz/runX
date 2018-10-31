@@ -65,6 +65,7 @@ srcs/
 *.zj
 *.wb.conf
 *logs
+*log
 
 code/
 shell/.oh-my-zsh

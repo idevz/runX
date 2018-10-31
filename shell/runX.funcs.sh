@@ -17,10 +17,14 @@ hz_ns() {
 	while [ "${TIMES}" -gt 0 ]; do
 		# sudo netstat -natpl | grep '10.211.55.7:80.*TIME_WAIT' | wc -l
 		# sudo netstat -natpl | grep -i TIME_WAIT | wc -l
+		echo 'CLOSE_WAIT'
+		sudo netstat -antp | grep 'CLOSE_WAIT' | wc -l
 		echo 'TIME_WAIT'
 		sudo netstat -antp | grep 'TIME_WAIT' | wc -l
 		echo 'ESTABLISHED'
 		sudo netstat -antp | grep 'ESTABLISHED' | wc -l
+		echo '127.0.0.1:80-CLOSE_WAIT'
+		sudo netstat -antp | grep -Ev 'LISTEN|sshd' | grep 'CLOSE_WAIT' | wc -l
 		echo '127.0.0.1:80-TIME_WAIT'
 		sudo netstat -antp | grep -Ev 'LISTEN|sshd' | grep 'TIME_WAIT' | wc -l
 		echo '127.0.0.1:80-ESTABLISHED'
@@ -98,6 +102,7 @@ has_php() {
 }
 
 has_php && p() {
+	[ ! -d "/var/run/php-fpm" ] && x mkdir -p /var/run/php-fpm
 	while getopts "udrt" OPTS; do
 		case "${OPTS}" in
 		u)

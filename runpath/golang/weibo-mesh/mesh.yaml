@@ -25,9 +25,9 @@ motan-registry:
     port: 2181
   test-direct:
     protocol: direct
-    host: 10.211.55.5
+    # host: 10.211.55.5
     # host: 10.211.55.7
-    # host: 127.0.0.1
+    host: 127.0.0.1
     port: 9100
 
 
@@ -79,6 +79,7 @@ motan-service:
     export: "motan2:9100"
     basicService: test-mesh-basicService
   mytest-motan2:
+    # filter: "accessLog"
     path: com.weibo.HelloWorldService
     export: "motan2:9100"
     # proxy: "motan2:8100"
