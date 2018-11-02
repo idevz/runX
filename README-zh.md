@@ -18,5 +18,12 @@ runX 是我自己用的一个小工具，日常工作涉及跨语言项目的开
 * 部署后会生成 `/etc/profile.d/idevz_prlctl_${HOSTNAME}.sh` 文件来设置相应的环境变量
 
 ### why U need this runX
+
+* 绕过 docker 内核绑定的问题
+* 一切基于统一的 base 镜像开始
+* 自动化部署开发系统
+* 归一化虚拟机中生成的文件（history，conf，logs 等）
+* 自动化日常操作（服务停、启，自动化工具）
+
 ## how to Use
 ### using commands
