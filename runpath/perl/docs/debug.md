@@ -1,3 +1,4 @@
+```bash
 perl -de
 perl -d
 perl -d ./util/msgfmt.pl
@@ -6,3 +7,4 @@ perl -d ./hash.pl
 perl -d hash.pl
 perl -d util/gen-data.pl en
 perl -d ./util/gen-data.pl cn
+```
