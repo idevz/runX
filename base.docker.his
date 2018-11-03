@@ -1,0 +1,144 @@
+ip addr show
+sudo shutdown now
+uname -r
+sudo yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+sudo yum -y install dkms
+sudo yum list kernel*
+sudo yum install http://mirror.centos.org/centos/7/os/x86_64/Packages/kernel-devel-3.10.0-693.el7.x86_64.rpm
+uname -r
+sudo yum list kernel*
+sudo yum remove kernel-headers-3.10.0-862.9.1.el7.x86_64
+sudo yum list kernel*
+sudo yum remove kernel-debug-devel-3.10.0-862.9.1.el7.x86_64
+sudo yum list kernel*
+sudo yum list dkms*
+mount -o exec /dev/cdrom /media/cdrom
+mkdir /media/cdrom
+sudo mkdir /media/cdrom
+sudo mount -o exec /dev/cdrom /media/cdrom
+cd /media/cdrom
+cd /
+cd /media/cdrom
+ll
+cd /
+umount /dev/cdrom
+sudo umount /dev/cdrom
+sudo mount -o exec /dev/cdrom /media/cdrom
+cd /media/cdrom
+sudo ./install
+sudo yum install dkms
+sudo ./install
+sudo reboot
+cd /media/
+ll
+cd psf/
+ll
+sudo shutdown now
+cd /media/psf/
+ll
+cd code/
+ll
+sudo shutdown now
+docker
+sudo yum list kernel*
+uname -r
+sudo debuginfo-install kernel-3.10.0-693.el7.x86_64
+sudo yum install debuginfo-install
+stap
+sudo yum install systemtap systemtap-runtime
+stap-prep
+sudo debuginfo-install kernel-3.10.0-693.el7.x86_64
+sudo yum install yum-utils
+sudo debuginfo-install kernel-3.10.0-693.el7.x86_64
+sudo stap -v -e 'probe vfs.read {printf("read performed\n"); exit()}'
+sudo yum list systemtap*
+sudo yum remove systemtap*
+yum install systemtap systemtap-runtime
+sudo yum install systemtap systemtap-runtime
+stap-prep
+sudo stap -v -e 'probe vfs.read {printf("read performed\n"); exit()}'
+sudo reboot
+sudo stap -v -e 'probe vfs.read {printf("read performed\n"); exit()}'
+history
+uname -v
+sudo vi /usr/src/kernels/3.10.0-693.el7.x86_64/include/generated/compile.h
+sudo yum remove systemtap*
+sudo yum install systemtap systemtap-runtime
+sudo stap -v -e 'probe vfs.read {printf("read performed\n"); exit()}'
+docker
+sudo stap -v -e 'probe vfs.read {printf("read performed\n"); exit()}'
+history
+uname -r
+man yum
+ps fax
+docker
+sudo shutdown now
+sudo curl -fsSL get.docker.com | sh -
+sudo usermod -aG docker z
+docker
+sudo yum list kernel*
+sudo stap -v -e 'probe vfs.read {printf("read performed\n"); exit()}'
+sudo reboot
+cd /dev/mapper/
+ll
+ll VolGroup-lv_root
+cd VolGroup-lv_root
+cd ../dm-0
+cd ..
+ll /dev/dm-0
+cd /media/psf/code/z/git/weibo-or/or-dktools/systemtap/
+ll
+docker
+docker build -t zhoujing/systemtap .
+sudo systemctl start docker
+docker build -t zhoujing/systemtap .
+docker run --rm -it --privileged zhoujing/systemtap /bin/bash
+docker images
+docker push zhoujing/systemtap
+docker login
+docker push zhoujing/systemtap
+sudo reboot
+sudo systemctl start docker
+docker run --rm -it --privileged zhoujing/systemtap /bin/bash
+sudo shutdown now
+docker images
+sudo systemctl start docker
+docker images
+cd /media/psf/code/
+ls
+stap -v -e 'probe vfs.read {printf("read performed\n"); exit()}'
+sudo stap -v -e 'probe vfs.read {printf("read performed\n"); exit()}'
+docker run --rm -it --privileged zhoujing/systemtap /bin/bash
+docker ps -a
+docker ps -all
+docker images
+docker images -all
+docker images -a
+docker images -qa
+docker images -qa| grep -v '2868b1aece56|49f7960eb7e4'
+docker images -qa| grep -Ev '2868b1aece56|49f7960eb7e4'
+docker rmi $(docker images -qa| grep -Ev '2868b1aece56|49f7960eb7e4')
+docker rmi -froced $(docker images -qa| grep -Ev '2868b1aece56|49f7960eb7e4')
+docker rmi --froced $(docker images -qa| grep -Ev '2868b1aece56|49f7960eb7e4')
+docker rmi --froce $(docker images -qa| grep -Ev '2868b1aece56|49f7960eb7e4')
+docker rmi -froce $(docker images -qa| grep -Ev '2868b1aece56|49f7960eb7e4')
+docker rmi --help
+docker rmi -f $(docker images -qa| grep -Ev '2868b1aece56|49f7960eb7e4')
+docker images
+sudo stap -v -e 'probe vfs.read {printf("read performed\n"); exit()}'
+sudo systemctl start docker
+docker run --rm -it --privileged zhoujing/systemtap /bin/bash
+sudo vi /etc/sudoers
+sudo yum install -y zsh git net-tools vim
+sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+
+
+
+root history
+uname -r
+yum install http://mirror.centos.org/centos/7/os/x86_64/Packages/kernel-debug-devel-3.10.0-693.el7.x86_64.rpm
+yum install http://mirror.centos.org/centos/7/os/x86_64/Packages/kernel-devel-3.10.0-693.el7.x86_64.rpm
+yum install ftp://mirror.switch.ch/pool/4/mirror/scientificlinux/7.2/x86_64/updates/security/kernel-devel-3.10.0-693.el7.x86_64.rpm
+yum install ftp://mirror.switch.ch/pool/4/mirror/scientificlinux/7.2/x86_64/updates/security/kernel-headers-3.10.0-693.el7.x86_64.rpm
+yum install ftp://mirror.switch.ch/pool/4/mirror/scientificlinux/7.2/x86_64/updates/security/kernel-debug-devel-3.10.0-693.el7.x86_64.rpm
+sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
