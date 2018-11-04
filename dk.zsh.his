@@ -1,0 +1,2040 @@
+    1  sudo -s
+    2  /media/psf/code
+    3  ll
+    4  prove
+    5  sudo yum install perl-devel
+    6  prove
+    7  cat /etc/sudoers
+    8  sudo cat /etc/sudoers
+    9  sudo shutdown now
+   10  sudo systemctl start docker
+   11  docker ps
+   12  docker images
+   13  docker run --rm -it --privileged zhoujing/systemtap /bin/bash
+   14  docker-compoer
+   15  docker-composee
+   16  docker-compose
+   17  sudo yum install -y docker-compose
+   18  luacheck
+   19  docker build --help
+   20  docker run --help
+   21  vim ~/.zshrc
+   22  sudo vim /etc/profile
+   23  . /etc/profile
+   24  $GIT/weibo-or/or-dktools/
+   25  ll
+   26  docker build --build-arg OR_ENV=dev -t zhoujing/v .
+   27  chmod +x builds/dev-or.sh
+   28  docker build --build-arg OR_ENV=dev -t zhoujing/v .
+   29  docker build --build-arg OR_ENV=prd -t zhoujing/v .
+   30  chmod +x builds/prd-or.sh
+   31  docker build --build-arg OR_ENV=prd -t zhoujing/v .
+   32  docker images
+   33  docker push zhoujing/v
+   34  docker login
+   35  docker push zhoujing/v
+   36  chmod +x builds/{v-or.sh,entrypoint}
+   37  chmod +x builds/{v-or.sh,entrypoint.sh}
+   38  docker build --build-arg -t zhoujing/v .
+   39  docker build  -t zhoujing/v .
+   40  docker images
+   41  docker run --rm -it zhoujing/v ok
+   42  OR_ENV=dev docker run --rm -it zhoujing/v ok
+   43  OR_ENV=dev docker run --rm -it zhoujing/v ok -e OR_ENV=dev
+   44  OR_ENV=dev docker run --rm -it -e OR_ENV=dev zhoujing/v ok
+   45  chmod +x builds/run/luajit_prove
+   46  docker build  -t zhoujing/v .
+   47  OR_ENV=dev docker run --rm -it -e OR_ENV=dev zhoujing/v luajit_prove
+   48  OR_ENV=dev docker run --rm -it -e OR_ENV=dev zhoujing/v /bin/bash
+   49  docker build  -t zhoujing/v .
+   50  OR_ENV=dev docker run --rm -it -e OR_ENV=dev zhoujing/v luajit_prove
+   51  docker build  -t zhoujing/v .
+   52  OR_ENV=dev docker run --rm -it -e OR_ENV=dev zhoujing/v luajit_prove
+   53  docker build  -t zhoujing/v .
+   54  OR_ENV=dev docker run --rm -it -e OR_ENV=dev zhoujing/v luajit_prove
+   55  OR_ENV=dev docker run --rm -it -e VALGRIND=true zhoujing/v luajit_prove
+   56  OR_ENV=dev docker run --rm -it -e OR_ENV=dev zhoujing/v luajit_prove
+   57  docker build  -t zhoujing/v .
+   58  OR_ENV=dev docker run --rm -it -e OR_ENV=dev zhoujing/v luajit_prove
+   59  docker build  -t zhoujing/v .
+   60  docker build --build-arg OR_ENV=prd -t zhoujing/v .
+   61  cd builds/pkgs
+   62  ll
+   63  curl -fSL https://www.openssl.org/source/openssl-1.0.2k.tar.gz -o openssl-1.0.2k.tar.gz &&\ncurl -fSL https://ftp.pcre.org/pub/pcre/pcre-8.41.tar.gz -o pcre-8.41.tar.gz &&\ncurl -fSL https://openresty.org/download/openresty-1.13.6.2.tar.gz -o openresty-1.13.6.2.tar.gz &&\ncurl -fSL https://github.com/luarocks/luarocks/archive/2.4.3.tar.gz -o luarocks-2.4.3.tar.gz
+   64  ll
+   65  ..
+   66  ll
+   67  docker build --build-arg -t zhoujing/v .
+   68  docker build -t zhoujing/v .
+   69  docker build --build-arg OR_ENV=prd -t zhoujing/v .
+   70  docker build -t zhoujing/v .
+   71  docker run --rm -it -e OR_ENV=dev zhoujing/v 
+   72  docker ps
+   73  docker --help
+   74  docker attach mystifying_euclid
+   75  docker ps
+   76  docker run --rm -it -e OR_ENV=dev zhoujing/v 
+   77  docker ps
+   78  docker exec -it distracted_tesla /bin/bash
+   79  docker ps
+   80  docker commit zhoujing/v
+   81  docker commit 71017b9b99f1 zhoujing/v
+   82  docker run --rm -it -e OR_ENV=dev zhoujing/v 
+   83  docker ps
+   84  docker exec -it youthful_raman /bin/bash
+   85  docker run --rm -it -e OR_ENV=dev --name idevz zhoujing/v run
+   86  docker ps
+   87  docker run --rm -it -e OR_ENV=dev --name idevz zhoujing/v 
+   88  docker exec -it idevz /bin/bash
+   89  docker ps
+   90  docker commit 9b971a9d5464
+   91  docker run --rm -it -e OR_ENV=dev --name idevz zhoujing/v run
+   92  docker run --rm -it -e OR_ENV=dev --name idevz zhoujing/v 
+   93  docker exec -it idevz /bin/bash
+   94  docker ps
+   95  docker commit 3421344fe798
+   96  docker run --rm -it -e OR_ENV=dev --name idevz zhoujing/v run
+   97  docker run --rm -it -e OR_ENV=dev --name idevz zhoujing/v 
+   98  docker exec -it idevz /bin/bash
+   99  docker ps
+  100  docker commit 20ba902b86ad
+  101  docker exec -it idevz /bin/bash
+  102  docker run --rm -it -e OR_ENV=dev --name idevz zhoujing/v run
+  103  docker run --rm -it -e OR_ENV=dev --name idevz zhoujing/v
+  104  docker exec -it idevz /bin/bash
+  105  docker ps
+  106  docker commit efc6777f1c2c
+  107  docker images
+  108  docker exec -it idevz /bin/bash
+  109  docker ps
+  110  docker commit efc6777f1c2c zhoujing/v
+  111  docker images
+  112  docker run --rm -it -e OR_ENV=dev --name idevz zhoujing/v run
+  113  chmod +x builds/dev-or.sh
+  114  chmod +x builds/run/*
+  115  OR_ENV=dev docker run --rm -it -e OR_ENV=dev zhoujing/v luajit_prove
+  116  docker run --rm -it -e OR_ENV=dev --name idevz zhoujing/v run
+  117  docker ps
+  118  docker exec ca3ab5041078
+  119  docker exec -it ca3ab5041078
+  120  docker exec -it ca3ab5041078 /bin/bash
+  121  docker run --rm -it -e OR_ENV=dev --name idevz zhoujing/v
+  122  docker ps
+  123  docker exec -it 1dad870703dd /bin/bash
+  124  docker images --tree
+  125  docker images
+  126  docker history zhoujing/v
+  127  docker images
+  128  docker export 5ab1b4e70620| docker import - zhoujing/v:small
+  129  docker run -d zhoujing/v
+  130  docker ps
+  131  docker export 675d4bff59be| docker import - zhoujing/v:small
+  132  docker images
+  133  docker history 59af6b0ade8f
+  134  docker history 5ab1b4e70620
+  135  docker run -d zhoujing/systemtap
+  136  docker ps
+  137  docker export 3d5e21926d0f3c2731d9ee345368431af0a89f6a8831482ab7ccffc3d6551d9c |docker import - zhoujing/systemtap:small
+  138  docker images
+  139  docker ps
+  140  docker stop 675d4bff59be
+  141  docker ps
+  142  docker rmi f1176c3d7a38
+  143  docker ps
+  144  docker images
+  145  docker run --rm -it --privileged zhoujing/systemtap:small /bin/bash
+  146  ll
+  147  docker build -t zhoujing/t-copy .
+  148  docker build -t zhoujing/t-copy-x -f non.Dockerfile .
+  149  docker images
+  150  docker run --rm -it zhoujing/t-copy-x /bin/bash
+  151  docker ps
+  152  $GIT/weibo-or/or-dktools/
+  153  ll
+  154  docker run --rm -it zhoujing/t-copy /bin/bash
+  155  docker run --rm -it zhoujing/t-copy-x /bin/bash
+  156  uname -r
+  157  docker build -t zhoujing/t-copy .
+  158  docker images
+  159  docker build -t zhoujing/t-copy .
+  160  docker build -t zhoujing/t-copy-x -f non.Dockerfile .
+  161  docker images
+  162  docker build -t zhoujing/t-copy-xx -f more-label.Dockerfile .
+  163  docker images
+  164  docker history zhoujing/t-copy-xx
+  165  docker history zhoujing/v
+  166  docker history zhoujing/v:small
+  167  docker history -all zhoujing/v
+  168  docker history --help
+  169  docker history --no-trunc zhoujing/v
+  170  docker history  zhoujing/v
+  171  ll
+  172  $GIT/weibo-or/or-dktools/builds/pkgs/kernel-rpms/kernel-debuginfo-3.10.0-693.el7.x86_64.rpm
+  173  ll $GIT/weibo-or/or-dktools/builds/pkgs/kernel-rpms/kernel-debuginfo-3.10.0-693.el7.x86_64.rpm
+  174  $GIT/weibo-or/or-dktools/builds/pkgs/kernel-rpms/
+  175  ll
+  176  python -m SimpleHTTPServer
+  177  curl localhost:8000/
+  178  curl -fSL 'http://localhost:8000/kernel-debuginfo-3.10.0-693.el7.x86_64.rpm' -o kernel-debuginfo-3.10.0-693.el7.x86_64.rpm
+  179  ll
+  180  python -m SimpleHTTPServer 80
+  181  python -m SimpleHTTPServer -p 80
+  182  python -m SimpleHTTPServer:80
+  183  python -m SimpleHTTPServer -P 80
+  184  cat /usr/lib64/python2.7/SimpleHTTPServer.py
+  185  vim /usr/lib64/python2.7/SimpleHTTPServer.py
+  186  python -m SimpleHTTPServer -P 80
+  187  vim /usr/lib64/python2.7/BaseHTTPServer.py
+  188  ..
+  189  ll
+  190  python -m SimpleHTTPServer 80
+  191  sudo python -m SimpleHTTPServer 80
+  192  rm -rf
+  193  ll
+  194  rm -rf ./kernel-debuginfo-3.10.0-693.el7.x86_64.rpm
+  195  ll
+  196  ll ./builds/pkgs/kernel-rpms/kernel-debuginfo-3.10.0-693.el7.x86_64.rpm
+  197  curl -fSL 'http://localhost/builds/pkgs/kernel-rpms/kernel-debuginfo-3.10.0-693.el7.x86_64.rpm'
+  198  curl -fSL 'http://localhost/builds/pkgs/kernel-rpms/kernel-debuginfo-3.10.0-693.el7.x86_64.rpm' -o kernel-debuginfo-3.10.0-693.el7.x86_64.rpm
+  199  ll
+  200  ll -h
+  201  docker build -t zhoujing/t-cp -f cp.Dockerfile .
+  202  sudo python -m SimpleHTTPServer 80
+  203  ip addr show
+  204  docker build -t zhoujing/t-wget -f wget.Dockerfile .
+  205  uname -a
+  206  echo hostname
+  207  hostname
+  208  docker build -t zhoujing/t-wget -f wget.Dockerfile .
+  209  curl -fSL 'http://dk/builds/pkgs/kernel-rpms/kernel-debuginfo-3.10.0-693.el7.x86_64.rpm' -o ./xkernel-debuginfo-3.10.0-693.el7.x86_64.rpm
+  210  docker images
+  211  docker run --rm -it zhoujing/t-cp /bin/bash
+  212  ip addr show
+  213  docker build -t zhoujing/t-wget -f wget.Dockerfile .
+  214  docker build --build-arg HOSTNAME=$(hostname) -t zhoujing/t-wget -f wget.Dockerfile .
+  215  docker run --rm -it zhoujing/t-cp /bin/bash
+  216  systemctl stop iptable.service
+  217  sudo systemctl stop iptable.service
+  218  sudo systemctl stop iptables.service
+  219  cat /etc/resolv.conf
+  220  cat cat /etc/docker/daemon.json
+  221  cat /etc/docker/daemon.json
+  222  sudo cat /etc/docker/daemon.json
+  223  nslookup
+  224  systemctl restart firewalld
+  225  cat /etc/firewalld/zones/public.xml
+  226  sudo cat /etc/firewalld/zones/public.xml
+  227  systemctl stop firewalld
+  228  docker build --build-arg HOSTNAME=$(hostname) -t zhoujing/t-wget -f wget.Dockerfile .
+  229  cd /etc/firewalld/
+  230  sudo -s
+  231  docker images
+  232  docker build --build-arg HOSTNAME=$(hostname) -t zhoujing/t-wget-rn -f wget.Dockerfile .
+  233  docker images
+  234  docker -qa
+  235  docker ps -qa
+  236  docker images -qa
+  237  docker images
+  238  docker images -qa | grep -Ev '2868b1aece56|49f7960eb7e4|5ab1b4e70620'
+  239  docker rmi --froce $(docker images -qa | grep -Ev '2868b1aece56|49f7960eb7e4|5ab1b4e70620')
+  240  docker rmi --force $(docker images -qa | grep -Ev '2868b1aece56|49f7960eb7e4|5ab1b4e70620')
+  241  docker images
+  242  docker images -aq
+  243  hostname
+  244  ip addr show
+  245  ifconfig
+  246  ifconfig | awk '/inet addr/{print substr($2,6)}'
+  247  ifconfig | perl -nle 's/dr:(\S+)/print $1/e'
+  248  ifconfig | awk '/inet addr/{print substr($2,6)}'
+  249  /sbin/ifconfig $1 | grep "inet\|inet6" | awk -F' ' '{print $2}' | awk '{print $1}'
+  250  docker run --rm -it zhoujing/t-cp /bin/bash
+  251  docker run --rm -it zhoujing/v /bin/bash
+  252  docker build -t zhoujing/v .
+  253  cat /etc/resolv.conf
+  254  sudo vim /etc/resolv.conf
+  255  docker build -t zhoujing/v .
+  256  sudo vim /etc/resolv.conf
+  257  docker build -t zhoujing/v .
+  258  ping mirrorlist.centos.org
+  259  curl http://mirrorlist.centos.org/\?release\=7\&arch\=x86_64\&repo\=os\&infra\=container
+  260  curl -fsSL get.docker.com -o docker.sh
+  261  curl -fsSL get.docker.com 
+  262  curl -fSL get.docker.com -o docker.sh
+  263  cat /etc/yum.conf
+  264  cat /var/log/yum.log
+  265  sudo cat /var/log/yum.log
+  266  docker build -t zhoujing/v .
+  267  cat /etc/yum.conf
+  268  docker build -t zhoujing/v .
+  269  curl -fsSL get.docker.com 
+  270  docker build -t zhoujing/v .
+  271  docker run --rm -it zhoujing/v /bin/bash
+  272  sudo reboot
+  273  docker run --rm -it zhoujing/v /bin/bash
+  274  sudo systemctl start docker
+  275  docker run --rm -it zhoujing/v /bin/bash
+  276  $GIT/weibo-or/or-dktools/
+  277  ll
+  278  docker build -t zhoujing/v .
+  279  docker build -t zhoujing/v-no .
+  280  $GIT/weibo-or/or-dktools
+  281  sudo python -m SimpleHTTPServer 80
+  282  docker build -t zhoujing/v-no .
+  283  ll
+  284  docker build -t zhoujing/v-no .
+  285  docker images
+  286  docker images -qa
+  287  docker rmi --force $(docker images -qa | grep -Ev '2868b1aece56|49f7960eb7e4|5ab1b4e70620')
+  288  docker build -t zhoujing/v-no .
+  289  systemctl stop firewalld
+  290  docker rmi --force $(docker images -qa | grep -Ev '2868b1aece56|49f7960eb7e4|5ab1b4e70620')
+  291  docker build -t zhoujing/v-no .
+  292  docker run --rm -it zhoujing/v /bin/bash
+  293  systemctl start firewalld
+  294  firewall-cmd --runtime-to-permanent
+  295  sudo firewall-cmd --runtime-to-permanent
+  296  catfirewall-cmd --runtime-to-permanent
+  297  sudo cat /etc/firewalld/zones/public.xml
+  298  sudo vi /etc/firewalld/zones/public.xml
+  299  sudo systemctl restart firewalld
+  300  sudo vi /etc/firewalld/zones/public.xml
+  301  sudo systemctl restart firewalld
+  302  docker build -t zhoujing/v-no .
+  303  docker run --rm -it zhoujing/v /bin/bash
+  304  docker ps
+  305  docker build -t zhoujing/v-no .
+  306  docker images
+  307  docker run --rm -it zhoujing/v-no /bin/bash
+  308  docker run --rm -it zhoujing/v-no -c /bin/bash
+  309  docker run --rm -it zhoujing/v-no
+  310  docker history zhoujing/v-no
+  311  docker history zhoujing/v
+  312  docker history zhoujing/systemtap
+  313  docker build -t zhoujing/v-no .
+  314  docker rmi zhoujing/v-no
+  315  docker build -t zhoujing/v-no .
+  316  docker images
+  317  docker run --rm -it zhoujing/v-no
+  318  docker run --rm -it zhoujing/v-no /bin/bash
+  319  /bin/bash builds/v-or.sh
+  320  ll
+  321  /bin/bash builds/v-or.sh
+  322  pwd
+  323  /bin/bash builds/v-or.sh
+  324  docker rmi zhoujing/v-no
+  325  docker build -t zhoujing/v-no .
+  326  docker images
+  327  docker run --rm -it zhoujing/v-no /bin/bash
+  328  docker run --rm -it zhoujing/v-no
+  329  docker ps
+  330  docker exec -it 4987c85475d2 /bin/bash
+  331  docker build -t zhoujing/v-no-s .
+  332  docker images
+  333  docker run --rm -it --privileged zhoujing/v-no-s /bin/bash
+  334  docker build -t zhoujing/t -f t.Dockerfile .
+  335  docker images
+  336  docker history zhoujing/t
+  337  docker run --rm -it --privileged zhoujing/t /bin/bash
+  338  docker run --rm -it --privileged centos:7 /bin/bash
+  339  docker history zhoujing/t
+  340  docker build -t zhoujing/t -f t.Dockerfile .
+  341  docker history zhoujing/t
+  342  docker images
+  343  $GIT/weibo-or/or-dktools/builds/
+  344  ll
+  345  chmod +x ./*
+  346  ll
+  347  ./centos7-stap.sh
+  348  docker build -t zhoujing/v-no-s .
+  349  docker images
+  350  docker build -t zhoujing/openresty .
+  351  docker images
+  352  docker build --build-arg OR_ENV=dev -t zhoujing/openresty:dev .
+  353  docker build -t zhoujing/openresty .
+  354  docker images
+  355  docker build --build-arg OR_ENV=dev -t zhoujing/openresty:dev .
+  356  8
+  357  docker build --build-arg OR_ENV=dev -t zhoujing/openresty:dev .
+  358  ll
+  359  cd pkgs/zlib-1.2.11
+  360  ./configure --help
+  361  docker build --build-arg OR_ENV=dev -t zhoujing/openresty:dev .
+  362  ..
+  363  ll
+  364  1``````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````
+  365  docker build --build-arg OR_ENV=dev -t zhoujing/openresty:dev .
+  366  tar zxf pcre-8.41.tar.gz
+  367  cd pcre-8.41
+  368  ll
+  369  ./configure --help
+  370  docker build --build-arg OR_ENV=dev -t zhoujing/openresty:dev .
+  371  ll /usr/local/pcre
+  372  ./configure \\
+  373  \t\t\t\t--prefix=/usr/local/pcre \\
+  374  \t\t\t\t--disable-cpp \\
+  375  \t\t\t\t--enable-jit \\
+  376  \t\t\t\t--enable-utf \\
+  377  \t\t\t\t--enable-unicode-properties &&\n\t\t\tmake V=1 &&\n\t\t\tmake install
+  378  sudo ./configure \\
+  379  \t\t\t\t--prefix=/usr/local/pcre \\
+  380  \t\t\t\t--disable-cpp \\
+  381  \t\t\t\t--enable-jit \\
+  382  \t\t\t\t--enable-utf \\
+  383  \t\t\t\t--enable-unicode-properties &&\n\t\t\tmake V=1 &&\n\t\t\tmake install
+  384  ./configure \\
+  385  \t\t\t\t--prefix=/usr/local/pcre \\
+  386  \t\t\t\t--disable-cpp \\
+  387  \t\t\t\t--enable-jit \\
+  388  \t\t\t\t--enable-utf \\
+  389  \t\t\t\t--enable-unicode-properties &&\n\t\t\tmake V=1 &&\n\t\t\tsudo make install
+  390  ll /usr/local/pcre/include
+  391  docker build --build-arg OR_ENV=dev -t zhoujing/openresty:dev .
+  392  cd ..
+  393  ll
+  394  tar zxf openresty-1.13.6.2.tar.gz
+  395  cd openresty-1.13.6.2
+  396  ll
+  397  ./configure --with-cc-opt="-I/usr/local/pcre/include -O0"
+  398  pwd
+  399  ./configure --with-cc-opt="-I/usr/local/pcre/include -O0" --with-pcre=/media/psf/code/z/git/weibo-or/or-dktools/builds/pkgs/pcre-8.41
+  400  docker build --build-arg OR_ENV=dev -t zhoujing/openresty:dev .
+  401  ..
+  402  tar zxf openssl-1.0.2k.tar.gz
+  403  ll
+  404  ./configure --with-cc-opt="-I/usr/local/pcre/include -O0" --with-pcre=/media/psf/code/z/git/weibo-or/or-dktools/builds/pkgs/pcre-8.41 --with-openssl=/media/psf/code/z/git/weibo-or/or-dktools/builds/pkgs/openssl-1.0.2k
+  405  ll /usr/local/
+  406  openresty-1.13.6.2
+  407  ./configure --with-cc-opt="-I/usr/local/pcre/include -O0" --with-pcre=/media/psf/code/z/git/weibo-or/or-dktools/builds/pkgs/pcre-8.41 --with-openssl=/media/psf/code/z/git/weibo-or/or-dktools/builds/pkgs/openssl-1.0.2k
+  408  docker images
+  409  docker run --rm -it zhoujing/openresty:dev /bin/bash
+  410  docker build --build-arg OR_ENV=dev -t zhoujing/openresty:dev .
+  411  docker run --rm -it zhoujing/openresty:dev /bin/bash
+  412  docker build --build-arg OR_ENV=dev -t zhoujing/openresty:dev .
+  413  yum search valgrind*
+  414  yum search valgrind
+  415  docker build --build-arg OR_ENV=dev -t zhoujing/openresty:dev .
+  416  sudo yum install dtrace
+  417  yum search dtrace
+  418  docker build --build-arg OR_ENV=dev -t zhoujing/openresty:dev .
+  419  reboot
+  420  $GIT/weibo-or/or-dktools
+  421  ll
+  422  sudo python -m SimpleHTTPServer 80
+  423  $GIT/weibo-or/or-dktools
+  424  docker build --build-arg OR_ENV=dev -t zhoujing/openresty:dev .
+  425  sudo systemctl start docker
+  426  docker build --build-arg OR_ENV=dev -t zhoujing/openresty:dev .
+  427  ll /etc
+  428  ll /etc/sudoers
+  429  sudo vim  /etc/sudoers
+  430  docker build --build-arg OR_ENV=dev -t zhoujing/openresty:dev .
+  431  docker images
+  432  docker run --rm -it zhoujing/v-no-s /bin/bash
+  433  docker build --build-arg OR_ENV=dev -t zhoujing/openresty:dev .
+  434  docker run --rm -it zhoujing/openresty:dev /bin/bash
+  435  docker rmi zhoujing/openresty:dev
+  436  docker build --build-arg OR_ENV=dev -t zhoujing/openresty:dev .
+  437  sudo python -m SimpleHTTPServer 80
+  438  ps fax
+  439  docker images
+  440  docker run --rm -it zhoujing/openresty:dev /bin/bash
+  441  docker run --rm -it --privileged zhoujing/openresty:dev /bin/bash
+  442  ps fax
+  443  sudo kill 1626
+  444  ps fax
+  445  $GIT/weibo-or/or-dktools
+  446  docker images
+  447  docker build --build-arg OR_ENV=dev -t zhoujing/openresty:dev .
+  448  docker rmi zhoujing/openresty:dev
+  449  docker build --build-arg OR_ENV=dev -t zhoujing/openresty:dev .
+  450  docker images
+  451  docker run --rm -it --privileged zhoujing/v-no-s /bin/bash
+  452  docker build --build-arg OR_ENV=dev -t zhoujing/openresty:dev .
+  453  ps fax
+  454  docker images
+  455  docker run --rm -it --privileged zhoujing/openresty:dev /bin/bash
+  456  ifconfig
+  457  ps fax
+  458  docker ps
+  459  docker exec -it stupefied_ardinghelli
+  460  docker exec -it stupefied_ardinghelli /bin/bash
+  461  docker stop stupefied_ardinghelli
+  462  docker run --rm -it --privileged zhoujing/openresty:dev /bin/bash
+  463  docker run --rm -it --privileged -v $GIT/weibo-or/or-dktools:/tmp zhoujing/openresty:dev /bin/bash
+  464  docker run --rm -it --privileged -v $GIT/weibo-or/or-dktools/tmp:/tmp zhoujing/openresty:dev /bin/bash
+  465  docker images
+  466  docker ps
+  467  docker commit e4f4ed3d0a48 zhoujing/openresty:dev
+  468  dockerk history zhoujing/openresty:dev
+  469  docker history zhoujing/openresty:dev
+  470  docker ps
+  471  docker commit e4f4ed3d0a48 zhoujing/openresty:dev
+  472  ifconfig
+  473  sudo python -m SimpleHTTPServer 80
+  474  history | fire
+  475  history | grep fire
+  476  sudo vim /etc/firewalld/zones/public.xml
+  477  sudo systemctl restart firewalld
+  478  sudo systemctl start docker
+  479  sudo vim /etc/firewalld/zones/public.xml
+  480  sudo systemctl restart firewalld
+  481  sudo vim /etc/firewalld/zones/public.xml
+  482  sudo systemctl restart firewalld
+  483  sudo vim /etc/firewalld/zones/public.xml
+  484  curl -fsSL get.docker.com 
+  485  getenforce
+  486  vim /etc/selinux/config
+  487  setenforce 0
+  488  sudo setenforce 0
+  489  getenforce
+  490  sudo iptables -L
+  491  sudo vim /etc/firewalld/zones/public.xml
+  492  docker run --rm -it --privileged zhoujing/v-no-s /bin/bash
+  493  docker run --rm -it --privileged -v $GIT/weibo-or/or-dktools/tmp:/tmp zhoujing/openresty:dev /bin/bash
+  494  $GIT/weibo-or/or-dktools
+  495  sudo python -m SimpleHTTPServer 80
+  496  history| grep python
+  497  docker images
+  498  cd $GIT/weibo-or/or-dktools/old-school
+  499  ll
+  500  ./bp.sh bt
+  501  docker images
+  502  docker export help
+  503  docker export -help
+  504  docker export --help
+  505  docker export zhoujing/openresty:dev -o $GIT/weibo-or/or-dktools/test.docker
+  506  docker run --rm -it --privileged -v $GIT/weibo-or/or-dktools/tmp:/tmp zhoujing/openresty:dev /bin/bash
+  507  docker run -d --rm -it --privileged -v $GIT/weibo-or/or-dktools/tmp:/tmp zhoujing/openresty:dev
+  508  docker export e909ec3e3c2aa6e394e7ff598ec6b859d942358eadadea1577008d09f30380d9 -o $GIT/weibo-or/or-dktools/test.docker
+  509  docker build -h
+  510  docker build --help
+  511  docker images
+  512  docker run --rm -it --privileged zhoujing/or-tools /bin/bash
+  513  ./bp.sh bt
+  514  $GIT/weibo-or/or-dktools/
+  515  ll
+  516  docker run --rm -it --privileged -v $GIT/weibo-or/or-dktools/tmp:/tmp zhoujing/openresty:dev /bin/bash
+  517  docker build --build-arg OR_ENV=dev -t zhoujing/openresty:dev-t .
+  518  dpkg -l
+  519  lsof
+  520  docker run --rm -it --privileged -v $GIT/weibo-or/or-dktools/tmp:/tmp zhoujing/openresty:dev /bin/bash
+  521  docker build --build-arg OR_ENV=dev -t zhoujing/openresty:dev-t .
+  522  df -h
+  523  du -h
+  524  du -h /
+  525  docker images -qa
+  526  docker ps -qa
+  527  docker images
+  528  docker rmi --force $(docker images -qa | grep -Ev '2868b1aece56|49f7960eb7e4|5ab1b4e70620|183b7fb017ad')
+  529  du -h
+  530  df -h
+  531  ll /
+  532  du -h /tmp
+  533  du -h /usr
+  534  du --help
+  535  du -h / --max-depth=2
+  536  sudo du -h / --max-depth=2
+  537  du -sh
+  538  du -sh /
+  539  sudo du -sh /
+  540  df -h
+  541  docker build --build-arg OR_ENV=dev -t zhoujing/openresty:dev-t .
+  542  docker rmi --force $(docker images -qa | grep -Ev '2868b1aece56|49f7960eb7e4|5ab1b4e70620|183b7fb017ad')
+  543  docker build --build-arg OR_ENV=dev -t zhoujing/openresty:dev-t .
+  544  docker rmi $(docker images -q -f "dangling=true")
+  545  docker images -q -f "dangling=true"
+  546  docker build --build-arg OR_ENV=dev -t zhoujing/openresty:dev-t .
+  547  df -h
+  548  docker build --build-arg OR_ENV=dev -t zhoujing/openresty:dev-t .
+  549  reboot
+  550  $GIT/weibo-or/or-dktools
+  551  docker build --build-arg OR_ENV=dev -t zhoujing/openresty:dev-t .
+  552  $GIT/weibo-or/or-dktools
+  553  sudo python -m SimpleHTTPServer 80
+  554  docker build --build-arg OR_ENV=dev -t zhoujing/openresty:dev-t .
+  555  $GIT/weibo-or/or-dktools
+  556  sudo systemctl start docker
+  557  docker build --build-arg OR_ENV=dev -t zhoujing/openresty:dev-t .
+  558  cat /etc/profile
+  559  docker run --rm -it --privileged -v $GIT/weibo-or/or-dktools/tmp:/tmp zhoujing/openresty:dev /bin/bash
+  560  docker build --build-arg OR_ENV=dev -t zhoujing/openresty:dev-t .
+  561  dh -h
+  562  df -h
+  563  docker rmi $(docker images -q -f "dangling=true")
+  564  du -sh /dev/mapper/VolGroup-lv_root
+  565  ps fax
+  566  docker images
+  567  reboot
+  568  $GIT/weibo-or/or-dktools
+  569  df -h
+  570  sudo systemctl start docker
+  571  $GIT/weibo-or/or-dktools
+  572  sudo python -m SimpleHTTPServer 80
+  573  docker images
+  574  docker rmi zhoujing/systemtap
+  575  docker rmi --force zhoujing/systemtap
+  576  df -h
+  577  docker build --build-arg OR_ENV=dev -t zhoujing/openresty:dev-t .
+  578  df -h
+  579  docker rmi $(docker images -q -f "dangling=true")
+  580  docker ps
+  581  docker ps -aq
+  582  docker ps -aq -f"dangling=true"
+  583  docker ps -aq -f "dangling=true"
+  584  docker rmi --force $(docker ps -qa)
+  585  docker rm --force $(docker ps -qa)
+  586  df -h
+  587  docker images
+  588  docker build --build-arg OR_ENV=dev -t zhoujing/openresty:dev-t .
+  589  ps fax
+  590  cat /etc/services 
+  591  ps fax
+  592  cat /var/run/docker/containerd/containerd.toml
+  593  sudo cat /var/run/docker/containerd/containerd.toml
+  594  ls /var/lib/docker/runc
+  595  sudo ls /var/lib/docker/runc
+  596  cat /etc/sysctl.d/99-sysctl.conf
+  597  ll /etc/docker
+  598  sudo ll /etc/docker
+  599  sudo ls /etc/docker
+  600  sudo ls /etc/docker/key.json
+  601  sudo cat /etc/docker/key.json
+  602  cat /etc/systemd/system/dbus-org.fedoraproject.FirewallD1.service
+  603  ls /etc/systemd/system/
+  604  ls /etc/systemd/
+  605  ls /etc/systemd/user/
+  606  ls /etc/systemd
+  607  cat /etc/systemd/coredump.conf
+  608  find /etc -name docker
+  609  sudo find /etc -name docker
+  610  sudo ll /etc/docker
+  611  sudo ls /etc/docker
+  612  find /etc -name docker.service
+  613  sudo find /etc -name docker.service
+  614  ps aux
+  615  ps -efwww
+  616  ps -efwww | grep docker
+  617  cat /var/run/docker/containerd/containerd.toml
+  618  sudo cat /var/run/docker/containerd/containerd.toml
+  619  docker images
+  620  docker run --rm -it --privileged zhoujing/openresty:dev-t /bin/bash
+  621  docker run --rm -it --privileged -v $GIT/weibo-or/or-dktools/tmp:/tmp zhoujing/openresty:dev-t /bin/bash
+  622  ll /etc/systemd
+  623  vim /etc/systemd/coredump.conf
+  624  sudo vim /etc/systemd/coredump.conf
+  625  sudo systemctl restart systemd
+  626  $GIT/weibo-or/or-dktools
+  627  cd old-school
+  628  ./bp.sh bt
+  629  docker run --rm -it --privileged zhoujing/or-tools /bin/bash
+  630  docker ps
+  631  docker commit 3689665d6f27 zhoujing/openresty:dev-t
+  632  docker commit 52d1ce9ff92e zhoujing/or-tools
+  633  docker images
+  634  docker build --build-arg OR_ENV=dev -t zhoujing/openresty:dev-x .
+  635  sudo python -m SimpleHTTPServer 80
+  636  docker build --build-arg OR_ENV=dev -t zhoujing/openresty:dev-x .
+  637  docker run --rm -it --privileged -v $GIT/weibo-or/or-dktools/tmp:/tmp zhoujing/openresty:dev-x /bin/bash
+  638  docker images
+  639  docker run --rm -it --privileged -v $GIT/weibo-or/or-dktools/tmp:/tmp zhoujing/openresty:dev-x /bin/bash
+  640  docker images
+  641  docker rmi zhoujing/openresty:dev
+  642  docker build --build-arg OR_ENV=dev -t zhoujing/openresty:dev .
+  643  docker run --rm -it --privileged -v $GIT/weibo-or/or-dktools/tmp:/tmp zhoujing/openresty:dev /bin/bash
+  644  docker run --rm -it --privileged -v $GIT/weibo-or/or-dktools/tmp:/tmp zhoujing/openresty:dev luacheck
+  645  docker run --rm -it --privileged -v $GIT/weibo-or/or-dktools/tmp:/tmp zhoujing/openresty:dev . /etc/profile 
+  646  docker run --rm -it --privileged -v $GIT/weibo-or/or-dktools/tmp:/tmp zhoujing/openresty:dev '/etc/profile'
+  647  docker run --rm -it --privileged -v $GIT/weibo-or/or-dktools/tmp:/tmp zhoujing/openresty:dev '. /etc/profile'
+  648  docker run --rm -it --privileged -v $GIT/weibo-or/or-dktools/tmp:/tmp zhoujing/openresty:dev 'source /etc/profile'
+  649  docker run --rm -it --privileged -v $GIT/weibo-or/or-dktools/tmp:/tmp zhoujing/openresty:dev '//usr/local/luajit/bin/luacheck'
+  650  docker run --rm -it --privileged -v $GIT/weibo-or/or-dktools/tmp:/tmp zhoujing/openresty:dev '//usr/local/luajit/bin/luacheck /tmp/vanilla'
+  651  docker run --rm -it --privileged -v $GIT/weibo-or/or-dktools/tmp:/tmp zhoujing/openresty:dev '//usr/local/luajit/bin/luacheck'
+  652  docker run --rm -it --privileged -v $GIT/weibo-or/or-dktools/tmp:/tmp zhoujing/openresty:dev '//usr/local/luajit/bin/luacheck' /tmp/vanilla
+  653  ll
+  654  $GIT/weibo-or/motan-openresty
+  655  docker run --rm -it -v $GIT/weibo-or/motan-openresty:/tmp/motan zhoujing/openresty:dev '//usr/local/luajit/bin/luacheck' /tmp/motan
+  656  docker run --rm -it -v $GIT/weibo-or/motan-openresty:/tmp/motan -w /tmp/motan zhoujing/openresty:dev '//usr/local/luajit/bin/luacheck' /tmp/motan
+  657  docker run --rm -it -v $GIT/weibo-or/motan-openresty:/tmp/motan -w /tmp/motan zhoujing/openresty:dev '//usr/local/luajit/bin/luacheck'
+  658  docker run --rm -it -v $GIT/weibo-or/motan-openresty:/tmp/motan -w /tmp/motan zhoujing/openresty:dev '//usr/local/luajit/bin/luacheck' .
+  659  docker build --build-arg OR_ENV=dev -t zhoujing/openresty:dev .
+  660  curl baidu.com
+  661  ip l
+  662  ip r
+  663  ip addr show
+  664  ll /etc/rc.local
+  665  vi /etc/rc.local
+  666  vi /var/lock/subsys/local
+  667  vi /etc/rc.local
+  668  ip r
+  669  cat /var/lock/subsys/local
+  670  mtr    baidu.com
+  671  sudo mtr    baidu.com
+  672  dig baidu.com
+  673  ifconfig
+  674  ip r
+  675  docker run --rm -it -v $GIT/weibo-or/motan-openresty:/tmp/motan -w /tmp/motan zhoujing/openresty:dev '//usr/local/luajit/bin/luacheck' .
+  676  docker run --rm -it -v $GIT/weibo-or/motan-openresty:/tmp/motan -w /tmp/motan zhoujing/openresty:dev /bin/bash
+  677  ls
+  678  docker ps
+  679  sudo su - 
+  680  docker ps 
+  681  docker images
+  682  sysctl sys.ipv4.ip_forward
+  683  sysctl kernel.ipv4.ip_forward
+  684  sysctl net.ipv4.ip_forward
+  685  sysctl net.ipv4.ip_forward 1
+  686  sysctl  net.ipv4.ip_forward=1
+  687  sudo sysctl  net.ipv4.ip_forward=1
+  688  docker run --rm -it -v $GIT/weibo-or/motan-openresty:/tmp/motan -w /tmp/motan zhoujing/openresty:dev /bin/bash
+  689  docker build --build-arg OR_ENV=dev -t zhoujing/openresty:dev .
+  690  sysctl net.ipv4.ip_forward
+  691  docker ps
+  692  ls
+  693  exit
+  694  sudo sysctl  net.ipv4.ip_forward
+  695  sudo sysctl  net.ipv4.ip_forward=1
+  696  sudo sysctl  net.ipv4.ip_forward
+  697  docker images
+  698  docker run --rm -it /bin/bash
+  699  docker run --rm -it centos:7 /bin/bash
+  700  ````
+  701  docker images
+  702  docker history zhoujing/openresty:dev
+  703  docker run --rm -it -v $GIT/weibo-or/motan-openresty:/tmp/motan -w /tmp/motan zhoujing/openresty:dev /bin/bash
+  704  docker run --rm -it -v $GIT/weibo-or/motan-openresty:/tmp/motan -w /tmp/motan zhoujing/openresty:dev '//usr/local/luajit/bin/luacheck' .
+  705  docker run --rm -it -v $GIT/weibo-or/motan-openresty:/tmp/motan -w /tmp/motan zhoujing/openresty:dev luacheck .
+  706  ll
+  707  sudo -s
+  708  $GIT/weibo-or/or-dktools
+  709  sudo python -m SimpleHTTPServer 80
+  710  ps afx
+  711  ldattach 22761
+  712  ifconfig
+  713  ps fax
+  714  sudo python -m SimpleHTTPServer 80
+  715  docker ps
+  716  docker stop 52d1ce9ff92e 0bcdca7d75a0
+  717  df -h
+  718  docker ps
+  719  history | grep docker  | grep run
+  720  docker images
+  721  history | grep docker  | grep run| grep zhoujing/or-tools
+  722  docker run --rm -it --privileged zhoujing/or-tools /bin/bash
+  723  docker run --rm -it --privileged -v $GIT/weibo-or/or-dktools/tmp/:/tmp/ zhoujing/or-tools /bin/bash
+  724  sysctl net.ip_forward
+  725  history
+  726  sysctl net.ipv4.ip_forward
+  727  sysctl net.ipv4.ip_forward=1
+  728  sudo sysctl net.ipv4.ip_forward=1
+  729  docker ps
+  730  docker stop b4369f066445
+  731  docker run --rm -it --privileged -v $GIT/weibo-or/or-dktools/tmp/:/tmp/ zhoujing/or-tools /bin/bash
+  732  docker run --rm -it --privileged zhoujing/or-tools /bin/bash
+  733  docker stop b4369f066445
+  734  docker ps
+  735  docker run --rm -it --privileged -v $GIT/weibo-or/or-dktools/tmp/:/tmp/ zhoujing/or-tools /bin/bash
+  736  docker run --rm -it --privileged -v $GIT/weibo-or/or-dktools/tmp/:/fuck/ zhoujing/or-tools /bin/bash
+  737  docker run --rm -it --privileged zhoujing/or-tools /bin/bash
+  738  docker run --rm -it --privileged -v $GIT/weibo-or/or-dktools/tmp/:/fuck/ zhoujing/or-tools /bin/bash
+  739  cd /media/psf/code/z/git/weibo-or/or-dktools/builds/pkgs
+  740  ll
+  741  cd kernel-40
+  742  ll
+  743  rpm -pql kernel-debuginfo-common-x86_64-3.10.0-229.el7.x86_64.rpm
+  744  ll
+  745  rpm -pql kernel-debuginfo-3.10.0-229.el7.x86_64.rpm
+  746  ll
+  747  rpm -pql kernel-3.10.0-229.el7.x86_64.rpm
+  748  yum list 'kernel*'
+  749  stap -v -e 'probe vfs.read {printf("read performed\n"); exit()}'
+  750  sudo stap -v -e 'probe vfs.read {printf("read performed\n"); exit()}'
+  751  ../../
+  752  ll
+  753  ..
+  754  cd builds
+  755  ll
+  756  ./centos7-stap.sh
+  757  KERNEL_VERSION=3.10.0-229.el7.x86_64 ./centos7-stap.sh
+  758  ./centos7-stap.sh
+  759  KERNEL_VERSION=3.10.0-229.el7.x86_64x ./centos7-stap.sh
+  760  KERNEL_VERSION=x3.10.0-229.el7.x86_64 ./centos7-stap.sh
+  761  uname -r
+  762  KERNEL_VERSION=ffffx3.10.0-229.el7.x86_64 ./centos7-stap.sh
+  763  KERNEL_VERSION=ffff ./centos7-stap.sh
+  764  ll
+  765  ll -all
+  766  KERNEL_VERSION=ffff ./centos7-stap.sh
+  767  ..
+  768  chmod +x builds/.kernel-url-conf.sh
+  769  builds/centos7-stap.sh
+  770  docker images
+  771  docker build zhoujing/stap -f docker/stap.Dockerfile .
+  772  docker build -t zhoujing/stap -f docker/stap.Dockerfile .
+  773  chmod +x builds/stap.sh
+  774  docker build -t zhoujing/stap -f docker/stap.Dockerfile .
+  775  cd builds
+  776  ./stap.sh
+  777  ll /media/psf/code/z/git/weibo-or/or-dktools/builds/common/base.sh
+  778  ./stap.sh
+  779  ..
+  780  ./builds/stap.sh
+  781  docker build -t zhoujing/stap -f docker/stap.Dockerfile ./docker
+  782  cd builds
+  783  ll
+  784  docker build -t zhoujing/stap -f docker/stap.Dockerfile .
+  785  docker run --rm -it zhoujing/stap /bin/bash
+  786  ./scripts/stap.sh
+  787  ./scripts/stap.sh fuck
+  788  ./scripts/stap.sh
+  789  ./scripts/stap.sh fuck
+  790  ./scripts/stap.sh fuck 1 2
+  791  ./scripts/stap.sh fuck 1 2 3
+  792  ..
+  793  ll
+  794  chmod +x run.sh
+  795  sysctl net.ipv4.ip_forward
+  796  sysctl net.ipv4.ip_forward=0
+  797  sudo sysctl net.ipv4.ip_forward=0
+  798  docker run --rm -it centos:7 /bin/bash
+  799  sudo sysctl net.ipv4.ip_forward=1
+  800  docker run --rm -it centos:7 /bin/bash
+  801  history| grep fir
+  802  ./run.sh 
+  803  ./run.sh build_stap
+  804  docker images
+  805  docker history zhoujing/stap
+  806  ./run.sh build_stap
+  807  ./run.sh
+  808  ./run.sh build_stap
+  809  ./run.sh install_stap
+  810  ll /media/psf/code/z/git/weibo-or/or-dktools/builds/scripts/stap.sh
+  811  ./run.sh install_stap
+  812  ll /media/psf/code/z/git/weibo-or/or-dktools/builds/common/base
+  813  cd builds
+  814  ./run.sh build_stap
+  815  ./run.sh install_stap
+  816  ll /media/psf/code/z/git/weibo-or/or-dktools/builds/common/base
+  817  ..
+  818  ./drun.sh build_stap
+  819  ./drun.sh start_fs
+  820  chmod +x start_local_file_server.sh
+  821  ./start_local_file_server.sh
+  822  ll
+  823  ./drun.sh build_stap
+  824  GFW=true ./drun.sh build_stap
+  825  sysctl net.ipv4.ip_forward
+  826  sudo sysctl net.ipv4.ip_forward=1
+  827  GFW=true ./drun.sh build_stap
+  828  sysctl net.ipv4.ip_forward
+  829  docker run --rm -it --privileged zhoujing/stap /bin/bash
+  830  docker images
+  831  docker run --rm -it --privileged zhoujing/stap /bin/bash
+  832  docker ps
+  833  docker commit 8cf6fde8269b zhoujing/stap:prove
+  834  docker ps
+  835  docker commit 8cf6fde8269b zhoujing/stap:perl
+  836  docker images
+  837  docker run --rm -it --privileged zhoujing/stap /bin/bash
+  838  docker ps 
+  839  docker commit e243d27c9439 zhoujing/stap:perl-d
+  840  docker images
+  841  df -h
+  842  ./drun.sh build_stap
+  843  ps fax
+  844  ./drun.sh build_stap 
+  845  sudo reboot
+  846  $GIT/weibo-or/or-dktools
+  847  ps fax
+  848  ll
+  849  ./drun.sh build_stap 
+  850  ./drun.sh build_stap zhoujing/stap:inline
+  851  sudo systemctl start docker
+  852  ./drun.sh build_stap zhoujing/stap:inline
+  853  sysctl net.ipv4.ip_forward
+  854  docker run --rm -it --privileged zhoujing/stap /bin/bash
+  855  ./drun.sh build_stap zhoujing/stap:inline
+  856  yum install https://buildlogs.centos.org/c7.1708.00/kernel/20170822030048/3.10.0-693.el7.x86_64/kernel-3.10.0-693.el7.x86_64.rpm
+  857  sudo yum install https://buildlogs.centos.org/c7.1708.00/kernel/20170822030048/3.10.0-693.el7.x86_64/kernel-3.10.0-693.el7.x86_64.rpm
+  858  ./drun.sh build_stap zhoujing/stap:inline
+  859  sudo shutdown now
+  860  $GIT/weibo-or/or-dktools
+  861  sudo systemctl start docker
+  862  ./drun.sh build_stap zhoujing/stap:inline
+  863  docker run --rm -it --privileged zhoujing/stap /bin/bash
+  864  yum install --nogpgcheck -y https://buildlogs.centos.org/c7.1708.00/kernel/20170822030048/3.10.0-693.el7.x86_64/kernel-3.10.0-693.el7.x86_64.rpm
+  865  sudo yum install --nogpgcheck -y https://buildlogs.centos.org/c7.1708.00/kernel/20170822030048/3.10.0-693.el7.x86_64/kernel-3.10.0-693.el7.x86_64.rpm
+  866  ll
+  867  docker images
+  868  docker rmi $(docker images -q -f "dangling=true")
+  869  docker images
+  870  docker run --rm -it --privileged zhoujing/stap:inline /bin/bash
+  871  ./drun.sh build_stap zhoujing/stap:inline
+  872  GFW=true OR_ENV=debug ./drun.sh build_or
+  873  docker build --help
+  874  ./drun.sh build_stap zhoujing/stap:inline
+  875  GFW=true OR_ENV=debug ./drun.sh build_or
+  876  docker build --build-arg GFW=true OR_ENV=debug DOCKER=true -t zhoujing/or -f /media/psf/code/z/git/weibo-or/or-dktools/builds/docker/or.Dockerfile /media/psf/code/z/git/weibo-or/or-dktools/builds
+  877  GFW=true OR_ENV=debug ./drun.sh build_stap
+  878  GFW=true OR_ENV=debug ./drun.sh build_or
+  879  ll scripts/common/or-install
+  880  ll builds/scripts/common/or-install
+  881  chmod +x  builds/scripts/common/or-install
+  882  GFW=true OR_ENV=debug ./drun.sh build_or
+  883  $GIT/weibo-or/or-dktools-pkgs
+  884  ll
+  885  ./start_local_file_server.sh
+  886  GFW=true OR_ENV=debug ./drun.sh build_or
+  887  ./builds/scripts/v-or.sh
+  888  GFW=true OR_ENV=debug ./drun.sh build_or
+  889  curl 172.17.0.1
+  890  curl 172.17.0.1/pkgs
+  891  curl 'http://172.17.0.1/pkgs'
+  892  curl 'http://172.17.0.1/pkgs/'
+  893  GFW=true ./drun.sh build_or
+  894  sysctl net.ipv4.ip_forward
+  895  sudo sysctl net.ipv4.ip_forward=1
+  896  GFW=true ./drun.sh build_or
+  897  GFW=true OR_ENV=debug ./drun.sh build_or
+  898  sudo sysctl net.ipv4.ip_forward=1
+  899  docker run --rm -it --privileged zhoujing/stap /bin/bash
+  900  sudo sysctl net.ipv4.ip_forward=0
+  901  docker run --rm -it --privileged zhoujing/stap /bin/bash
+  902  sudo sysctl net.ipv4.ip_forward=1
+  903  systemctl stop firewalld
+  904  docker run --rm -it --privileged zhoujing/stap /bin/bash
+  905  sysctl net.ipv4.ip_forward=0
+  906  sysctl net.ipv4.ip_forward
+  907  docker run --rm -it --privileged zhoujing/stap /bin/bash
+  908  sysctl net.ipv4.ip_forward
+  909  getenforce
+  910  setenforce 0
+  911  sudo setenforce 0
+  912  getenforce
+  913  docker run --rm -it --privileged zhoujing/stap /bin/bash
+  914  ls
+  915  sudo su -
+  916  sudo systemctl restart docker
+  917  docker run --rm -it --privileged zhoujing/stap /bin/bash
+  918  service  docker status
+  919  cat /usr/lib/systemd/system/docker.service
+  920  cd ll
+  921  echo ??
+  922  echo $?
+  923  cd ll
+  924  echo $?
+  925  cd ll && echo ""
+  926  echo $?
+  927  l
+  928  exit
+  929  GFW=true OR_ENV=debug ./drun.sh build_or
+  930  cd builds/
+  931  ll
+  932  ./scripts/entrypoint.sh
+  933  ./scripts/entrypoint.sh ll
+  934  ./scripts/entrypoint.sh ls
+  935  ..
+  936  ll
+  937  RESTY_J=4 GFW=true OR_ENV=debug ./drun.sh build_or
+  938  $GIT/weibo-or/or-dktools
+  939  ./drun.sh build_or
+  940  info bash
+  941  RESTY_J=4 GFW=true OR_ENV=debug ./drun.sh build_or
+  942  df -h
+  943  docker rm --force $(docker ps -qa)
+  944  docker rmi $(docker images -q -f "dangling=true")
+  945  docker rmi --force $(docker images -q -f "dangling=true")
+  946  df -h
+  947  RESTY_J=4 GFW=true OR_ENV=debug ./drun.sh build_or
+  948  sysctl net.ipv4.ip_forward
+  949  sudo sysctl net.ipv4.ip_forward=1
+  950  RESTY_J=4 GFW=true OR_ENV=debug ./drun.sh build_or
+  951  docker images
+  952  docker run --rm -it --privileged zhoujing/or:debug /bin/bash
+  953  docker run --rm -it --privileged zhoujing/or:debug luacheck
+  954  cd ../jerry-server-openresty
+  955  ll
+  956  docker run --rm -it --privileged -v ./:/tmp -w /tmp zhoujing/or:debug luacheck
+  957  docker run --rm -it --privileged -v `pwd`:/tmp -w /tmp zhoujing/or:debug luacheck
+  958  docker run --rm -it --privileged -v `pwd`:/tmp -w /tmp zhoujing/or:debug luacheck .
+  959  docker push zhoujing/or:debug
+  960  docker run --rm -it --privileged -v `pwd`:/tmp -w /tmp zhoujing/or:debug luacheck .
+  961  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/or:debug luacheck .
+  962  GFW=true STAP=true RESTY_J=4 OR_ENV=debug ./drun.sh build_or zhoujing/or-stap
+  963  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/or:debug luacheck .
+  964  ../motan-openresty
+  965  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/or:debug luacheck .
+  966  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/or:debug luajit_prove .
+  967  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/or:debug luajit_prove ./t
+  968  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/or:debug luacheck .
+  969  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/or:debug run -c c.conf
+  970  docker images
+  971  docker run --rm -it --privileged -v `pwd`:/tmp -w /tmp zhoujing/or-stap:debug /bin/bash
+  972  docker images
+  973  docker tag zhoujing/or:debug registry.api.weibo.com/openapi_rd/openresty:debug
+  974  docker push registry.api.weibo.com/openapi_rd/openresty:debug
+  975  docker login -u zhoujing2 -p "ZHOUjingK49…PHP" registry.api.weibo.com
+  976  docker push registry.api.weibo.com/openapi_rd/openresty:debug
+  977  docker run --rm -it -v `pwd`:/tmp -w /tmp registry.api.weibo.com/openapi_rd/openresty:debug luacheck .
+  978  sudo sysctl net.ipv4.ip_forward
+  979  sudo sysctl net.ipv4.ip_forward=1
+  980  docker run --rm -it -v `pwd`:/tmp -w /tmp registry.api.weibo.com/openapi_rd/openresty:debug luacheck .
+  981  prove
+  982  yum install perl-ExtUtils-Embed
+  983  sudo yum install -y perl-ExtUtils-Embed
+  984  sudo yum-config-manager --add-repo http://mirrors.163.com/.help/CentOS7-Base-163.repo &&  yum install -y perl-ExtUtils-Embed
+  985  sudo yum-config-manager --add-repo http://mirrors.163.com/.help/CentOS7-Base-163.repo &&  sudo yum install -y perl-ExtUtils-Embed
+  986  sudo yum install -y perl-ExtUtils-Embed
+  987  prove
+  988  cpanm
+  989  perl -MCPAN -e shell
+  990  perl -MCPAN -e shell                    install Test::Nginx::Util
+  991  perl -MCPAN -e shell                  
+  992  perl -MCPAN -e shell
+  993  yum install cpanm
+  994  sudo yum install cpanm
+  995  docker ps
+  996  sudo sysctl net.ipv4.ip_forward
+  997  sudo sysctl net.ipv4.ip_forward=1
+  998  docker images
+  999  docker ps
+ 1000  docker run --rm -it -v `pwd`:/tmp -w /tmp registry.api.weibo.com/openapi_rd/openresty:debug luacheck .
+ 1001  docker run --rm -it -v `pwd`:/tmp -w /tmp registry.api.weibo.com/openapi_rd/openresty:debug /bin/bash
+ 1002  sudo sysctl net.ipv4.ip_forward
+ 1003  docker ps
+ 1004  sudo shutdown now
+ 1005  docker ps
+ 1006  sudo systemctl restart docker
+ 1007  docker images
+ 1008  $GIT/weibo-or/motan-openresty
+ 1009  docker run --rm -it -v `pwd`:/tmp -w /tmp registry.api.weibo.com/openapi_rd/openresty:debug /bin/bash
+ 1010  sudo sysctl net.ipv4.ip_forward
+ 1011  docker ps
+ 1012  docker exec -it 392cefa30f3b /bin/bash
+ 1013  docker run --rm -it -v `pwd`:/tmp -w /tmp registry.api.weibo.com/openapi_rd/openresty:debug /bin/bash
+ 1014  docker ps
+ 1015  docker images
+ 1016  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/v /bin/bash
+ 1017  docker run --rm -it -v `pwd`:/tmp -w /tmp centos:7 /bin/bash
+ 1018  docker ps
+ 1019  docker commit ef4fd82f4e0e test
+ 1020  docker images
+ 1021  docker rmi test
+ 1022  $GIT/weibo-or/or-dktools
+ 1023  $GIT/weibo-or/or-dktools-pkgs
+ 1024  ./start_local_file_server.sh
+ 1025  $GIT/weibo-or/or-dktools
+ 1026  ll
+ 1027  RESTY_J=4 GFW=true OR_ENV=debug ./drun.sh build_or
+ 1028  docker imgages
+ 1029  docker images
+ 1030  RESTY_J=4 GFW=true OR_ENV=debug ./drun.sh build_or
+ 1031  docker run --rm -it -v `pwd`:/tmp -w /tmp centos:7 /bin/bash
+ 1032  RESTY_J=4 GFW=true OR_ENV=debug ./drun.sh build_or
+ 1033  docker ps
+ 1034  docker run --rm -it zhoujing/or:debug /bin/bash
+ 1035  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/or:debug /bin/bash
+ 1036  docker images
+ 1037  RESTY_J=4 GFW=true OR_ENV=debug ./drun.sh build_or
+ 1038  docker images
+ 1039  OR_BASE_IMGE=zhoujing/or OR_ENV=debug ./drun.sh build_open_motan
+ 1040  chmod +x builds/scripts/or-motan.sh
+ 1041  chmod +x builds/scripts/common/motan-openresty
+ 1042  OR_BASE_IMGE=zhoujing/or OR_ENV=debug ./drun.sh build_open_motan
+ 1043  docker imgages
+ 1044  docker images
+ 1045  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/or-motan:debug /bin/bash
+ 1046  OR_BASE_IMGE=zhoujing/or OR_ENV=debug ./drun.sh build_open_motan
+ 1047  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/or-motan:debug /bin/bash
+ 1048  OR_BASE_IMGE=zhoujing/or OR_ENV=debug ./drun.sh build_open_motan
+ 1049  docker images
+ 1050  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/or-motan:debug /bin/bash
+ 1051  OR_BASE_IMGE=zhoujing/or OR_ENV=debug ./drun.sh build_open_motan
+ 1052  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/or-motan:debug /bin/bash
+ 1053  OR_BASE_IMGE=zhoujing/or OR_ENV=debug ./drun.sh build_open_motan
+ 1054  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/or-motan:debug /bin/bash
+ 1055  OR_BASE_IMGE=zhoujing/or OR_ENV=debug ./drun.sh build_open_motan
+ 1056  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/or-motan:debug /bin/bash
+ 1057  OR_BASE_IMGE=zhoujing/or OR_ENV=debug ./drun.sh build_open_motan
+ 1058  docker images
+ 1059  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/or-motan:debug /bin/bash
+ 1060  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/or-motan:debug luajit_prove t/
+ 1061  docker images
+ 1062  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/or-motan:debug /bin/bash
+ 1063  docker history zhoujing/or-motan:debug
+ 1064  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/or-motan:debug /bin/bash
+ 1065  IGLB="PRIVATE-TOKEN: kMT_Czwx_Y7NgtGosqGj" OPEN=not OR_BASE_IMGE=zhoujing/or OR_ENV=debug ./drun.sh build_motan
+ 1066  ..
+ 1067  ll
+ 1068  cd weibo-motan
+ 1069  ll
+ 1070  IGLB="PRIVATE-TOKEN: kMT_Czwx_Y7NgtGosqGj" OPEN=not OR_BASE_IMGE=zhoujing/or OR_ENV=debug ./drun.sh build_motan
+ 1071  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/or-wmotan:debug /bin/bash
+ 1072  IGLB="PRIVATE-TOKEN: kMT_Czwx_Y7NgtGosqGj" OPEN=not OR_BASE_IMGE=zhoujing/or OR_ENV=debug ./drun.sh build_motan
+ 1073  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/or-wmotan:debug luajit_prove t/
+ 1074  docker images
+ 1075  docker rmi --force $(docker images -q -f "dangling=true")
+ 1076  docker ps
+ 1077  docker rmi --force $(docker images -q -f "dangling=true")
+ 1078  docker rm --force $(docker ps -qa)
+ 1079  docker images
+ 1080  docker tag zhoujing/or-motan:debug registry.api.weibo.com/openapi_rd/or-motan:debug
+ 1081  docker tag zhoujing/or-wmotan:debug registry.api.weibo.com/openapi_rd/or-wmotan:debug
+ 1082  docker push registry.api.weibo.com/openapi_rd/or-motan:debug
+ 1083  docker push registry.api.weibo.com/openapi_rd/or-wmotan:debug
+ 1084  docker push registry.api.weibo.com/openapi_rd/or-motan:debug
+ 1085  sudo sysctl net.ipv4.ip_forward
+ 1086  docker push registry.api.weibo.com/openapi_rd/or-motan:debug
+ 1087  sudo sysctl net.ipv4.ip_forward
+ 1088  docker push registry.api.weibo.com/openapi_rd/or-wmotan:debug
+ 1089  docker push registry.api.weibo.com/openapi_rd/or-motan:debug
+ 1090  docker images
+ 1091  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/or-wmotan:debug /bin/bash
+ 1092  sudo sysctl net.ipv4.ip_forward
+ 1093  sudo sysctl net.ipv4.ip_forward=1
+ 1094  sudo sysctl net.ipv4.ip_forward
+ 1095  ../motan-openresty
+ 1096  l
+ 1097  docker build -t zhoujing/small-or:debug -f builds/docker/smaller/or-motan.Dockerfile ./builds
+ 1098  docker login
+ 1099  docker build -t zhoujing/small-or:debug -f builds/docker/smaller/or-motan.Dockerfile ./builds
+ 1100  docker images
+ 1101  docker build -t zhoujing/small-or:debug -f builds/docker/smaller/or-motan.Dockerfile ./builds
+ 1102  docker pull zhoujing/or-wmotan:debug
+ 1103  docker push registry.api.weibo.com/openapi_rd/or-motan:debug
+ 1104  docker push registry.api.weibo.com/openapi_rd/or-wmotan:debug
+ 1105  docker push zhoujing/or-wmotan:debug
+ 1106  docker build -t zhoujing/small-or:debug -f builds/docker/smaller/or-motan.Dockerfile ./builds
+ 1107  docker pull registry.api.weibo.com/openapi_rd/or-wmotan:debug
+ 1108  docker build -t zhoujing/small-or:debug -f builds/docker/smaller/or-motan.Dockerfile ./builds
+ 1109  docker login -u zhoujing2 -p "ZHOUjingK49…PHP" registry.api.weibo.com
+ 1110  docker build -t zhoujing/small-or:debug -f builds/docker/smaller/or-motan.Dockerfile ./builds
+ 1111  docker login -u zhoujing2 -p "ZHOUjingK49…PHP" registry.api.weibo.com
+ 1112  docker login -u zhoujing2 -p "ZHOUjingK49…PHPx" registry.api.weibo.com
+ 1113  docker login -u zhoujing2 -p "ZHOUjingK49…PHP" registry.api.weibo.com
+ 1114  docker images
+ 1115  docker build -t zhoujing/small-or:debug -f builds/docker/smaller/or-motan.Dockerfile ./builds
+ 1116  docker pull zhoujing/or-wmotan:debug
+ 1117  docker build -t zhoujing/small-or:debug -f builds/docker/smaller/or-motan.Dockerfile ./builds
+ 1118  docker pull registry.api.weibo.com/openapi_rd/or-wmotan:debug
+ 1119  docker pull zhoujing/or-wmotan:debug
+ 1120  docker push zhoujing/or-wmotan:debug
+ 1121  df -h
+ 1122  docker images
+ 1123  uname -r
+ 1124  /media/psf/code/z/git/weibo-or/or-dktools
+ 1125  docker build -t zhoujing/small-or:debug -f builds/docker/smaller/or-motan.Dockerfile ./builds
+ 1126  sudo sysctl net.ipv4.ip_forward
+ 1127  sudo sysctl net.ipv4.ip_forward=1
+ 1128  docker build -t zhoujing/small-or:debug -f builds/docker/smaller/or-motan.Dockerfile ./builds
+ 1129  docker build --pull -t zhoujing/small-or:debug -f builds/docker/smaller/or-motan.Dockerfile ./builds
+ 1130  docker build -t zhoujing/small-or:debug -f builds/docker/smaller/or-motan.Dockerfile ./builds
+ 1131  docker build -t zhoujing/small-or:debug -f /media/psf/code/z/git/weibo-or/or-dktools/builds/docker/smaller/or-motan.Dockerfile /media/psf/code/z/git/weibo-or/or-dktools/builds
+ 1132  sudo sysctl net.ipv4.ip_forward
+ 1133  docker build -t zhoujing/small-or:debug -f /media/psf/code/z/git/weibo-or/or-dktools/builds/docker/smaller/or-motan.Dockerfile /media/psf/code/z/git/weibo-or/or-dktools/builds
+ 1134  docker images
+ 1135  docker build -t zhoujing/small-or:debug -f /media/psf/code/z/git/weibo-or/or-dktools/builds/docker/smaller/or-motan.Dockerfile /media/psf/code/z/git/weibo-or/or-dktools/builds
+ 1136  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/or-wmotan:debug /bin/bash
+ 1137  docker build -t zhoujing/small-or:debug -f /media/psf/code/z/git/weibo-or/or-dktools/builds/docker/smaller/or-motan.Dockerfile /media/psf/code/z/git/weibo-or/or-dktools/builds
+ 1138  docker images
+ 1139  docker logs 097952e774dc
+ 1140  docker logs 
+ 1141  docker build -t zhoujing/small-or:debug -f /media/psf/code/z/git/weibo-or/or-dktools/builds/docker/smaller/or-motan.Dockerfile /media/psf/code/z/git/weibo-or/or-dktools/builds
+ 1142  docker run --rm -it zhoujing/small-or:debug /bin/sh
+ 1143  docker run --rm -it zhoujing/small-or:debug
+ 1144  docker build -t zhoujing/small-or:debug -f /media/psf/code/z/git/weibo-or/or-dktools/builds/docker/smaller/or-motan.Dockerfile /media/psf/code/z/git/weibo-or/or-dktools/builds
+ 1145  docker run --rm -it zhoujing/small-or:debug /bin/bash
+ 1146  docker build -t zhoujing/small-or:debug -f /media/psf/code/z/git/weibo-or/or-dktools/builds/docker/smaller/or-motan.Dockerfile /media/psf/code/z/git/weibo-or/or-dktools/builds
+ 1147  docker run --rm -it zhoujing/small-or:debug /bin/bash
+ 1148  docker run --rm -it zhoujing/small-or:debug yum
+ 1149  docker run --rm -it zhoujing/small-or:debug 
+ 1150  docker build -t zhoujing/small-or:debug -f /media/psf/code/z/git/weibo-or/or-dktools/builds/docker/smaller/or-motan.Dockerfile /media/psf/code/z/git/weibo-or/or-dktools/builds
+ 1151  docker run --rm -it zhoujing/small-or:debug weibo-mesh
+ 1152  docker run --rm -it zhoujing/small-or:debug /weibo-mesh
+ 1153  docker build -t zhoujing/small-or:debug -f /media/psf/code/z/git/weibo-or/or-dktools/builds/docker/smaller/or-motan.Dockerfile /media/psf/code/z/git/weibo-or/or-dktools/builds
+ 1154  docker run --rm -it zhoujing/small-or:debug /weibo-mesh
+ 1155  docker run --rm -it zhoujing/small-or:debug /bin/bash
+ 1156  docker images
+ 1157  docker run --rm -it zhoujing/small-or:debug /usr/local/openresty-debug/bin/openresty
+ 1158  docker run --rm -it zhoujing/small-or:debug ls
+ 1159  docker run --rm -it zhoujing/small-or:debug yum -h
+ 1160  docker run --rm -it zhoujing/small-or:debug /usr/local/openresty-debug/bin/openresty
+ 1161  docker run --rm -it zhoujing/small-or:debug /usr/local/openresty-debug/nginx/sbin/nginx
+ 1162  docker run --rm -it zhoujing/small-or:debug /usr/local/openresty-debug/nginx/sbin/nginx -c
+ 1163  docker build -t zhoujing/small-or:debug -f /media/psf/code/z/git/weibo-or/or-dktools/builds/docker/smaller/or-motan.Dockerfile /media/psf/code/z/git/weibo-or/or-dktools/builds
+ 1164  docker run --rm -it zhoujing/small-or:debug /bin/bash
+ 1165  docker images
+ 1166  docker run --rm -it zhoujing/small-or:debug run
+ 1167  docker run --rm -it zhoujing/small-or:debug 
+ 1168  docker build -t zhoujing/small-or:debug -f /media/psf/code/z/git/weibo-or/or-dktools/builds/docker/smaller/or-motan.Dockerfile /media/psf/code/z/git/weibo-or/or-dktools/builds
+ 1169  docker run --rm -it zhoujing/small-or:debug /bin/bash
+ 1170  docker run --rm -it zhoujing/small-or:debug bash
+ 1171  docker run --rm -it zhoujing/small-or:debug 
+ 1172  docker run --rm -it zhoujing/small-or:debug /usr/local/bin/bash
+ 1173  docker run --rm -it zhoujing/small-or:debug bash 
+ 1174  docker run --rm -it zhoujing/small-or:debug bash /entrypoint.sh
+ 1175  docker build -t zhoujing/small-or:debug -f /media/psf/code/z/git/weibo-or/or-dktools/builds/docker/smaller/or-motan.Dockerfile /media/psf/code/z/git/weibo-or/or-dktools/builds
+ 1176  docker images
+ 1177  docker rmi --force $(docker images -q -f "dangling=true")
+ 1178  docker images
+ 1179  docker build -t zhoujing/small-or:debug -f /media/psf/code/z/git/weibo-or/or-dktools/builds/docker/smaller/or-motan.Dockerfile /media/psf/code/z/git/weibo-or/or-dktools/builds
+ 1180  docker run --rm -it centos:7 /bin/bash
+ 1181  sudo sysctl net.ipv4.ip_forward
+ 1182  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/or-wmotan:debug /bin/bash
+ 1183  docker build -t zhoujing/small-or:debug -f /media/psf/code/z/git/weibo-or/or-dktools/builds/docker/smaller/or-motan.Dockerfile /media/psf/code/z/git/weibo-or/or-dktools/builds
+ 1184  docker rmi --force $(docker images -q -f "dangling=true")
+ 1185  docker images
+ 1186  docker build -t zhoujing/small-or:debug -f /media/psf/code/z/git/weibo-or/or-dktools/builds/docker/smaller/or-motan.Dockerfile /media/psf/code/z/git/weibo-or/or-dktools/builds
+ 1187  docker images
+ 1188  docker build -t zhoujing/small-or:debug -f /media/psf/code/z/git/weibo-or/or-dktools/builds/docker/smaller/or-motan.Dockerfile /media/psf/code/z/git/weibo-or/or-dktools/builds
+ 1189  docker images
+ 1190  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/small-or:debug luajit_prove t/
+ 1191  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/small-or:debug luacheck .
+ 1192  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/small-or:debug bash
+ 1193  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/or-wmotan:debug /bin/bash
+ 1194  docker build -t zhoujing/small-or-1:debug -f /media/psf/code/z/git/weibo-or/or-dktools/builds/docker/smaller/or-motan.Dockerfile /media/psf/code/z/git/weibo-or/or-dktools/builds
+ 1195  docker images
+ 1196  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/or-wmotan:debug /bin/bash
+ 1197  docker build -t zhoujing/small-or-1:debug -f /media/psf/code/z/git/weibo-or/or-dktools/builds/docker/smaller/or-motan.Dockerfile /media/psf/code/z/git/weibo-or/or-dktools/builds
+ 1198  sudo sysctl net.ipv4.ip_forward
+ 1199  docker build -t zhoujing/small-or-1:debug -f /media/psf/code/z/git/weibo-or/or-dktools/builds/docker/smaller/or-motan.Dockerfile /media/psf/code/z/git/weibo-or/or-dktools/builds
+ 1200  docker history zhoujing/small-or:debug
+ 1201  docker images
+ 1202  docker history zhoujing/small-or-1
+ 1203  docker history zhoujing/small-or-1:debug
+ 1204  docker history zhoujing/small-or:debug
+ 1205  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/small-or-1:debug luajit_prove
+ 1206  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/small-or-1:debug luacheck
+ 1207  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/small-or-1:debug luacheck .
+ 1208  docker build -t zhoujing/small-or-1:debug -f /media/psf/code/z/git/weibo-or/or-dktools/builds/docker/smaller/or-motan.Dockerfile /media/psf/code/z/git/weibo-or/or-dktools/builds
+ 1209  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/small-or-1:debug /bin/bash
+ 1210  docker images
+ 1211  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/small-or-1:debug /bin/bash
+ 1212  docker run --rm -it adfdbd372f4b /bin/bash
+ 1213  docker run --rm -it -v `pwd`:/tmp -w /tmp adfdbd372f4b /bin/bash
+ 1214  docker build -t zhoujing/small-or-2:debug -f /media/psf/code/z/git/weibo-or/or-dktools/builds/docker/smaller/or-motan.Dockerfile /media/psf/code/z/git/weibo-or/or-dktools/builds
+ 1215  sudo sysctl net.ipv4.ip_forward
+ 1216  docker images
+ 1217  docker history zhoujing/small-or-2:debug
+ 1218  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/small-or-2:debug luacheck .
+ 1219  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/small-or-2:debug luajit_prove .
+ 1220  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/small-or-2:debug luajit_prove ./t
+ 1221  docker build -t zhoujing/small-or-3:debug -f /media/psf/code/z/git/weibo-or/or-dktools/builds/docker/smaller/or-motan.Dockerfile /media/psf/code/z/git/weibo-or/or-dktools/builds
+ 1222  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/small-or-2:debug /bin/bash
+ 1223  docker run --rm -it -v `pwd`:/tmp -w /tmp centos:7 /bin/bash
+ 1224  docker images
+ 1225  docker history zhoujing/small-or-3:debug
+ 1226  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/small-or-3:debug luajit_prove ./t
+ 1227  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/small-or-3:debug luacheck .
+ 1228  docker history zhoujing/small-or-2:debug
+ 1229  docker history zhoujing/small-or-1:debug
+ 1230  docker history zhoujing/small-or:debug
+ 1231  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/small-or-3:debug /bin/bash
+ 1232  docker images
+ 1233  docker build -t zhoujing/small-or-4:debug -f /media/psf/code/z/git/weibo-or/or-dktools/builds/docker/smaller/or-motan.Dockerfile /media/psf/code/z/git/weibo-or/or-dktools/builds
+ 1234  $MCODE/src/openresty-1.13.6.1
+ 1235  ./configure --help
+ 1236  docker pull centos
+ 1237  docker images
+ 1238  docker run --rm -it centos:7 /bin/bash
+ 1239  docker ps
+ 1240  docker commit zhoujing/centos dbd9322a9206
+ 1241  docker commit dbd9322a9206 zhoujing/centos
+ 1242  docker images
+ 1243  docker ps
+ 1244  docker commit dbd9322a9206 zhoujing/centos
+ 1245  docker images
+ 1246  docker rmi 13c4ae4b3ae7
+ 1247  docker pull blalor/centos
+ 1248  docker images
+ 1249  docker run --rm -it centos:7 /bin/bash
+ 1250  checking for simple visibility declarations... yes
+ 1251  checking for ANSI C header files... (cached) yes
+ 1252  checking limits.h usability... yes
+ 1253  checking limits.h presence... yes
+ 1254  checking for limits.h... yes
+ 1255  checking for sys/types.h... (cached) yes
+ 1256  checking for sys/stat.h... (cached) yes
+ 1257  checking dirent.h usability... yes
+ 1258  checking dirent.h presence... yes
+ 1259  checking for dirent.h... yes
+ 1260  checking windows.h usability... no
+ 1261  checking windows.h presence... no
+ 1262  checking for windows.h... no
+ 1263  checking for an ANSI C-conforming const... yes
+ 1264  checking for size_t... yes
+ 1265  checking for bcopy... yes
+ 1266  checking for memmove... yes
+ 1267  checking for strerror... yes
+ 1268  checking zlib.h usability... yes
+ 1269  checking zlib.h presence... yes
+ 1270  checking for zlib.h... yes
+ 1271  checking for gzopen in -lz... yes
+ 1272  checking bzlib.h usability... no
+ 1273  checking bzlib.h presence... no
+ 1274  checking for bzlib.h... no
+ 1275  checking for libbz2... no
+ 1276  checking for the pthreads library -lpthreads... no
+ 1277  checking whether pthreads work without any flags... no
+ 1278  checking whether pthreads work with -Kthread... no
+ 1279  checking whether pthreads work with -kthread... no
+ 1280  checking for the pthreads library -llthread... no
+ 1281  checking whether pthreads work with -pthread... yes
+ 1282  checking for joinable pthread attribute... PTHREAD_CREATE_JOINABLE
+ 1283  checking if more special flags are required for pthreads... no
+ 1284  checking for PTHREAD_PRIO_INHERIT... yes
+ 1285  checking that generated files are newer than configure... done
+ 1286  configure: creating ./config.status
+ 1287  config.status: creating Makefile
+ 1288  config.status: creating libpcre.pc
+ 1289  config.status: creating libpcre16.pc
+ 1290  config.status: creating libpcre32.pc
+ 1291  config.status: creating libpcreposix.pc
+ 1292  config.status: creating libpcrecpp.pc
+ 1293  config.status: creating pcre-config
+ 1294  config.status: creating pcre.h
+ 1295  config.status: creating pcre_stringpiece.h
+ 1296  config.status: creating pcrecpparg.h
+ 1297  config.status: creating config.h
+ 1298  config.status: executing depfiles commands
+ 1299  config.status: executing libtool commands
+ 1300  config.status: executing script-chmod commands
+ 1301  config.status: executing delete-old-chartables commands
+ 1302  pcre-8.41 configuration summary:
+ 1303  + make V=1
+ 1304  rm -f pcre_chartables.c
+ 1305  ln -s ./pcre_chartables.c.dist pcre_chartables.c
+ 1306  make  all-am
+ 1307  make[1]: Entering directory `/tmp/pcre-8.41'\n/bin/sh ./libtool  --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I.    -fvisibility=hidden    -pthread -g -O2 -MT libpcre_la-pcre_byte_order.lo -MD -MP -MF .deps/libpcre_la-pcre_byte_order.Tpo -c -o libpcre_la-pcre_byte_order.lo `test -f 'pcre_byte_order.c' || echo './'`pcre_byte_order.c\nlibtool: compile:  gcc -DHAVE_CONFIG_H -I. -fvisibility=hidden -pthread -g -O2 -MT libpcre_la-pcre_byte_order.lo -MD -MP -MF .deps/libpcre_la-pcre_byte_order.Tpo -c pcre_byte_order.c  -fPIC -DPIC -o .libs/libpcre_la-pcre_byte_order.o\nlibtool: compile:  gcc -DHAVE_CONFIG_H -I. -fvisibility=hidden -pthread -g -O2 -MT libpcre_la-pcre_byte_order.lo -MD -MP -MF .deps/libpcre_la-pcre_byte_order.Tpo -c pcre_byte_order.c -o libpcre_la-pcre_byte_order.o >/dev/null 2>&1\nmv -f .deps/libpcre_la-pcre_byte_order.Tpo .deps/libpcre_la-pcre_byte_order.Plo\n/bin/sh ./libtool  --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I.    -fvisibility=hidden    -pthread -g -O2 -MT libpcre_la-pcre_compile.lo -MD -MP -MF .deps/libpcre_la-pcre_compile.Tpo -c -o libpcre_la-pcre_compile.lo `test -f 'pcre_compile.c' || echo './'`pcre_compile.c\nlibtool: compile:  gcc -DHAVE_CONFIG_H -I. -fvisibility=hidden -pthread -g -O2 -MT libpcre_la-pcre_compile.lo -MD -MP -MF .deps/libpcre_la-pcre_compile.Tpo -c pcre_compile.c  -fPIC -DPIC -o .libs/libpcre_la-pcre_compile.o\nlibtool: compile:  gcc -DHAVE_CONFIG_H -I. -fvisibility=hidden -pthread -g -O2 -MT libpcre_la-pcre_compile.lo -MD -MP -MF .deps/libpcre_la-pcre_compile.Tpo -c pcre_compile.c -o libpcre_la-pcre_compile.o >/dev/null 2>&1\nmv -f .deps/libpcre_la-pcre_compile.Tpo .deps/libpcre_la-pcre_compile.Plo\n/bin/sh ./libtool  --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I.    -fvisibility=hidden    -pthread -g -O2 -MT libpcre_la-pcre_config.lo -MD -MP -MF .deps/libpcre_la-pcre_config.Tpo -c -o libpcre_la-pcre_config.lo `test -f 'pcre_config.c' || echo './'`pcre_config.c\nlibtool: compile:  gcc -DHAVE_CONFIG_H -I. -fvisibility=hidden -pthread -g -O2 -MT libpcre_la-pcre_config.lo -MD -MP -MF .deps/libpcre_la-pcre_config.Tpo -c pcre_config.c  -fPIC -DPIC -o .libs/libpcre_la-pcre_config.o\nlibtool: compile:  gcc -DHAVE_CONFIG_H -I. -fvisibility=hidden -pthread -g -O2 -MT libpcre_la-pcre_config.lo -MD -MP -MF .deps/libpcre_la-pcre_config.Tpo -c pcre_config.c -o libpcre_la-pcre_config.o >/dev/null 2>&1\nmv -f .deps/libpcre_la-pcre_config.Tpo .deps/libpcre_la-pcre_config.Plo\n/bin/sh ./libtool  --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I.    -fvisibility=hidden    -pthread -g -O2 -MT libpcre_la-pcre_dfa_exec.lo -MD -MP -MF .deps/libpcre_la-pcre_dfa_exec.Tpo -c -o libpcre_la-pcre_dfa_exec.lo `test -f 'pcre_dfa_exec.c' || echo './'`pcre_dfa_exec.c\nlibtool: compile:  gcc -DHAVE_CONFIG_H -I. -fvisibility=hidden -pthread -g -O2 -MT libpcre_la-pcre_dfa_exec.lo -MD -MP -MF .deps/libpcre_la-pcre_dfa_exec.Tpo -c pcre_dfa_exec.c  -fPIC -DPIC -o .libs/libpcre_la-pcre_dfa_exec.o\nlibtool: compile:  gcc -DHAVE_CONFIG_H -I. -fvisibility=hidden -pthread -g -O2 -MT libpcre_la-pcre_dfa_exec.lo -MD -MP -MF .deps/libpcre_la-pcre_dfa_exec.Tpo -c pcre_dfa_exec.c -o libpcre_la-pcre_dfa_exec.o >/dev/null 2>&1\nmv -f .deps/libpcre_la-pcre_dfa_exec.Tpo .deps/libpcre_la-pcre_dfa_exec.Plo\n/bin/sh ./libtool  --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I.    -fvisibility=hidden    -pthread -g -O2 -MT libpcre_la-pcre_exec.lo -MD -MP -MF .deps/libpcre_la-pcre_exec.Tpo -c -o libpcre_la-pcre_exec.lo `test -f 'pcre_exec.c' || echo './'`pcre_exec.c\nlibtool: compile:  gcc -DHAVE_CONFIG_H -I. -fvisibility=hidden -pthread -g -O2 -MT libpcre_la-pcre_exec.lo -MD -MP -MF .deps/libpcre_la-pcre_exec.Tpo -c pcre_exec.c  -fPIC -DPIC -o .libs/libpcre_la-pcre_exec.o\nlibtool: compile:  gcc -DHAVE_CONFIG_H -I. -fvisibility=hidden -pthread -g -O2 -MT libpcre_la-pcre_exec.lo -MD -MP -MF .deps/libpcre_la-pcre_exec.Tpo -c pcre_exec.c -o libpcre_la-pcre_exec.o >/dev/null 2>&1\nmv -f .deps/libpcre_la-pcre_exec.Tpo .deps/libpcre_la-pcre_exec.Plo\n/bin/sh ./libtool  --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I.    -fvisibility=hidden    -pthread -g -O2 -MT libpcre_la-pcre_fullinfo.lo -MD -MP -MF .deps/libpcre_la-pcre_fullinfo.Tpo -c -o libpcre_la-pcre_fullinfo.lo `test -f 'pcre_fullinfo.c' || echo './'`pcre_fullinfo.c\nlibtool: compile:  gcc -DHAVE_CONFIG_H -I. -fvisibility=hidden -pthread -g -O2 -MT libpcre_la-pcre_fullinfo.lo -MD -MP -MF .deps/libpcre_la-pcre_fullinfo.Tpo -c pcre_fullinfo.c  -fPIC -DPIC -o .libs/libpcre_la-pcre_fullinfo.o\nlibtool: compile:  gcc -DHAVE_CONFIG_H -I. -fvisibility=hidden -pthread -g -O2 -MT libpcre_la-pcre_fullinfo.lo -MD -MP -MF .deps/libpcre_la-pcre_fullinfo.Tpo -c pcre_fullinfo.c -o libpcre_la-pcre_fullinfo.o >/dev/null 2>&1\nmv -f .deps/libpcre_la-pcre_fullinfo.Tpo .deps/libpcre_la-pcre_fullinfo.Plo\n/bin/sh ./libtool  --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I.    -fvisibility=hidden    -pthread -g -O2 -MT libpcre_la-pcre_get.lo -MD -MP -MF .deps/libpcre_la-pcre_get.Tpo -c -o libpcre_la-pcre_get.lo `test -f 'pcre_get.c' || echo './'`pcre_get.c\nlibtool: compile:  gcc -DHAVE_CONFIG_H -I. -fvisibility=hidden -pthread -g -O2 -MT libpcre_la-pcre_get.lo -MD -MP -MF .deps/libpcre_la-pcre_get.Tpo -c pcre_get.c  -fPIC -DPIC -o .libs/libpcre_la-pcre_get.o\nlibtool: compile:  gcc -DHAVE_CONFIG_H -I. -fvisibility=hidden -pthread -g -O2 -MT libpcre_la-pcre_get.lo -MD -MP -MF .deps/libpcre_la-pcre_get.Tpo -c pcre_get.c -o libpcre_la-pcre_get.o >/dev/null 2>&1\nmv -f .deps/libpcre_la-pcre_get.Tpo .deps/libpcre_la-pcre_get.Plo\n/bin/sh ./libtool  --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I.    -fvisibility=hidden    -pthread -g -O2 -MT libpcre_la-pcre_globals.lo -MD -MP -MF .deps/libpcre_la-pcre_globals.Tpo -c -o libpcre_la-pcre_globals.lo `test -f 'pcre_globals.c' || echo './'`pcre_globals.c\nlibtool: compile:  gcc -DHAVE_CONFIG_H -I. -fvisibility=hidden -pthread -g -O2 -MT libpcre_la-pcre_globals.lo -MD -MP -MF .deps/libpcre_la-pcre_globals.Tpo -c pcre_globals.c  -fPIC -DPIC -o .libs/libpcre_la-pcre_globals.o\nlibtool: compile:  gcc -DHAVE_CONFIG_H -I. -fvisibility=hidden -pthread -g -O2 -MT libpcre_la-pcre_globals.lo -MD -MP -MF .deps/libpcre_la-pcre_globals.Tpo -c pcre_globals.c -o libpcre_la-pcre_globals.o >/dev/null 2>&1\nmv -f .deps/libpcre_la-pcre_globals.Tpo .deps/libpcre_la-pcre_globals.Plo\n/bin/sh ./libtool  --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I.    -fvisibility=hidden    -pthread -g -O2 -MT libpcre_la-pcre_jit_compile.lo -MD -MP -MF .deps/libpcre_la-pcre_jit_compile.Tpo -c -o libpcre_la-pcre_jit_compile.lo `test -f 'pcre_jit_compile.c' || echo './'`pcre_jit_compile.c\nlibtool: compile:  gcc -DHAVE_CONFIG_H -I. -fvisibility=hidden -pthread -g -O2 -MT libpcre_la-pcre_jit_compile.lo -MD -MP -MF .deps/libpcre_la-pcre_jit_compile.Tpo -c pcre_jit_compile.c  -fPIC -DPIC -o .libs/libpcre_la-pcre_jit_compile.o\nlibtool: compile:  gcc -DHAVE_CONFIG_H -I. -fvisibility=hidden -pthread -g -O2 -MT libpcre_la-pcre_jit_compile.lo -MD -MP -MF .deps/libpcre_la-pcre_jit_compile.Tpo -c pcre_jit_compile.c -o libpcre_la-pcre_jit_compile.o >/dev/null 2>&1\nmv -f .deps/libpcre_la-pcre_jit_compile.Tpo .deps/libpcre_la-pcre_jit_compile.Plo\n/bin/sh ./libtool  --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I.    -fvisibility=hidden    -pthread -g -O2 -MT libpcre_la-pcre_maketables.lo -MD -MP -MF .deps/libpcre_la-pcre_maketables.Tpo -c -o libpcre_la-pcre_maketables.lo `test -f 'pcre_maketables.c' || echo './'`pcre_maketables.c\nlibtool: compile:  gcc -DHAVE_CONFIG_H -I. -fvisibility=hidden -pthread -g -O2 -MT libpcre_la-pcre_maketables.lo -MD -MP -MF .deps/libpcre_la-pcre_maketables.Tpo -c pcre_maketables.c  -fPIC -DPIC -o .libs/libpcre_la-pcre_maketables.o\nlibtool: compile:  gcc -DHAVE_CONFIG_H -I. -fvisibility=hidden -pthread -g -O2 -MT libpcre_la-pcre_maketables.lo -MD -MP -MF .deps/libpcre_la-pcre_maketables.Tpo -c pcre_maketables.c -o libpcre_la-pcre_maketables.o >/dev/null 2>&1\nmv -f .deps/libpcre_la-pcre_maketables.Tpo .deps/libpcre_la-pcre_maketables.Plo\n/bin/sh ./libtool  --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I.    -fvisibility=hidden    -pthread -g -O2 -MT libpcre_la-pcre_newline.lo -MD -MP -MF .deps/libpcre_la-pcre_newline.Tpo -c -o libpcre_la-pcre_newline.lo `test -f 'pcre_newline.c' || echo './'`pcre_newline.c\nlibtool: compile:  gcc -DHAVE_CONFIG_H -I. -fvisibility=hidden -pthread -g -O2 -MT libpcre_la-pcre_newline.lo -MD -MP -MF .deps/libpcre_la-pcre_newline.Tpo -c pcre_newline.c  -fPIC -DPIC -o .libs/libpcre_la-pcre_newline.o\nlibtool: compile:  gcc -DHAVE_CONFIG_H -I. -fvisibility=hidden -pthread -g -O2 -MT libpcre_la-pcre_newline.lo -MD -MP -MF .deps/libpcre_la-pcre_newline.Tpo -c pcre_newline.c -o libpcre_la-pcre_newline.o >/dev/null 2>&1\nmv -f .deps/libpcre_la-pcre_newline.Tpo .deps/libpcre_la-pcre_newline.Plo\n/bin/sh ./libtool  --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I.    -fvisibility=hidden    -pthread -g -O2 -MT libpcre_la-pcre_ord2utf8.lo -MD -MP -MF .deps/libpcre_la-pcre_ord2utf8.Tpo -c -o libpcre_la-pcre_ord2utf8.lo `test -f 'pcre_ord2utf8.c' || echo './'`pcre_ord2utf8.c\nlibtool: compile:  gcc -DHAVE_CONFIG_H -I. -fvisibility=hidden -pthread -g -O2 -MT libpcre_la-pcre_ord2utf8.lo -MD -MP -MF .deps/libpcre_la-pcre_ord2utf8.Tpo -c pcre_ord2utf8.c  -fPIC -DPIC -o .libs/libpcre_la-pcre_ord2utf8.o\nlibtool: compile:  gcc -DHAVE_CONFIG_H -I. -fvisibility=hidden -pthread -g -O2 -MT libpcre_la-pcre_ord2utf8.lo -MD -MP -MF .deps/libpcre_la-pcre_ord2utf8.Tpo -c pcre_ord2utf8.c -o libpcre_la-pcre_ord2utf8.o >/dev/null 2>&1\nmv -f .deps/libpcre_la-pcre_ord2utf8.Tpo .deps/libpcre_la-pcre_ord2utf8.Plo\n/bin/sh ./libtool  --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I.    -fvisibility=hidden    -pthread -g -O2 -MT libpcre_la-pcre_refcount.lo -MD -MP -MF .deps/libpcre_la-pcre_refcount.Tpo -c -o libpcre_la-pcre_refcount.lo `test -f 'pcre_refcount.c' || echo './'`pcre_refcount.c\nlibtool: compile:  gcc -DHAVE_CONFIG_H -I. -fvisibility=hidden -pthread -g -O2 -MT libpcre_la-pcre_refcount.lo -MD -MP -MF .deps/libpcre_la-pcre_refcount.Tpo -c pcre_refcount.c  -fPIC -DPIC -o .libs/libpcre_la-pcre_refcount.o\nlibtool: compile:  gcc -DHAVE_CONFIG_H -I. -fvisibility=hidden -pthread -g -O2 -MT libpcre_la-pcre_refcount.lo -MD -MP -MF .deps/libpcre_la-pcre_refcount.Tpo -c pcre_refcount.c -o libpcre_la-pcre_refcount.o >/dev/null 2>&1\nmv -f .deps/libpcre_la-pcre_refcount.Tpo .deps/libpcre_la-pcre_refcount.Plo\n/bin/sh ./libtool  --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I.    -fvisibility=hidden    -pthread -g -O2 -MT libpcre_la-pcre_string_utils.lo -MD -MP -MF .deps/libpcre_la-pcre_string_utils.Tpo -c -o libpcre_la-pcre_string_utils.lo `test -f 'pcre_string_utils.c' || echo './'`pcre_string_utils.c\nlibtool: compile:  gcc -DHAVE_CONFIG_H -I. -fvisibility=hidden -pthread -g -O2 -MT libpcre_la-pcre_string_utils.lo -MD -MP -MF .deps/libpcre_la-pcre_string_utils.Tpo -c pcre_string_utils.c  -fPIC -DPIC -o .libs/libpcre_la-pcre_string_utils.o\nlibtool: compile:  gcc -DHAVE_CONFIG_H -I. -fvisibility=hidden -pthread -g -O2 -MT libpcre_la-pcre_string_utils.lo -MD -MP -MF .deps/libpcre_la-pcre_string_utils.Tpo -c pcre_string_utils.c -o libpcre_la-pcre_string_utils.o >/dev/null 2>&1\nmv -f .deps/libpcre_la-pcre_string_utils.Tpo .deps/libpcre_la-pcre_string_utils.Plo\n/bin/sh ./libtool  --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I.    -fvisibility=hidden    -pthread -g -O2 -MT libpcre_la-pcre_study.lo -MD -MP -MF .deps/libpcre_la-pcre_study.Tpo -c -o libpcre_la-pcre_study.lo `test -f 'pcre_study.c' || echo './'`pcre_study.c\nlibtool: compile:  gcc -DHAVE_CONFIG_H -I. -fvisibility=hidden -pthread -g -O2 -MT libpcre_la-pcre_study.lo -MD -MP -MF .deps/libpcre_la-pcre_study.Tpo -c pcre_study.c  -fPIC -DPIC -o .libs/libpcre_la-pcre_study.o\nlibtool: compile:  gcc -DHAVE_CONFIG_H -I. -fvisibility=hidden -pthread -g -O2 -MT libpcre_la-pcre_study.lo -MD -MP -MF .deps/libpcre_la-pcre_study.Tpo -c pcre_study.c -o libpcre_la-pcre_study.o >/dev/null 2>&1\nmv -f .deps/libpcre_la-pcre_study.Tpo .deps/libpcre_la-pcre_study.Plo\n/bin/sh ./libtool  --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I.    -fvisibility=hidden    -pthread -g -O2 -MT libpcre_la-pcre_tables.lo -MD -MP -MF .deps/libpcre_la-pcre_tables.Tpo -c -o libpcre_la-pcre_tables.lo `test -f 'pcre_tables.c' || echo './'`pcre_tables.c\nlibtool: compile:  gcc -DHAVE_CONFIG_H -I. -fvisibility=hidden -pthread -g -O2 -MT libpcre_la-pcre_tables.lo -MD -MP -MF .deps/libpcre_la-pcre_tables.Tpo -c pcre_tables.c  -fPIC -DPIC -o .libs/libpcre_la-pcre_tables.o\nlibtool: compile:  gcc -DHAVE_CONFIG_H -I. -fvisibility=hidden -pthread -g -O2 -MT libpcre_la-pcre_tables.lo -MD -MP -MF .deps/libpcre_la-pcre_tables.Tpo -c pcre_tables.c -o libpcre_la-pcre_tables.o >/dev/null 2>&1\nmv -f .deps/libpcre_la-pcre_tables.Tpo .deps/libpcre_la-pcre_tables.Plo\n/bin/sh ./libtool  --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I.    -fvisibility=hidden    -pthread -g -O2 -MT libpcre_la-pcre_ucd.lo -MD -MP -MF .deps/libpcre_la-pcre_ucd.Tpo -c -o libpcre_la-pcre_ucd.lo `test -f 'pcre_ucd.c' || echo './'`pcre_ucd.c\nlibtool: compile:  gcc -DHAVE_CONFIG_H -I. -fvisibility=hidden -pthread -g -O2 -MT libpcre_la-pcre_ucd.lo -MD -MP -MF .deps/libpcre_la-pcre_ucd.Tpo -c pcre_ucd.c  -fPIC -DPIC -o .libs/libpcre_la-pcre_ucd.o\nlibtool: compile:  gcc -DHAVE_CONFIG_H -I. -fvisibility=hidden -pthread -g -O2 -MT libpcre_la-pcre_ucd.lo -MD -MP -MF .deps/libpcre_la-pcre_ucd.Tpo -c pcre_ucd.c -o libpcre_la-pcre_ucd.o >/dev/null 2>&1\nmv -f .deps/libpcre_la-pcre_ucd.Tpo .deps/libpcre_la-pcre_ucd.Plo\n/bin/sh ./libtool  --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I.    -fvisibility=hidden    -pthread -g -O2 -MT libpcre_la-pcre_valid_utf8.lo -MD -MP -MF .deps/libpcre_la-pcre_valid_utf8.Tpo -c -o libpcre_la-pcre_valid_utf8.lo `test -f 'pcre_valid_utf8.c' || echo './'`pcre_valid_utf8.c\nlibtool: compile:  gcc -DHAVE_CONFIG_H -I. -fvisibility=hidden -pthread -g -O2 -MT libpcre_la-pcre_valid_utf8.lo -MD -MP -MF .deps/libpcre_la-pcre_valid_utf8.Tpo -c pcre_valid_utf8.c  -fPIC -DPIC -o .libs/libpcre_la-pcre_valid_utf8.o\nlibtool: compile:  gcc -DHAVE_CONFIG_H -I. -fvisibility=hidden -pthread -g -O2 -MT libpcre_la-pcre_valid_utf8.lo -MD -MP -MF .deps/libpcre_la-pcre_valid_utf8.Tpo -c pcre_valid_utf8.c -o libpcre_la-pcre_valid_utf8.o >/dev/null 2>&1\nmv -f .deps/libpcre_la-pcre_valid_utf8.Tpo .deps/libpcre_la-pcre_valid_utf8.Plo\n/bin/sh ./libtool  --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I.    -fvisibility=hidden    -pthread -g -O2 -MT libpcre_la-pcre_version.lo -MD -MP -MF .deps/libpcre_la-pcre_version.Tpo -c -o libpcre_la-pcre_version.lo `test -f 'pcre_version.c' || echo './'`pcre_version.c\nlibtool: compile:  gcc -DHAVE_CONFIG_H -I. -fvisibility=hidden -pthread -g -O2 -MT libpcre_la-pcre_version.lo -MD -MP -MF .deps/libpcre_la-pcre_version.Tpo -c pcre_version.c  -fPIC -DPIC -o .libs/libpcre_la-pcre_version.o\nlibtool: compile:  gcc -DHAVE_CONFIG_H -I. -fvisibility=hidden -pthread -g -O2 -MT libpcre_la-pcre_version.lo -MD -MP -MF .deps/libpcre_la-pcre_version.Tpo -c pcre_version.c -o libpcre_la-pcre_version.o >/dev/null 2>&1\nmv -f .deps/libpcre_la-pcre_version.Tpo .deps/libpcre_la-pcre_version.Plo\n/bin/sh ./libtool  --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I.    -fvisibility=hidden    -pthread -g -O2 -MT libpcre_la-pcre_xclass.lo -MD -MP -MF .deps/libpcre_la-pcre_xclass.Tpo -c -o libpcre_la-pcre_xclass.lo `test -f 'pcre_xclass.c' || echo './'`pcre_xclass.c\nlibtool: compile:  gcc -DHAVE_CONFIG_H -I. -fvisibility=hidden -pthread -g -O2 -MT libpcre_la-pcre_xclass.lo -MD -MP -MF .deps/libpcre_la-pcre_xclass.Tpo -c pcre_xclass.c  -fPIC -DPIC -o .libs/libpcre_la-pcre_xclass.o\nlibtool: compile:  gcc -DHAVE_CONFIG_H -I. -fvisibility=hidden -pthread -g -O2 -MT libpcre_la-pcre_xclass.lo -MD -MP -MF .deps/libpcre_la-pcre_xclass.Tpo -c pcre_xclass.c -o libpcre_la-pcre_xclass.o >/dev/null 2>&1\nmv -f .deps/libpcre_la-pcre_xclass.Tpo .deps/libpcre_la-pcre_xclass.Plo\n/bin/sh ./libtool  --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I.    -fvisibility=hidden    -pthread -g -O2 -MT libpcre_la-pcre_chartables.lo -MD -MP -MF .deps/libpcre_la-pcre_chartables.Tpo -c -o libpcre_la-pcre_chartables.lo `test -f 'pcre_chartables.c' || echo './'`pcre_chartables.c\nlibtool: compile:  gcc -DHAVE_CONFIG_H -I. -fvisibility=hidden -pthread -g -O2 -MT libpcre_la-pcre_chartables.lo -MD -MP -MF .deps/libpcre_la-pcre_chartables.Tpo -c pcre_chartables.c  -fPIC -DPIC -o .libs/libpcre_la-pcre_chartables.o\nlibtool: compile:  gcc -DHAVE_CONFIG_H -I. -fvisibility=hidden -pthread -g -O2 -MT libpcre_la-pcre_chartables.lo -MD -MP -MF .deps/libpcre_la-pcre_chartables.Tpo -c pcre_chartables.c -o libpcre_la-pcre_chartables.o >/dev/null 2>&1\nmv -f .deps/libpcre_la-pcre_chartables.Tpo .deps/libpcre_la-pcre_chartables.Plo\n/bin/sh ./libtool  --tag=CC   --mode=link gcc -fvisibility=hidden    -pthread -g -O2 -version-info 3:9:2  -o libpcre.la -rpath /usr/local/openresty-debug/pcre/lib libpcre_la-pcre_byte_order.lo libpcre_la-pcre_compile.lo libpcre_la-pcre_config.lo libpcre_la-pcre_dfa_exec.lo libpcre_la-pcre_exec.lo libpcre_la-pcre_fullinfo.lo libpcre_la-pcre_get.lo libpcre_la-pcre_globals.lo libpcre_la-pcre_jit_compile.lo libpcre_la-pcre_maketables.lo libpcre_la-pcre_newline.lo libpcre_la-pcre_ord2utf8.lo libpcre_la-pcre_refcount.lo libpcre_la-pcre_string_utils.lo libpcre_la-pcre_study.lo libpcre_la-pcre_tables.lo libpcre_la-pcre_ucd.lo libpcre_la-pcre_valid_utf8.lo libpcre_la-pcre_version.lo libpcre_la-pcre_xclass.lo libpcre_la-pcre_chartables.lo\nlibtool: link: gcc -shared  -fPIC -DPIC  .libs/libpcre_la-pcre_byte_order.o .libs/libpcre_la-pcre_compile.o .libs/libpcre_la-pcre_config.o .libs/libpcre_la-pcre_dfa_exec.o .libs/libpcre_la-pcre_exec.o .libs/libpcre_la-pcre_fullinfo.o .libs/libpcre_la-pcre_get.o .libs/libpcre_la-pcre_globals.o .libs/libpcre_la-pcre_jit_compile.o .libs/libpcre_la-pcre_maketables.o .libs/libpcre_la-pcre_newline.o .libs/libpcre_la-pcre_ord2utf8.o .libs/libpcre_la-pcre_refcount.o .libs/libpcre_la-pcre_string_utils.o .libs/libpcre_la-pcre_study.o .libs/libpcre_la-pcre_tables.o .libs/libpcre_la-pcre_ucd.o .libs/libpcre_la-pcre_valid_utf8.o .libs/libpcre_la-pcre_version.o .libs/libpcre_la-pcre_xclass.o .libs/libpcre_la-pcre_chartables.o    -pthread -g -O2   -pthread -Wl,-soname -Wl,libpcre.so.1 -o .libs/libpcre.so.1.2.9\nlibtool: link: (cd ".libs" && rm -f "libpcre.so.1" && ln -s "libpcre.so.1.2.9" "libpcre.so.1")\nlibtool: link: (cd ".libs" && rm -f "libpcre.so" && ln -s "libpcre.so.1.2.9" "libpcre.so")\nlibtool: link: ar cru .libs/libpcre.a  libpcre_la-pcre_byte_order.o libpcre_la-pcre_compile.o libpcre_la-pcre_config.o libpcre_la-pcre_dfa_exec.o libpcre_la-pcre_exec.o libpcre_la-pcre_fullinfo.o libpcre_la-pcre_get.o libpcre_la-pcre_globals.o libpcre_la-pcre_jit_compile.o libpcre_la-pcre_maketables.o libpcre_la-pcre_newline.o libpcre_la-pcre_ord2utf8.o libpcre_la-pcre_refcount.o libpcre_la-pcre_string_utils.o libpcre_la-pcre_study.o libpcre_la-pcre_tables.o libpcre_la-pcre_ucd.o libpcre_la-pcre_valid_utf8.o libpcre_la-pcre_version.o libpcre_la-pcre_xclass.o libpcre_la-pcre_chartables.o\nlibtool: link: ranlib .libs/libpcre.a\nlibtool: link: ( cd ".libs" && rm -f "libpcre.la" && ln -s "../libpcre.la" "libpcre.la" )\n/bin/sh ./libtool  --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I.    -fvisibility=hidden   -pthread -g -O2 -MT libpcreposix_la-pcreposix.lo -MD -MP -MF .deps/libpcreposix_la-pcreposix.Tpo -c -o libpcreposix_la-pcreposix.lo `test -f 'pcreposix.c' || echo './'`pcreposix.c\nlibtool: compile:  gcc -DHAVE_CONFIG_H -I. -fvisibility=hidden -pthread -g -O2 -MT libpcreposix_la-pcreposix.lo -MD -MP -MF .deps/libpcreposix_la-pcreposix.Tpo -c pcreposix.c  -fPIC -DPIC -o .libs/libpcreposix_la-pcreposix.o\nlibtool: compile:  gcc -DHAVE_CONFIG_H -I. -fvisibility=hidden -pthread -g -O2 -MT libpcreposix_la-pcreposix.lo -MD -MP -MF .deps/libpcreposix_la-pcreposix.Tpo -c pcreposix.c -o libpcreposix_la-pcreposix.o >/dev/null 2>&1\nmv -f .deps/libpcreposix_la-pcreposix.Tpo .deps/libpcreposix_la-pcreposix.Plo\n/bin/sh ./libtool  --tag=CC   --mode=link gcc -fvisibility=hidden   -pthread -g -O2 -version-info 0:5:0  -o libpcreposix.la -rpath /usr/local/openresty-debug/pcre/lib libpcreposix_la-pcreposix.lo libpcre.la\nlibtool: link: gcc -shared  -fPIC -DPIC  .libs/libpcreposix_la-pcreposix.o   -Wl,-rpath -Wl,/tmp/pcre-8.41/.libs -Wl,-rpath -Wl,/usr/local/openresty-debug/pcre/lib ./.libs/libpcre.so  -pthread -g -O2   -pthread -Wl,-soname -Wl,libpcreposix.so.0 -o .libs/libpcreposix.so.0.0.5\nlibtool: link: (cd ".libs" && rm -f "libpcreposix.so.0" && ln -s "libpcreposix.so.0.0.5" "libpcreposix.so.0")\nlibtool: link: (cd ".libs" && rm -f "libpcreposix.so" && ln -s "libpcreposix.so.0.0.5" "libpcreposix.so")\nlibtool: link: ar cru .libs/libpcreposix.a  libpcreposix_la-pcreposix.o\nlibtool: link: ranlib .libs/libpcreposix.a\nlibtool: link: ( cd ".libs" && rm -f "libpcreposix.la" && ln -s "../libpcreposix.la" "libpcreposix.la" )\ngcc -DHAVE_CONFIG_H -I.       -pthread -g -O2 -MT pcretest-pcretest.o -MD -MP -MF .deps/pcretest-pcretest.Tpo -c -o pcretest-pcretest.o `test -f 'pcretest.c' || echo './'`pcretest.c\nmv -f .deps/pcretest-pcretest.Tpo .deps/pcretest-pcretest.Po\ngcc -DHAVE_CONFIG_H -I.       -pthread -g -O2 -MT pcretest-pcre_printint.o -MD -MP -MF .deps/pcretest-pcre_printint.Tpo -c -o pcretest-pcre_printint.o `test -f 'pcre_printint.c' || echo './'`pcre_printint.c\nmv -f .deps/pcretest-pcre_printint.Tpo .deps/pcretest-pcre_printint.Po\n/bin/sh ./libtool  --tag=CC   --mode=link gcc    -pthread -g -O2   -o pcretest pcretest-pcretest.o pcretest-pcre_printint.o    libpcre.la libpcreposix.la\nlibtool: link: gcc -pthread -g -O2 -o .libs/pcretest pcretest-pcretest.o pcretest-pcre_printint.o  ./.libs/libpcre.so ./.libs/libpcreposix.so /tmp/pcre-8.41/.libs/libpcre.so -pthread -Wl,-rpath -Wl,/usr/local/openresty-debug/pcre/lib\ngcc -DHAVE_CONFIG_H -I.      -pthread -g -O2 -MT pcregrep-pcregrep.o -MD -MP -MF .deps/pcregrep-pcregrep.Tpo -c -o pcregrep-pcregrep.o `test -f 'pcregrep.c' || echo './'`pcregrep.c\nmv -f .deps/pcregrep-pcregrep.Tpo .deps/pcregrep-pcregrep.Po\n/bin/sh ./libtool  --tag=CC   --mode=link gcc   -pthread -g -O2   -o pcregrep pcregrep-pcregrep.o   libpcre.la libpcreposix.la\nlibtool: link: gcc -pthread -g -O2 -o .libs/pcregrep pcregrep-pcregrep.o  ./.libs/libpcre.so ./.libs/libpcreposix.so /tmp/pcre-8.41/.libs/libpcre.so -pthread -Wl,-rpath -Wl,/usr/local/openresty-debug/pcre/lib\ngcc -DHAVE_CONFIG_H -I.      -pthread -g -O2 -MT pcre_jit_test-pcre_jit_test.o -MD -MP -MF .deps/pcre_jit_test-pcre_jit_test.Tpo -c -o pcre_jit_test-pcre_jit_test.o `test -f 'pcre_jit_test.c' || echo './'`pcre_jit_test.c\nmv -f .deps/pcre_jit_test-pcre_jit_test.Tpo .deps/pcre_jit_test-pcre_jit_test.Po\n/bin/sh ./libtool  --tag=CC   --mode=link gcc   -pthread -g -O2   -o pcre_jit_test pcre_jit_test-pcre_jit_test.o libpcre.la\nlibtool: link: gcc -pthread -g -O2 -o .libs/pcre_jit_test pcre_jit_test-pcre_jit_test.o  ./.libs/libpcre.so -pthread -Wl,-rpath -Wl,/usr/local/openresty-debug/pcre/lib\nmake[1]: Leaving directory `/tmp/pcre-8.41'\n+ make install\nmake  install-am\nmake[1]: Entering directory `/tmp/pcre-8.41'
+ 1308  /media/psf/code/z/git/weibo-or/or-dktools
+ 1309  ll
+ 1310  docker run --rm -it centos:7 /bin/bash
+ 1311  docker ps
+ 1312  docker images
+ 1313  docker ps
+ 1314  docker commit c09f3e150b75 zhoujing/centos
+ 1315  docker images
+ 1316  cd small-centos7
+ 1317  ll
+ 1318  docker build -t zhoujing/centos .
+ 1319  docker images
+ 1320  docker build -t zhoujing/centos:77 .
+ 1321  docker images
+ 1322  ..
+ 1323  docker build -t zhoujing/small-or-4:debug -f /media/psf/code/z/git/weibo-or/or-dktools/builds/docker/smaller/or-motan.Dockerfile /media/psf/code/z/git/weibo-or/or-dktools/builds
+ 1324  ../or-dktools/small-centos7
+ 1325  ll
+ 1326  docker build -t zhoujing/centos .
+ 1327  docker images
+ 1328  docker build -t zhoujing/centos-1 .
+ 1329  docker images
+ 1330  docker build -t zhoujing/centos .
+ 1331  docker images
+ 1332  docker rmi --force $(docker images -q -f "dangling=true")
+ 1333  docker images
+ 1334  docker build -t zhoujing/centos .
+ 1335  docker images
+ 1336  docker build -t zhoujing/centos .
+ 1337  docker images
+ 1338  docker build -t zhoujing/centos .
+ 1339  docker images
+ 1340  docker build -t zhoujing/centos .
+ 1341  docker images
+ 1342  docker build -t zhoujing/small-or-4:debug -f /media/psf/code/z/git/weibo-or/or-dktools/builds/docker/smaller/or-motan.Dockerfile /media/psf/code/z/git/weibo-or/or-dktools/builds
+ 1343  docker build -t zhoujing/centos .
+ 1344  docker images
+ 1345  docker build -t zhoujing/small-or-4:debug -f /media/psf/code/z/git/weibo-or/or-dktools/builds/docker/smaller/or-motan.Dockerfile /media/psf/code/z/git/weibo-or/or-dktools/builds
+ 1346  docker pull Alpine
+ 1347  docker pull alpine
+ 1348  docker images
+ 1349  docker run --rm -it alpine /bin/bash
+ 1350  docker run --rm -it alpine ls
+ 1351  docker run --rm -it alpine /bin/sh
+ 1352  docker build -t zhoujing/centos .
+ 1353  docker images
+ 1354  docker build -t zhoujing/small-or-4:debug -f /media/psf/code/z/git/weibo-or/or-dktools/builds/docker/smaller/or-motan.Dockerfile /media/psf/code/z/git/weibo-or/or-dktools/builds
+ 1355  docker build -t zhoujing/centos .
+ 1356  docker images
+ 1357  docker rmi --force $(docker images -q -f "dangling=true")
+ 1358  docker images
+ 1359  docker build -t zhoujing/small-or-4:debug -f /media/psf/code/z/git/weibo-or/or-dktools/builds/docker/smaller/or-motan.Dockerfile /media/psf/code/z/git/weibo-or/or-dktools/builds
+ 1360  docker build -t zhoujing/centos .
+ 1361  docker images
+ 1362  docker rmi --force $(docker images -q -f "dangling=true")
+ 1363  docker build -t zhoujing/centos .
+ 1364  docker rmi --force $(docker images -q -f "dangling=true")
+ 1365  docker images
+ 1366  docker build -t zhoujing/small-or-4:debug -f /media/psf/code/z/git/weibo-or/or-dktools/builds/docker/smaller/or-motan.Dockerfile /media/psf/code/z/git/weibo-or/or-dktools/builds
+ 1367  docker images
+ 1368  $GIT/weibo-or/motan-openresty
+ 1369  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/small-or-4:debug luajit_prove ./t
+ 1370  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/small-or-4:debug luacheck .
+ 1371  docker images
+ 1372  docker rmi --force $(docker images -q -f "dangling=true")
+ 1373  docker images
+ 1374  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/small-or-4:debug /bin/bash
+ 1375  docker build -t zhoujing/centos .
+ 1376  docker images
+ 1377  docker build -t zhoujing/centos .
+ 1378  docker images
+ 1379  docker rmi --force $(docker images -q -f "dangling=true")
+ 1380  docker images
+ 1381  docker build -t zhoujing/small-or-4:debug -f /media/psf/code/z/git/weibo-or/or-dktools/builds/docker/smaller/or-motan.Dockerfile /media/psf/code/z/git/weibo-or/or-dktools/builds
+ 1382  sudo sysctl net.ipv4.ip_forward
+ 1383  sudo sysctl net.ipv4.ip_forward=1
+ 1384  docker build -t zhoujing/small-or-4:debug -f /media/psf/code/z/git/weibo-or/or-dktools/builds/docker/smaller/or-motan.Dockerfile /media/psf/code/z/git/weibo-or/or-dktools/builds
+ 1385  docker build -t zhoujing/centos .
+ 1386  docker rmi --force $(docker images -q -f "dangling=true")
+ 1387  sudo sysctl net.ipv4.ip_forward
+ 1388  docker images
+ 1389  docker build -t zhoujing/centos .
+ 1390  docker images
+ 1391  docker build -t zhoujing/centos .
+ 1392  docker run --rm -it zhoujing/centos /bin/bash
+ 1393  docker build -t zhoujing/centos .
+ 1394  docker images
+ 1395  docker rmi --force $(docker images -q -f "dangling=true")
+ 1396  docker images
+ 1397  docker run --rm -it zhoujing/centos /bin/bash
+ 1398  docker run --rm -it centos:7 /bin/bash
+ 1399  history| grep rpm
+ 1400  docker run --rm -it centos:7 /bin/bash
+ 1401  docker rmi --force $(docker images -q -f "dangling=true")
+ 1402  docker build -t zhoujing/centos .
+ 1403  docker images
+ 1404  docker rmi --force $(docker images -q -f "dangling=true")
+ 1405  docker images
+ 1406  ifconfig
+ 1407  pwd
+ 1408  docker run --rm -it centos:7 /bin/bash
+ 1409  docker build -t zhoujing/centos .
+ 1410  docker images
+ 1411  docker build -t zhoujing/small-or-4:debug -f /media/psf/code/z/git/weibo-or/or-dktools/builds/docker/smaller/or-motan.Dockerfile /media/psf/code/z/git/weibo-or/or-dktools/builds
+ 1412  sudo sysctl net.ipv4.ip_forward
+ 1413  docker images
+ 1414  $GIT/weibo-or/motan-openresty
+ 1415  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/small-or-4:debug luachekc .
+ 1416  docker images
+ 1417  docker rmi --force $(docker images -q -f "dangling=true")
+ 1418  docker images
+ 1419  docker history zhoujing/small-or-4:debug
+ 1420  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/small-or-4:debug /bin/bash
+ 1421  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/small-or-4:debug luacheck .
+ 1422  docker build -t zhoujing/centos .
+ 1423  docker images
+ 1424  docker rmi --force $(docker images -q -f "dangling=true")
+ 1425  docker images
+ 1426  docker build -t zhoujing/small-or-4:debug -f /media/psf/code/z/git/weibo-or/or-dktools/builds/docker/smaller/or-motan.Dockerfile /media/psf/code/z/git/weibo-or/or-dktools/builds
+ 1427  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/small-or-4:debug luacheck .
+ 1428  docker images
+ 1429  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/small-or-4:debug luajit_prove ./t/
+ 1430  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/small-or-4:debug /bin/bash
+ 1431  docker rmi ce56ee2f8856
+ 1432  docker rmi --force  ce56ee2f8856
+ 1433  docker rmi --force $(docker images -q -f "dangling=true")
+ 1434  docker images
+ 1435  docker rmi 6f809cd5c6dd 0b18c5985e23
+ 1436  docker images
+ 1437  docker tag zhoujing/small-or-4:debug zhoujing/or:debug
+ 1438  docker push zhoujing/or:debug
+ 1439  docker history zhoujing/small-or-4:debug
+ 1440  docker --rm -it zhoujing/small-or-4:debug /bin/bash
+ 1441  docker run --rm -it zhoujing/small-or-4:debug /bin/bash
+ 1442  docker images
+ 1443  docker rmi --force $(docker images -q -f "dangling=true")
+ 1444  docker images
+ 1445  docker rm --force $(docker ps -qa)
+ 1446  docker images
+ 1447  docker build -t zhoujing/centos .
+ 1448  docker images
+ 1449  docker build -t zhoujing/centos .
+ 1450  docker images
+ 1451  docker build -t zhoujing/centos .
+ 1452  docker images
+ 1453  docker build -t zhoujing/centos .
+ 1454  docker images
+ 1455  docker rmi --force $(docker images -q -f "dangling=true")
+ 1456  docker images
+ 1457  docker rmi --force $(docker images -qa | grep -Ev '2868b1aece56|49f7960eb7e4|5ab1b4e70620|183b7fb017ad')
+ 1458  df -h
+ 1459  docker images
+ 1460  docker rmi centos
+ 1461  docker rmi 5ab1b4e70620
+ 1462  docker images
+ 1463  reboot
+ 1464  $GIT/weibo-or/or-dktools
+ 1465  ../or-dktools-pkgs
+ 1466  sudo sysctl net.ipv4.ip_forward
+ 1467  sudo sysctl net.ipv4.ip_forward=1
+ 1468  docker images
+ 1469  $GIT/weibo-or/or-dktools
+ 1470  cd -
+ 1471  sudo sysctl net.ipv4.ip_forward=0
+ 1472  sudo systemctl restart docker
+ 1473  sudo sysctl net.ipv4.ip_forward
+ 1474  ll
+ 1475  ./start_local_file_server.sh
+ 1476  GFW=true RESTY_J=4 OR_ENV=debug ./drun.sh build_or
+ 1477  ll /usr/local/
+ 1478  docker images
+ 1479  small-centos7
+ 1480  docker build -t zhoujing/centos .
+ 1481  docker rmi --force $(docker images -q -f "dangling=true")
+ 1482  docker images
+ 1483  OR_ENV=debug ./drun.sh build_motan
+ 1484  docker rmi --force $(docker images -q -f "dangling=true")
+ 1485  OR_ENV=debug ./drun.sh build_motan
+ 1486  ../motan-openresty
+ 1487  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/openresty:debug luajit_prove ./t/
+ 1488  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/openresty:debug luacheck .
+ 1489  docker images
+ 1490  docker rmi --force $(docker images -q -f "dangling=true")
+ 1491  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/or-motan:debug luajit_prove ./t/
+ 1492  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/or-motan:debug luacheck .
+ 1493  IGLB="PRIVATE-TOKEN: kMT_Czwx_Y7NgtGosqGj" OPEN=not OR_BASE_IMGE=zhoujing/openresty OR_ENV=debug ./drun.sh build_motan
+ 1494  ll /usr/local/
+ 1495  docker images
+ 1496  IGLB="PRIVATE-TOKEN: kMT_Czwx_Y7NgtGosqGj" OPEN=not OR_BASE_IMGE=zhoujing/openresty OR_ENV=debug ./drun.sh build_motan
+ 1497  docker images
+ 1498  ./start_local_file_server.sh
+ 1499  GFW=true RESTY_J=4 ./drun.sh build_or
+ 1500  docker images
+ 1501  OPEN=not ./drun.sh build_motan
+ 1502  IGLB="PRIVATE-TOKEN: kMT_Czwx_Y7NgtGosqGj" OPEN=not ./drun.sh build_motan
+ 1503  docker images
+ 1504  sudo sysctl net.ipv4.ip_forward
+ 1505  sudo sysctl net.ipv4.ip_forward=1
+ 1506  docker rmi --force $(docker images -q -f "dangling=true")
+ 1507  docker images
+ 1508  docker history zhoujing/or-wmotan
+ 1509  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/or-motan:debug ldd openresty
+ 1510  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/or-motan:debug ldd $(which openresty)
+ 1511  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/or-motan:debug /bin/bash
+ 1512  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/or-wmotan /bin/bash
+ 1513  docker images
+ 1514  cd ../or-dktools/small-or
+ 1515  docker build -t zhoujing/small-or .
+ 1516  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/openresty:debug /bin/bash
+ 1517  docker images
+ 1518  docker pull scratch
+ 1519  docker pull alpine
+ 1520  docker images
+ 1521  docker run --rm -it alpine /bin/bash
+ 1522  docker run --rm -it alpine /bin/sh
+ 1523  sudo sysctl net.ipv4.ip_forward=1
+ 1524  docker run --rm -it alpine /bin/sh
+ 1525  docker run --rm -it centos /bin/sh
+ 1526  docker run --rm -it centos /bin/bash
+ 1527  ../small-bash
+ 1528  docker build -t zhoujing/small-bash .
+ 1529  docker run --rm -it zhoujing/small-bash  /bin/bash
+ 1530  docker images
+ 1531  docker build -t zhoujing/small-bash .
+ 1532  docker run --rm -it zhoujing/small-bash  /bin/bash
+ 1533  docker history zhoujing/small-bash
+ 1534  docker history alpine
+ 1535  vim ../rootfs.tar.xz
+ 1536  docker pull busybox
+ 1537  docker images
+ 1538  docker run --rm -it centos /bin/bash
+ 1539  docker images
+ 1540  docker run --rm -it busybox /bin/bash
+ 1541  docker run --rm -it busybox ls
+ 1542  ../../xxxxxxx/bin
+ 1543  ll
+ 1544  du -sh
+ 1545  du -sh ./
+ 1546  ..
+ 1547  du -sh ./
+ 1548  df -h
+ 1549  du -sh ./
+ 1550  du -sh ./bin
+ 1551  ..
+ 1552  du -sh ./bin
+ 1553  du -sh ./
+ 1554  ll
+ 1555  du -sh motan-openresty
+ 1556  history| grep du
+ 1557  du -sh
+ 1558  du -sh /
+ 1559  sudo du -sh
+ 1560  sudo du -sh ./
+ 1561  sudo du -sh ./weibo-motan
+ 1562  xxxxxxx/bin
+ 1563  ./which
+ 1564  du -sh ./
+ 1565  sudo du -sh ./
+ 1566  pwd
+ 1567  ls
+ 1568  cd small-or
+ 1569  ll
+ 1570  docker images
+ 1571  docker rmi --force $(docker images -q -f "dangling=true")
+ 1572  docker images
+ 1573  docker run --rm -it zhoujing/small-bash echo ddd
+ 1574  docker run --rm -it zhoujing/small-bash /bin/bash
+ 1575  docker build -t zhoujing/small-bash .
+ 1576  docker run --rm -it zhoujing/small-bash /bin/bash
+ 1577  docker run --rm -it zhoujing/small-bash echo ddd
+ 1578  docker images
+ 1579  docker rmi --force $(docker images -q -f "dangling=true")
+ 1580  docker images
+ 1581  docker build -t zhoujing/small-or .
+ 1582  sudo sysctl net.ipv4.ip_forward
+ 1583  docker build -t zhoujing/small-or .
+ 1584  docker images
+ 1585  docker rmi --force $(docker images -q -f "dangling=true")
+ 1586  docker images
+ 1587  ..
+ 1588  $GIT/weibo-or/or-dktools-pkgs
+ 1589  ./start_local_file_server.sh
+ 1590  GFW=true RESTY_J=4 ./drun.sh build_or zhoujing/openresty:small
+ 1591  sudo sysctl net.ipv4.ip_forward
+ 1592  $GIT/weibo-or/or-dktools-pkgs
+ 1593  sudo systemctl restart docker
+ 1594  $GIT/weibo-or/or-dktools
+ 1595  ./start_local_file_server.sh
+ 1596  GFW=true RESTY_J=4 ./drun.sh build_or zhoujing/openresty:small
+ 1597  sudo sysctl net.ipv4.ip_forward
+ 1598  $GIT/weibo-or/or-dktools/small-or
+ 1599  ll
+ 1600  docker images
+ 1601  docker rmi --force $(docker images -q -f "dangling=true")
+ 1602  docker rmi centos
+ 1603  docker images
+ 1604  GFW=true RESTY_J=4 ./drun.sh build_or zhoujing/openresty:small
+ 1605  docker build -t zhoujing/small-or .
+ 1606  docker run --rm -it centos:7 /bin/bash 
+ 1607  pwd
+ 1608  docker run --rm -it centos:7 /bin/bash 
+ 1609  docker build -t zhoujing/small-or .
+ 1610  GFW=true RESTY_J=4 OR_ENV=debug ./drun.sh build_or fk
+ 1611  docker build -t zhoujing/small-or .
+ 1612  docker images
+ 1613  docker rmi centos:7
+ 1614  docker images
+ 1615  docker rmi centos:7
+ 1616  docker rmi --force $(docker images -q -f "dangling=true")
+ 1617  docker images
+ 1618  docker build -t zhoujing/small-or .
+ 1619  docker rmi --force $(docker images -q -f "dangling=true")
+ 1620  $GIT/weibo-or/or-dktools
+ 1621  cd small-or
+ 1622  ll
+ 1623  docker
+ 1624  docker ps
+ 1625  sudo systemctl restart docker
+ 1626  docker imags
+ 1627  docker images
+ 1628  docker rmi --force $(docker images -q -f "dangling=true")
+ 1629  docker build -t zhoujing/small-or .
+ 1630  $GIT/weibo-or/or-dktools/
+ 1631  GFW=true RESTY_J=4 OR_ENV=debug ./drun.sh build_or fk
+ 1632  $GIT/weibo-or/or-dktools-pkgs
+ 1633  ./start_local_file_server.sh
+ 1634  GFW=true RESTY_J=4 ./drun.sh build_or fk
+ 1635  docker images
+ 1636  docker build -t zhoujing/small-or .
+ 1637  docker rmi --force $(docker images -q -f "dangling=true")
+ 1638  docker images
+ 1639  docker build -t zhoujing/small-or .
+ 1640  docker images
+ 1641  docker build -t zhoujing/small-or .
+ 1642  docker images
+ 1643  docker build -t zhoujing/small-or .
+ 1644  small-or/openresty-1.13.6.2
+ 1645  ./configure --help|grep xslt
+ 1646  docker build -t zhoujing/small-or .
+ 1647  docker run --rm -it centos:7 /bin/bash
+ 1648  docker build -t zhoujing/small-or .
+ 1649  history| grep rpm
+ 1650  docker build -t zhoujing/small-or .
+ 1651  docker run --rm -it centos:7 /bin/bash
+ 1652  docker build -t zhoujing/small-or .
+ 1653  ./configure --help|grep xslt
+ 1654  docker ps
+ 1655  docker exec 80225dcc90ae /bin/bash
+ 1656  docker exec -ti 80225dcc90ae /bin/bash
+ 1657  docker exec -ti -v `pwd`:/tmp -w /tmp 80225dcc90ae /bin/bash
+ 1658  docker exec -ti 80225dcc90ae /bin/bash
+ 1659  $GIT/weibo-or/or-dktools-pkgs
+ 1660  ./start_local_file_server.sh
+ 1661  docker ps
+ 1662  docker commit 80225dcc90ae zhoujing/small-or-base
+ 1663  docker run --rm -it zhoujing/small-or-base /bin/bash
+ 1664  docker images
+ 1665  docker rmi --force $(docker images -q -f "dangling=true")
+ 1666  docker images
+ 1667  docker ps
+ 1668  docker commit e61eb4ec1cce zhoujing/small-or-base
+ 1669  docker history zhoujing/small-or-base
+ 1670  ll
+ 1671  docker images
+ 1672  docker run --rm -it zhoujing/small-or-base /bin/bash
+ 1673  $GIT/weibo-or/or-dktools/small-or/
+ 1674  ll
+ 1675  docker images
+ 1676  docker build -t zhoujing/small-or:yes -f small.Dockerfile .
+ 1677  docker run --rm -it zhoujing/small-or:yes /bin/bash
+ 1678  docker build -t zhoujing/small-or:yes -f small.Dockerfile .
+ 1679  docker run --rm -it zhoujing/small-or:yes /bin/bash
+ 1680  docker imags
+ 1681  docker images
+ 1682  docker run --rm -it zhoujing/small-or:yes /bin/bash
+ 1683  docker build -t zhoujing/small-or:yes -f small.Dockerfile .
+ 1684  docker run --rm -it zhoujing/small-or:yes /bin/bash
+ 1685  docker build -t zhoujing/small-or:yes -f small.Dockerfile .
+ 1686  docker run --rm -it zhoujing/small-or:yes /bin/bash
+ 1687  docker images
+ 1688  docker build -t zhoujing/small-or:yes -f small.Dockerfile .
+ 1689  docker run --rm -it zhoujing/small-or:yes /bin/bash
+ 1690  docker build -t zhoujing/small-or:yes -f small.Dockerfile .
+ 1691  docker run --rm -it zhoujing/small-or:yes /bin/bash
+ 1692  docker build -t zhoujing/small-or:yes -f small.Dockerfile .
+ 1693  docker run --rm -it zhoujing/small-or:yes /bin/bash
+ 1694  docker build -t zhoujing/small-or:yes -f small.Dockerfile .
+ 1695  docker run --rm -it zhoujing/small-or:yes /bin/bash
+ 1696  docker build -t zhoujing/small-or:yes -f small.Dockerfile .
+ 1697  docker run --rm -it zhoujing/small-or:yes /bin/bash
+ 1698  docker run --rm -it centos:7 /bin/bash
+ 1699  docker images
+ 1700  docker build -t zhoujing/small-or:yes -f small.Dockerfile .
+ 1701  docker run --rm -it zhoujing/small-or:yes /bin/bash
+ 1702  docker images
+ 1703  docker run --rm -it openresty/openresty:1.13.6.2-alpine /bin/bash
+ 1704  docker run --rm -it openresty/openresty:1.13.6.2-alpine /bin/sh
+ 1705  docker build -t zhoujing/small-or:yes -f small.Dockerfile .
+ 1706  docker run --rm -it zhoujing/small-or:yes /bin/bash
+ 1707  docker ps
+ 1708  docker commit 80225dcc90ae zhoujing/small-or-base
+ 1709  docker build -t zhoujing/small-or:yes -f small.Dockerfile .
+ 1710  docker run --rm -it zhoujing/small-or:yes /bin/bash
+ 1711  docker commit 80225dcc90ae zhoujing/small-or-base
+ 1712  docker build -t zhoujing/small-or:yes -f small.Dockerfile .
+ 1713  docker run --rm -it zhoujing/small-or:yes /bin/bash
+ 1714  docker push zhoujing/small-or:yes
+ 1715  docker  images
+ 1716  docker rmi --force $(docker images -q -f "dangling=true")
+ 1717  docker  images
+ 1718  docker build --help
+ 1719  docker build --compress -t zhoujing/small-or:yes -f small.Dockerfile .
+ 1720  docker images
+ 1721  docker build  -t zhoujing/small-or:yes -f small.Dockerfile .
+ 1722  docker run --rm -it --privileged zhoujing/small-or:yes /bin/bash
+ 1723  docker build  -t zhoujing/small-or:yes -f small.Dockerfile .
+ 1724  docker run --rm -it --privileged zhoujing/small-or:yes /bin/bash
+ 1725  docker commit 80225dcc90ae zhoujing/small-or-base
+ 1726  docker build  -t zhoujing/small-or:yes -f small.Dockerfile .
+ 1727  docker run --rm -it --privileged zhoujing/small-or:yes /bin/bash
+ 1728  docker build  -t zhoujing/small-or:yes -f small.Dockerfile .
+ 1729  docker run --rm -it --privileged zhoujing/small-or:yes /bin/bash
+ 1730  docker images
+ 1731  docker build  -t zhoujing/small-or:yes -f small.Dockerfile .
+ 1732  docker run --rm -it --privileged zhoujing/small-or:yes /bin/bash
+ 1733  docker images
+ 1734  docker run --rm -it --privileged -p 80:80 zhoujing/small-or:yes /bin/bash
+ 1735  curl 10.211.55.128
+ 1736  systemctl stop firewalld
+ 1737  docker run --rm -it --privileged -p 80:80 zhoujing/small-or:yes /bin/bash
+ 1738  sudo sysctl net.ipv4.ip_forward=1
+ 1739  docker run --rm -it --privileged -p 80:80 zhoujing/small-or:yes /bin/bash
+ 1740  systemctl start firewalld
+ 1741  docker run --rm -it --privileged -p 80:80 zhoujing/small-or:yes /bin/bash
+ 1742  systemctl stop firewalld
+ 1743  sudo systemctl restart docker
+ 1744  docker run --rm -it --privileged -p 80:80 zhoujing/small-or:yes /bin/bash
+ 1745  systemctl disable firewalld
+ 1746  docker images
+ 1747  docker run --rm -it zhoujing/small-or-base /bin/bash
+ 1748  docker build  -t zhoujing/small-or:yes -f small.Dockerfile .
+ 1749  docker run --rm -it --privileged -p 80:80 zhoujing/small-or:yes /bin/bash
+ 1750  docker build  -t zhoujing/small-or:yes -f small.Dockerfile .
+ 1751  docker run --rm -it --privileged -p 80:80 zhoujing/small-or:yes /bin/bash
+ 1752  ll /lib64/libnss_sss.so.2
+ 1753  ll /usr/local/openresty/luajit/lib/libnss_sss.so.2
+ 1754  ll /usr/local/openresty/nginx/sbin/lib/libnss_sss.so.2
+ 1755  ll /lib64/libnss_sss.so.2
+ 1756  ll /usr/lib64/tls/x86_64/libnss_sss.so.2
+ 1757  ll /usr/lib64/tls/libnss_sss.so.2
+ 1758  ll /usr/lib64/x86_64/libnss_sss.so.2
+ 1759  ll /usr/lib64/libnss_sss.so.2
+ 1760  yum install -y http://mirror.centos.org/centos/7/os/x86_64/Packages/sssd-client-1.16.0-19.el7.x86_64.rpm
+ 1761  sudo yum install -y http://mirror.centos.org/centos/7/os/x86_64/Packages/sssd-client-1.16.0-19.el7.x86_64.rpm
+ 1762  docker ps
+ 1763  docker commit 4e6eae398cd4 zhoujing/small-or-base
+ 1764  docker images
+ 1765  docker build  -t zhoujing/small-or:yes -f small.Dockerfile .
+ 1766  docker run --rm -it --privileged -p 80:80 zhoujing/small-or:yes /bin/bash
+ 1767  docker build  -t zhoujing/small-or:yes -f small.Dockerfile .
+ 1768  docker run --rm -it --privileged -p 80:80 zhoujing/small-or:yes /bin/bash
+ 1769  docker rmi --force $(docker images -q -f "dangling=true")
+ 1770  $GIT/weibo-or/or-dktools
+ 1771  ./start_local_file_server.sh
+ 1772  GFW=true RESTY_J=4 ./drun.sh build_or k
+ 1773  docker run --rm -it centos /bin/bash 
+ 1774  docker run --rm -it centos:7 /bin/bash 
+ 1775  docker build  -t zhoujing/small-or-base:yes .
+ 1776  sudo sysctl net.ipv4.ip_forward
+ 1777  docker run --rm -it centos:7 /bin/bash 
+ 1778  docker run --rm -it -v `pwd`/small-or:/tmp centos:7 /bin/bash 
+ 1779  docker run --rm -it -v `pwd`/small-or:/tmp -w /tmp centos:7 /bin/bash 
+ 1780  reboot
+ 1781  $GIT/weibo-or/or-dktools-pkgs
+ 1782  $GIT/weibo-or/or-dktools
+ 1783  sudo systemctl restart docker
+ 1784  docker run --rm -it -v `pwd`/small-or:/tmp -w /tmp centos:7 /bin/bash 
+ 1785  docker images
+ 1786  docker rmi --force $(docker images -q -f "dangling=true")
+ 1787  docker images
+ 1788  docker run --rm -it -v `pwd`/small-or:/tmp -w /tmp centos:7.5.1804 /bin/bash 
+ 1789  cd small-or
+ 1790  docker build  -t zhoujing/small-or-base:yes .
+ 1791  gcc -v
+ 1792  gcc -V
+ 1793  docker run --rm -it -v `pwd`/small-or:/tmp -w /tmp centos:7.5.1804 /bin/bash 
+ 1794  docker build  -t zhoujing/small-or-base:yes .
+ 1795  docker build  -t zhoujing/small-or:yes-1 -f small.Dockerfile .
+ 1796  docker imgages
+ 1797  docker images
+ 1798  docker run --rm -it zhoujing/small-or:yes-1 /bin/bash
+ 1799  ./start_local_file_server.sh
+ 1800  GFW=true RESTY_J=4 ./drun.sh build_or ok
+ 1801  docker build  -t zhoujing/small-or-base:yes .
+ 1802  docker images
+ 1803  GFW=true RESTY_J=4 ./drun.sh build_or okk
+ 1804  docker build  -t zhoujing/small-or:yes-1 -f small.Dockerfile .
+ 1805  docker run --rm -it zhoujing/small-or:yes-1 /bin/bash
+ 1806  docker images
+ 1807  docker rmi --force $(docker images -q -f "dangling=true")
+ 1808  GFW=true RESTY_J=4 ./drun.sh build_or okkk
+ 1809  docker rmi --force $(docker images -q -f "dangling=true")
+ 1810  docker images
+ 1811  sudo sysctl net.ipv4.ip_forward
+ 1812  sudo sysctl net.ipv4.ip_forward=
+ 1813  sudo sysctl net.ipv4.ip_forward=1
+ 1814  GFW=true RESTY_J=4 OR_ENV=debug ./drun.sh build_or okkk
+ 1815  \n
+ 1816  GFW=true RESTY_J=4 OR_ENV=debug ./drun.sh build_or okkk
+ 1817  docker run --rm -it -v `pwd`/small-or:/tmp centos:7 /bin/bash 
+ 1818  sudo sysctl net.ipv4.ip_forward
+ 1819  GFW=true RESTY_J=4 OR_ENV=debug ./drun.sh build_or okkk
+ 1820  sudo sysctl net.ipv4.ip_forward
+ 1821  GFW=true RESTY_J=4 OR_ENV=debug ./drun.sh build_or okkk
+ 1822  docker rmi --force $(docker images -q -f "dangling=true")
+ 1823  GFW=true RESTY_J=4 OR_ENV=debug ./drun.sh build_or okkk
+ 1824  sudo sysctl net.ipv4.ip_forward
+ 1825  sudo sysctl net.ipv4.ip_forward=1
+ 1826  GFW=true RESTY_J=4 OR_ENV=debug ./drun.sh build_or okkk
+ 1827  sudo sysctl net.ipv4.ip_forward
+ 1828  reboot
+ 1829  pwd
+ 1830  sudo sysctl net.ipv4.ip_forward
+ 1831  reboot
+ 1832  /media/psf/code/z/git/weibo-or/or-dktools/small-or
+ 1833  /media/psf/code/z/git/weibo-or/or-dktools-pkgs
+ 1834  ..
+ 1835  ./start_local_file_server.sh
+ 1836  sudo systemctl restart docker
+ 1837  sudo sysctl net.ipv4.ip_forward
+ 1838  GFW=true RESTY_J=4 OR_ENV=debug ./drun.sh build_or okkk
+ 1839  sudo sysctl net.ipv4.ip_forward
+ 1840  docker images
+ 1841  docker rmi --force $(docker images -q -f "dangling=true")
+ 1842  docker images
+ 1843  IGLB="PRIVATE-TOKEN: kMT_Czwx_Y7NgtGosqGj" OPEN=not OR_BASE_IMGE=zhoujing/openresty OR_ENV=debug ./drun.sh build_motan
+ 1844  sudo sysctl net.ipv4.ip_forward
+ 1845  systemctl disable firewalld
+ 1846  IGLB="PRIVATE-TOKEN: kMT_Czwx_Y7NgtGosqGj" OPEN=not OR_BASE_IMGE=zhoujing/openresty OR_ENV=debug ./drun.sh build_motan
+ 1847  $GIT/weibo-or/jerry-server-openresty
+ 1848  ../v
+ 1849  ../v-demo-app
+ 1850  history| grep ben
+ 1851  history
+ 1852  docker images
+ 1853  ../v
+ 1854  docker run --rm -it zhoujing/openresty luajit_prove ./t/000-sanity.t
+ 1855  docker run --rm -it zhoujing/openresty:debug luajit_prove ./t/000-sanity.t
+ 1856  docker run --rm -it zhoujing/or-wmotan:debug luajit_prove ./t/000-sanity.t
+ 1857  docker run --rm -it zhoujing/or-wmotan:debug luajit_prove ./t
+ 1858  docker run --rm -it okkk:debug luajit_prove ./t/000-sanity.t
+ 1859  docker images
+ 1860  docker run --rm -v `pwd`:/tmp -w /tmp zhoujing/openresty:debug luajit_prove ./t/000-sanity.t
+ 1861  docker run --rm -v `pwd`:/tmp -w /tmp zhoujing/or-wmotan:debug luajit_prove ./t/000-sanity.t
+ 1862  docker images
+ 1863  docker run --rm -e TEST_NGINX_BENCHMARK='2000 2' -v `pwd`:/tmp -w /tmp zhoujing/or-wmotan:debug luajit_prove ./t/000-sanity.t
+ 1864  weighttp
+ 1865  yum install -y weighttp
+ 1866  luajit_prove
+ 1867  sudo yum install weighttp
+ 1868  IGLB="PRIVATE-TOKEN: kMT_Czwx_Y7NgtGosqGj" OPEN=not OR_BASE_IMGE=zhoujing/openresty OR_ENV=debug ./drun.sh build_motan
+ 1869  docker images
+ 1870  docker run  --rm -it zhoujing/or-wmotan:debug /bin/bash
+ 1871  IGLB="PRIVATE-TOKEN: kMT_Czwx_Y7NgtGosqGj" OPEN=not OR_BASE_IMGE=zhoujing/openresty OR_ENV=debug ./drun.sh build_motan
+ 1872  sudo sysctl net.ipv4.ip_forward
+ 1873  sudo sysctl net.ipv4.ip_forward=1
+ 1874  IGLB="PRIVATE-TOKEN: kMT_Czwx_Y7NgtGosqGj" OPEN=not OR_BASE_IMGE=zhoujing/openresty OR_ENV=debug ./drun.sh build_motan
+ 1875  docker run  --rm -it zhoujing/or-wmotan:debug /bin/bash
+ 1876  ..
+ 1877  ll
+ 1878  curl -fSL http://cgit.lighttpd.net/weighttp.git/snapshot/weighttp-master.tar.gz -o weighttp.tar.gz
+ 1879  ll
+ 1880  tar zxf weighttp.tar.gz
+ 1881  cd weighttp-master
+ 1882  gcc -g2 -O2 src/*.c -o weighttp -lev -lpthread
+ 1883  ll
+ 1884  cat README
+ 1885  ./autogen.sh
+ 1886  ..
+ 1887  ll
+ 1888  docker images
+ 1889  cd v
+ 1890  docker run --rm -e TEST_NGINX_BENCHMARK='2000 2' -v `pwd`:/tmp -w /tmp zhoujing/or-wmotan:debug luajit_prove ./t/000-sanity.t
+ 1891  $GIT/weibo-or
+ 1892  l
+ 1893  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/or-wmotan:debug /bin/bash
+ 1894  ll
+ 1895  git clone git://git.lighttpd.net/weighttp
+ 1896  docker run --rm -it -v `pwd`:/tmp -w /tmp zhoujing/or-wmotan:debug /bin/bash
+ 1897  $GIT/weibo-or/v-demo-app
+ 1898  ll
+ 1899  docker ps
+ 1900  docker exec -it 5b633f98eaac /bin/bash
+ 1901  docker images
+ 1902  docker run --rm -v `pwd`:/tmp -w /tmp zhoujing/or-wmotan -c ./run_path/v.conf
+ 1903  docker run --rm -v `pwd`:/tmp -w /tmp zhoujing/or-wmotan run -c ./run_path/v.conf
+ 1904  docker run --rm -v `pwd`:/tmp -w /tmp zhoujing/or-wmotan openresty -p -c ./run_path/v.conf
+ 1905  docker run --rm -v `pwd`:/tmp -w /tmp zhoujing/or-wmotan openresty -p ./ -c ./run_path/v.conf
+ 1906  docker run --rm -v `pwd`:/tmp -w /tmp zhoujing/or-wmotan openresty -p . -c ./run_path/v.conf
+ 1907  docker ps
+ 1908  docker commit 5b633f98eaac zhoujing/or-wmotan:benchmark
+ 1909  ../v
+ 1910  docker run --rm -e TEST_NGINX_BENCHMARK='2000 2' -v `pwd`:/tmp -w /tmp zhoujing/or-wmotan:benchmark luajit_prove ./t/000-sanity.t
+ 1911  docker ps
+ 1912  docker commit 5b633f98eaac zhoujing/or-wmotan:benchmark
+ 1913  docker run --rm -e TEST_NGINX_BENCHMARK='2000 2' -v `pwd`:/tmp -w /tmp zhoujing/or-wmotan:benchmark luajit_prove ./t/000-sanity.t
+ 1914  docker run --rm  -it zhoujing/or-wmotan:benchmark /bin/bash
+ 1915  docker run --rm  -it zhoujing/or-wmotan:benchmark echo $PATH
+ 1916  docker run --rm -e PATH= -it zhoujing/or-wmotan:benchmark 'echo $PATH'
+ 1917  docker run --rm -e PATH= -it zhoujing/or-wmotan:benchmark "echo \$PATH"
+ 1918  docker run --rm -e PATH= -it zhoujing/or-wmotan:benchmark "echo \\\$PATH"
+ 1919  docker run --rm -e PATH= -it zhoujing/or-wmotan:benchmark echo \\\$PATH
+ 1920  docker run --rm -e TEST_NGINX_BENCHMARK='2000 2' -v `pwd`:/tmp -w /tmp zhoujing/or-wmotan:benchmark luajit_prove ./t/000-sanity.t
+ 1921  docker ps
+ 1922  docker commit 5b633f98eaac zhoujing/or-wmotan:benchmark
+ 1923  docker run --rm -e TEST_NGINX_BENCHMARK='2000 2' -v `pwd`:/tmp -w /tmp zhoujing/or-wmotan:benchmark luajit_prove ./t/000-sanity.t
+ 1924  docker commit 5b633f98eaac zhoujing/or-wmotan:benchmark
+ 1925  docker run --rm -e TEST_NGINX_BENCHMARK='2000 2' -v `pwd`:/tmp -w /tmp zhoujing/or-wmotan:benchmark luajit_prove ./t/000-sanity.t
+ 1926  docker commit 5b633f98eaac zhoujing/or-wmotan:benchmark
+ 1927  docker run --rm -e TEST_NGINX_BENCHMARK='2000 2' -v `pwd`:/tmp -w /tmp zhoujing/or-wmotan:benchmark luajit_prove ./t/000-sanity.t
+ 1928  docker run --rm -e TEST_NGINX_BENCHMARK='2000 2' -v `pwd`:/tmp -w /tmp zhoujing/or-wmotan:benchmark luacheck
+ 1929  docker images
+ 1930  docker run --rm -it zhoujing/or-wmotan:debug /bin/bash
+ 1931  docker commit 5b633f98eaac zhoujing/or-wmotan:benchmark
+ 1932  docker run --rm -e TEST_NGINX_BENCHMARK='2000 2' -v `pwd`:/tmp -w /tmp zhoujing/or-wmotan:benchmark luacheck
+ 1933  docker run --rm -e TEST_NGINX_BENCHMARK='2000 2' -v `pwd`:/tmp -w /tmp zhoujing/or-wmotan:benchmark luajit_prove ./t/000-sanity.t
+ 1934  docker run --rm -v `pwd`:/tmp -w /tmp zhoujing/or-wmotan:debug openresty -V
+ 1935  docker run --rm -v `pwd`:/tmp -w /tmp zhoujing/or-wmotan:debug 'openresty -p . -c ./run_path/v.conf'
+ 1936  docker run --rm -v `pwd`:/tmp -w /tmp zhoujing/or-wmotan:debug '/usr/local/openresty-debug/bin/openresty -p . -c ./run_path/v.conf'
+ 1937  docker run --rm -v `pwd`:/tmp -w /tmp zhoujing/or-wmotan:debug ls
+ 1938  docker run --rm -v `pwd`:/tmp -w /tmp zhoujing/or-wmotan:debug ls /usr/local/openresty-debug/bin/openresty
+ 1939  docker run --rm -v `pwd`:/tmp -w /tmp zhoujing/or-wmotan:debug ls /usr/local/openresty-debug/
+ 1940  ll /usr/local/openresty-debug
+ 1941  docker run --rm -v `pwd`:/tmp -w /tmp zhoujing/or-wmotan:debug /usr/local/openresty-debug/bin/openresty -c
+ 1942  docker run --rm -v `pwd`:/tmp -w /tmp zhoujing/or-wmotan:debug openresty -c
+ 1943  docker run --rm -v `pwd`:/tmp -w /tmp zhoujing/or-wmotan:debug openresty -c /tmp/run_path/v.conf -p .
+ 1944  docker commit 5b633f98eaac zhoujing/or-wmotan:benchmark
+ 1945  docker run --rm -e TEST_NGINX_BENCHMARK='2000 2' -v `pwd`:/tmp -w /tmp zhoujing/or-wmotan:benchmark luajit_prove ./t/000-sanity.t
+ 1946  docker images
+ 1947  docker tag zhoujing/or-wmotan:benchmark registry.api.weibo.com/openapi_rd/openresty:benchmark
+ 1948  docker push registry.api.weibo.com/openapi_rd/openresty:benchmark
+ 1949  docker run --rm -v `pwd`:/tmp -w /tmp zhoujing/or-wmotan:debug openresty -c /tmp/run_path/v.conf -p .
+ 1950  docker ps
+ 1951  docker run -d --rm -v `pwd`:/tmp -w /tmp zhoujing/or-wmotan:debug openresty -c /tmp/run_path/v.conf -p .
+ 1952  docker ps
+ 1953  docker run  --rm -v `pwd`:/tmp -w /tmp zhoujing/or-wmotan:debug openresty -c /tmp/run_path/v.conf -p .
+ 1954  docker run  --rm -v `pwd`:/tmp -w /tmp zhoujing/or-wmotan:debug /bin/bash
+ 1955  pwd
+ 1956  docker run  --rm -it -v `pwd`:/tmp -w /tmp zhoujing/or-wmotan:debug /bin/bash
+ 1957  docker run  --rm -it -v `pwd`:/tmp -w /tmp zhoujing/or-wmotan:debug openresty -c v.conf -p ./run_path
+ 1958  docker ps
+ 1959  docker run  --rm -d -v `pwd`:/tmp -w /tmp zhoujing/or-wmotan:debug openresty -c v.conf -p ./run_path
+ 1960  docker ps
+ 1961  docker run  --rm -d -v `pwd`:/tmp -w /tmp zhoujing/or-wmotan:debug openresty -c v.conf -p ./run_path -g "daemon off;"
+ 1962  docker ps
+ 1963  docker stop ecstatic_minsky
+ 1964  docker run --name or --rm -d -p 80:8888 -v `pwd`:/tmp -w /tmp zhoujing/or-wmotan:debug openresty -c v.conf -p ./run_path -g "daemon off;"
+ 1965  curl localhost
+ 1966  docker stop or
+ 1967  docker run --name or --rm -d -p 80:8888 -v `pwd`:/tmp -w /tmp zhoujing/or-wmotan:debug openresty -c v.conf -p ./run_path -g "daemon off;"
+ 1968  curl localhost
+ 1969  docker ps
+ 1970  docker stop or
+ 1971  docker-compose up
+ 1972  ../or-dktools
+ 1973  sudo systemctl restart docker
+ 1974  docker images
+ 1975  docker rmi --force $(docker images -q -f "dangling=true")
+ 1976  docker rm --force $(docker ps -qa)
+ 1977  docker run --rm  -d -name or --privileged zhoujing/or-wmotan:debug
+ 1978  docker run --rm  -d --name or --privileged zhoujing/or-wmotan:debug
+ 1979  docker ps
+ 1980  docker run --rm  -d --name or --privileged zhoujing/openresty
+ 1981  docker ps
+ 1982  docker exec or ps axu
+ 1983  strace
+ 1984  yum install -y strace
+ 1985  sudo yum install -y strace
+ 1986  ifconfig
+ 1987  history
+ 1988  ps fax
+ 1989  strace -p 2096
+ 1990  sudo strace -p 2096
+ 1991  curl localhost
+ 1992  netstat -natpl
+ 1993  curl 10.211.55.128:10010
+ 1994  sudo strace -p 2142
+ 1995  curl 10.211.55.128:10010
+ 1996  curl 10.211.55.128:10010/
+ 1997  history
+ 1998  nmon
+ 1999  ifconfig
+ 2000  history
+ 2001  d
+ 2002  mtr
+ 2003  sudo systemctl restart docker
+ 2004  docker ps
+ 2005  docker images
+ 2006  $GIT/weibo-or/or-dktools/
+ 2007  ll
+ 2008  history
+ 2009  docker images
+ 2010  IGLB="PRIVATE-TOKEN: kMT_Czwx_Y7NgtGosqGj" OPEN=not OR_BASE_IMGE=zhoujing/openresty ./drun.sh build_motan
+ 2011  docker images
+ 2012  docker tag zhoujing/or-wmotan registry.api.weibo.com/openapi_rd/openresty
+ 2013  docker images
+ 2014  docker push registry.api.weibo.com/openapi_rd/openresty
+ 2015  docker run --rm -it registry.api.weibo.com/openapi_rd/openresty /bin/bash
+ 2016  docker images
+ 2017  docker rmi --force $(docker images -q -f "dangling=true")
+ 2018  IGLB="PRIVATE-TOKEN: kMT_Czwx_Y7NgtGosqGj" OPEN=not OR_BASE_IMGE=zhoujing/openresty MOTAN_OPENRESTY_VERSION=0.0.1-rc.3 ./drun.sh build_motan
+ 2019  docker ps
+ 2020  docker images
+ 2021  docker tag zhoujing/or-wmotan registry.api.weibo.com/openapi_rd/openresty
+ 2022  docker images
+ 2023  docker run --rm -it registry.api.weibo.com/openapi_rd/openresty /bin/bash
+ 2024  docker push registry.api.weibo.com/openapi_rd/openresty
+ 2025  docker tag zhoujing/or-wmotan registry.api.weibo.com/openapi_rd/openresty:0.0.1
+ 2026  docker push registry.api.weibo.com/openapi_rd/openresty
+ 2027  docker push registry.api.weibo.com/openapi_rd/openresty:0.0.1
+ 2028  hostname
+ 2029  uname
+ 2030  pwd
+ 2031  ps fax
+ 2032  docker images
+ 2033  sudo shutdown now
+ 2034  ps fax
+ 2035  history
+ 2036  sudo systemctl start docker
+ 2037  history| grep docker
+ 2038  cat ~/.bash_history
+ 2039  ll /media/psf/runX
+ 2040  cat ~/.bash_history>/media/psf/runX/dk.bash.his

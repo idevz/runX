@@ -16,9 +16,10 @@
 
 set -e
 
-cd "$(readlink -f "$(dirname "$BASH_SOURCE")")"
-echo $BASH_SOURCE
-echo "$(readlink -f "$(dirname "$BASH_SOURCE")")"
+cd "$(readlink -f "$(dirname "$0")")"
+echo $0
+echo $0
+echo "$(readlink -f "$(dirname "$0")")"
 
 if [ ${#versions[@]} -eq 0 ]; then
 	versions=(*/)

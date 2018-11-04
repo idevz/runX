@@ -1,0 +1,7 @@
+uname -r
+yum install http://mirror.centos.org/centos/7/os/x86_64/Packages/kernel-debug-devel-3.10.0-693.el7.x86_64.rpm
+yum install http://mirror.centos.org/centos/7/os/x86_64/Packages/kernel-devel-3.10.0-693.el7.x86_64.rpm
+yum install ftp://mirror.switch.ch/pool/4/mirror/scientificlinux/7.2/x86_64/updates/security/kernel-devel-3.10.0-693.el7.x86_64.rpm
+yum install ftp://mirror.switch.ch/pool/4/mirror/scientificlinux/7.2/x86_64/updates/security/kernel-headers-3.10.0-693.el7.x86_64.rpm
+yum install ftp://mirror.switch.ch/pool/4/mirror/scientificlinux/7.2/x86_64/updates/security/kernel-debug-devel-3.10.0-693.el7.x86_64.rpm
+sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
