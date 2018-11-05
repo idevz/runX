@@ -10,9 +10,9 @@
 # LV: Lua version which you want to install.
 ### END ###
 
-set -e
+set -ex
 
-[ $HOME != '/home/z' ] && echo 'Are U Z ?' && exit 1
+# [ $HOME != '/home/z' ] && echo 'Are U Z ?' && exit 1
 
 # BASE_DIR=$(dirname $(cd $(dirname "$0") && pwd -P)/$(basename "$0"))
 BASE_DIR=${BASE_DIR:-$(dirname $(cd $(dirname "$0") && pwd -P)/$(basename "$0"))}

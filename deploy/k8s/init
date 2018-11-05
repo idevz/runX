@@ -10,13 +10,16 @@
 # LV: Lua version which you want to install.
 ### END ###
 
-set -e
+set -ex
 
 [ $HOME != '/home/z' ] && echo 'Are U Z ?' && exit 1
 H_PROXY_ADDR="http://127.0.0.1:8118"
-NO_PROXY="localhost, 127.0.0.1, ::1, 10.211.0.0/24, 10.96.0.0/12, 10.244.0.0/16, 10.211.55.150"
+NO_PROXY="localhost,127.0.0.1,::1,10.211.55.0/16,10.96.0.0/12,10.244.0.0/16"
 BASE_DIR=${BASE_DIR:-"$(readlink -f "$(dirname "$0")")"}
 OUT_GOING_ACCOUNT_FILE=${OGA:-"out-accounts-info.zj"}
+source "${BASE_DIR}/${OUT_GOING_ACCOUNT_FILE}"
+PRI_REGISTRY="${OUT_IP}:5000"
+NODES=(kube2 kube3)
 
 sudo_write() {
 	local content="${1}"
@@ -27,7 +30,6 @@ sudo_write() {
 }
 
 init_out_going() {
-	source "${BASE_DIR}/${OUT_GOING_ACCOUNT_FILE}"
 	sudo yum -y install epel-release python-pip privoxy
 	sudo pip install --upgrade pip
 	sudo pip install shadowsocks
@@ -86,7 +88,7 @@ export NO_PROXY="${NO_PROXY}"
 OUT_PROFILE
 	)
 	sudo_write "${out_profile}" "/etc/profile" true
-	. /etc/profile
+	source /etc/profile
 
 	sudo_write "proxy=${H_PROXY_ADDR}" /etc/yum.conf true
 
@@ -141,6 +143,8 @@ Environment=PATH=/usr/libexec/docker:/usr/bin:/usr/sbin
 Environment="HTTP_PROXY=${H_PROXY_ADDR}" "NO_PROXY=${NO_PROXY}"
 ExecStartPost=/usr/sbin/iptables -P FORWARD ACCEPT
 ExecStart=/usr/bin/dockerd-current \
+          --add-registry=${PRI_REGISTRY}
+          --insecure-registry=${PRI_REGISTRY}
           --add-runtime docker-runc=/usr/libexec/docker/docker-runc-current \
           --default-runtime=docker-runc \
           --exec-opt native.cgroupdriver=systemd \
@@ -165,11 +169,20 @@ WantedBy=multi-user.target
 DOCKER_SERVICE
 	)
 	sudo_write "${docker_service_unit}" "/lib/systemd/system/docker.service"
+	local docker_daemon_json=
+	docker_daemon_json=$(
+		cat <<DDJ
+		{ "insecure-registries":["${PRI_REGISTRY}"] }
+DDJ
+	)
+	sudo_write "${docker_daemon_json}" "/etc/docker/daemon.json"
+	[ ! -f "/usr/libexec/docker/docker-runc" ] &&
+		sudo ln -s "/usr/libexec/docker/docker-runc-current" "/usr/libexec/docker/docker-runc"
 	sudo systemctl enable docker &&
 		sudo systemctl start docker
 }
 
-init_kubeadm() {
+preper_kubeadm() {
 	KUBE_YUM=$(
 		cat <<KUBE_Y
 [kubernetes]
@@ -202,10 +215,45 @@ KUBE_S
 	sudo sysctl --system
 }
 
+init_kubeadm() {
+	sudo swapoff -a #KUBELET_EXTRA_ARGS="--fail-swap-on=false"
+	local join=
+	if [ ${HOSTNAME} = 'kube1' ]; then
+		for kube_image in $(kubeadm config images list); do
+			local private_kube_image="${PRI_REGISTRY}/${kube_image}"
+			sudo docker pull "${private_kube_image}"
+			sudo docker tag "${private_kube_image}" "${kube_image}"
+		done
+		sudo kubeadm init --config $RUN_PATH/kubeadm.yaml >$RUN_PATH/init.out
+		join=$(tail -10 $RUN_PATH/init.out | grep 'kubeadm join')
+		join_sh=$(
+			cat <<JOIN_SH
+#!/usr/bin/env bash
+
+### BEGIN ###
+# Author: idevz
+# Since: 2018/03/12
+# Description:       AUTO Generate by runX.
+# ./join.sh          Make a node join to a K8S cluster.
+### END ###
+sudo ${join}
+JOIN_SH
+		)
+		for node in ${NODES}; do
+			[ ! -d "$RUN_PATH/../${node}" ] && mkdir -p "$RUN_PATH/../${node}"
+			echo "${join_sh}" >$RUN_PATH/../${node}/join.sh
+			chmod +x $RUN_PATH/../${node}/join.sh
+		done
+	else
+		sudo $RUN_PATH/join.sh
+	fi
+}
+
 init() {
 	sudo systemctl stop firewalld &&
 		sudo systemctl disable firewalld
 	init_out_going
 	init_docker
+	preper_kubeadm
 	init_kubeadm
 }
