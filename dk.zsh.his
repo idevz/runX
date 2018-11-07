@@ -1,5 +1,4 @@
 docker attach mystifying_euclid
-docker login -u zhoujing2 -p "ZHOUjingK49…PHP" registry.api.weibo.com
 docker build --build-arg OR_ENV=dev -t zhoujing/v .
 docker build --build-arg HOSTNAME=$(hostname) -t zhoujing/t-wget -f wget.Dockerfile .
 docker build -t zhoujing/v .
