@@ -45,6 +45,7 @@ install_lua_from_src() {
 	cd ${LUA_SRC_ROOT} &&
 		tar zxf ${LUA_VERSION}.tar.gz &&
 		cd ${LUA_VERSION} &&
+		# \$$$$ORIGIN/lib
 		${SED} 's/^CC= gcc$/CC= gcc -ggdb/g;s/-O2/-O0/g' src/Makefile &&
 		sudo make ${PLAT} install INSTALL_TOP=${LUA_ROOT}
 }
@@ -68,7 +69,8 @@ EOF
 )
 
 init() {
-	dp
+	# dp
 	install_lua_from_src
 	create_profile "${PROFILE}"
 }
+init

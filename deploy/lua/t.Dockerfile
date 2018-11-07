@@ -1,4 +1,4 @@
-FROM centos:7
+FROM idevz_centos:latest
 
 # ---------------- #
 #     Building     #
@@ -6,14 +6,12 @@ FROM centos:7
 
 LABEL maintainer="idevz <zhoujing00k@gmail.com>"
 LABEL RUN="docker run -it --privileged --name NAME IMAGE"
-
+ENV IN_DK=true
 COPY / /tmp/
-COPY /bin/sudo /bin/sudo
-COPY /bin/make /bin/make
 
 WORKDIR /tmp
 
-RUN yum install -y sudo;\
-    cd /tmp;\
-    source /tmp/init;\
+RUN cd /tmp;\
+    ls ;\
+    source ./init;\
     init;
