@@ -56,6 +56,11 @@ install_python_from_src() {
 	# --with-ensurepip=yes : This switch enables building pip and setuptools packaging programs. setuptools is needed for building some Python modules.
 }
 
+init_pip() {
+	curl "https://bootstrap.pypa.io/get-pip.py" -o "/tmp/get-pip.py"
+	sudo python36 "/tmp/get-pip.py"
+}
+
 PROFILE=$(
 	cat <<EOF
 #!/usr/bin/env bash
