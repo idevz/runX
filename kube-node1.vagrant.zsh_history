@@ -31,7 +31,7 @@
    46  x pod
    47  x ing
    48  x svc
-   49  curl 10.101.122.50:9080
+   49  curl xxx.xxx.122.50:9080
    50  x pod
    51  pwd
    52  cat istio-0.2.7/samples/bookinfo/kube/route-rule-reviews-test-v2.yaml 
@@ -43,7 +43,7 @@
    58  x svc
    59  kubectl cluster-info 
    60  x pod
-   61  curl -k https://10.211.55.74:6443
+   61  curl -k https://xxx.xxx.55.74:6443
    62  ifconfig -eth
    63  ifconfig -eth0
    64  ifconfig  eth0
@@ -72,19 +72,19 @@
    87  x svc
    88  x pod
    89  x svc
-   90  ping 10.244.1.162
+   90  ping xxx.xxx.1.162
    91  cd ~
    92  nc -l 1234 > tcpdump-4.9.2.tar.gz
    93  ll
    94  python -m SimpleHTTPServer
-   95  python -m SimpleHTTPServer -h 10.211.55.74
+   95  python -m SimpleHTTPServer -h xxx.xxx.55.74
    96  python -m SimpleHTTPServer --port 5000
    97  python -m SimpleHTTPServer 80
    98  python -m SimpleHTTPServer 8999
-   99  python -m SimpleHTTPServer 10.211.55.74:8888
+   99  python -m SimpleHTTPServer xxx.xxx.55.74:8888
   100  python -m SimpleHTTPServer 8888
   101  x svc
-  102  curl 10.110.23.5/productpage
+  102  curl xxx.xxx.23.5/productpage
   103  x pod
   104  x svc
   105  kubectl get pod -l app=zipkin -o jsonpath='{.items[0].metadata.name}'
@@ -215,8 +215,8 @@
   230  x svc
   231  ll
   232  kubectl cluster-info 
-  233  curl -k https://10.211.55.74:6443/v1/routes/9080/productpage/sidecar~10.244.1.162~productpage-v1-d759956f4-xmhm5.default~default.svc.cluster.local
-  234  curl -k https://10.211.55.74:6443/v1/routes
+  233  curl -k https://xxx.xxx.55.74:6443/v1/routes/9080/productpage/sidecar~xxx.xxx.1.162~productpage-v1-d759956f4-xmhm5.default~default.svc.cluster.local
+  234  curl -k https://xxx.xxx.55.74:6443/v1/routes
   235  x svc
   236  x pod
   237  kubectl get -n istio-system po/istio-pilot-cd47bb795-zxtnn -o yaml
@@ -333,7 +333,7 @@
   348  x svc
   349  kubectl describe svc ratings -o yaml
   350  kubectl describe svc ratings 
-  351  curl -k -v -XGET  -H "User-Agent: istioctl/v0.0.0 (linux/amd64) kubernetes/$Format" -H "Accept: application/json, */*" https://10.211.55.74:6443/apis/config.istio.io/v1alpha2
+  351  curl -k -v -XGET  -H "User-Agent: istioctl/v0.0.0 (linux/amd64) kubernetes/$Format" -H "Accept: application/json, */*" https://xxx.xxx.55.74:6443/apis/config.istio.io/v1alpha2
   352  istioctl get routerules
   353  kubectl exec -it reviews-v3-5c797b7d8d-s48j7 -c istio-proxy -- bash
   354  dig istio-or-svc-1.ingress.idevz
@@ -376,7 +376,7 @@
   391  kubectl get pod -n istio-system istio-ingress-6ff959f7ff-8cz8x -o yaml
   392  x pod
   393  x svc
-  394  curl 10.110.23.5/productpage
+  394  curl xxx.xxx.23.5/productpage
   395  x svc
   396  x pod
   397  kubectl get pod -n istio-system istio-pilot-cd47bb795-zxtnn -o yaml
@@ -429,28 +429,28 @@
   444  netstat -natpl| grep LISTEN
   445  conduit dashboard
   446  netstat -natpl| grep LISTEN
-  447  curl http://127.0.0.1:38614/api/v1/namespaces/conduit/services/web:http/proxy/
+  447  curl http://xxx.xxx.0.1:38614/api/v1/namespaces/conduit/services/web:http/proxy/
   448  conduit version
   449  conduit dashboard
-  450  curl http://127.0.0.1:40832/api/v1/namespaces/conduit/services/web:http/proxy/
+  450  curl http://xxx.xxx.0.1:40832/api/v1/namespaces/conduit/services/web:http/proxy/
   451  sudo yum install xdg-open
   452  . /etc/profile
   453  sudo yum install xdg-open
   454  xp
   455  sudo yum install xdg-utils
   456  conduit dashboard
-  457  curl http://127.0.0.1:36587/api
+  457  curl http://xxx.xxx.0.1:36587/api
   458  kubectl cluster-info 
-  459  curl -X https://10.211.55.74:6443/api/v1/namespaces/conduit/services/web:http/proxy/
-  460  curl -x https://10.211.55.74:6443/api/v1/namespaces/conduit/services/web:http/proxy/
+  459  curl -X https://xxx.xxx.55.74:6443/api/v1/namespaces/conduit/services/web:http/proxy/
+  460  curl -x https://xxx.xxx.55.74:6443/api/v1/namespaces/conduit/services/web:http/proxy/
   461  curl | grep --inc
   462  curl | grep --in
   463  curl | grep '--in'
   464  curl -h | grep '--in'
   465  curl -h | grep 'in'
-  466  curl -k https://10.211.55.74:6443/api/v1/namespaces/conduit/services/web:http/proxy/
-  467  curl -k https//10.211.55.74:6443/api/v1/namespaces/conduit/services/web:http/proxy/
-  468  curl -k https://10.211.55.74:6443/api/v1/namespaces/conduit/services/web:http/proxy/
+  466  curl -k https://xxx.xxx.55.74:6443/api/v1/namespaces/conduit/services/web:http/proxy/
+  467  curl -k https//xxx.xxx.55.74:6443/api/v1/namespaces/conduit/services/web:http/proxy/
+  468  curl -k https://xxx.xxx.55.74:6443/api/v1/namespaces/conduit/services/web:http/proxy/
   469  x svc
   470  kubectl edit svc -n conduit web 
   471  x svc
@@ -498,11 +498,11 @@
   513  x ingress
   514  kubectl describe ingress -n kube-system k8s-dashboard 
   515  netstat -natpl| grep LISTEN
-  516  curl -k https://10.102.212.113
-  517  curl -k https://10.244.0.45:8443
+  516  curl -k https://xxx.xxx.212.113
+  517  curl -k https://xxx.xxx.0.45:8443
   518  x ingress
-  519  curl -k https://10.211.55.75
-  520  curl -k -H "HOST: dashboard.k-ingress.me" https://10.211.55.75
+  519  curl -k https://xxx.xxx.55.75
+  520  curl -k -H "HOST: dashboard.k-ingress.me" https://xxx.xxx.55.75
   521  x svc
   522  x pod
   523  kubectl describe pod -n kube-system nginx-ingress-controller-c489857cd-l8lhs
@@ -571,12 +571,12 @@
   586  x pod
   587  x svc
   588  kubectl describe svc -n kube-system kubernetes-dashboard 
-  589  curl -k https://10.102.212.113
+  589  curl -k https://xxx.xxx.212.113
   590  kubectl describe svc -n kube-system kubernetes-dashboard 
-  591  curl -k https://10.244.0.45:8443
+  591  curl -k https://xxx.xxx.0.45:8443
   592  kubectl describe svc -n kube-system kubernetes-dashboard 
   593  kubectl describe ingress -n kube-system k8s-dashboard 
-  594  curl -k https://10.244.0.45:8443
+  594  curl -k https://xxx.xxx.0.45:8443
   595  ps fax
   596  kill 32436
   597  ll
@@ -600,17 +600,17 @@
   615  cat ingress-kub-dashboard.yaml 
   616  iptables-save 
   617  sudo iptables-save 
-  618  sudo iptables-save | grep 10.211.55.75
+  618  sudo iptables-save | grep xxx.xxx.55.75
   619  sudo iptables-save | grep 'dashboard.k-ingress.me'
   620  sudo iptables-save 
-  621  sudo iptables-save | grep '10.211.55.75'
+  621  sudo iptables-save | grep 'xxx.xxx.55.75'
   622  sudo iptables-save 
-  623  sudo iptables-save | grep 10.244.0.45
-  624  curl -k https://10.244.0.45:8443
+  623  sudo iptables-save | grep xxx.xxx.0.45
+  624  curl -k https://xxx.xxx.0.45:8443
   625  journalctl - p
   626  journalctl
-  627  curl -k https://10.244.0.45:8443/
-  628  curl -k https://10.244.0.45:8443
+  627  curl -k https://xxx.xxx.0.45:8443/
+  628  curl -k https://xxx.xxx.0.45:8443
   629  kubectl logs -n kube-system nginx-ingress-controller-c489857cd-2v76f
   630  x pod
   631  kubectl logs -f -n kube-system nginx-ingress-controller-c489857cd-l8lhs 
@@ -651,7 +651,7 @@
   666  history | grep address
   667  history | grep proxy
   668  kubectl cluster-info 
-  669  kubectl proxy --accept-hosts='^.*$' --address=10.211.55.74
+  669  kubectl proxy --accept-hosts='^.*$' --address=xxx.xxx.55.74
   670  x svc
   671  x pod
   672  ll
@@ -722,7 +722,7 @@
   737  x ingress
   738  x svc
   739  x pod
-  740  curl -k https://10.244.0.45:8443
+  740  curl -k https://xxx.xxx.0.45:8443
   741  x ingress
   742  conduit install -n conduit | kubectl apply -f -
   743  x pod
@@ -754,7 +754,7 @@
   769  kubectl logs -f -n conduit prometheus-56fd7bfd5c-k7l4j prometheus
   770  kubectl logs -f -n conduit prometheus-56fd7bfd5c-k7l4j kubectl
   771  x svc
-  772  curl http://10.107.107.36:9090
+  772  curl http://xxx.xxx.107.36:9090
   773  kubectl logs -f -n conduit prometheus-56fd7bfd5c-k7l4j kubectl
   774  kubectl logs -f -n conduit prometheus-56fd7bfd5c-k7l4j prometheus
   775  x pod
@@ -768,11 +768,11 @@
   783  conduit version
   784  conduit -h
   785  conduit dashboard
-  786  curl http://127.0.0.1:8001/api/v1/namespaces/conduit/services/web:http/proxy/routes
+  786  curl http://xxx.xxx.0.1:8001/api/v1/namespaces/conduit/services/web:http/proxy/routes
   787  sudo netstat -natpl| grep LISTEN
-  788  curl http://127.0.0.1:8001/api/v1/namespaces/conduit/services/web:http/proxy/routes
+  788  curl http://xxx.xxx.0.1:8001/api/v1/namespaces/conduit/services/web:http/proxy/routes
   789  sudo iptables-save | grep 8001
-  790  sudo iptables-save | grep '127.0.0.1'
+  790  sudo iptables-save | grep 'xxx.xxx.0.1'
   791  conduit check
   792  x pod
   793  conduit check
@@ -821,7 +821,7 @@
   836  conduit version
   837  x pod
   838  x svc
-  839  curl 10.96.165.171:8084
+  839  curl xxx.xxx.165.171:8084
   840  conduit version
   841  conduit install | kubectl apply -f -
   842  conduit version
@@ -869,15 +869,15 @@
   884  conduit version
   885  conduit install | kubectl apply -f -
   886  conduit version
-  887  kubectl proxy --accept-hosts='^.*$' --address='10.211.55.74'
+  887  kubectl proxy --accept-hosts='^.*$' --address='xxx.xxx.55.74'
   888  conduit version
   889  conduit dashboard
   890  conduit version
-  891  kubectl proxy --accept-hosts='^.*$' --address='10.211.55.74'
+  891  kubectl proxy --accept-hosts='^.*$' --address='xxx.xxx.55.74'
   892  conduit version
-  893  kubectl proxy --accept-hosts='^.*$' --address='10.211.55.74'
+  893  kubectl proxy --accept-hosts='^.*$' --address='xxx.xxx.55.74'
   894  conduit version
-  895  kubectl proxy --accept-hosts='^.*$' --address='10.211.55.74'
+  895  kubectl proxy --accept-hosts='^.*$' --address='xxx.xxx.55.74'
   896  conduit version
   897  x pod
   898  x svc
@@ -899,7 +899,7 @@
   914  x pod
   915  xp
   916  conduit version
-  917  curl http://127.0.0.1:8001/version
+  917  curl http://xxx.xxx.0.1:8001/version
   918  conduit check --verbose
   919  x ingress
   920  kubectl drain kube-node2 --delete-local-data --force --ignore-daemonsets
@@ -942,7 +942,7 @@
   957  kubectl get svc web-svc -n emojivoto -o jsonpath="{.status.loadBalancer.ingress[0].*}"
   958  kubectl get svc web-svc -n emojivoto
   959                                                                                         
-  960  curl 10.102.253.118
+  960  curl xxx.xxx.253.118
   961  x svc
   962  x deploy
   963  alias x
@@ -970,7 +970,7 @@
   985  conduit install | kubectl apply -f -
   986  conduit version
   987  conduit dashboard
-  988  kubectl proxy --accept-hosts='^.*$' --address='10.211.55.74'
+  988  kubectl proxy --accept-hosts='^.*$' --address='xxx.xxx.55.74'
   989  xp
   990  kubectl proxy -p 8001
   991  x pod

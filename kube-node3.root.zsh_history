@@ -5,7 +5,7 @@
     5  sysctl -p /etc/sysctl.d/k8s.conf
     6  swapoff -a
     7  xp
-    8  kubeadm join --token 96e415.bc0619fd97e39728 10.211.55.74:6443 --discovery-token-ca-cert-hash sha256:4da251bbe9fcdb32fd6503c08f4e2b4ddf496fbd289a3939d47ee53576568212
+    8  kubeadm join --token 96e415.bc0619fd97e39728 xxx.xxx.55.74:6443 --discovery-token-ca-cert-hash sha256:4da251bbe9fcdb32fd6503c08f4e2b4ddf496fbd289a3939d47ee53576568212
     9  start_out systemctl start privoxy.service
    10  swapoff -a
    11  netstat -ntpl
@@ -49,7 +49,7 @@
    49  ifconfig 
    50  netstat -ntpl
    51  cat /etc/yum.conf 
-   52  echo 'proxy=http://127.0.0.1:8118' >> /etc/yum.conf
+   52  echo 'proxy=http://xxx.xxx.0.1:8118' >> /etc/yum.conf
    53  yum install strace
    54  strace -p 3262
    55  kill 3262
@@ -57,15 +57,15 @@
    57  free -mh
    58  netstat -ntpl
    59  ifconfig 
-   60  ping 10.211.55.75
-   61  ping 10.211.55.74
-   62  ping 10.211.55.76
+   60  ping xxx.xxx.55.75
+   61  ping xxx.xxx.55.74
+   62  ping xxx.xxx.55.76
    63  systemctl restart docker
    64  docker images
    65  systemctl restart docker
    66  netstat -natpl
-   67  ping 10.244.1.105
-   68  curl http://10.244.1.105:15000
+   67  ping xxx.xxx.1.105
+   68  curl http://xxx.xxx.1.105:15000
    69  docker ps -a
    70  docker ps 
    71  docker ps | grep ingress
@@ -89,23 +89,23 @@
    89  docker exec a7b059b36ca8  /etc/hostname 
    90  docker exec a7b059b36ca8  
    91  docker run a7b059b36ca8  ll
-   92  iptables -A INPUT -d 111.13.101.208
+   92  iptables -A INPUT -d xxx.xxx.101.208
    93  curl -vv http://baidu.com
    94  xp
    95  curl -vv http://baidu.com
    96  iptables -L INPUT
    97  curl -vv http://baidu.com
    98  iptables -L INPUT
-   99  iptables -D INPUT -d 111.13.101.208
+   99  iptables -D INPUT -d xxx.xxx.101.208
   100  iptables -L INPUT
-  101  iptables -A INPUT -d 111.13.101.208 -j DROP
+  101  iptables -A INPUT -d xxx.xxx.101.208 -j DROP
   102  iptables -L INPUT
   103  xp
   104  curl -vv http://baidu.com
   105  curl http://www.baidu.com/
   106  curl -vvv http://www.baidu.com/
-  107  iptables -D INPUT -d 111.13.101.208 -j DROP
-  108  iptables -A INPUT -d 61.135.169.125 -j DROP
+  107  iptables -D INPUT -d xxx.xxx.101.208 -j DROP
+  108  iptables -A INPUT -d xxx.xxx.169.125 -j DROP
   109  curl -vvv http://www.baidu.com/
   110  service iptables save
   111  systemctl restart iptable
@@ -117,7 +117,7 @@
   117  service iptables save
   118  iptables -L INPUT
   119  curl -vvv http://www.baidu.com/
-  120  iptables -D INPUT -d 61.135.169.125 -j DROP
+  120  iptables -D INPUT -d xxx.xxx.169.125 -j DROP
   121  iptables -A INPUT --dport 80 -j DROP
   122  P
   123  iptables -A INPUT --dport 80 -j DROP
@@ -139,8 +139,8 @@
   139  iptables-restore -h
   140  iptables-save
   141  xp
-  142  iptables-save| grep 10.102.69.205
-  143  telnet 10.211.55.74 9999
+  142  iptables-save| grep xxx.xxx.69.205
+  143  telnet xxx.xxx.55.74 9999
   144  journalctl -f
   145  ll /var/log/
   146  ll /var/log/lastlog 
@@ -154,16 +154,16 @@
   154  systemctl restart rsyslog
   155  tail -f /var/log/messages
   156  journalctl -f
-  157  iptables -t nat -A POSTROUTING -p tcp -d 10.211.55.75 --dport 8000 -j LOG --log-prefix "----X-NET---->INPUT packets"
-  158  iptables -t nat -D POSTROUTING -p tcp -d 10.211.55.75 --dport 8000 -j SNAT --to-source 10.211.55.74
+  157  iptables -t nat -A POSTROUTING -p tcp -d xxx.xxx.55.75 --dport 8000 -j LOG --log-prefix "----X-NET---->INPUT packets"
+  158  iptables -t nat -D POSTROUTING -p tcp -d xxx.xxx.55.75 --dport 8000 -j SNAT --to-source xxx.xxx.55.74
   159  yum install net-tools
   160  telnet 
   161  telnet
   162  yum install telnet
-  163  curl 10.211.55.74:8000
+  163  curl xxx.xxx.55.74:8000
   164  xp
-  165  curl 10.211.55.74:8000
-  166  telnet 10.211.55.74 8000
+  165  curl xxx.xxx.55.74:8000
+  166  telnet xxx.xxx.55.74 8000
   167  iptables -N IDEVZ
   168  iptables-save
   169  iptables-save+
@@ -219,43 +219,43 @@
   219  iptables -D INPUT -p tcp --sport 80 -j LOG --log-prefix "-----IN---->INPUT packets"
   220  iptables -A INPUT -p tcp --sport 80 -j LOG --log-prefix "-----IN---->INPUT packets"
   221  iptables -D INPUT -p tcp --sport 80 -j LOG --log-prefix "-----IN---->INPUT packets"
-  222  iptables -A INPUT -p tcp --source 10.211.55.2 -j LOG --log-prefix "-----IN---->INPUT packets"
-  223  iptables -D INPUT -p tcp --source 10.211.55.2 -j LOG --log-prefix "-----IN---->INPUT packets"
-  224  iptables -A INPUT -p tcp --source 10.211.55.2 --sport 80 -j LOG --log-prefix "-----IN---->INPUT packets"
-  225  iptables -A INPUT -p tcp --source 10.211.55.2 --dport 80 -j LOG --log-prefix "-----IN---->INPUT packets"
-  226  iptables -D INPUT -p tcp --source 10.211.55.2 --sport 80 -j LOG --log-prefix "-----IN---->INPUT packets"
-  227  iptables -D INPUT -p tcp --source 10.211.55.2 --dport 80 -j LOG --log-prefix "-----IN---->INPUT packets"
-  228  iptables -D INPUT -p tcp --source 10.211.55.2 --sport 80 -j LOG --log-prefix "-----IN---->INPUT packets"
-  229  iptables -A INPUT -p tcp --source 10.211.55.2 --sport 8000 -j LOG --log-prefix "-----IN---->INPUT packets"
-  230  iptables -D INPUT -p tcp --source 10.211.55.2 --sport 8000 -j LOG --log-prefix "-----IN---->INPUT packets"
-  231  iptables -A INPUT -p tcp --source 10.211.55.2 --sport 8000 -j DROP
-  232  iptables -D INPUT -p tcp --source 10.211.55.2 --sport 8000 -j DROP
-  233  iptables -A INPUT -p tcp --source 10.211.55.2 --dport 8000 -j DROP
-  234  iptables -D INPUT -p tcp --source 10.211.55.2 --dport 8000 -j DROP
-  235  iptables -A INPUT -p tcp --source 10.211.55.2 --dport 8000 -j LOG --log-prefix "-----IN---->INPUT packets"
-  236  iptables -A INPUT -p tcp --source 10.211.55.2 --dport 80 -j LOG --log-prefix "-----IN---->INPUT packets"
-  237  iptables -D INPUT -p tcp --source 10.211.55.2 --dport 80 -j LOG --log-prefix "-----IN---->INPUT packets"
-  238  iptables -D INPUT -p tcp --source 10.211.55.2 --dport 8000 -j LOG --log-prefix "-----IN---->INPUT packets"
-  239  iptables -A INPUT -p tcp --source 10.211.55.2 --dport 80 -j LOG --log-prefix "-----IN---->INPUT packets"
-  240  iptables -A INPUT -p tcp --source 10.211.55.2 --dport 80 -j KUBE-SVC-XJ4KNNNZJUWDXGI5
-  241  iptables -A INPUT -p tcp --source 10.211.55.2 --dport 80 -j KUBE-SERVICES
-  242  iptables -D INPUT -p tcp --source 10.211.55.2 --dport 80 -j KUBE-SERVICES
+  222  iptables -A INPUT -p tcp --source xxx.xxx.55.2 -j LOG --log-prefix "-----IN---->INPUT packets"
+  223  iptables -D INPUT -p tcp --source xxx.xxx.55.2 -j LOG --log-prefix "-----IN---->INPUT packets"
+  224  iptables -A INPUT -p tcp --source xxx.xxx.55.2 --sport 80 -j LOG --log-prefix "-----IN---->INPUT packets"
+  225  iptables -A INPUT -p tcp --source xxx.xxx.55.2 --dport 80 -j LOG --log-prefix "-----IN---->INPUT packets"
+  226  iptables -D INPUT -p tcp --source xxx.xxx.55.2 --sport 80 -j LOG --log-prefix "-----IN---->INPUT packets"
+  227  iptables -D INPUT -p tcp --source xxx.xxx.55.2 --dport 80 -j LOG --log-prefix "-----IN---->INPUT packets"
+  228  iptables -D INPUT -p tcp --source xxx.xxx.55.2 --sport 80 -j LOG --log-prefix "-----IN---->INPUT packets"
+  229  iptables -A INPUT -p tcp --source xxx.xxx.55.2 --sport 8000 -j LOG --log-prefix "-----IN---->INPUT packets"
+  230  iptables -D INPUT -p tcp --source xxx.xxx.55.2 --sport 8000 -j LOG --log-prefix "-----IN---->INPUT packets"
+  231  iptables -A INPUT -p tcp --source xxx.xxx.55.2 --sport 8000 -j DROP
+  232  iptables -D INPUT -p tcp --source xxx.xxx.55.2 --sport 8000 -j DROP
+  233  iptables -A INPUT -p tcp --source xxx.xxx.55.2 --dport 8000 -j DROP
+  234  iptables -D INPUT -p tcp --source xxx.xxx.55.2 --dport 8000 -j DROP
+  235  iptables -A INPUT -p tcp --source xxx.xxx.55.2 --dport 8000 -j LOG --log-prefix "-----IN---->INPUT packets"
+  236  iptables -A INPUT -p tcp --source xxx.xxx.55.2 --dport 80 -j LOG --log-prefix "-----IN---->INPUT packets"
+  237  iptables -D INPUT -p tcp --source xxx.xxx.55.2 --dport 80 -j LOG --log-prefix "-----IN---->INPUT packets"
+  238  iptables -D INPUT -p tcp --source xxx.xxx.55.2 --dport 8000 -j LOG --log-prefix "-----IN---->INPUT packets"
+  239  iptables -A INPUT -p tcp --source xxx.xxx.55.2 --dport 80 -j LOG --log-prefix "-----IN---->INPUT packets"
+  240  iptables -A INPUT -p tcp --source xxx.xxx.55.2 --dport 80 -j KUBE-SVC-XJ4KNNNZJUWDXGI5
+  241  iptables -A INPUT -p tcp --source xxx.xxx.55.2 --dport 80 -j KUBE-SERVICES
+  242  iptables -D INPUT -p tcp --source xxx.xxx.55.2 --dport 80 -j KUBE-SERVICES
   243  iptables -t nat -A PREROUTING -p tcp --dport 80 -j LOG --log-prefix "-----NET---->INPUT packets"
-  244  iptables -t nat -A PREROUTING -p tcp --dport 80 -j DNAT --to-destination 10.102.69.205:80
-  245  iptables -t nat -A POSTROUTING -p tcp -d 10.102.69.205 --dport 80 -j LOG --log-prefix "----X-NET---->INPUT packets"
-  246  iptables -t nat -A POSTROUTING -p tcp -d 10.102.69.205 --dport 80 -j SNAT --to-source 10.211.55.75
+  244  iptables -t nat -A PREROUTING -p tcp --dport 80 -j DNAT --to-destination xxx.xxx.69.205:80
+  245  iptables -t nat -A POSTROUTING -p tcp -d xxx.xxx.69.205 --dport 80 -j LOG --log-prefix "----X-NET---->INPUT packets"
+  246  iptables -t nat -A POSTROUTING -p tcp -d xxx.xxx.69.205 --dport 80 -j SNAT --to-source xxx.xxx.55.75
   247  iptables -t nat -L -n
-  248  iptables -t nat -A PREROUTING -p tcp --dport 9999 -j DNAT --to-destination 10.102.69.205:80
-  249  iptables -t nat -D PREROUTING -p tcp --dport 9999 -j DNAT --to-destination 10.102.69.205:80
+  248  iptables -t nat -A PREROUTING -p tcp --dport 9999 -j DNAT --to-destination xxx.xxx.69.205:80
+  249  iptables -t nat -D PREROUTING -p tcp --dport 9999 -j DNAT --to-destination xxx.xxx.69.205:80
   250  history 
   251  sysctl -p
   252  cat /etc/sysctl.conf 
   253  sysctl net.ipv4.ip_forward
   254  history 
-  255  iptables -t nat -D POSTROUTING -p tcp -d 10.102.69.205 --dport 80 -j SNAT --to-source 10.211.55.75
-  256   iptables -t nat -D PREROUTING -p tcp --dport 80 -j DNAT --to-destination 10.102.69.205:80
+  255  iptables -t nat -D POSTROUTING -p tcp -d xxx.xxx.69.205 --dport 80 -j SNAT --to-source xxx.xxx.55.75
+  256   iptables -t nat -D PREROUTING -p tcp --dport 80 -j DNAT --to-destination xxx.xxx.69.205:80
   257  iptables -t nat -D PREROUTING -p tcp --dport 80 -j LOG --log-prefix "-----NET---->INPUT packets"
-  258  iptables -t nat -D POSTROUTING -p tcp -d 10.102.69.205 --dport 80 -j LOG --log-prefix "----X-NET---->INPUT packets"
+  258  iptables -t nat -D POSTROUTING -p tcp -d xxx.xxx.69.205 --dport 80 -j LOG --log-prefix "----X-NET---->INPUT packets"
   259  route
   260  route -n
   261  netstat -natpl
@@ -278,7 +278,7 @@
   278  sysctl -p /etc/sysctl.d/k8s.conf
   279  swapoff -a
   280  xp
-  281  kubeadm join --token a32537.e27933c2a8b32cd1 10.211.55.74:6443 --discovery-token-ca-cert-hash sha256:a311f6883ff2c59275e0fbfb6fa3ed03012214367535ec35d91bec4785f2230b
+  281  kubeadm join --token a32537.e27933c2a8b32cd1 xxx.xxx.55.74:6443 --discovery-token-ca-cert-hash sha256:a311f6883ff2c59275e0fbfb6fa3ed03012214367535ec35d91bec4785f2230b
   282  xp
   283  journalctl -f
   284  ifconfig 
@@ -346,11 +346,11 @@
   346  whoami 
   347  tty
   348  cat /dev/pts/0
-  349  curl -k https://10.244.0.45:8443
-  350  sudo iptables-save | grep 10.244.0.45
+  349  curl -k https://xxx.xxx.0.45:8443
+  350  sudo iptables-save | grep xxx.xxx.0.45
   351  sudo iptables-save | grep 8443
-  352  sudo iptables-save | grep 10.244.0.45
-  353  curl -k https://10.244.0.45:8443
+  352  sudo iptables-save | grep xxx.xxx.0.45
+  353  curl -k https://xxx.xxx.0.45:8443
   354  sudo journalctl -f
   355  history | grep lookup
   356  xp
@@ -361,9 +361,9 @@
   361  setenforce 0
   362  sysctl -p /etc/sysctl.d/k8s.conf
   363  swapoff -a
-  364  kubeadm join --token 9b85de.163963d6bb03bed6 10.211.55.74:6443 --discovery-token-ca-cert-hash sha256:20ec14a0cf6c1b69bfb5b1938cdb67cfc8302dfe42201f684ab0da07876966e7
+  364  kubeadm join --token 9b85de.163963d6bb03bed6 xxx.xxx.55.74:6443 --discovery-token-ca-cert-hash sha256:20ec14a0cf6c1b69bfb5b1938cdb67cfc8302dfe42201f684ab0da07876966e7
   365  xp
-  366  kubeadm join --token 9b85de.163963d6bb03bed6 10.211.55.74:6443 --discovery-token-ca-cert-hash sha256:20ec14a0cf6c1b69bfb5b1938cdb67cfc8302dfe42201f684ab0da07876966e7
+  366  kubeadm join --token 9b85de.163963d6bb03bed6 xxx.xxx.55.74:6443 --discovery-token-ca-cert-hash sha256:20ec14a0cf6c1b69bfb5b1938cdb67cfc8302dfe42201f684ab0da07876966e7
   367  kubeadm reset
   368  xp
   369  . /etc/profile

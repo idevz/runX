@@ -7,17 +7,17 @@
     7  sudo shutdown now
     8  sudo -s
     9  ifconfig |less
-   10  sudo ip addr add 10.211.55.75 dev eth0
+   10  sudo ip addr add xxx.xxx.55.75 dev eth0
    11  ip addr show eth0
    12  ifconfig |less
-   13  ping 10.211.55.75
-   14  ping 10.211.55.74
+   13  ping xxx.xxx.55.75
+   14  ping xxx.xxx.55.74
    15  sudo shutdown now
    16  start_out systemctl start privoxy.service && swapoff -a
    17  sudo -s
-   18   ping -b 10.211.55.255
+   18   ping -b xxx.xxx.55.255
    19  ifconfig 
-   20  ping 10.222.77.197
+   20  ping xxx.xxx.77.197
    21  sudo -s
    22  kubectl get pods --all-namespaces -o wide
    23  xp
@@ -29,17 +29,17 @@
    29  top 
    30  free -mh
    31  sudo -s
-   32  ping 10.211.55.74
-   33  curl http://10.211.55.74:30894
-   34  curl http://10.211.55.74:30894/productpage
+   32  ping xxx.xxx.55.74
+   33  curl http://xxx.xxx.55.74:30894
+   34  curl http://xxx.xxx.55.74:30894/productpage
    35  xp
-   36  curl http://10.211.55.74:30894/productpage
+   36  curl http://xxx.xxx.55.74:30894/productpage
    37  xp
    38  curl http://baidu.com
    39  curl -vv http://baidu.com
    40  sudo -s
    41  xp
-   42  curl http://10.211.55.74:9999
+   42  curl http://xxx.xxx.55.74:9999
    43  ifconfig eth0
    44  sudo -s
    45  ss -t -a| grep http
@@ -47,16 +47,16 @@
    47  python -m SimpleHTTPServer
    48  python -m SimpleHTTPServer -p 80
    49  python -m SimpleHTTPServer 
-   50  curl 10.102.69.205:80
+   50  curl xxx.xxx.69.205:80
    51  xp
-   52  curl 10.102.69.205:80
-   53  curl 10.102.69.205:80 
-   54  curl 10.102.69.205:80
-   55  curl 10.211.55.75:80
-   56  curl 10.102.69.205:80
+   52  curl xxx.xxx.69.205:80
+   53  curl xxx.xxx.69.205:80 
+   54  curl xxx.xxx.69.205:80
+   55  curl xxx.xxx.55.75:80
+   56  curl xxx.xxx.69.205:80
    57  ifconfig eth0
    58  netstat -ntpl
-   59  curl 10.102.69.205:80
+   59  curl xxx.xxx.69.205:80
    60  python -m SimpleHTTPServer 
    61  curl -vv http://baidu.com
    62  curl http://baidu.com
@@ -71,9 +71,9 @@
    71  echo $http_proxy
    72  sudo -s
    73  history |grep http
-   74  curl -H 'HOST: xidevz-or-svc-1ccc' 'http://10.100.121.74'
+   74  curl -H 'HOST: xidevz-or-svc-1ccc' 'http://xxx.xxx.121.74'
    75  xp
-   76  curl -H 'HOST: xidevz-or-svc-1ccc' 'http://10.100.121.74'
+   76  curl -H 'HOST: xidevz-or-svc-1ccc' 'http://xxx.xxx.121.74'
    77  sudo -s
    78  sudo ifdown eth0
    79  sudo ifup eth0
@@ -106,10 +106,10 @@
   106  sudo ip addr show eth0
   107  xp
   108  sudo netstat -natpl| grep LISTEN
-  109  curl -k https://10.102.212.113
+  109  curl -k https://xxx.xxx.212.113
   110  xp
-  111  curl -k https://10.102.212.113
-  112  curl -k https://10.244.0.45:8443
+  111  curl -k https://xxx.xxx.212.113
+  112  curl -k https://xxx.xxx.0.45:8443
   113  ip show addr eth0
   114  ip addr show eth0
   115  sudo netstat -natpl| grep LISTEN
@@ -117,13 +117,13 @@
   117  sudo netstat -natpl| grep LISTEN
   118  ip show addr eth0
   119  ip addr show eth0
-  120  curl -k https://10.211.55.75
+  120  curl -k https://xxx.xxx.55.75
   121  xp
-  122  curl -k https://10.211.55.75
+  122  curl -k https://xxx.xxx.55.75
   123  curl -k https://localhost
-  124  curl -k https://127.0.0.1
-  125  curl -k -H 'HOST:dashboard.k-ingress.me' https://127.0.0.1
-  126  curl -k -H 'Host: dashboard.k-ingress.me' https://127.0.0.1
+  124  curl -k https://xxx.xxx.0.1
+  125  curl -k -H 'HOST:dashboard.k-ingress.me' https://xxx.xxx.0.1
+  126  curl -k -H 'Host: dashboard.k-ingress.me' https://xxx.xxx.0.1
   127  sudo vim /etc/hosts
   128  sudo vi /etc/hosts
   129  curl -k https://dashboard.k-ingress.me
@@ -131,10 +131,10 @@
   131  curl -vvvk https://dashboard.k-ingress.me
   132  curl -vvvkL https://dashboard.k-ingress.me
   133  sudo netstat -natpl| grep LISTEN
-  134  curl 127.0.0.1:18080//nginx_status
-  135  curl 127.0.0.1:18080/healthz
-  136  curl 127.0.0.1:18080/
-  137  curl 127.0.0.1:18080/nginx_status
+  134  curl xxx.xxx.0.1:18080//nginx_status
+  135  curl xxx.xxx.0.1:18080/healthz
+  136  curl xxx.xxx.0.1:18080/
+  137  curl xxx.xxx.0.1:18080/nginx_status
   138  curl -vvvkL https://dashboard.k-ingress.me
   139  curl -vvvk --http2 https://dashboard.k-ingress.me
   140  curl --http2 -vvvk  https://dashboard.k-ingress.me

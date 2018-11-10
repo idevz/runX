@@ -9,4 +9,4 @@ apiServerExtraArgs:
   service-node-port-range: 8000-31274
 kubernetesVersion: "stable-1.11"
 networking:
-  podSubnet: 10.244.0.0/16
+  podSubnet: xxx.xxx.0.0/16

@@ -5,7 +5,7 @@
     5  sudo  shutdown now
     6  sudo -s
     7  xp
-    8  curl http://10.211.55.74:9999
+    8  curl http://xxx.xxx.55.74:9999
     9  sudo -s
    10  sudo yum install net-tools
    11  sudo yum install telnet
@@ -17,7 +17,7 @@
    17  xp
    18  iptables-save
    19  sudo iptables-save
-   20  sudo iptables-save| grep default        ratings                ClusterIP      10.109.123.25    <none>        9080/TCP                                                 3d        app=ratings
+   20  sudo iptables-save| grep default        ratings                ClusterIP      xxx.xxx.123.25    <none>        9080/TCP                                                 3d        app=ratings
    21  sudo iptales-save| grep 9080
    22  sudo iptables-save | grep 9080
    23  sudo iptables-save | grep 32370
@@ -26,7 +26,7 @@
    26  tcpdump -w all.tcpdump
    27  sudo tcpdump -w all.tcpdump
    28  ll
-   29  nc 10.211.55.2 1234 < all.tcpdump 
+   29  nc xxx.xxx.55.2 1234 < all.tcpdump 
    30  sudo -s
    31  ifconfig eth0
    32  sudo shutdown now
@@ -34,7 +34,7 @@
    34  sudo shutdown now
    35  sudo -s
    36  ps fax
-   37  curl -k https://10.244.0.45:8443
+   37  curl -k https://xxx.xxx.0.45:8443
    38  iptables-save -c
    39  sudo iptables-save -c
    40  sudo iptables-save 
@@ -55,19 +55,19 @@
    55  cat /etc/iptables/iptables.rules
    56  ifconfig 
    57  ip addr show eth0
-   58  sudo ip addr add 10.211.55.76 dev eth0
+   58  sudo ip addr add xxx.xxx.55.76 dev eth0
    59  ip addr show eth0
-   60  sudo ip addr add 10.211.55.76 dev eth0
+   60  sudo ip addr add xxx.xxx.55.76 dev eth0
    61  ip addr show eth0
    62  netstat -natpl| grep LISTEN
    63  ip addr show eth0
-   64  sudo ip addr add 10.211.55.76 dev eth0
+   64  sudo ip addr add xxx.xxx.55.76 dev eth0
    65  ip addr show eth0
-   66  sudo ip addr del 10.211.55.76 dev eth0
+   66  sudo ip addr del xxx.xxx.55.76 dev eth0
    67  ip addr show eth0
-   68  sudo ip addr del 10.211.55.76/24 dev eth0
+   68  sudo ip addr del xxx.xxx.55.76/24 dev eth0
    69  ip addr show eth0
-   70  sudo ip addr add 10.211.55.76/24 dev eth0
+   70  sudo ip addr add xxx.xxx.55.76/24 dev eth0
    71  ip addr show eth0
    72  ll
    73  sudo -s

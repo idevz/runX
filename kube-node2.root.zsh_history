@@ -5,7 +5,7 @@
     5  sysctl -p /etc/sysctl.d/k8s.conf
     6  swapoff -a
     7  xp
-    8  kubeadm join --token 96e415.bc0619fd97e39728 10.211.55.74:6443 --discovery-token-ca-cert-hash sha256:4da251bbe9fcdb32fd6503c08f4e2b4ddf496fbd289a3939d47ee53576568212
+    8  kubeadm join --token 96e415.bc0619fd97e39728 xxx.xxx.55.74:6443 --discovery-token-ca-cert-hash sha256:4da251bbe9fcdb32fd6503c08f4e2b4ddf496fbd289a3939d47ee53576568212
     9  netstat ntpl
    10  netstat -ntpl
    11  start_out systemctl start proxivy.service
@@ -41,8 +41,8 @@
    41  free -h
    42  netstat -ntpl
    43  ifconfig 
-   44  ping 10.211.55.255
-   45  ping -b 10.211.55.255
+   44  ping xxx.xxx.55.255
+   45  ping -b xxx.xxx.55.255
    46  ifconfig 
    47  netstat -ntpl
    48  top
@@ -54,10 +54,10 @@
    54  start_out systemctl start privoxy.service && swapoff -a
    55  free -mh
    56  ifconfig 
-   57  ping 10.211.55.74
-   58  ping 10.211.55.75
+   57  ping xxx.xxx.55.74
+   58  ping xxx.xxx.55.75
    59  free -hm
-   60  echo 'proxy=http://127.0.0.1:8118' >> /etc/yum.conf
+   60  echo 'proxy=http://xxx.xxx.0.1:8118' >> /etc/yum.conf
    61  yum install strace
    62  netstat -ntpl
    63  strace -p 3657
@@ -83,7 +83,7 @@
    83  journalctl -f
    84  ifconfig eth0
    85  ll
-   86  telnet 10.211.55.74 8000
+   86  telnet xxx.xxx.55.74 8000
    87  systemctl restart docker
    88  sudo shutdown now
    89  tcpdump
@@ -91,24 +91,24 @@
    91  tcpdump -w ok.tcpdump
    92  tcpdump port 8000 -w ok.tcpdump
    93  ll
-   94  nc 10.211.55.2 1234<ok.tcpdump 
-   95  nc 10.211.55.2 1234< ./ok.tcpdump 
-   96  nc 10.211.55.2 1234 < ./ok.tcpdump 
+   94  nc xxx.xxx.55.2 1234<ok.tcpdump 
+   95  nc xxx.xxx.55.2 1234< ./ok.tcpdump 
+   96  nc xxx.xxx.55.2 1234 < ./ok.tcpdump 
    97  yum install nc
-   98  nc 10.211.55.2 1234 < ./ok.tcpdump 
-   99  iptables-save| grep 10.244.2.169
+   98  nc xxx.xxx.55.2 1234 < ./ok.tcpdump 
+   99  iptables-save| grep xxx.xxx.2.169
   100  ss -t -a
   101  ss -t -a| grep http
   102  ifconfig eth0
   103  netstat -ntpl
   104  ss -t -a| grep http
   105  ss -t -a
-  106  ss -t -a| grep 10.211.55.1
-  107  ss -t -a| grep 10.211.55.2
+  106  ss -t -a| grep xxx.xxx.55.1
+  107  ss -t -a| grep xxx.xxx.55.2
   108  ss -t -a
   109  ss -t -a| grep http
   110  iptables-save | grep idevz-or-nodeport
-  111  ping 10.244.1.106
+  111  ping xxx.xxx.1.106
   112  start_out systemctl start privoxy.service && swapoff -a
   113  netstat -ntpl
   114  iptables-save | grep idevz-or-nodeport
@@ -123,10 +123,10 @@
   123  setenforce 0
   124  sysctl -p /etc/sysctl.d/k8s.conf
   125  swapoff -a
-  126  kubeadm join --token a32537.e27933c2a8b32cd1 10.211.55.74:6443 --discovery-token-ca-cert-hash sha256:a311f6883ff2c59275e0fbfb6fa3ed03012214367535ec35d91bec4785f2230b
+  126  kubeadm join --token a32537.e27933c2a8b32cd1 xxx.xxx.55.74:6443 --discovery-token-ca-cert-hash sha256:a311f6883ff2c59275e0fbfb6fa3ed03012214367535ec35d91bec4785f2230b
   127  kubeadm reset
   128  xp
-  129  kubeadm join --token a32537.e27933c2a8b32cd1 10.211.55.74:6443 --discovery-token-ca-cert-hash sha256:a311f6883ff2c59275e0fbfb6fa3ed03012214367535ec35d91bec4785f2230b
+  129  kubeadm join --token a32537.e27933c2a8b32cd1 xxx.xxx.55.74:6443 --discovery-token-ca-cert-hash sha256:a311f6883ff2c59275e0fbfb6fa3ed03012214367535ec35d91bec4785f2230b
   130  ifdown eth0
   131  ifup eth0
   132  ip addr show
@@ -138,8 +138,8 @@
   138  start_out 
   139  curl http://www.epochtimes.com/
   140  systemctl restart docker
-  141  ping 10.102.118.134
-  142  curl 10.211.55.74:30303
+  141  ping xxx.xxx.118.134
+  142  curl xxx.xxx.55.74:30303
   143  sudo shutdown now
   144  shutdown now
   145  start_out systemctl start privoxy.service && swapoff -a
@@ -162,7 +162,7 @@
   162  ll
   163  cat index.php 
   164  cat >index.php 
-  165  curl 127.0.0.1
+  165  curl xxx.xxx.0.1
   166  netstat -napl
   167  curl istio-or-svc-1.com
   168  curl -L istio-or-svc-1.com
@@ -185,8 +185,8 @@
   185  start_out systemctl start privoxy.service && swapoff -a
   186  netstat -natpl| grep LISTEN
   187  netstat -natpl| grep LISTEN
-  188  curl -k https://10.102.212.113
-  189  curl -k https://10.244.0.45:8443
+  188  curl -k https://xxx.xxx.212.113
+  189  curl -k https://xxx.xxx.0.45:8443
   190  sudo journalctl -f
   191  history | grep lookup
   192  xp
@@ -198,7 +198,7 @@
   198  sysctl -p /etc/sysctl.d/k8s.conf
   199  swapoff -a
   200  xp
-  201  kubeadm join --token 9b85de.163963d6bb03bed6 10.211.55.74:6443 --discovery-token-ca-cert-hash sha256:20ec14a0cf6c1b69bfb5b1938cdb67cfc8302dfe42201f684ab0da07876966e7
+  201  kubeadm join --token 9b85de.163963d6bb03bed6 xxx.xxx.55.74:6443 --discovery-token-ca-cert-hash sha256:20ec14a0cf6c1b69bfb5b1938cdb67cfc8302dfe42201f684ab0da07876966e7
   202  systemctl restart docker
   203  netstat -natpl
   204  history 

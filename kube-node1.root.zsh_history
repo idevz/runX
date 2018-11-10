@@ -5,7 +5,7 @@
     5  sysctl -p /etc/sysctl.d/k8s.conf
     6  swapoff -a
     7  xp
-    8  kubeadm init --kubernetes-version=v1.9.0 --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=10.211.55.74
+    8  kubeadm init --kubernetes-version=v1.9.0 --pod-network-cidr=xxx.xxx.0.0/16 --apiserver-advertise-address=xxx.xxx.55.74
     9  journalctl -f
    10  cd /etc/kubernetes/
    11  ll
@@ -45,7 +45,7 @@
    45  netstat -ntpl
    46  start_out systemctl start privoxy.service && swapoff -a
    47  netstat -ntpl
-   48   ping -b 10.211.55.255
+   48   ping -b xxx.xxx.55.255
    49  netstat -ntpl
    50  start_out systemctl start privoxy.service && swapoff -a
    51  nslookup kube-dns
@@ -94,24 +94,24 @@
    94  route print 10.*  
    95  cat /etc/sysctl.d/k8s.conf
    96  route
-   97  ping 10.37.129.2
+   97  ping xxx.xxx.129.2
    98  route
    99  tracepath .
   100  route
   101  route -n
-  102  ping 10.222.77.76
-  103  ssh root@10.222.77.76
-  104  ssh root@10.211.55.2
+  102  ping xxx.xxx.77.76
+  103  ssh root@xxx.xxx.77.76
+  104  ssh root@xxx.xxx.55.2
   106  route -n
   107  ifconfig 
   108  ip addr show
-  109  route add -host 192.168.1.2 dev eth1
+  109  route add -host xxx.xxx.1.2 dev eth1
   110  ifup eth1
-  111  route add -host 192.168.1.2 dev eth0
+  111  route add -host xxx.xxx.1.2 dev eth0
   112  route -n
-  113  ping 192.168.1.2
-  114  ping 10.211.55.74
-  115  route del -host 192.168.1.2 dev eth0
+  113  ping xxx.xxx.1.2
+  114  ping xxx.xxx.55.74
+  115  route del -host xxx.xxx.1.2 dev eth0
   116  route -n
   117  netstat -ntpl
   118  strace -p 4339
@@ -135,12 +135,12 @@
   137  ps axu
   138  strace -p 14977
   139  docker images
-  140  ping 10.110.162.55
+  140  ping xxx.xxx.162.55
   141  netstat -ntpl
   143  iptables -L INPUT
   144  iptables -L FORWARD
   145  iptables -L KUBE-FIREWALL
-  146  iptables-save| grep '10.244.2.110'
+  146  iptables-save| grep 'xxx.xxx.2.110'
   147  iptables -L KUBE-SEP-IM5FPNZ2MHSN43FZ
   148  iptables -L KUBE-SEP-JVUBLLHPAWP73MQV
   149  iptables -L KUBE-MARK-MASQ
@@ -169,32 +169,32 @@
   172  ll
   173  cd vagrant/
   174  ll
-  175  iptables -t nat -D POSTROUTING -p tcp -d 10.102.69.205 --dport 80 -j SNAT --to-source 10.211.55.74
-  176  iptables -t nat -D PREROUTING -p tcp --dport 80 -j DNAT --to-destination 10.102.69.205:80
-  177  iptables -t nat -A PREROUTING -p tcp --dport 80 -j DNAT --to-destination 10.102.69.205:80
-  178  iptables -t nat -A POSTROUTING -p tcp -d 10.102.69.205 --dport 80 -j SNAT --to-source 10.211.55.74
-  179  iptables -t nat -D POSTROUTING -p tcp -d 10.102.69.205 --dport 80 -j SNAT --to-source 10.211.55.74
-  180  iptables -t nat -D PREROUTING -p tcp --dport 80 -j DNAT --to-destination 10.102.69.205:80
-  181  iptables -t nat -A PREROUTING -p tcp --dport 80 -j DNAT --to-destination 10.102.69.205:80
-  182  iptables -t nat -A POSTROUTING -p tcp -d 10.102.69.205 --dport 80 -j SNAT --to-source 10.211.55.74
+  175  iptables -t nat -D POSTROUTING -p tcp -d xxx.xxx.69.205 --dport 80 -j SNAT --to-source xxx.xxx.55.74
+  176  iptables -t nat -D PREROUTING -p tcp --dport 80 -j DNAT --to-destination xxx.xxx.69.205:80
+  177  iptables -t nat -A PREROUTING -p tcp --dport 80 -j DNAT --to-destination xxx.xxx.69.205:80
+  178  iptables -t nat -A POSTROUTING -p tcp -d xxx.xxx.69.205 --dport 80 -j SNAT --to-source xxx.xxx.55.74
+  179  iptables -t nat -D POSTROUTING -p tcp -d xxx.xxx.69.205 --dport 80 -j SNAT --to-source xxx.xxx.55.74
+  180  iptables -t nat -D PREROUTING -p tcp --dport 80 -j DNAT --to-destination xxx.xxx.69.205:80
+  181  iptables -t nat -A PREROUTING -p tcp --dport 80 -j DNAT --to-destination xxx.xxx.69.205:80
+  182  iptables -t nat -A POSTROUTING -p tcp -d xxx.xxx.69.205 --dport 80 -j SNAT --to-source xxx.xxx.55.74
   183  iptables -F
   184  iptables -t nat -F
-  185  iptables -t nat -D POSTROUTING -p tcp -d 10.102.69.205 --dport 80 -j SNAT --to-source 10.211.55.74
-  186  iptables -t nat -D PREROUTING -p tcp --dport 80 -j DNAT --to-destination 10.102.69.205:80
-  187   iptables -t nat -A PREROUTING -p tcp --dport 80 -j DNAT --to-destination 10.102.69.205:80
-  188  iptables -t nat -A POSTROUTING -p tcp -d 10.102.69.205 --dport 80 -j SNAT --to-source 10.211.55.74
-  189  iptables -t nat -D POSTROUTING -p tcp -d 10.102.69.205 --dport 80 -j SNAT --to-source 10.211.55.74
-  190  iptables -t nat -D PREROUTING -p tcp --dport 80 -j DNAT --to-destination 10.102.69.205:80
-  191  iptables -A INPUT -p tcp --dport 80 -j DNAT --to-destination 10.102.69.205:80
+  185  iptables -t nat -D POSTROUTING -p tcp -d xxx.xxx.69.205 --dport 80 -j SNAT --to-source xxx.xxx.55.74
+  186  iptables -t nat -D PREROUTING -p tcp --dport 80 -j DNAT --to-destination xxx.xxx.69.205:80
+  187   iptables -t nat -A PREROUTING -p tcp --dport 80 -j DNAT --to-destination xxx.xxx.69.205:80
+  188  iptables -t nat -A POSTROUTING -p tcp -d xxx.xxx.69.205 --dport 80 -j SNAT --to-source xxx.xxx.55.74
+  189  iptables -t nat -D POSTROUTING -p tcp -d xxx.xxx.69.205 --dport 80 -j SNAT --to-source xxx.xxx.55.74
+  190  iptables -t nat -D PREROUTING -p tcp --dport 80 -j DNAT --to-destination xxx.xxx.69.205:80
+  191  iptables -A INPUT -p tcp --dport 80 -j DNAT --to-destination xxx.xxx.69.205:80
   192  dmesg
-  193  iptables -A INPUT -p tcp --dport 80 -j DNAT --to-destination 10.102.69.205:80
+  193  iptables -A INPUT -p tcp --dport 80 -j DNAT --to-destination xxx.xxx.69.205:80
   194  dmesg| grep  Invalid argument
   195  dmesg| grep  'Invalid argument'
   196  dmesg| grep  'Invalid '
-  197  iptables -A INPUT -p tcp --dport 80 -j DNAT --to-destination 10.102.69.205:80
-  198  curl 10.102.69.205:80
+  197  iptables -A INPUT -p tcp --dport 80 -j DNAT --to-destination xxx.xxx.69.205:80
+  198  curl xxx.xxx.69.205:80
   199  xp
-  200  curl 10.102.69.205:80
+  200  curl xxx.xxx.69.205:80
   201  curl baidu.com
   202  curl -vv baidu.com
   203  iptables -A INPUT -p tcp --dport 80 -j DROP
@@ -204,7 +204,7 @@
   207  curl http://www.baidu.com/
   208  curl -vvv http://www.baidu.com/
   209  iptables -D INPUT -p tcp --dport 80 -j DROP
-  210  curl 10.102.69.205:80
+  210  curl xxx.xxx.69.205:80
   211  iptables -D PREROUTING -p tcp -m tcp --dport 80 -j LOG --log-prefix "-----NET---->INPUT packets"
   212  cd vagrant/
   213  ll
@@ -230,21 +230,21 @@
   233  iptables-save | grep KUBE-MARK-MASQ
   234  iptables-save | grep KUBE-SVC-JSIH6CCNAROIS6ON
   235  iptables-save | grep KUBE-SEP-YING22L2HIXQ2SST
-  236  ping 10.244.1.105
-  237  nc 10.244.1.105 1234>tcpdump.out
-  238  nc 10.244.1.105 1234
-  240  nc 10.244.1.105 1234>tcpdump.out
-  241  nc 10.244.1.105 1234>./tcpdump.out
-  242  nc 10.244.1.105 1234 <./tcpdump.out
-  243  nc 10.244.1.105 1234 > ./tcpdump.out
-  244  ping 10.244.1.105
+  236  ping xxx.xxx.1.105
+  237  nc xxx.xxx.1.105 1234>tcpdump.out
+  238  nc xxx.xxx.1.105 1234
+  240  nc xxx.xxx.1.105 1234>tcpdump.out
+  241  nc xxx.xxx.1.105 1234>./tcpdump.out
+  242  nc xxx.xxx.1.105 1234 <./tcpdump.out
+  243  nc xxx.xxx.1.105 1234 > ./tcpdump.out
+  244  ping xxx.xxx.1.105
   245  ll
   246  nc -l 1234 > tcpdump.out 
   247  ll
   248  nc -l 1234 > tcpdump.out 
   249  ll -h
-  250  nc 10.211.55.2 1234 < tcpdump.out 
-  251  iptables-save | grep 10.102.69.205
+  250  nc xxx.xxx.55.2 1234 < tcpdump.out 
+  251  iptables-save | grep xxx.xxx.69.205
   252  iptables-save | grep KUBE-SVC-XJ4KNNNZJUWDXGI5
   253  iptables -A INPUT -p tcp -dport 80 -j KUBE-SVC-XJ4KNNNZJUWDXGI5
   254  iptables -A INPUT -p tcp --dport 80 -j KUBE-SVC-XJ4KNNNZJUWDXGI5
@@ -258,30 +258,30 @@
   262  iptables -N IDEVZ
   263  iptables -A FORWARD -p tcp --dport 80 -j IDEVZ
   264  iptables -A IDEVZ -p tcp --dport 80 -j KUBE-SVC-XJ4KNNNZJUWDXGI5
-  265  iptables -A IDEVZ -p tcp --dport 80 -d 10.102.69.205
-  266  iptables -A IDEVZ -p tcp --dport 80 -d 10.102.69.205 -j ACCEPT
-  267  iptables -D IDEVZ -p tcp --dport 80 -d 10.102.69.205 -j ACCEPT
-  268  iptables -D IDEVZ -p tcp --dport 80 -d 10.102.69.205
+  265  iptables -A IDEVZ -p tcp --dport 80 -d xxx.xxx.69.205
+  266  iptables -A IDEVZ -p tcp --dport 80 -d xxx.xxx.69.205 -j ACCEPT
+  267  iptables -D IDEVZ -p tcp --dport 80 -d xxx.xxx.69.205 -j ACCEPT
+  268  iptables -D IDEVZ -p tcp --dport 80 -d xxx.xxx.69.205
   269  iptables -D FORWARD -p tcp --dport 80 -j IDEVZ
   270  iptables -X IDEVZ
-  271  iptables -A INPUT -p tcp --dport 80 -d 10.102.69.205 -j ACCEPT
-  272  iptables -D INPUT -p tcp --dport 80 -d 10.102.69.205 -j ACCEPT
+  271  iptables -A INPUT -p tcp --dport 80 -d xxx.xxx.69.205 -j ACCEPT
+  272  iptables -D INPUT -p tcp --dport 80 -d xxx.xxx.69.205 -j ACCEPT
   273  iptables-save | grep KUBE-SVC-XJ4KNNNZJUWDXGI5
-  274  iptables -t nat -A PREROUTING -p tcp --dport 80 -j DNAT --to-destination 10.102.69.205:80
-  275  iptables -t nat -D PREROUTING -p tcp --dport 80 -j DNAT --to-destination 10.102.69.205:80
-  276  curl 10.102.69.205:80
+  274  iptables -t nat -A PREROUTING -p tcp --dport 80 -j DNAT --to-destination xxx.xxx.69.205:80
+  275  iptables -t nat -D PREROUTING -p tcp --dport 80 -j DNAT --to-destination xxx.xxx.69.205:80
+  276  curl xxx.xxx.69.205:80
   277  xp
-  278  curl 10.102.69.205:80
+  278  curl xxx.xxx.69.205:80
   279  xp
-  280  iptables -t nat -A PREROUTING -p tcp --dport 80 -j DNAT --to-destination 10.102.69.205:80
+  280  iptables -t nat -A PREROUTING -p tcp --dport 80 -j DNAT --to-destination xxx.xxx.69.205:80
   281  iptables -F
   282  iptables -t nat -F
-  283  iptables -t nat -A POSTROUTING -p tcp -d 10.102.69.205 --dport 80 -j SNAT --to-source 10.211.55.74
+  283  iptables -t nat -A POSTROUTING -p tcp -d xxx.xxx.69.205 --dport 80 -j SNAT --to-source xxx.xxx.55.74
   284  sysctl net.ipv4.ip_forward
   285  lsmod| grep iptables
   286  lsmod| grep iptable
   287  iptables -t nat -L -n
-  288  iptables -t nat -D PREROUTING -p tcp --dport 80 -j DNAT --to-destination 10.102.69.205:80
+  288  iptables -t nat -D PREROUTING -p tcp --dport 80 -j DNAT --to-destination xxx.xxx.69.205:80
   289  journalctl -f
   290  start_out systemctl start privoxy.service && swapoff -a
   292  free -mh
@@ -300,101 +300,101 @@
   306  ifconfig 
   307  ifconfig eth0
   308  iptables -t nat -A PREROUTING -p tcp --dport 80 -j LOG --log-prefix "-----NET---->INPUT packets"
-  309  iptables -t nat -A PREROUTING -p tcp --dport 80 -j DNAT --to-destination 10.102.69.205:80
-  310  curl 10.102.69.205
+  309  iptables -t nat -A PREROUTING -p tcp --dport 80 -j DNAT --to-destination xxx.xxx.69.205:80
+  310  curl xxx.xxx.69.205
   311  xp
-  312  curl 10.102.69.205
-  313  iptables -t nat -A POSTROUTING -p tcp -d 10.102.69.205 --dport 80 -j LOG --log-prefix "----X-NET---->INPUT packets"
-  314  iptables -t nat -A POSTROUTING -p tcp -d 10.102.69.205 --dport 80 -j SNAT --to-source 10.211.55.74
-  315  curl 10.102.69.205
-  316  curl http://10.211.55.74
+  312  curl xxx.xxx.69.205
+  313  iptables -t nat -A POSTROUTING -p tcp -d xxx.xxx.69.205 --dport 80 -j LOG --log-prefix "----X-NET---->INPUT packets"
+  314  iptables -t nat -A POSTROUTING -p tcp -d xxx.xxx.69.205 --dport 80 -j SNAT --to-source xxx.xxx.55.74
+  315  curl xxx.xxx.69.205
+  316  curl http://xxx.xxx.55.74
   317  history 
-  318  iptables -t nat -A POSTROUTING -p tcp -d 10.102.69.205 --dport 80 -j SNAT --to-source 10.211.55.72
-  319  iptables -t nat -D POSTROUTING -p tcp -d 10.102.69.205 --dport 80 -j SNAT --to-source 10.211.55.74
-  320  iptables -t nat -D POSTROUTING -p tcp -d 10.102.69.205 --dport 80 -j LOG --log-prefix "----X-NET---->INPUT packets"
-  321  iptables -t nat -A POSTROUTING -p tcp -d 10.102.69.205 --dport 80 -j LOG --log-prefix "----X-NET---->INPUT packets"
-  322  iptables -t nat -D POSTROUTING -p tcp -d 10.102.69.205 --dport 80 -j SNAT --to-source 10.211.55.72
-  323  iptables -t nat -A POSTROUTING -p tcp -d 10.102.69.205 --dport 80 -j SNAT --to-source 10.211.55.2
+  318  iptables -t nat -A POSTROUTING -p tcp -d xxx.xxx.69.205 --dport 80 -j SNAT --to-source xxx.xxx.55.72
+  319  iptables -t nat -D POSTROUTING -p tcp -d xxx.xxx.69.205 --dport 80 -j SNAT --to-source xxx.xxx.55.74
+  320  iptables -t nat -D POSTROUTING -p tcp -d xxx.xxx.69.205 --dport 80 -j LOG --log-prefix "----X-NET---->INPUT packets"
+  321  iptables -t nat -A POSTROUTING -p tcp -d xxx.xxx.69.205 --dport 80 -j LOG --log-prefix "----X-NET---->INPUT packets"
+  322  iptables -t nat -D POSTROUTING -p tcp -d xxx.xxx.69.205 --dport 80 -j SNAT --to-source xxx.xxx.55.72
+  323  iptables -t nat -A POSTROUTING -p tcp -d xxx.xxx.69.205 --dport 80 -j SNAT --to-source xxx.xxx.55.2
   324  history 
-  325  ping 10.211.55.2
-  326  iptables -t nat -D POSTROUTING -p tcp -d 10.102.69.205 --dport 80 -j SNAT --to-source 10.211.55.2
-  327  iptables -t nat -D POSTROUTING -p tcp -d 10.102.69.205 --dport 80 -j LOG --log-prefix "----X-NET---->INPUT packets"
-  328  iptables -t nat -D POSTROUTING -p tcp -d 10.102.69.205 --dport 80 -j SNAT --to-source 10.211.55.72
+  325  ping xxx.xxx.55.2
+  326  iptables -t nat -D POSTROUTING -p tcp -d xxx.xxx.69.205 --dport 80 -j SNAT --to-source xxx.xxx.55.2
+  327  iptables -t nat -D POSTROUTING -p tcp -d xxx.xxx.69.205 --dport 80 -j LOG --log-prefix "----X-NET---->INPUT packets"
+  328  iptables -t nat -D POSTROUTING -p tcp -d xxx.xxx.69.205 --dport 80 -j SNAT --to-source xxx.xxx.55.72
   329  iptables-save
   330  iptables -D PREROUTING -p tcp -m tcp --dport 80 -j LOG --log-prefix "-----NET---->INPUT packets"
-  331  iptables -D PREROUTING -p tcp -m tcp --dport 80 -j DNAT --to-destination 10.102.69.205:80
+  331  iptables -D PREROUTING -p tcp -m tcp --dport 80 -j DNAT --to-destination xxx.xxx.69.205:80
   332  iptables -D PREROUTING -p tcp -m tcp --dport 80 -j LOG --log-prefix "-----NET---->INPUT packets"
-  333  iptables -D PREROUTING -p tcp -m tcp --dport 80 -j DNAT --to-destination 10.102.69.205:80
+  333  iptables -D PREROUTING -p tcp -m tcp --dport 80 -j DNAT --to-destination xxx.xxx.69.205:80
   334  iptables -D PREROUTING -p tcp -m tcp --dport 80 -j LOG --log-prefix "-----NET---->INPUT packets"
-  335  iptables -D PREROUTING -p tcp -m tcp --dport 80 -j DNAT --to-destination 10.102.69.205:80
+  335  iptables -D PREROUTING -p tcp -m tcp --dport 80 -j DNAT --to-destination xxx.xxx.69.205:80
   336  iptables-save
   337  history 
   338  iptables -t nat -D PREROUTING -p tcp --dport 80 -j LOG --log-prefix "-----NET---->INPUT packets"
-  339  iptables -t nat -D PREROUTING -p tcp --dport 80 -j DNAT --to-destination 10.102.69.205:80
+  339  iptables -t nat -D PREROUTING -p tcp --dport 80 -j DNAT --to-destination xxx.xxx.69.205:80
   340  iptables -t nat -A PREROUTING -p tcp --dport 9999 -j LOG --log-prefix "-----NET---->INPUT packets"
-  341  iptables -t nat -A PREROUTING -p tcp --dport 9999 -j DNAT --to-destination 10.211.55.75:8000
-  342  iptables -t nat -A POSTROUTING -p tcp -d 10.211.55.75 --dport 8000 -j LOG --log-prefix "----X-NET---->INPUT packets"
-  343  iptables -t nat -A POSTROUTING -p tcp -d 10.211.55.75 --dport 8000 -j SNAT --to-source 10.211.55.74
+  341  iptables -t nat -A PREROUTING -p tcp --dport 9999 -j DNAT --to-destination xxx.xxx.55.75:8000
+  342  iptables -t nat -A POSTROUTING -p tcp -d xxx.xxx.55.75 --dport 8000 -j LOG --log-prefix "----X-NET---->INPUT packets"
+  343  iptables -t nat -A POSTROUTING -p tcp -d xxx.xxx.55.75 --dport 8000 -j SNAT --to-source xxx.xxx.55.74
   344  iptables -t nat -D PREROUTING -p tcp --dport 9999 -j LOG --log-prefix "-----NET---->INPUT packets"
-  345  iptables -t nat -D PREROUTING -p tcp --dport 9999 -j DNAT --to-destination 10.211.55.75:8000
-  346  iptables -t nat -D POSTROUTING -p tcp -d 10.211.55.75 --dport 8000 -j LOG --log-prefix "----X-NET---->INPUT packets"
-  347  iptables -t nat -D POSTROUTING -p tcp -d 10.211.55.75 --dport 8000 -j SNAT --to-source 10.211.55.74
+  345  iptables -t nat -D PREROUTING -p tcp --dport 9999 -j DNAT --to-destination xxx.xxx.55.75:8000
+  346  iptables -t nat -D POSTROUTING -p tcp -d xxx.xxx.55.75 --dport 8000 -j LOG --log-prefix "----X-NET---->INPUT packets"
+  347  iptables -t nat -D POSTROUTING -p tcp -d xxx.xxx.55.75 --dport 8000 -j SNAT --to-source xxx.xxx.55.74
   348  iptables -t nat -A PREROUTING -p tcp --dport 9999 -j LOG --log-prefix "-----NET---->INPUT packets"
-  349  iptables -t nat -A PREROUTING -p tcp --dport 9999 -j DNAT --to-destination 10.211.55.75:8000
-  350  iptables -t nat -A POSTROUTING -p tcp -d 10.211.55.75 --dport 8000 -j LOG --log-prefix "----X-NET---->INPUT packets"
+  349  iptables -t nat -A PREROUTING -p tcp --dport 9999 -j DNAT --to-destination xxx.xxx.55.75:8000
+  350  iptables -t nat -A POSTROUTING -p tcp -d xxx.xxx.55.75 --dport 8000 -j LOG --log-prefix "----X-NET---->INPUT packets"
   351  iptables -t nat -D PREROUTING -p tcp --dport 9999 -j LOG --log-prefix "-----NET---->INPUT packets"
-  352  iptables -t nat -D PREROUTING -p tcp --dport 9999 -j DNAT --to-destination 10.211.55.75:8000
-  353  iptables -t nat -D POSTROUTING -p tcp -d 10.211.55.75 --dport 8000 -j LOG --log-prefix "----X-NET---->INPUT packets"
+  352  iptables -t nat -D PREROUTING -p tcp --dport 9999 -j DNAT --to-destination xxx.xxx.55.75:8000
+  353  iptables -t nat -D POSTROUTING -p tcp -d xxx.xxx.55.75 --dport 8000 -j LOG --log-prefix "----X-NET---->INPUT packets"
   354  iptables -t nat -A PREROUTING -p tcp --dport 9999 -j LOG --log-prefix "-----NET---->INPUT packets"
-  355  iptables -t nat -A PREROUTING -p tcp --dport 9999 -j DNAT --to-destination 10.211.55.75:8000
-  356  iptables -t nat -A POSTROUTING -p tcp -d 10.211.55.75 --dport 8000 -j LOG --log-prefix "----X-NET---->INPUT packets"
-  357  iptables -t nat -A POSTROUTING -p tcp -d 10.211.55.75 --dport 8000 -j SNAT --to-source 10.211.55.74
+  355  iptables -t nat -A PREROUTING -p tcp --dport 9999 -j DNAT --to-destination xxx.xxx.55.75:8000
+  356  iptables -t nat -A POSTROUTING -p tcp -d xxx.xxx.55.75 --dport 8000 -j LOG --log-prefix "----X-NET---->INPUT packets"
+  357  iptables -t nat -A POSTROUTING -p tcp -d xxx.xxx.55.75 --dport 8000 -j SNAT --to-source xxx.xxx.55.74
   358  iptables -t nat -D PREROUTING -p tcp --dport 9999 -j LOG --log-prefix "-----NET---->INPUT packets"
-  359  iptables -t nat -D PREROUTING -p tcp --dport 9999 -j DNAT --to-destination 10.211.55.75:8000
-  360  iptables -t nat -D POSTROUTING -p tcp -d 10.211.55.75 --dport 8000 -j LOG --log-prefix "----X-NET---->INPUT packets"
-  361  iptables -t nat -D POSTROUTING -p tcp -d 10.211.55.75 --dport 8000 -j SNAT --to-source 10.211.55.74
+  359  iptables -t nat -D PREROUTING -p tcp --dport 9999 -j DNAT --to-destination xxx.xxx.55.75:8000
+  360  iptables -t nat -D POSTROUTING -p tcp -d xxx.xxx.55.75 --dport 8000 -j LOG --log-prefix "----X-NET---->INPUT packets"
+  361  iptables -t nat -D POSTROUTING -p tcp -d xxx.xxx.55.75 --dport 8000 -j SNAT --to-source xxx.xxx.55.74
   362  iptables -t nat -A PREROUTING -p tcp --dport 9999 -j LOG --log-prefix "-----NET---->INPUT packets"
-  363  iptables -t nat -A PREROUTING -p tcp --dport 9999 -j DNAT --to-destination 10.211.55.75:8000
-  364  iptables -t nat -A POSTROUTING -p tcp -d 10.211.55.75 --dport 8000 -j LOG --log-prefix "----X-NET---->INPUT packets"
-  365  iptables -t nat -A POSTROUTING -p tcp -d 10.211.55.75 --dport 8000 -j SNAT --to-source 10.211.55.74
+  363  iptables -t nat -A PREROUTING -p tcp --dport 9999 -j DNAT --to-destination xxx.xxx.55.75:8000
+  364  iptables -t nat -A POSTROUTING -p tcp -d xxx.xxx.55.75 --dport 8000 -j LOG --log-prefix "----X-NET---->INPUT packets"
+  365  iptables -t nat -A POSTROUTING -p tcp -d xxx.xxx.55.75 --dport 8000 -j SNAT --to-source xxx.xxx.55.74
   366  iptables -t nat -D PREROUTING -p tcp --dport 9999 -j LOG --log-prefix "-----NET---->INPUT packets"
-  367  iptables -t nat -D PREROUTING -p tcp --dport 9999 -j DNAT --to-destination 10.211.55.75:8000
-  368  iptables -t nat -D POSTROUTING -p tcp -d 10.211.55.75 --dport 8000 -j LOG --log-prefix "----X-NET---->INPUT packets"
-  369  iptables -t nat -D POSTROUTING -p tcp -d 10.211.55.75 --dport 8000 -j SNAT --to-source 10.211.55.74
+  367  iptables -t nat -D PREROUTING -p tcp --dport 9999 -j DNAT --to-destination xxx.xxx.55.75:8000
+  368  iptables -t nat -D POSTROUTING -p tcp -d xxx.xxx.55.75 --dport 8000 -j LOG --log-prefix "----X-NET---->INPUT packets"
+  369  iptables -t nat -D POSTROUTING -p tcp -d xxx.xxx.55.75 --dport 8000 -j SNAT --to-source xxx.xxx.55.74
   370  iptables -t nat -A PREROUTING -p tcp --dport 9999 -j LOG --log-prefix "-----NET---->INPUT packets"
-  371  iptables -t nat -A PREROUTING -p tcp --dport 9999 -j DNAT --to-destination 10.211.55.75:8000
-  372  iptables -t nat -A POSTROUTING -p tcp -d 10.211.55.75 --dport 8000 -j LOG --log-prefix "----X-NET---->INPUT packets"
-  373  iptables -t nat -A POSTROUTING -p tcp -d 10.211.55.75 --dport 8000 -j SNAT --to-source 10.211.55.74
+  371  iptables -t nat -A PREROUTING -p tcp --dport 9999 -j DNAT --to-destination xxx.xxx.55.75:8000
+  372  iptables -t nat -A POSTROUTING -p tcp -d xxx.xxx.55.75 --dport 8000 -j LOG --log-prefix "----X-NET---->INPUT packets"
+  373  iptables -t nat -A POSTROUTING -p tcp -d xxx.xxx.55.75 --dport 8000 -j SNAT --to-source xxx.xxx.55.74
   374  iptables -t nat -D PREROUTING -p tcp --dport 9999 -j LOG --log-prefix "-----NET---->INPUT packets"
-  375  iptables -t nat -D PREROUTING -p tcp --dport 9999 -j DNAT --to-destination 10.211.55.75:8000
-  376  iptables -t nat -D POSTROUTING -p tcp -d 10.211.55.75 --dport 8000 -j LOG --log-prefix "----X-NET---->INPUT packets"
-  377  iptables -t nat -D POSTROUTING -p tcp -d 10.211.55.75 --dport 8000 -j SNAT --to-source 10.211.55.74
+  375  iptables -t nat -D PREROUTING -p tcp --dport 9999 -j DNAT --to-destination xxx.xxx.55.75:8000
+  376  iptables -t nat -D POSTROUTING -p tcp -d xxx.xxx.55.75 --dport 8000 -j LOG --log-prefix "----X-NET---->INPUT packets"
+  377  iptables -t nat -D POSTROUTING -p tcp -d xxx.xxx.55.75 --dport 8000 -j SNAT --to-source xxx.xxx.55.74
   378  iptables -t nat -A PREROUTING -p tcp --dport 8000 -j LOG --log-prefix "-----NET---->INPUT packets"
-  379  iptables -t nat -A PREROUTING -p tcp --dport 8000 -j DNAT --to-destination 10.211.55.75:8000
-  380  iptables -t nat -A POSTROUTING -p tcp -d 10.211.55.75 --dport 8000 -j LOG --log-prefix "----X-NET---->INPUT packets"
-  381  iptables -t nat -A POSTROUTING -p tcp -d 10.211.55.75 --dport 8000 -j SNAT --to-source 10.211.55.74
+  379  iptables -t nat -A PREROUTING -p tcp --dport 8000 -j DNAT --to-destination xxx.xxx.55.75:8000
+  380  iptables -t nat -A POSTROUTING -p tcp -d xxx.xxx.55.75 --dport 8000 -j LOG --log-prefix "----X-NET---->INPUT packets"
+  381  iptables -t nat -A POSTROUTING -p tcp -d xxx.xxx.55.75 --dport 8000 -j SNAT --to-source xxx.xxx.55.74
   382  iptables -t nat -D PREROUTING -p tcp --dport 9999 -j LOG --log-prefix "-----NET---->INPUT packets"
-  383  iptables -t nat -D PREROUTING -p tcp --dport 9999 -j DNAT --to-destination 10.211.55.75:8000
-  384  iptables -t nat -D POSTROUTING -p tcp -d 10.211.55.75 --dport 8000 -j LOG --log-prefix "----X-NET---->INPUT packets"
-  385  iptables -t nat -D POSTROUTING -p tcp -d 10.211.55.75 --dport 8000 -j SNAT --to-source 10.211.55.74
+  383  iptables -t nat -D PREROUTING -p tcp --dport 9999 -j DNAT --to-destination xxx.xxx.55.75:8000
+  384  iptables -t nat -D POSTROUTING -p tcp -d xxx.xxx.55.75 --dport 8000 -j LOG --log-prefix "----X-NET---->INPUT packets"
+  385  iptables -t nat -D POSTROUTING -p tcp -d xxx.xxx.55.75 --dport 8000 -j SNAT --to-source xxx.xxx.55.74
   386  iptables -t nat -D PREROUTING -p tcp --dport 8000 -j LOG --log-prefix "-----NET---->INPUT packets"
-  387  iptables -t nat -D PREROUTING -p tcp --dport 8000 -j DNAT --to-destination 10.211.55.75:8000
-  388  iptables -t nat -D POSTROUTING -p tcp -d 10.211.55.75 --dport 8000 -j LOG --log-prefix "----X-NET---->INPUT packets"
-  389  iptables -t nat -D POSTROUTING -p tcp -d 10.211.55.75 --dport 8000 -j SNAT --to-source 10.211.55.74
+  387  iptables -t nat -D PREROUTING -p tcp --dport 8000 -j DNAT --to-destination xxx.xxx.55.75:8000
+  388  iptables -t nat -D POSTROUTING -p tcp -d xxx.xxx.55.75 --dport 8000 -j LOG --log-prefix "----X-NET---->INPUT packets"
+  389  iptables -t nat -D POSTROUTING -p tcp -d xxx.xxx.55.75 --dport 8000 -j SNAT --to-source xxx.xxx.55.74
   390  netstat -ntpl
-  391  iptables-save| grep 10.244.2.169
+  391  iptables-save| grep xxx.xxx.2.169
   392  iptables -t nat -D PREROUTING -p tcp --dport 9999 -j LOG --log-prefix "-----NET---->INPUT packets"
-  393  iptables -t nat -D PREROUTING -p tcp --dport 9999 -j DNAT --to-destination 10.211.55.75:8000
-  394  iptables -t nat -D POSTROUTING -p tcp -d 10.211.55.75 --dport 8000 -j LOG --log-prefix "----X-NET---->INPUT packets"
-  395  iptables -t nat -D POSTROUTING -p tcp -d 10.211.55.75 --dport 8000 -j SNAT --to-source 10.211.55.74
-  396  iptables-save| grep 10.244.2.169
+  393  iptables -t nat -D PREROUTING -p tcp --dport 9999 -j DNAT --to-destination xxx.xxx.55.75:8000
+  394  iptables -t nat -D POSTROUTING -p tcp -d xxx.xxx.55.75 --dport 8000 -j LOG --log-prefix "----X-NET---->INPUT packets"
+  395  iptables -t nat -D POSTROUTING -p tcp -d xxx.xxx.55.75 --dport 8000 -j SNAT --to-source xxx.xxx.55.74
+  396  iptables-save| grep xxx.xxx.2.169
   397  iptables-save| grep KUBE-SEP-IFK5PRGVAYIC3UNV
-  398  iptables-save grep|10.100.135.211
-  399  iptables-save | grep 10.100.135.211
+  398  iptables-save grep|xxx.xxx.135.211
+  399  iptables-save | grep xxx.xxx.135.211
   400  iptables-save | grep KUBE-SVC-XJ4KNNNZJUWDXGI5
   401  iptables-save | grep KUBE-SEP-B3NR2ZWT3PE52R4W
   402  iptables-save | grep KUBE-SEP-UAR6TQBGUDBI55EO
-  403  iptables-save | grep 10.96.16.4
+  403  iptables-save | grep xxx.xxx.16.4
   404  g
   405  iptables-save | grep KUBE-SVC-5P26HKWUHVLH3GX5
   406  iptables-save | grep idevz-or-nodeport
@@ -441,7 +441,7 @@
   447  setenforce 0
   448  sysctl -p /etc/sysctl.d/k8s.conf
   449  swapoff -a
-  450  kubeadm init --kubernetes-version=v1.9.0 --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=10.211.55.71
+  450  kubeadm init --kubernetes-version=v1.9.0 --pod-network-cidr=xxx.xxx.0.0/16 --apiserver-advertise-address=xxx.xxx.55.71
   451  . /etc/profile
   452  systemctl stop firewalld
   453  systemctl disable firewalld
@@ -451,10 +451,10 @@
   457  xp
   458  kubeadm reset
   459  xp
-  460  kubeadm init --kubernetes-version=v1.9.0 --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=10.211.55.71
+  460  kubeadm init --kubernetes-version=v1.9.0 --pod-network-cidr=xxx.xxx.0.0/16 --apiserver-advertise-address=xxx.xxx.55.71
   461  kubeadm reset
   462  xp
-  463  kubeadm init --kubernetes-version=v1.9.0 --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=10.211.55.74
+  463  kubeadm init --kubernetes-version=v1.9.0 --pod-network-cidr=xxx.xxx.0.0/16 --apiserver-advertise-address=xxx.xxx.55.74
   464  netstat -ntpl
   465  cat /lib/systemd/system/docker.service
   466  cp /etc/shadowsocks.json /etc/shadowsocks.json.bak
@@ -497,8 +497,8 @@
   504  ll
   505  curl http://www.epochtimes.com/
   506  cat /etc/shadowsocks.json
-  507  ping 45.78.41.151
-  508  telnet  45.78.41.151 40001
+  507  ping xxx.xxx.41.151
+  508  telnet  xxx.xxx.41.151 40001
   509  netstat -ntpl
   510  c
   512  cd /etc/letsencrypt
@@ -546,12 +546,12 @@
   554  setenforce 0
   555  sysctl -p /etc/sysctl.d/k8s.conf
   556  swapoff -a
-  557  kubeadm init --kubernetes-version=v1.9.0 --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=10.211.55.74
+  557  kubeadm init --kubernetes-version=v1.9.0 --pod-network-cidr=xxx.xxx.0.0/16 --apiserver-advertise-address=xxx.xxx.55.74
   558  xp
-  559  kubeadm init --kubernetes-version=v1.9.0 --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=10.211.55.74
+  559  kubeadm init --kubernetes-version=v1.9.0 --pod-network-cidr=xxx.xxx.0.0/16 --apiserver-advertise-address=xxx.xxx.55.74
   560  swapoff -a
   561  kubeadm reset
-  562  kubeadm init --kubernetes-version=v1.9.0 --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=10.211.55.74
+  562  kubeadm init --kubernetes-version=v1.9.0 --pod-network-cidr=xxx.xxx.0.0/16 --apiserver-advertise-address=xxx.xxx.55.74
   563  kubeadm reset
   564  . /etc/profile
   565  systemctl stop firewalld
@@ -559,11 +559,11 @@
   567  setenforce 0
   568  sysctl -p /etc/sysctl.d/k8s.conf
   569  swapoff -a
-  570  kubeadm init --kubernetes-version=v1.9.0 --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=10.211.55.74
+  570  kubeadm init --kubernetes-version=v1.9.0 --pod-network-cidr=xxx.xxx.0.0/16 --apiserver-advertise-address=xxx.xxx.55.74
   571  xp
-  572  kubeadm init --kubernetes-version=v1.9.0 --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=10.211.55.74
+  572  kubeadm init --kubernetes-version=v1.9.0 --pod-network-cidr=xxx.xxx.0.0/16 --apiserver-advertise-address=xxx.xxx.55.74
   573  kubeadm reset
-  574  kubeadm init --kubernetes-version=v1.9.0 --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=10.211.55.74
+  574  kubeadm init --kubernetes-version=v1.9.0 --pod-network-cidr=xxx.xxx.0.0/16 --apiserver-advertise-address=xxx.xxx.55.74
   575  kubeadm reset
   576  curl http://www.epochtimes.com/
   577  netstat -ntpl
@@ -571,13 +571,13 @@
   579  curl http://www.epochtimes.com/
   580  . /etc/profile
   581  curl http://www.epochtimes.com/
-  582  kubeadm init --kubernetes-version=v1.9.0 --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=10.211.55.74
+  582  kubeadm init --kubernetes-version=v1.9.0 --pod-network-cidr=xxx.xxx.0.0/16 --apiserver-advertise-address=xxx.xxx.55.74
   583  kubeadm reset
   584  xp
   585  kubeadm reset
   586  kubectl delete -f https://raw.githubusercontent.com/coreos/flannel/v0.9.1/Documentation/kube-flannel.yml
   587  kubeadm reset
-  588  kubeadm init --kubernetes-version=v1.9.0 --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=10.211.55.74
+  588  kubeadm init --kubernetes-version=v1.9.0 --pod-network-cidr=xxx.xxx.0.0/16 --apiserver-advertise-address=xxx.xxx.55.74
   589  ll  $HOME/.kube
   590  kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/v0.9.1/Documentation/kube-flannel.yml
   591  history 
