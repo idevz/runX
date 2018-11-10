@@ -158,4 +158,17 @@ rx() {
 	esac
 }
 
+reset_sed_baks() {
+	for f in $(find ./ -name '*.sed.bak'); do
+		rf_name=$(echo $f | sed -e 's/\.sed\.bak//')
+		mv "${f}" "${rf_name}"
+	done
+}
+
+clean_sed_baks() {
+	for f in $(find ./ -name '*.sed.bak'); do
+		rm "${f}"
+	done
+}
+
 [ ! -z ${GOPATH} ] && export_go_path
