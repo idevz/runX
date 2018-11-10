@@ -31,8 +31,7 @@ ip_dim() {
 }
 
 small_history_file() {
-	# for his in $(find "${BASE_DIR}" -name '*.zsh_history'); do
-	for his in $(kube-node1.vagrant.zsh_history aaa); do
+	for his in $(find "${BASE_DIR}" -name '*.zsh_history'); do
 		"${BASE_DIR}/scripts/exclude.awk" "${his}" | sort >"${his}.tmp"
 		mv "${his}.tmp" "${his}"
 	done
