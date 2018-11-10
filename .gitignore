@@ -55,12 +55,10 @@ dkms.conf
 
 .DS_Store
 *.bak
-.zsh_history
+# .zsh_history
 .gdb_history
 .vscode
 *.bps
-old.z.root.zsh_history
-old.z.zsh_history
 srcs/
 *.zj
 *.wb.conf
