@@ -32,8 +32,8 @@ ip_dim() {
 
 small_history_file() {
 	for his in $(find "${BASE_DIR}" -name '*.zsh_history'); do
-		# "${BASE_DIR}/scripts/exclude.awk" "${his}" | sort >"${his}.tmp"
-		# mv "${his}.tmp" "${his}"
+		"${BASE_DIR}/scripts/exclude.awk" "${his}" | sort >"${his}.tmp"
+		mv "${his}.tmp" "${his}"
 	done
 }
 
