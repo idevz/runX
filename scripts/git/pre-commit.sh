@@ -1,4 +1,12 @@
-#!/bin/sh
+#!/usr/bin/env bash
+
+### BEGIN ###
+# Author: idevz
+# Since: 2018/03/12
+# Description:   git hook pre-commit for runX.
+#
+# Environment variables that control init:
+### END ###
 
 set -e
 
@@ -37,6 +45,6 @@ small_history_file() {
 	done
 }
 
-# clean_count_line
-# ip_dim
+clean_count_line
+ip_dim
 small_history_file

@@ -1,4 +1,13 @@
 #!/usr/bin/env bash
+
+### BEGIN ###
+# Author: idevz
+# Since: 2018/03/12
+# Description:   runX funcs for host.
+#
+# Environment variables that control init:
+### END ###
+
 # tools for host where prlctl is.
 [ -f ${PRLCTL_HOME}/shell/runX.funcs.sh ] && source ${PRLCTL_HOME}/shell/runX.funcs.sh
 _prlctl_get_ip_by_host() {
