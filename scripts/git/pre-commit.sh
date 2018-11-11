@@ -18,8 +18,8 @@ safe_grep() {
 	local pattern="${1}"
 	grep -lEr "${pattern}" \
 		--exclude='*.\/\/code\/*' --exclude='*\/\.oh-my-zsh\/*' \
-		--exclude='*.\/\/\.git\/*' --exclude='*.\/\/\deploy\/*' \
-		--exclude='*.\/\/\gdb\/*' \
+		--exclude='*.\/\/\.git\/*' --exclude='*.\/\/\scripts\/git\/*' \
+		--exclude='*.\/\/\gdb\/*' --exclude='*.\/\/\deploy\/*' \
 		"${BASE_DIR}"
 }
 
