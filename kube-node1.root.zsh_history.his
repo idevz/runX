@@ -1,0 +1,214 @@
+    1  . /etc/profile
+    2  systemctl stop firewalld
+    3  systemctl disable firewalld
+    4  setenforce 0
+    5  sysctl -p /etc/sysctl.d/k8s.conf
+    6  swapoff -a
+    7  xp
+    8  kubeadm init --kubernetes-version=v1.9.0 --pod-network-cidr=xxx.xxx.0.0/16 --apiserver-advertise-address=xxx.xxx.55.74
+   12  grep -nr 74 ./*
+   13  start_out systemctl start privoxy.service
+   17  kubectl get po -a
+   18  kubectl get pod -a
+   22  systemctl
+   37  sudo shutdown now
+   40  start_out systemctl start privoxy.service swapoff -a
+   44  start_out systemctl start privoxy.service && swapoff -a
+   48   ping -b xxx.xxx.55.255
+   51  nslookup kube-dns
+   59  arp -v
+   66  ifdown lo
+   68  ifup lo
+   70  route
+   71  route -n
+   73  ip link show
+   74  ip -s link show
+   75  ip -as link show
+   77  ip
+   78  ip show
+   79  ip help
+   80  ip address show
+   81  ip addr show
+   82  ip route
+   87  ip route list
+   88  ip route list main
+   89  ip route list table
+   90  ip route list table 1
+   91  ip route list table -6
+   92  ip rule list
+   94  route print 10.*  
+   97  ping xxx.xxx.129.2
+   99  tracepath .
+  102  ping xxx.xxx.77.76
+  103  ssh root@xxx.xxx.77.76
+  104  ssh root@xxx.xxx.55.2
+  109  route add -host xxx.xxx.1.2 dev eth1
+  110  ifup eth1
+  111  route add -host xxx.xxx.1.2 dev eth0
+  113  ping xxx.xxx.1.2
+  114  ping xxx.xxx.55.74
+  115  route del -host xxx.xxx.1.2 dev eth0
+  118  strace -p 4339
+  123  top
+  126  trace -p 26335
+  127  strace
+  129  strace -p 26335
+  131  systemctl restart docker
+  134  free -mh
+  136  strace -p 14074
+  138  strace -p 14977
+  139  docker images
+  140  ping xxx.xxx.162.55
+  143  iptables -L INPUT
+  144  iptables -L FORWARD
+  145  iptables -L KUBE-FIREWALL
+  146  iptables-save| grep 'xxx.xxx.2.110'
+  147  iptables -L KUBE-SEP-IM5FPNZ2MHSN43FZ
+  148  iptables -L KUBE-SEP-JVUBLLHPAWP73MQV
+  149  iptables -L KUBE-MARK-MASQ
+  152  iptables-save
+  153  iptables-save| grep 30894
+  154  iptables-save| grep KUBE-NODEPORTS
+  155  iptables -S -t nat
+  167  touch xxxx-ok
+  175  iptables -t nat -D POSTROUTING -p tcp -d xxx.xxx.69.205 --dport 80 -j SNAT --to-source xxx.xxx.55.74
+  176  iptables -t nat -D PREROUTING -p tcp --dport 80 -j DNAT --to-destination xxx.xxx.69.205:80
+  177  iptables -t nat -A PREROUTING -p tcp --dport 80 -j DNAT --to-destination xxx.xxx.69.205:80
+  178  iptables -t nat -A POSTROUTING -p tcp -d xxx.xxx.69.205 --dport 80 -j SNAT --to-source xxx.xxx.55.74
+  183  iptables -F
+  184  iptables -t nat -F
+  191  iptables -A INPUT -p tcp --dport 80 -j DNAT --to-destination xxx.xxx.69.205:80
+  192  dmesg
+  194  dmesg| grep  Invalid argument
+  195  dmesg| grep  'Invalid argument'
+  196  dmesg| grep  'Invalid '
+  198  curl xxx.xxx.69.205:80
+  201  curl baidu.com
+  202  curl -vv baidu.com
+  203  iptables -A INPUT -p tcp --dport 80 -j DROP
+  206  iptables -D INPUT -p tcp --dport 80 -j DROP
+  207  curl http://www.baidu.com/
+  208  curl -vvv http://www.baidu.com/
+  211  iptables -D PREROUTING -p tcp -m tcp --dport 80 -j LOG --log-prefix "-----NET---->INPUT packets"
+  216  iptables-save | grep -i 31770
+  217  iptables-save | grep -i KUBE-SVC-JSIH6CCNAROIS6ON
+  218  iptables-save | grep -i KUBE-SEP-E3J2KMWTV7GMFIKM
+  222  systemctl stop docker
+  223  systemctl start docker
+  224  systemctl status docker.service
+  232  iptables-save | grep 31770
+  233  iptables-save | grep KUBE-MARK-MASQ
+  234  iptables-save | grep KUBE-SVC-JSIH6CCNAROIS6ON
+  235  iptables-save | grep KUBE-SEP-YING22L2HIXQ2SST
+  236  ping xxx.xxx.1.105
+  237  nc xxx.xxx.1.105 1234>tcpdump.out
+  238  nc xxx.xxx.1.105 1234
+  241  nc xxx.xxx.1.105 1234>./tcpdump.out
+  242  nc xxx.xxx.1.105 1234 <./tcpdump.out
+  243  nc xxx.xxx.1.105 1234 > ./tcpdump.out
+  246  nc -l 1234 > tcpdump.out 
+  250  nc xxx.xxx.55.2 1234 < tcpdump.out 
+  251  iptables-save | grep xxx.xxx.69.205
+  252  iptables-save | grep KUBE-SVC-XJ4KNNNZJUWDXGI5
+  253  iptables -A INPUT -p tcp -dport 80 -j KUBE-SVC-XJ4KNNNZJUWDXGI5
+  254  iptables -A INPUT -p tcp --dport 80 -j KUBE-SVC-XJ4KNNNZJUWDXGI5
+  256  iptables -A INPUT -m tcp --dport 80 -j KUBE-SVC-XJ4KNNNZJUWDXGI5
+  257  iptables -A INPUT -m tcp --dport 80 -j DROP
+  261  iptables -A FORWARD -p tcp --dport 80 -j KUBE-SVC-XJ4KNNNZJUWDXGI5
+  262  iptables -N IDEVZ
+  263  iptables -A FORWARD -p tcp --dport 80 -j IDEVZ
+  264  iptables -A IDEVZ -p tcp --dport 80 -j KUBE-SVC-XJ4KNNNZJUWDXGI5
+  265  iptables -A IDEVZ -p tcp --dport 80 -d xxx.xxx.69.205
+  266  iptables -A IDEVZ -p tcp --dport 80 -d xxx.xxx.69.205 -j ACCEPT
+  267  iptables -D IDEVZ -p tcp --dport 80 -d xxx.xxx.69.205 -j ACCEPT
+  268  iptables -D IDEVZ -p tcp --dport 80 -d xxx.xxx.69.205
+  269  iptables -D FORWARD -p tcp --dport 80 -j IDEVZ
+  270  iptables -X IDEVZ
+  271  iptables -A INPUT -p tcp --dport 80 -d xxx.xxx.69.205 -j ACCEPT
+  272  iptables -D INPUT -p tcp --dport 80 -d xxx.xxx.69.205 -j ACCEPT
+  284  sysctl net.ipv4.ip_forward
+  285  lsmod| grep iptables
+  286  lsmod| grep iptable
+  287  iptables -t nat -L -n
+  293  iptables -L
+  296  systemctl restart kubelet
+  297  systemctl stop kubelet
+  298  systemctl stop kubelet.service
+  299  systemctl start kubelet.service
+  300  systemctl start kubelet.service -v
+  301  systemctl restart kubelet.service 
+  302  tree /etc/kubernetes/
+  305  sysctl --system
+  308  iptables -t nat -A PREROUTING -p tcp --dport 80 -j LOG --log-prefix "-----NET---->INPUT packets"
+  310  curl xxx.xxx.69.205
+  313  iptables -t nat -A POSTROUTING -p tcp -d xxx.xxx.69.205 --dport 80 -j LOG --log-prefix "----X-NET---->INPUT packets"
+  316  curl http://xxx.xxx.55.74
+  318  iptables -t nat -A POSTROUTING -p tcp -d xxx.xxx.69.205 --dport 80 -j SNAT --to-source xxx.xxx.55.72
+  320  iptables -t nat -D POSTROUTING -p tcp -d xxx.xxx.69.205 --dport 80 -j LOG --log-prefix "----X-NET---->INPUT packets"
+  322  iptables -t nat -D POSTROUTING -p tcp -d xxx.xxx.69.205 --dport 80 -j SNAT --to-source xxx.xxx.55.72
+  323  iptables -t nat -A POSTROUTING -p tcp -d xxx.xxx.69.205 --dport 80 -j SNAT --to-source xxx.xxx.55.2
+  325  ping xxx.xxx.55.2
+  326  iptables -t nat -D POSTROUTING -p tcp -d xxx.xxx.69.205 --dport 80 -j SNAT --to-source xxx.xxx.55.2
+  331  iptables -D PREROUTING -p tcp -m tcp --dport 80 -j DNAT --to-destination xxx.xxx.69.205:80
+  338  iptables -t nat -D PREROUTING -p tcp --dport 80 -j LOG --log-prefix "-----NET---->INPUT packets"
+  340  iptables -t nat -A PREROUTING -p tcp --dport 9999 -j LOG --log-prefix "-----NET---->INPUT packets"
+  341  iptables -t nat -A PREROUTING -p tcp --dport 9999 -j DNAT --to-destination xxx.xxx.55.75:8000
+  342  iptables -t nat -A POSTROUTING -p tcp -d xxx.xxx.55.75 --dport 8000 -j LOG --log-prefix "----X-NET---->INPUT packets"
+  343  iptables -t nat -A POSTROUTING -p tcp -d xxx.xxx.55.75 --dport 8000 -j SNAT --to-source xxx.xxx.55.74
+  344  iptables -t nat -D PREROUTING -p tcp --dport 9999 -j LOG --log-prefix "-----NET---->INPUT packets"
+  345  iptables -t nat -D PREROUTING -p tcp --dport 9999 -j DNAT --to-destination xxx.xxx.55.75:8000
+  346  iptables -t nat -D POSTROUTING -p tcp -d xxx.xxx.55.75 --dport 8000 -j LOG --log-prefix "----X-NET---->INPUT packets"
+  347  iptables -t nat -D POSTROUTING -p tcp -d xxx.xxx.55.75 --dport 8000 -j SNAT --to-source xxx.xxx.55.74
+  378  iptables -t nat -A PREROUTING -p tcp --dport 8000 -j LOG --log-prefix "-----NET---->INPUT packets"
+  379  iptables -t nat -A PREROUTING -p tcp --dport 8000 -j DNAT --to-destination xxx.xxx.55.75:8000
+  386  iptables -t nat -D PREROUTING -p tcp --dport 8000 -j LOG --log-prefix "-----NET---->INPUT packets"
+  387  iptables -t nat -D PREROUTING -p tcp --dport 8000 -j DNAT --to-destination xxx.xxx.55.75:8000
+  391  iptables-save| grep xxx.xxx.2.169
+  397  iptables-save| grep KUBE-SEP-IFK5PRGVAYIC3UNV
+  398  iptables-save grep|xxx.xxx.135.211
+  399  iptables-save | grep xxx.xxx.135.211
+  401  iptables-save | grep KUBE-SEP-B3NR2ZWT3PE52R4W
+  402  iptables-save | grep KUBE-SEP-UAR6TQBGUDBI55EO
+  403  iptables-save | grep xxx.xxx.16.4
+  404  g
+  405  iptables-save | grep KUBE-SVC-5P26HKWUHVLH3GX5
+  406  iptables-save | grep idevz-or-nodeport
+  408  iptables-save | grep KUBE-NODEPORT-CONTAINER
+  409  iptables-save | grep KUBE-NODEPORT-HOST
+  411  iptables-save | grep KUBE-NODEPORT
+  412  iptables-save | grep KUBE-SERVICES
+  433  strace -p 2731
+  442  strace -p 13895
+  443  kubeadm reset
+  450  kubeadm init --kubernetes-version=v1.9.0 --pod-network-cidr=xxx.xxx.0.0/16 --apiserver-advertise-address=xxx.xxx.55.71
+  466  cp /etc/shadowsocks.json /etc/shadowsocks.json.bak
+  467  vi /etc/shadowsocks.json
+  472  start_out 
+  477  echo $_
+  478  echo $http_proxy
+  483  tar zxvf helm-v2.7.2-linux-amd64.tar.gz 
+  486  mv linux-amd64/ helm
+  491  iptables-save | grep 80
+  492  iptables-save | grep KUBE-SVC-J4PGGZ6AUXZWNA2B
+  497  curl http://www.epochtimes.com/
+  501  l
+  507  ping xxx.xxx.41.151
+  508  telnet  xxx.xxx.41.151 40001
+  510  c
+  524  tree ./
+  527  ls
+  532  shutdown now
+  534  ifdown eth-
+  535  ifdown eth0
+  536  ifup eth0
+  586  kubectl delete -f https://raw.githubusercontent.com/coreos/flannel/v0.9.1/Documentation/kube-flannel.yml
+  590  kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/v0.9.1/Documentation/kube-flannel.yml
+  597  systemctl start kubelet
+  603  systemctl --help
+  604  systemctl list-units kube
+  605  systemctl list-units kube*
+  606  systemctl list-units docker
+  607  systemctl list-units --all docker
+  612  systemctl list-units -all
+  622  tree k8s/
+  624  find / -name kubelet.service

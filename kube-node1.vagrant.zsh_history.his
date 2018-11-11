@@ -1,0 +1,297 @@
+   16  kubectl get pod -n istio-system istio-pilot-5cb545f47c-zf6fc -o jsonpath="{.status.hostIP}"
+   17  x pod
+   18  kubectl get pod -n istio-system istio-ingress-6ff959f7ff-lhgwv -o jsonpath="{.status.hostIP}"
+   19  x ing
+   20  x svc
+   21  kubectl delete -f ingress gateway
+   22  kubectl get ingress
+   23  kubectl delete ingress gateway
+   24  x ingress
+   25  kubectl edit ingress bookinfo
+   27  kubectl get ingress bookinfo
+   28  kubectl get ingress bookinfo -o yaml
+   33  vi istio-setup.yaml
+   34  kubectl apply -f ~/istio/istio-0.2.7/install/kubernetes/addons/
+   35  kubectl exec  productpage-v1-d759956f4-b5r6q -c istio-proxy sudo iptables-save
+   36  kubectl exec -it  productpage-v1-d759956f4-b5r6q -c istio-proxy -- /bin/bash
+   38  kubectl get svc -n istio-system istio-ingress -o yaml
+   41  kubectl exec -n istio-system -it istio-mixer-7df884b4bd-cj942 /bin/bash
+   42  kubectl exec -n istio-system -it istio-mixer-7df884b4bd-cj942 sh
+   43  kubectl exec -n istio-system -it istio-mixer-7df884b4bd-cj942 -c sh
+   44  kubectl exec -n istio-system -it istio-mixer-7df884b4bd-cj942 -c mixer -- sh
+   45  kubectl exec -n istio-system -it istio-mixer-7df884b4bd-cj942 -c mixer -- /bin/bash
+   49  curl xxx.xxx.122.50:9080
+   55  istioctl get routerules
+   59  kubectl cluster-info 
+   61  curl -k https://xxx.xxx.55.74:6443
+   69  kubectl get pod -n istio-system istio-mixer-7df884b4bd-cj942 -o yaml
+   71  kubectl get ingress gateway -o yaml
+   79  iptables-save | grep 32370
+   80  iptables-save 
+   81  sudo iptables-save 
+   82  sudo iptables-save | grep 32370
+   83  sudo iptables-save | grep KUBE-SVC-JSIH6CCNAROIS6ON
+   84  sudo iptables-save | grep KUBE-SEP-TL6FI7FUWZ4OD33X
+   90  ping xxx.xxx.1.162
+   92  nc -l 1234 > tcpdump-4.9.2.tar.gz
+   94  python -m SimpleHTTPServer
+   95  python -m SimpleHTTPServer -h xxx.xxx.55.74
+   96  python -m SimpleHTTPServer --port 5000
+   97  python -m SimpleHTTPServer 80
+   98  python -m SimpleHTTPServer 8999
+   99  python -m SimpleHTTPServer xxx.xxx.55.74:8888
+  100  python -m SimpleHTTPServer 8888
+  102  curl xxx.xxx.23.5/productpage
+  105  kubectl get pod -l app=zipkin -o jsonpath='{.items[0].metadata.name}'
+  106  kubectl get pod -l app=zipkin -o jsonpath='{.items.metadata.name}'
+  107  kubectl get pod -l app=zipkin -o json
+  108  kubectl get pod -n istio-system -l app=zipkin -o jsonpath='{.items.metadata.name}'
+  109  kubectl get pod -n istio-system -l app=zipkin
+  110  kubectl get pod -n istio-system -l app=zipkin -o json
+  111  kubectl get pod -n istio-system -l app=zipkin -o jsonpath='{.items[0].metadata.name}'
+  112  kubectl port-forward (kubectl get pod -n istio-system -l app=zipkin -o jsonpath='{.items[0].metadata.name}') 9411:9411
+  113  kubectl port-forward $(kubectl get pod -n istio-system -l app=zipkin -o jsonpath='{.items[0].metadata.name}') 9411:9411
+  114  kubectl -n istio-system port-forward $(kubectl get pod -n istio-system -l app=zipkin -o jsonpath='{.items[0].metadata.name}') 9411:9411
+  121  vi badu-egress.yaml 
+  124  kubectl get EgressRule
+  125  kubectl get --all-namespaceEgressRule
+  126  kubectl get --all-namespaces EgressRule
+  128  istioctl create -f badu-egress.yaml 
+  130  kubectl get EgressRule -o yaml
+  131  istioctl delete -f badu-egress.yaml 
+  136  kubectl get RouteRule
+  138  kubectl get --all-namespaces RouteRule
+  139  x
+  140  kubectl get --all-namespaces route
+  141  kubectl get --all-namespaces routes
+  142  kubectl get --all-namespaces routerules
+  144  istioctl create -f istio-0.2.7/samples/bookinfo/kube/route-rule-reviews-v3.yaml
+  146  istioctl get routerules -o yaml
+  148  kubectl get RouteRule -o yaml
+  151  x get EgressRule
+  154  x EgressRule
+  165  kubectl describe EgressRule baidu-egress-rule
+  167  less -n 50  istio-demo.yaml 
+  168  less istio-demo.yaml 
+  171  vi zipkin-ingresss.yaml 
+  172  istioctl create -f zipkin-ingresss.yaml 
+  173  kubectl create -f zipkin-ingresss.yaml 
+  174  ls
+  177  v ing
+  184  kubectl get ingress -n istio-system -o yaml
+  185  kubectl delete -f zipkin-ingresss.yaml 
+  204  cp zipkin-ingresss.yaml zipkin-ingresss.yaml.bak
+  209  vi zipkin-ingresss.yaml.bak
+  210  kubectl create -f zipkin-ingresss.yaml.bak 
+  212  kubectl describe -n istio-system ingress zipkin-ingress
+  213  kubectl delete -f zipkin-ingresss.yaml.bak 
+  214  kubectl create -v 9 -f zipkin-ingresss.yaml.bak 
+  222  vi ratelimit.yaml 
+  223  istioctl mixer rule create global ratings.default.svc.cluster.local -f ratelimit.yaml 
+  225  istioctl version
+  227  istioctl mixer create global ratings.default.svc.cluster.local -f ratelimit.yaml
+  233  curl -k https://xxx.xxx.55.74:6443/v1/routes/9080/productpage/sidecar~xxx.xxx.1.162~productpage-v1-d759956f4-xmhm5.default~default.svc.cluster.local
+  234  curl -k https://xxx.xxx.55.74:6443/v1/routes
+  237  kubectl get -n istio-system po/istio-pilot-cd47bb795-zxtnn -o yaml
+  238  kubectl exec -it -n istio-system istio-pilot-cd47bb795-zxtnn -c discovery  -- bash
+  239  kubectl exec -it -n istio-system istio-pilot-cd47bb795-zxtnn -c discovery  --ls
+  240  kubectl exec -it -n istio-system istio-pilot-cd47bb795-zxtnn -c discovery  ls
+  241  kubectl exec -it -n istio-system istio-pilot-cd47bb795-zxtnn -c discovery  -- ls
+  242  kubectl exec -n istio-system istio-pilot-cd47bb795-zxtnn -c discovery  ls
+  244  kubectl describe pod -n istio-system istio-pilot-cd47bb795-zxtnn
+  247  kubectl get pod istio-egress-5b6457b67f-6xqtq -o yaml
+  248  kubectl get pod -n istio-system istio-egress-5b6457b67f-6xqtq -o yaml
+  249  kubectl exec -it  -n istio-system istio-egress-5b6457b67f-6xqtq -- bash
+  251  xp
+  258  kubectl apply -f istio-setup.yaml
+  259  kubectl create -f istio-demo.yaml
+  265  kubectl create -f istio-book-ingress.yaml
+  266  kubectl delete -f istio-book-ingress.yaml
+  268  cp istio-book-ingress.yaml istio-book-ingress.yaml.bak
+  269  vi istio-book-ingress.yaml
+  272  kubectl create -f istio-book-ingress.yaml.bak 
+  274  kubectl delete -f istio-book-ingress.yaml.bak 
+  275  vi istio-book-ingress.yaml.bak
+  279  kubectl create istio-book-ingress.yaml
+  281  kubectl delelte -f istio-book-ingress.yaml
+  287  grep ^kind ./istio-setup.yaml
+  291  kubectl logs -n istio-system -f zipkin-to-stackdriver-748b8f46-rthl9
+  293  kubectl delete pod -n istio-system -f zipkin-to-stackdriver
+  294  kubectl delete pod -n istio-system -f zipkin-to-stackdriver-748b8f46-rthl9
+  296  kubectl delete pod -n istio-system  zipkin-to-stackdriver-748b8f46-rthl9
+  298  kubectl get pod -n istio-system zipkin-to-stackdriver-748b8f46-kf8w2 -o yamll
+  299  kubectl get pod -n istio-system zipkin-to-stackdriver-748b8f46-kf8w2 -o yaml
+  301  kubectl exec -it productpage-v1-d759956f4-b5r6q -c productpage -- /bin/bash
+  303  diff istio-setup.yaml istio-setup.yaml.bak 
+  305  kubectl delete -f ~/istio/istio-0.2.7/install/kubernetes/addons/
+  307  kubectl delete -f istio-demo.yaml 
+  308  kubectl delete -f istio-setup.yaml 
+  312  kubectl create istio-demo.yaml
+  315  kubectl describe -n istio-system pod/istio-mixer-7df884b4bd-cj942
+  319  kubectl create -f ~/istio/istio-0.2.7/install/kubernetes/addons/
+  320  kubectl delete -f ~/istio/istio-0.2.7/install/kubernetes/addons/zipkin-to-stackdriver.yaml 
+  322  kubectl exec -it -n istio-system istio-mixer-7df884b4bd-cj942 -c mixer bash
+  330  x egress
+  349  kubectl describe svc ratings -o yaml
+  350  kubectl describe svc ratings 
+  351  curl -k -v -XGET  -H "User-Agent: istioctl/v0.0.0 (linux/amd64) kubernetes/$Format" -H "Accept: application/json, */*" https://xxx.xxx.55.74:6443/apis/config.istio.io/v1alpha2
+  353  kubectl exec -it reviews-v3-5c797b7d8d-s48j7 -c istio-proxy -- bash
+  354  dig istio-or-svc-1.ingress.idevz
+  355  host istio-or-svc-1.ingress.idevz
+  356  sudo dig
+  357  sudo yum install dig
+  359  kubectl describe svc details
+  360  kubectl describe svc -n istio-system istio-ingress
+  363  kubectl get pod -n istio-system istio-mixer-6865744478-5cwm7 -o yaml
+  365  kubectl exec -n istio-system istio-mixer-6865744478-5cwm7 -c statsd-to-prometheus -- /bin/bash
+  366  kubectl exec -n istio-system istio-mixer-6865744478-5cwm7 -c statsd-to-prometheus -- sh
+  367  kubectl exec -n istio-system istio-mixer-6865744478-5cwm7 -c statsd-to-prometheus -- ls
+  368  kubectl -it exec -n istio-system istio-mixer-6865744478-5cwm7 -c statsd-to-prometheus -- /bin/bash
+  369  kubectl  exec -it  -n istio-system istio-mixer-6865744478-5cwm7 -c statsd-to-prometheus -- /bin/bash
+  370  kubectl  exec -it  -n istio-system istio-mixer-6865744478-5cwm7 -c statsd-to-prometheus -- sh
+  374  kubectl exec -it -n istio-system istio-ingress-6ff959f7ff-8cz8x -- bash
+  379  ifdown eth0
+  380  sudo -s
+  381  x ep
+  383  kubectl describe -n istio-system istio-mixer-6865744478-5cwm7
+  384  kubectl describe pod -n istio-system istio-mixer-6865744478-5cwm7 -o yaml
+  385  kubectl describe pod -n istio-system istio-mixer-6865744478-5cwm7
+  386  kubectl  exec -it  -n istio-system istio-mixer-6865744478-5cwm7 -c mixer -- sh
+  387  kubectl  exec -it  -n istio-system istio-mixer-6865744478-5cwm7 -c mixer -- /bin/bash
+  391  kubectl get pod -n istio-system istio-ingress-6ff959f7ff-8cz8x -o yaml
+  397  kubectl get pod -n istio-system istio-pilot-cd47bb795-zxtnn -o yaml
+  400  kubectl exec -it productpage-v1-d759956f4-xmhm5 -c istio-proxy bash
+  401  kubectl exec -it productpage-v1-d759956f4-xmhm5 -c productpage bash
+  405  kubectl get pods
+  408  .
+  413  kubectl get pod -o wide
+  414  kubectl get pod -n all-namespaces -o wide
+  415  kubectl get pod -n all-namespace -o wide
+  416  kubectl get pod -n all -o wide
+  421  kubectl version --short
+  425  curl -s http://www.epochtimes.com/
+  426  echo $http_proxy
+  427  . /etc/profile
+  431  sudo vim /etc/profile
+  432  vi /etc/profile
+  433  sudo vi /etc/profile
+  439  conduit version
+  441  conduit dashboard
+  447  curl http://xxx.xxx.0.1:38614/api/v1/namespaces/conduit/services/web:http/proxy/
+  450  curl http://xxx.xxx.0.1:40832/api/v1/namespaces/conduit/services/web:http/proxy/
+  451  sudo yum install xdg-open
+  455  sudo yum install xdg-utils
+  457  curl http://xxx.xxx.0.1:36587/api
+  459  curl -X https://xxx.xxx.55.74:6443/api/v1/namespaces/conduit/services/web:http/proxy/
+  460  curl -x https://xxx.xxx.55.74:6443/api/v1/namespaces/conduit/services/web:http/proxy/
+  461  curl | grep --inc
+  462  curl | grep --in
+  463  curl | grep '--in'
+  464  curl -h | grep '--in'
+  465  curl -h | grep 'in'
+  466  curl -k https://xxx.xxx.55.74:6443/api/v1/namespaces/conduit/services/web:http/proxy/
+  467  curl -k https//xxx.xxx.55.74:6443/api/v1/namespaces/conduit/services/web:http/proxy/
+  470  kubectl edit svc -n conduit web 
+  478  conduit -h
+  483  kubectl logs -n conduit controller-5c49c69b55-npbxg
+  484  kubectl logs -n conduit controller-5c49c69b55-npbxg public-api
+  485  kubectl logs -n conduit controller-5c49c69b55-npbxg destination
+  491  kubectl logs -n conduit web-58f666766b-lrs9g
+  494  kubectl logs -n conduit web-7dff98b9f6-928rs
+  496  kubectl edit -n conduit web
+  499  kubectl logs -n kube-system default-http-backend-5f497b585f-sxrhb
+  500  kubectl delete pod -n kube-system nginx-ingress-controller-c489857cd-g4kxj
+  502  kubectl delete -n conduit pod web-7dff98b9f6-928rs
+  514  kubectl describe ingress -n kube-system k8s-dashboard 
+  516  curl -k https://xxx.xxx.212.113
+  517  curl -k https://xxx.xxx.0.45:8443
+  519  curl -k https://xxx.xxx.55.75
+  520  curl -k -H "HOST: dashboard.k-ingress.me" https://xxx.xxx.55.75
+  523  kubectl describe pod -n kube-system nginx-ingress-controller-c489857cd-l8lhs
+  524  kubectl exec -it -n kube-system nginx-ingress-controller-c489857cd-l8lhs -c nginx-ingress-controller bash
+  525  kubectl exec -it -n kube-system nginx-ingress-controller-c489857cd-l8lhs -c nginx-ingress-controller /bin/bash
+  526  kubectl exec -it -n kube-system nginx-ingress-controller-c489857cd-l8lhs -c nginx-ingress-controller 
+  527  kubectl exec -it -n kube-system nginx-ingress-controller-c489857cd-l8lhs -c nginx-ingress-controller sh
+  531  kubectl logs details-v1-69f5dd786b-ks9gc
+  532  kubectl logs details-v1-69f5dd786b-ks9gc istio-proxy
+  533  kubectl logs details-v1-69f5dd786b-ks9gc details
+  540  kubectl delete pod -n kube-system default-http-backend-5f497b585f-sxrhb
+  542  kubectl logs -n kube-system nginx-ingress-controller-c489857cd-2v76f
+  578  kubectl delete pod -n kube-system nginx-ingress-controller-c489857cd-2v76f
+  588  kubectl describe svc -n kube-system kubernetes-dashboard 
+  607  kubectl delete -f ingress-kub-dashboard.yaml 
+  611  kubectl create -f ingress-kub-dashboard.yaml 
+  618  sudo iptables-save | grep xxx.xxx.55.75
+  619  sudo iptables-save | grep 'dashboard.k-ingress.me'
+  621  sudo iptables-save | grep 'xxx.xxx.55.75'
+  623  sudo iptables-save | grep xxx.xxx.0.45
+  627  curl -k https://xxx.xxx.0.45:8443/
+  631  kubectl logs -f -n kube-system nginx-ingress-controller-c489857cd-l8lhs 
+  646  l istio/istio-0.2.7/
+  657  kubectl delete -f ingress-kubeadm.yaml 
+  659  kubectl create -f ingress-kubeadm.yaml
+  662  x ingress-kub
+  669  kubectl proxy --accept-hosts='^.*$' --address=xxx.xxx.55.74
+  673  kubectl delete -f ingress-kub-dashboard.yaml ingress-kubeadm.yaml
+  680  kubectl delete -f conduit.install 
+  697  ip show addr eth0
+  698  ip addr show eth0
+  702  conduit stat deployments
+  705  nslookup
+  708  ping prometheus
+  713  kubectl describe secret -n kube-system $(kubectl get secret -n kube-system|grep idevz|awk '{print $1}')
+  757  kubectl logs -f -n conduit web-6cb455b4d5-jnmlb 
+  758  kubectl logs -f -n conduit prometheus-56fd7bfd5c-k7l4j
+  759  kubectl logs -f -n conduit controller-5c49c69b55-nz5l2
+  760  kubectl logs -f -n conduit controller-5c49c69b55-nz5l2 public-api
+  761  kubectl logs -f -n conduit controller-5c49c69b55-nz5l2 destination
+  762  kubectl logs -f -n conduit controller-5c49c69b55-nz5l2 proxy-api
+  763  kubectl logs -f -n conduit controller-5c49c69b55-nz5l2 telemetry
+  764  kubectl logs -f -n conduit controller-5c49c69b55-nz5l2 tap
+  765  kubectl proxy -p 8001
+  769  kubectl logs -f -n conduit prometheus-56fd7bfd5c-k7l4j prometheus
+  770  kubectl logs -f -n conduit prometheus-56fd7bfd5c-k7l4j kubectl
+  772  curl http://xxx.xxx.107.36:9090
+  786  curl http://xxx.xxx.0.1:8001/api/v1/namespaces/conduit/services/web:http/proxy/routes
+  789  sudo iptables-save | grep 8001
+  790  sudo iptables-save | grep 'xxx.xxx.0.1'
+  791  conduit check
+  802  kubectl edit svc -n kube-system kubernetes-dashboard 
+  810  x ingr
+  819  kubectl exec -it -n kube-system nginx-ingress-controller-c489857cd-96ccb -c nginx-ingress-controller /bin/bash
+  839  curl xxx.xxx.165.171:8084
+  855  kubectl apply -f conduit.install 
+  857  x srv
+  865  echo /etc/profile
+  867  echo $HOME
+  887  kubectl proxy --accept-hosts='^.*$' --address='xxx.xxx.55.74'
+  907  conduit  -n conduit version
+  917  curl http://xxx.xxx.0.1:8001/version
+  918  conduit check --verbose
+  920  kubectl drain kube-node2 --delete-local-data --force --ignore-daemonsets
+  921  kubectl delete kube-node2 kube-node3
+  923  systemctl stop firewalld
+  932  conduit inject emojivoto.yml > conduit.emojivoto.yml
+  934  diff emojivoto.yml conduit.emojivoto.yml 
+  935  kubectl apply -f conduit.emojivoto.yml 
+  937  conduit tap deploy
+  938  conduit tap deploy emojivoto/web
+  940  conduit tap deploy emojivoto/voting
+  941  conduit tap deploy emojivoto/voting| grep Unknown
+  942  conduit tap deploy emojivoto/voting| grep Unknown -B 2
+  943  conduit tap deploy emojivoto/voting --path /emojivoto.v1.VotingService/VotePoop
+  946  kubectl describe pod -n conduit controller-5c49c69b55-8bhkw 
+  957  kubectl get svc web-svc -n emojivoto -o jsonpath="{.status.loadBalancer.ingress[0].*}"
+  958  kubectl get svc web-svc -n emojivoto
+  959                                                                                         
+  960  curl xxx.xxx.253.118
+  962  x deploy
+  964  kubectl get --all-namespaces deploy
+  967  kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/v0.9.1/Documentation/kube-flannel.yml
+  972    sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+  978    sudo chown $(id -u):$(id -g) $HOME/.kube/config
+  980  kubectl delete -f https://raw.githubusercontent.com/coreos/flannel/v0.9.1/Documentation/kube-flannel.yml
+  992  kubectl drain kube-node3 --delete-local-data --force --ignore-daemonsets
+ 1001  docker images
+ 1004  echo $MCOd
+ 1005  echo $MCODE

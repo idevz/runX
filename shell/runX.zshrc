@@ -5,6 +5,12 @@
 # export ZSH="${HOME}/.oh-my-zsh"
 export ZSH="${PRLCTL_HOME}/shell/.oh-my-zsh"
 export HISTFILE="${PRLCTL_HOME}/shell/${HOSTNAME}${HOME}/.zsh_history"
+setopt append_history       # append
+setopt hist_ignore_all_dups # no duplicate
+setopt hist_reduce_blanks   # trim blanks
+setopt hist_verify          # show before executing history commands
+# setopt inc_append_history   # add commands as they are typed, don't wait until shell exit
+# setopt share_history        # share hist between sessions
 
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.

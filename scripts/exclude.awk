@@ -1,14 +1,18 @@
 #!/usr/bin/awk -f
 {
     b=$0;
-    c=$1;
-    $1="";
-    if (!($0 in a))
+    match($2, "\;(.*)$")
+    {
+        cmd=substr($2, RSTART, RLENGTH)
+    }
+    $1=$2=""
+    key = sprintf("%s%s",cmd,$0)
+    if (!(key in a))
     {
         if ($2 !~ "cd|cat|rm|ll|which|tail|journalctl|history|ps|ifconfig|alias|netstat|pwd|mkdir") {
             if ($3 !~ "cd|cat|rm|ll|which|tail|journalctl|history|ps|ifconfig|alias|netstat|pwd|mkdir") {
-                a[$0] = $0;
-                d[c]=b
+                a[key] = key;
+                d[key]=b
             }
         }
     }

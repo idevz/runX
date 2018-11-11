@@ -1,0 +1,39 @@
+    1  sudo -s
+    2  sudo shutdow now
+    3  sudo shutdown now
+    7  xp
+    8  curl http://xxx.xxx.55.74:9999
+   10  sudo yum install net-tools
+   11  sudo yum install telnet
+   18  iptables-save
+   19  sudo iptables-save
+   20  sudo iptables-save| grep default        ratings                ClusterIP      xxx.xxx.123.25    <none>        9080/TCP                                                 3d        app=ratings
+   21  sudo iptales-save| grep 9080
+   22  sudo iptables-save | grep 9080
+   23  sudo iptables-save | grep 32370
+   24  sudo iptables-save | grep KUBE-SEP-TL6FI7FUWZ4OD33X
+   26  tcpdump -w all.tcpdump
+   27  sudo tcpdump -w all.tcpdump
+   29  nc xxx.xxx.55.2 1234 < all.tcpdump 
+   37  curl -k https://xxx.xxx.0.45:8443
+   38  iptables-save -c
+   39  sudo iptables-save -c
+   42  sudo iptables -L
+   52  sysctl -a | grep conntrack
+   53  dmesg | tail -f
+   54  sudo dmesg | tail -f
+   57  ip addr show eth0
+   58  sudo ip addr add xxx.xxx.55.76 dev eth0
+   66  sudo ip addr del xxx.xxx.55.76 dev eth0
+   68  sudo ip addr del xxx.xxx.55.76/24 dev eth0
+   70  sudo ip addr add xxx.xxx.55.76/24 dev eth0
+   76  shutdown now
+   79  openresty
+   80  sudo yum install openresty
+   81  curl baidu.com
+   83  export http_proxy
+   85  unset http_proxy
+   88  sudo yum -y install openresty
+   89  sudo yum update
+   93  sudo vim  /etc/yum.conf 
+   94  sudo vi  /etc/yum.conf 

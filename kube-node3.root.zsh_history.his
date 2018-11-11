@@ -7,68 +7,23 @@
     7  xp
     8  kubeadm join --token 96e415.bc0619fd97e39728 xxx.xxx.55.74:6443 --discovery-token-ca-cert-hash sha256:4da251bbe9fcdb32fd6503c08f4e2b4ddf496fbd289a3939d47ee53576568212
     9  start_out systemctl start privoxy.service
-   10  swapoff -a
-   11  netstat -ntpl
-   12  start_out systemctl start privoxy.service
-   13  swapoff -a
-   14  netstat -ntpl
    15  start_out systemctl start privoxy.service swapoff -a
-   16  netstat -ntpl
-   17  swapoff -a
-   18  netstat -ntpl
    19  start_out systemctl start privoxy.service && swapoff -a
-   20  netstat -ntpl
-   21  start_out systemctl start privoxy.service && swapoff -a
-   22  netstat -ntpl
-   23  start_out systemctl start privoxy.service && swapoff -a
-   24  netstat -ntpl
    25  top
-   26  ifconfig 
-   27  netstat -ntpl
-   28  ifconfig 
-   29  start_out systemctl start privoxy.service && swapoff -a
-   30  ifconfig 
-   31  netstat -ntpl
    32  free -hm
-   33  xp
-   34  start_out systemctl start privoxy.service && swapoff -a
-   35  netstat -ntpl
    36  `iptables -L
    37  iptables -L
    38  free -mh
-   39  `iptables -L
-   40  iptables -L
-   41  netstat -ntpl
-   42  start_out systemctl start privoxy.service && swapoff -a
-   43  free -mh
-   44  ifconfig 
    45  ip addr show
-   46  netstat -nr
-   47  netstat -ntpl
-   48  free -mh
-   49  ifconfig 
-   50  netstat -ntpl
-   51  cat /etc/yum.conf 
    52  echo 'proxy=http://xxx.xxx.0.1:8118' >> /etc/yum.conf
-   53  yum install strace
    54  strace -p 3262
-   55  kill 3262
-   56  netstat -ntpl
-   57  free -mh
-   58  netstat -ntpl
-   59  ifconfig 
    60  ping xxx.xxx.55.75
    61  ping xxx.xxx.55.74
    62  ping xxx.xxx.55.76
    63  systemctl restart docker
    64  docker images
-   65  systemctl restart docker
-   66  netstat -natpl
    67  ping xxx.xxx.1.105
    68  curl http://xxx.xxx.1.105:15000
-   69  docker ps -a
-   70  docker ps 
-   71  docker ps | grep ingress
    72  docker exec a7b059b36ca8 -it /bin/bash
    73  docker exec -it a7b059b36ca8 /bin/bash
    74  docker exec -it a7b059b36ca8 bin/bash
@@ -77,155 +32,73 @@
    77  docker exec -it a7b059b36ca8 ls
    78  docker exec -it a7b059b36ca8 cat
    79  docker exec a7b059b36ca8 -- cat /etc/hostname 
-   80  docker ps -a
-   81  docker ps 
-   82  docker ps | grep ingress
    83  docker exec -ti a7b059b36ca8 /bin/sh
    84  docker exec -ti a7b059b36ca8 /bin/bash
    85  docker exec -ti a7b059b36ca8 
    86  docker exec -ti a7b059b36ca8 cat
    87  docker exec -ti a7b059b36ca8 bash
-   88  docker ps | grep ingress
    89  docker exec a7b059b36ca8  /etc/hostname 
    90  docker exec a7b059b36ca8  
    91  docker run a7b059b36ca8  ll
    92  iptables -A INPUT -d xxx.xxx.101.208
    93  curl -vv http://baidu.com
-   94  xp
-   95  curl -vv http://baidu.com
    96  iptables -L INPUT
-   97  curl -vv http://baidu.com
-   98  iptables -L INPUT
    99  iptables -D INPUT -d xxx.xxx.101.208
-  100  iptables -L INPUT
   101  iptables -A INPUT -d xxx.xxx.101.208 -j DROP
-  102  iptables -L INPUT
-  103  xp
-  104  curl -vv http://baidu.com
   105  curl http://www.baidu.com/
   106  curl -vvv http://www.baidu.com/
   107  iptables -D INPUT -d xxx.xxx.101.208 -j DROP
   108  iptables -A INPUT -d xxx.xxx.169.125 -j DROP
-  109  curl -vvv http://www.baidu.com/
   110  service iptables save
   111  systemctl restart iptable
   112  iptables save
   113  iptables --help
-  114  curl -vvv http://www.baidu.com/
   115  service iptables restart
-  116  ll /etc/rc.d/init.d/iptables
-  117  service iptables save
-  118  iptables -L INPUT
-  119  curl -vvv http://www.baidu.com/
   120  iptables -D INPUT -d xxx.xxx.169.125 -j DROP
   121  iptables -A INPUT --dport 80 -j DROP
   122  P
-  123  iptables -A INPUT --dport 80 -j DROP
   124  iptables -h
   125  yum -y update iptables
-  126  iptables -A INPUT --dport 80 -j DROP
   127  iptables -A INPUT -p tcp --dport 80 -j DROP
-  128  curl -vvv http://www.baidu.com/
   129  iptables -D INPUT -p tcp --dport 80 -j DROP
   130  iptables -A OUTPUT -p tcp --dport 80 -j DROP
-  131  curl -vvv http://www.baidu.com/
   132  iptables -D OUTPUT -p tcp --dport 80 -j DROP
-  133  curl -vvv http://www.baidu.com/
   134  /etc/rc.d/init.d/iptables save
-  135  cat /etc/sysconfig/iptables 
-  136  curl -vvv http://www.baidu.com/
   137  iptables -A OUTPUT -p tcp --dport 80 -j IDEVZ
-  138  iptables -h
   139  iptables-restore -h
   140  iptables-save
-  141  xp
   142  iptables-save| grep xxx.xxx.69.205
   143  telnet xxx.xxx.55.74 9999
-  144  journalctl -f
-  145  ll /var/log/
-  146  ll /var/log/lastlog 
-  147  tail -f /var/log/lastlog 
-  148  tail -f /var/log/messages
-  149  cd /var/log/
   150  grep -nr '------' ./*
   151  grep -nr '\-\-\-' ./*
-  152  tail -f /var/log/messages
   153  /etc/init.d/rsyslog resart
   154  systemctl restart rsyslog
-  155  tail -f /var/log/messages
-  156  journalctl -f
   157  iptables -t nat -A POSTROUTING -p tcp -d xxx.xxx.55.75 --dport 8000 -j LOG --log-prefix "----X-NET---->INPUT packets"
   158  iptables -t nat -D POSTROUTING -p tcp -d xxx.xxx.55.75 --dport 8000 -j SNAT --to-source xxx.xxx.55.74
-  159  yum install net-tools
   160  telnet 
-  161  telnet
-  162  yum install telnet
   163  curl xxx.xxx.55.74:8000
-  164  xp
-  165  curl xxx.xxx.55.74:8000
   166  telnet xxx.xxx.55.74 8000
   167  iptables -N IDEVZ
-  168  iptables-save
   169  iptables-save+
   170  iptables-save|grep idevz
   171  iptables-save|grep IDEVZ
-  172  iptables-save
-  173  curl -vvv http://www.baidu.com/
-  174  curl -vvv http://www.baidu.com/
-  175  history 
   176  iptables -A IDEVZ -p tcp --dport 80 -j DROP
-  177  curl -vvv http://www.baidu.com/
   178  iptables-save| grep IDEVZ
-  179  iptables -A OUTPUT -p tcp --dport 80 -j DROP
-  180  curl -vvv http://www.baidu.com/
-  181  xp
-  182  curl -vvv http://www.baidu.com/
-  183  iptables -D OUTPUT -p tcp --dport 80 -j DROP
-  184  xp
-  185  curl -vvv http://www.baidu.com/
   186  iptables -D IDEVZ -p tcp --dport 80 -j DROP
-  187  curl -vvv http://www.baidu.com/
-  188  iptables -A IDEVZ -p tcp --dport 80 -j DROP
-  189  curl -vvv http://www.baidu.com/
   190  iptables -D IDEVZ -p tcp --dport 80 -j DROPA
-  191  iptables -D IDEVZ -p tcp --dport 80 -j DROP
   192  iptables -D IDEVZ
   193  iptables -X IDEVZ
-  194  curl -vvv http://www.baidu.com/
-  195  iptables-save| grep IDEVZ
   196  iptables -D OUTPUT -p tcp -m tcp --dport 80 -j IDEVZ
-  197  iptables -X IDEVZ
-  198  iptables-save| grep IDEVZ
-  199  iptables -A INPUT -p tcp --dport 80 -j DROP
-  200  curl -vvv http://www.baidu.com/
-  201  xp
-  202  curl -vvv http://www.baidu.com/
-  203  iptables -D INPUT -p tcp --dport 80 -j DROP
-  204  history 
-  205  iptables -A OUTPUT -p tcp --dport 80 -j DROP
-  206  curl -vvv http://www.baidu.com/
-  207  iptables -D OUTPUT -p tcp --dport 80 -j DROP
-  208  iptables -A OUTPUT -p tcp --dport 80 -j DROP
   209  iptables -A OUTPUT -p tcp --dport 80 -j LOG --log-prefix "--------->INPUT packets"
-  210  curl -vvv http://www.baidu.com/
-  211  iptables -D OUTPUT -p tcp --dport 80 -j DROP
-  212  curl -vvv http://www.baidu.com/
-  213  iptables -A OUTPUT -p tcp --dport 80 -j DROP
-  214  curl -vvv http://www.baidu.com/
-  215  iptables -D OUTPUT -p tcp --dport 80 -j DROP
   216  iptables -D OUTPUT -p tcp --dport 80 -j LOG --log-prefix "--------->INPUT packets"
-  217  ifconfig 
-  218  ifconfig eth0
   219  iptables -D INPUT -p tcp --sport 80 -j LOG --log-prefix "-----IN---->INPUT packets"
   220  iptables -A INPUT -p tcp --sport 80 -j LOG --log-prefix "-----IN---->INPUT packets"
-  221  iptables -D INPUT -p tcp --sport 80 -j LOG --log-prefix "-----IN---->INPUT packets"
   222  iptables -A INPUT -p tcp --source xxx.xxx.55.2 -j LOG --log-prefix "-----IN---->INPUT packets"
   223  iptables -D INPUT -p tcp --source xxx.xxx.55.2 -j LOG --log-prefix "-----IN---->INPUT packets"
   224  iptables -A INPUT -p tcp --source xxx.xxx.55.2 --sport 80 -j LOG --log-prefix "-----IN---->INPUT packets"
   225  iptables -A INPUT -p tcp --source xxx.xxx.55.2 --dport 80 -j LOG --log-prefix "-----IN---->INPUT packets"
   226  iptables -D INPUT -p tcp --source xxx.xxx.55.2 --sport 80 -j LOG --log-prefix "-----IN---->INPUT packets"
   227  iptables -D INPUT -p tcp --source xxx.xxx.55.2 --dport 80 -j LOG --log-prefix "-----IN---->INPUT packets"
-  228  iptables -D INPUT -p tcp --source xxx.xxx.55.2 --sport 80 -j LOG --log-prefix "-----IN---->INPUT packets"
   229  iptables -A INPUT -p tcp --source xxx.xxx.55.2 --sport 8000 -j LOG --log-prefix "-----IN---->INPUT packets"
   230  iptables -D INPUT -p tcp --source xxx.xxx.55.2 --sport 8000 -j LOG --log-prefix "-----IN---->INPUT packets"
   231  iptables -A INPUT -p tcp --source xxx.xxx.55.2 --sport 8000 -j DROP
@@ -233,10 +106,7 @@
   233  iptables -A INPUT -p tcp --source xxx.xxx.55.2 --dport 8000 -j DROP
   234  iptables -D INPUT -p tcp --source xxx.xxx.55.2 --dport 8000 -j DROP
   235  iptables -A INPUT -p tcp --source xxx.xxx.55.2 --dport 8000 -j LOG --log-prefix "-----IN---->INPUT packets"
-  236  iptables -A INPUT -p tcp --source xxx.xxx.55.2 --dport 80 -j LOG --log-prefix "-----IN---->INPUT packets"
-  237  iptables -D INPUT -p tcp --source xxx.xxx.55.2 --dport 80 -j LOG --log-prefix "-----IN---->INPUT packets"
   238  iptables -D INPUT -p tcp --source xxx.xxx.55.2 --dport 8000 -j LOG --log-prefix "-----IN---->INPUT packets"
-  239  iptables -A INPUT -p tcp --source xxx.xxx.55.2 --dport 80 -j LOG --log-prefix "-----IN---->INPUT packets"
   240  iptables -A INPUT -p tcp --source xxx.xxx.55.2 --dport 80 -j KUBE-SVC-XJ4KNNNZJUWDXGI5
   241  iptables -A INPUT -p tcp --source xxx.xxx.55.2 --dport 80 -j KUBE-SERVICES
   242  iptables -D INPUT -p tcp --source xxx.xxx.55.2 --dport 80 -j KUBE-SERVICES
@@ -247,95 +117,30 @@
   247  iptables -t nat -L -n
   248  iptables -t nat -A PREROUTING -p tcp --dport 9999 -j DNAT --to-destination xxx.xxx.69.205:80
   249  iptables -t nat -D PREROUTING -p tcp --dport 9999 -j DNAT --to-destination xxx.xxx.69.205:80
-  250  history 
   251  sysctl -p
-  252  cat /etc/sysctl.conf 
   253  sysctl net.ipv4.ip_forward
-  254  history 
   255  iptables -t nat -D POSTROUTING -p tcp -d xxx.xxx.69.205 --dport 80 -j SNAT --to-source xxx.xxx.55.75
   256   iptables -t nat -D PREROUTING -p tcp --dport 80 -j DNAT --to-destination xxx.xxx.69.205:80
   257  iptables -t nat -D PREROUTING -p tcp --dport 80 -j LOG --log-prefix "-----NET---->INPUT packets"
   258  iptables -t nat -D POSTROUTING -p tcp -d xxx.xxx.69.205 --dport 80 -j LOG --log-prefix "----X-NET---->INPUT packets"
   259  route
   260  route -n
-  261  netstat -natpl
-  262  history 
-  263  systemctl restart docker
   264  sudo shutdown now
-  265  start_out systemctl start privoxy.service && swapoff -a
-  266  netstat -natpl
-  267  journalctl -f
-  268  systemctl restart docker
-  269  journalctl -f
-  270  start_out systemctl start privoxy.service && swapoff -a
-  271  history | grep '\-w'
-  272  history | grep 'ps'
   273  kubeadm reset
-  274  . /etc/profile
-  275  systemctl stop firewalld
-  276  systemctl disable firewalld
-  277  setenforce 0
-  278  sysctl -p /etc/sysctl.d/k8s.conf
-  279  swapoff -a
-  280  xp
   281  kubeadm join --token a32537.e27933c2a8b32cd1 xxx.xxx.55.74:6443 --discovery-token-ca-cert-hash sha256:a311f6883ff2c59275e0fbfb6fa3ed03012214367535ec35d91bec4785f2230b
-  282  xp
-  283  journalctl -f
-  284  ifconfig 
-  285  journalctl -f
   286  cp /etc/shadowsocks.json /etc/shadowsocks.json.bak
-  287  cat >/etc/shadowsocks.json
-  288  netstat -natpl
-  289  kill -9 2753
   290  start_out 
   291  curl http://www.epochtimes.com/
-  292  systemctl restart docker
-  293  sudo shutdown now
-  294  cd /
-  295  ls -all
-  296  cd media/
   297  ls
-  298  ps -fax
-  299  ps -fax| grep nginx
-  300  ll
-  301  journalctl -f
   302  echo $http_proxy
-  303  curl http://www.epochtimes.com/
-  304  start_out systemctl start privoxy.service && swapoff -a
-  305  cd /data/k8s
-  306  ll
   307  tree 
-  308  ll etc/
-  309  ll
-  310  cd ..
-  311  ll
-  312  rm -rf k8s
-  313  ll
   314  tar zxvf k8s.tar.gz 
-  315  ll
-  316  ll k8s/etc/
-  317  netstat -natpl| grep LISTEN
   318  sudo -s
   319  shutdown now
-  320  start_out systemctl start privoxy.service && swapoff -a
-  321  ifconfig eth0
   322  ifdown eth0
   323  ifup eth0
-  324  ifconfig eth0
-  325  start_out systemctl start privoxy.service && swapoff -a
-  326  netstat -natpl| grep LISTEN
   327  public-api
-  328  ifconfig 
-  329  netstat -natpl| grep LISTEN
-  330  ifconfig 
-  331  ll
-  332  rm nohup.out 
-  333  ll
   334  ip addr show eth0
-  335  history | grep ip
-  336  history | grep ip 
-  337  history | grep 'ip addr add'
-  338  history | grep 'ip addr '
   339  w
   340  write root pts/1
   341  write  pts/1
@@ -345,31 +150,7 @@
   345  who am i
   346  whoami 
   347  tty
-  348  cat /dev/pts/0
   349  curl -k https://xxx.xxx.0.45:8443
   350  sudo iptables-save | grep xxx.xxx.0.45
   351  sudo iptables-save | grep 8443
-  352  sudo iptables-save | grep xxx.xxx.0.45
-  353  curl -k https://xxx.xxx.0.45:8443
-  354  sudo journalctl -f
-  355  history | grep lookup
-  356  xp
-  357  kubeadm reset
-  358  . /etc/profile
-  359  systemctl stop firewalld
-  360  systemctl disable firewalld
-  361  setenforce 0
-  362  sysctl -p /etc/sysctl.d/k8s.conf
-  363  swapoff -a
   364  kubeadm join --token 9b85de.163963d6bb03bed6 xxx.xxx.55.74:6443 --discovery-token-ca-cert-hash sha256:20ec14a0cf6c1b69bfb5b1938cdb67cfc8302dfe42201f684ab0da07876966e7
-  365  xp
-  366  kubeadm join --token 9b85de.163963d6bb03bed6 xxx.xxx.55.74:6443 --discovery-token-ca-cert-hash sha256:20ec14a0cf6c1b69bfb5b1938cdb67cfc8302dfe42201f684ab0da07876966e7
-  367  kubeadm reset
-  368  xp
-  369  . /etc/profile
-  370  systemctl stop firewalld
-  371  systemctl disable firewalld
-  372  setenforce 0
-  373  sysctl -p /etc/sysctl.d/k8s.conf
-  374  swapoff -a
-  375  history >$(hostname).$(whoami).his
