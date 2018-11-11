@@ -45,6 +45,8 @@ small_history_file() {
 	done
 }
 
-clean_count_line
-ip_dim
+if [ ! -z ${X} ]; then
+	clean_count_line
+	ip_dim
+fi
 small_history_file
