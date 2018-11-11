@@ -46,7 +46,7 @@ small_history_file() {
 }
 
 # if do the account check and ip dim, should run `git commit` like `X=1 git commit`
-if [ ! -z ${X} ]; then
+if [ ! -z ${clean} ]; then
 	clean_count_line
 	ip_dim
 fi
