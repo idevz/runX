@@ -54,6 +54,7 @@ dkms.conf
 # runX
 
 .DS_Store
+.idea/
 *.bak
 # .zsh_history
 .gdb_history
