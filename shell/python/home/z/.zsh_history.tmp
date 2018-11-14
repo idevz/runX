@@ -1,0 +1,17 @@
+: 1541812781:0;$GIT/weibo-mesh/motan-python/t
+: 1541812782:0;$GIT/weibo-mesh/motan-python/
+: 1541812797:0;python36 t.py
+: 1541812824:0;export PYTHONPATH=/media/psf/code/z/git/weibo-mesh/motan-python/motan
+: 1541812854:0;export PYTHONPATH=/media/psf/code/z/git/weibo-mesh/motan-python/
+: 1541812954:0;/media/psf/code/z/git/weibo-mesh/motan-python/examples/hello
+: 1541813034:0;~/.zshrc
+: 1541813042:0;whoami 
+: 1541813183:0;hist
+: 1541860469:0;echo $HISTTIMEFORMAT
+: 1541860532:0;echo $EXTENDED_HISTORY
+: 1541861015:0;. ~/.zshrc
+: 1541861674:0;echo $INC_APPEND_HISTORY
+: 1542031806:0;pip3 install uvloop
+: 1542031869:0;x pip3 install uvloop
+: 1542031929:0;x pip3 install attrs
+: 1542120072:0;python36 y.py
