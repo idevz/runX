@@ -11,7 +11,9 @@
 set -e
 
 cd /Users/idevz/Documents/Parallels/runX
+touch /Users/idevz/Documents/Parallels/runX/ttttttttttt
 git add .
 git commit -m "update runX"
 git push
 cd -
+exit 0
