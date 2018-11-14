@@ -9,10 +9,14 @@
 	<string>/bin/bash</string>
 	<string>/Users/idevz/Documents/Parallels/runX/scripts/git/auto-commit.sh</string>
 	</array>
+	<key>UserName</key>
+	<string>zhoujing2</string>
+	<key>GroupName</key>
+	<string>wheel</string>
     <key>StartCalendarInterval</key>
     <dict>
         <key>Minute</key>
-        <integer>58</integer>
+        <integer>41</integer>
         <key>Hour</key>
         <integer>12</integer>
     </dict>
