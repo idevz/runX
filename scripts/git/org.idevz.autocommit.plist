@@ -9,10 +9,6 @@
 	<string>/bin/bash</string>
 	<string>/Users/idevz/Documents/Parallels/runX/scripts/git/auto-commit.sh</string>
 	</array>
-	<key>UserName</key>
-	<string>zhoujing2</string>
-	<key>GroupName</key>
-	<string>wheel</string>
     <key>StartCalendarInterval</key>
     <dict>
         <key>Minute</key>
@@ -23,8 +19,8 @@
 	<key>RunAtLoad</key>
 	<true/>
 	<key>StandardErrorPath</key>
-	<string>~/tmp/autocommit.err</string>
+	<string>/tmp/autocommit.err</string>
 	<key>StandardOutPath</key>
-	<string>~/tmp/autocommit.log</string>
+	<string>/tmp/autocommit.log</string>
 </dict>
 </plist>
