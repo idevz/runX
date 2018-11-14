@@ -10,7 +10,7 @@
 
 set -e
 
-cd $PRLCTL_HOME
+cd /Users/idevz/Documents/Parallels/runX
 git add .
 git commit -m "update runX"
 git push

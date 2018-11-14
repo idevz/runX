@@ -6,14 +6,15 @@
 	<string>org.idevz.autocommit</string>
 	<key>ProgramArguments</key>
 	<array>
-		<string>/Users/idevz/Documents/Parallels/runX/scripts/git/auto-commit.sh</string>
+	<string>/bin/bash</string>
+	<string>/Users/idevz/Documents/Parallels/runX/scripts/git/auto-commit.sh</string>
 	</array>
     <key>StartCalendarInterval</key>
     <dict>
         <key>Minute</key>
-        <integer>30</integer>
+        <integer>21</integer>
         <key>Hour</key>
-        <integer>6</integer>
+        <integer>12</integer>
     </dict>
 	<key>RunAtLoad</key>
 	<true/>
