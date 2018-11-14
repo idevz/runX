@@ -17,7 +17,29 @@ sudo tcpdump -nvX src net xxx.xxx.0.0/16 and dst net xxx.xxx.0.0/8 or xxx.xxx.0.
 sudo tcpdump dst xxx.xxx.0.2 and src net and not icmp
 
 
-ttttnnvvXSs 0
+As a de-facto packet capture tool, tcpdump provides powerful and flexible packet filtering capabilities. The libpcap packet capture engine which tcpdump is based upon supports standard packet filtering rules such as 5-tuple packet header based filtering (i.e., based on source/destination IP addresses/ports and IP protocol type).
+
+The packet filtering rules of tcpdump/libpcap also supports more general packet expressions, where arbitrary byte ranges in a packet are checked with relation or binary operators. For byte range representation, you can use the following format:
+
+proto [ expr : size ]
+
+"proto" can be one of well-known protocols (e.g., ip, arp, tcp, udp, icmp, ipv6). "expr" represents byte offset relative to the beginning of a specified protocol header. There exist well-known byte offsets such as tcpflags, or value constants such as tcp-syn, tcp-ack or tcp-fin. "size" is optional, indicating the number of bytes to check starting from the byte offset.
+
+Using this format, you can filter TCP SYN, ACK or FIN packets as follows.
+To capture only TCP SYN packets:
+
+# tcpdump -i <interface> "tcp[tcpflags] & (tcp-syn) != 0"
+To capture only TCP ACK packets:
+
+# tcpdump -i <interface> "tcp[tcpflags] & (tcp-ack) != 0"
+To capture only TCP FIN packets:
+
+# tcpdump -i <interface> "tcp[tcpflags] & (tcp-fin) != 0"
+To capture only TCP SYN or ACK packets:
+
+# tcpdump -r <interface> "tcp[tcpflags] & (tcp-syn|tcp-ack) != 0"
+
+tcpdump -ttttnnvvXSs 0 dst port 9100 and "tcp[tcpflags] & (tcp-fin) != 0"
 URG
 ACK
 PSH
