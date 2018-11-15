@@ -27,3 +27,9 @@ runX 是我自己用的一个小工具，日常工作涉及跨语言项目的开
 
 ## how to Use
 ### using commands
+
+
+# 读取历史记录
+fc -IR
+# 保存历史记录
+fc -IA
