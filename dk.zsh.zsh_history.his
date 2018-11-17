@@ -1,7 +1,6 @@
 docker attach mystifying_euclid
 docker build --build-arg OR_ENV=dev -t zhoujing/v .
 docker build --build-arg HOSTNAME=$(hostname) -t zhoujing/t-wget -f wget.Dockerfile .
-docker build -t zhoujing/v .
 docker build --build-arg OR_ENV=dev -t zhoujing/openresty:dev .
 docker build -t zhoujing/small-or-4:debug -f /media/psf/code/z/git/weibo-or/or-dktools/builds/docker/smaller/or-motan.Dockerfile /media/psf/code/z/git/weibo-or/or-dktools/builds
 docker build -t zhoujing/centos .
