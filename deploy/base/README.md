@@ -49,3 +49,10 @@ install_parallels_tools() {
 		./install
 }
 ```
+
+## 语言环境 (vi /etc/environment)
+
+```bash
+LANG=en_US.utf-8
+LC_ALL=en_US.utf-8
+```

@@ -24,6 +24,7 @@ PYTHON_VERSION=${PV:-"Python-${VERSION}"}
 PYTHON_ROOT=${PR:-"/usr/local/${PYTHON_VERSION}"}
 
 install_python_from_src() {
+	sudo yum install -y openssl-devel
 	[ -d ${PYTHON_ROOT} ] && sudo rm -rf ${PYTHON_ROOT}
 
 	PYTHON_SRC="https://www.python.org/ftp/python/${VERSION}/${PYTHON_VERSION}.tar.xz"
@@ -82,7 +83,7 @@ install_or() {
 	OLD_BASE_DIR=${BASE_DIR}
 	OLD_PROFILE=${PROFILE}
 
-	BASE_DIR=${PRLCTL_HOME}/openresty && . "${BASE_DIR}/init"
+	BASE_DIR=${PRLCTL_HOME}/deploy/openresty && . "${BASE_DIR}/init"
 	yum_base_preparing
 	or_for_debug
 	install_test_nginx

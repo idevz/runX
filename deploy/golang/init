@@ -48,6 +48,7 @@ EOF
 )
 
 # boot from go1.4 source, didn't care which OS
+# https://dl.google.com/go/go1.4-bootstrap-20171003.tar.gz
 go_bootstrap() {
 	BOOT_ROOT=${BASE_DIR}/bootstraps
 	BOOT_SRC=${BOOT_ROOT}/"go1.4-bootstrap-20171003.tar.gz"

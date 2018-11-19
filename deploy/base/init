@@ -68,10 +68,44 @@ init_etc() {
 	sudo cp "${PRLCTL_HOME}/shell/runX.zshrc" ~/.zshrc
 }
 
+install_gdb() {
+	[ ! -f "${BASE_DIR}/srcs/gdb-8.2.tar.gz" ] &&
+		curl -fSL ftp://ftp.gnu.org/gnu/gdb/gdb-8.2.tar.gz -o ${BASE_DIR}/srcs/gdb-8.2.tar.gz
+	sudo yum -y install gcc-c++ #configure: error: *** A compiler with support for C++11 language features is required.
+	sudo yum install -y texinfo #makeinfo error when running make install
+	[ ! -f "${BASE_DIR}/srcs/lzma-libs-4.32.7-1.el7.rf.x86_64.rpm" ] &&
+		curl -fSL http://ftp.tu-chemnitz.de/pub/linux/dag/redhat/el7/en/x86_64/rpmforge/RPMS/lzma-libs-4.32.7-1.el7.rf.x86_64.rpm -o ${BASE_DIR}/srcs/lzma-libs-4.32.7-1.el7.rf.x86_64.rpm
+	sudo yum --nogpgcheck -y localinstall ${BASE_DIR}/srcs/lzma-libs-4.32.7-1.el7.rf.x86_64.rpm
+	[ ! -f "${BASE_DIR}/srcs/lzma-devel-4.32.7-1.el7.rf.x86_64.rpm" ] &&
+		curl -fSL http://ftp.tu-chemnitz.de/pub/linux/dag/redhat/el7/en/x86_64/rpmforge/RPMS/lzma-devel-4.32.7-1.el7.rf.x86_64.rpm -o ${BASE_DIR}/srcs/lzma-devel-4.32.7-1.el7.rf.x86_64.rpm
+	sudo yum --nogpgcheck -y localinstall ${BASE_DIR}/srcs/lzma-devel-4.32.7-1.el7.rf.x86_64.rpm
+	[ ! -f "${BASE_DIR}/srcs/lzma-4.32.7-1.el7.rf.x86_64.rpm" ] &&
+		curl -fSL http://ftp.tu-chemnitz.de/pub/linux/dag/redhat/el7/en/x86_64/rpmforge/RPMS/lzma-4.32.7-1.el7.rf.x86_64.rpm -o ${BASE_DIR}/srcs/lzma-4.32.7-1.el7.rf.x86_64.rpm
+	sudo yum --nogpgcheck -y localinstall ${BASE_DIR}/srcs/lzma-4.32.7-1.el7.rf.x86_64.rpm
+
+	# gdb cannot read .gnu_debugdata sections because gdb lacks LZMA support
+	# not good after install three above, but after below, is ok
+	sudo yum install -y xz xz-devel
+
+	sudo yum install -y ncurses-devel           # for add TUI support
+
+	sudo yum install -y python36-devel python36 # add python support
+	cd "${BASE_DIR}/srcs/"
+	[ -d "${BASE_DIR}/srcs/gdb-8.2" ] && rm -rf "${BASE_DIR}/srcs/gdb-8.2"
+	tar zxf gdb-8.2.tar.gz
+	cd "${BASE_DIR}/srcs/gdb-8.2"
+	./configure --prefix=/usr/local/gdb-8.2 --with-lzma --enable-tui --enable-plugins --enable-profiling --enable-gdbserver --with-python=/usr/bin/python36
+	make -j4
+	sudo make install -j4
+	cd -
+}
+
 yum_packages() {
 	sudo yum install -y strace dtrace weighttp \
 		nc tree git patch patchelf nmon perf ntpdate \
-		tcpdump psmisc zsh
+		tcpdump psmisc zsh gcc gcc-c++
+	install_gdb
+	sudo yum list installed 'kernel*' | grep -v $(uname -r | sed 's/\.x86_64//g') | awk '{print $1}' | xargs sudo yum remove -y
 }
 
 init_etc

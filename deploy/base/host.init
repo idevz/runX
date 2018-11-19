@@ -24,3 +24,7 @@ BASE_PVM_NAME=${B_PNAME:-"CentOS-7-x86_64-Minimal-1708"}
 
 scp ~/.ssh/id_rsa.pub z@${STATIC_IP}:~/.ssh/
 scp ~/.ssh/id_rsa.pub root@${STATIC_IP}:~/.ssh/
+
+# chmod -R 700 ~/.ssh/
+# chmod 600 ~/.ssh/authorized_keys
+# cp ~/.ssh/id_rsa.pub ~/.ssh/authorized_keys
