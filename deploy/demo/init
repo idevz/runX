@@ -31,5 +31,6 @@ EOF
 )
 
 init() {
-	create_profile "${PROFILE}"
+	# create_profile "${PROFILE}"
+	echo "done."
 }
