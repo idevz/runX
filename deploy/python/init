@@ -95,7 +95,8 @@ install_or() {
 }
 
 init() {
-	install_or
+	# install_or
 	install_python_from_src
-	create_profile "${PROFILE}"
+	# create_profile "${PROFILE}"
 }
+init
