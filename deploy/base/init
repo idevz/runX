@@ -15,6 +15,7 @@ set -e
 [ -z $PRLCTL_HOME ] && PRLCTL_HOME=/media/psf/runX
 STATIC_IP=${SIP:-"10.211.55.100"}
 BASE_DIR=${BASE_DIR:-"$(readlink -f "$(dirname "$0")")"}
+export THREADS=$(grep -c ^processor /proc/cpuinfo)
 
 # manualset eth0
 eth0_setting() {
@@ -108,5 +109,86 @@ yum_packages() {
 	sudo yum list installed 'kernel*' | grep -v $(uname -r | sed 's/\.x86_64//g') | awk '{print $1}' | xargs sudo yum remove -y
 }
 
-init_etc
-yum_packages
+# using the elrepo for the newest mainline kernel
+using_ml_kernel() {
+	sudo rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org
+	sudo rpm -Uvh http://www.elrepo.org/elrepo-release-7.0-2.el7.elrepo.noarch.rpm
+	# set to using the new kernel as the default start kernel.
+	sudo grub2-set-default 0
+}
+
+update_ml_kernel_headers() {
+	sudo yum remove -y kernel-headers kernel-tools kernel-tools-libs
+	sudo yum --enablerepo=elrepo-kernel install -y kernel-ml-headers kernel-ml-tools kernel-ml-tools-libs
+}
+
+pre_install_bcc() {
+	sudo yum install -y bison ethtool flex git iperf libstdc++-static \
+		python-netaddr python-pip gcc gcc-c++ make zlib-devel \
+		elfutils-libelf-devel luajit luajit-devel \
+		http://dl.marmotte.net/rpms/redhat/el7/x86_64/netperf-2.6.0-1.el7/netperf-2.6.0-1.el7.x86_64.rpm &&
+		pip install pyroute2
+}
+
+install_sysdig() {
+	curl -s https://s3.amazonaws.com/download.draios.com/stable/install-sysdig | sudo bash
+}
+
+install_bcc_cmake() {
+	set -x
+	cd "$PRLCTL_HOME/code/installbcc/"
+	tar zxf cmake*
+	(cd cmake* && ./bootstrap && gmake && sudo make install)
+	cd -
+	set +x
+}
+
+install_ebpf_ply() {
+	set -x
+	sudo yum install -y whatprovides autoconf automake
+	cp -R "$PRLCTL_HOME/code/installbcc/ply.bak" "$PRLCTL_HOME/code/installbcc/ply"
+	cd "$PRLCTL_HOME/code/installbcc/ply"
+	./autogen.sh
+	export CFLAGS=-I${HOME}/build/usr/include
+	./configure
+	make
+	sudo make install
+	set +x
+}
+
+install_llvm_clang() {
+	set -x
+	cd "$PRLCTL_HOME/code/installbcc/"
+	local version=${LLVM_V:-"7.0.0"}
+	local build_path="llvm-build-${version}"
+	sudo tar -xf cfe-${version}.src.tar.xz &
+	sudo tar -xf llvm-${version}.src.tar.xz
+	[ ! -z "$(jobs)" ] && sleep 5
+	mv cfe-${version}.src llvm-${version}.src/tools
+	mkdir ${build_path}
+	cd ${build_path}
+	cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX=/usr/local -DLLVM_TARGETS_TO_BUILD="BPF;X86" -DCMAKE_BUILD_TYPE=Release ../llvm-${version}.src
+	make -j ${THREADS}
+	sudo make install
+	set +x
+}
+
+# because of the filesystem issue about 'hard link' so we should make bcc install inner the pvm
+install_bcc() {
+	set -x
+	[ ! -d "/tmp/install-bcc/build-bcc" ] && mkdir -p "/tmp/install-bcc/build-bcc"
+	cp -R "$PRLCTL_HOME/code/installbcc/bcc.bak/" "/tmp/install-bcc/bcc/"
+	cd "/tmp/install-bcc/build-bcc"
+	cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX=/usr ../bcc
+	make -j ${THREADS}
+	sudo make install
+	set +x
+}
+
+# init_etc
+# yum_packages
+# pre_install_bcc
+# install_bcc_cmake
+#install_llvm_clang
+# install_bcc
+install_ebpf_ply
