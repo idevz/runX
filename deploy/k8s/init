@@ -30,7 +30,7 @@ sudo_write() {
 }
 
 init_out_going() {
-	sudo yum -y install epel-release python-pip privoxy
+	sudo yum -y install python-pip privoxy
 	sudo pip install --upgrade pip
 	sudo pip install shadowsocks
 	local shadowsocks_conf=
