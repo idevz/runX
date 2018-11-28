@@ -191,4 +191,4 @@ install_bcc() {
 # install_bcc_cmake
 #install_llvm_clang
 # install_bcc
-install_ebpf_ply
+# install_ebpf_ply
