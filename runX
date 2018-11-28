@@ -56,6 +56,7 @@ x_clone() {
 	[ -z "${1}" ] && xnotic "need a name for your new vm."
 	[ "${USING_STATIC_IP}" = 'yes' ] && [ -z "${2}" ] && xnotic "need to set a static ip."
 	local HOST_NAME=${1}
+	[ ! -z "${3}" ] && BASE_IMAGE="${3}"
 
 	ynotic "start clone ${HOST_NAME}."
 
@@ -159,6 +160,7 @@ nx | newx)
 		STATIC_IP=$(echo ${line} | cut -f 1 -d ' ')
 		HOST_NAME=$(echo ${line} | awk '{print $2}')
 		INIT_FILE=$(echo ${line} | awk '{print $3}')
+		SET_BASE_IMAGE=$(echo ${line} | awk '{print $4}')
 		INIT_FILE=${INIT_FILE//\#/}
 		echo "${PVM_LIST}" | grep -Eo " ${HOST_NAME}$" && continue
 
@@ -171,7 +173,7 @@ nx | newx)
 			[ ! -f ${PVM_INIT_SHELL} ] && continue
 			[ -f ${PVM_INIT_SHELL} ] &&
 				chmod +x ${PVM_INIT_SHELL} &&
-				x_clone ${HOST_NAME} ${STATIC_IP}
+				x_clone ${HOST_NAME} ${STATIC_IP} ${SET_BASE_IMAGE}
 			ynotic "start set up your pvm."
 			x_setup ${HOST_NAME} ${INIT_FILE}
 			ynotic "pvm ${HOST_NAME} set up sucessed."
