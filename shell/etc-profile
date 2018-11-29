@@ -55,6 +55,7 @@ export PATH USER LOGNAME MAIL HOSTNAME HISTSIZE HISTCONTROL
 export MCODE=/media/psf/code
 export GIT=$MCODE/z/git
 export PRLCTL_HOME=/media/psf/runX
+export RUNX_PKGS=/media/psf/runX-pkgs/
 export RUN_PATH="${PRLCTL_HOME}/runpath/${HOSTNAME}"
 
 
