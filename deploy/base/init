@@ -27,7 +27,7 @@ DEVICE="eth0"
 IPV6INIT="yes"
 BOOTPROTO="static"
 ONBOOT="yes"
-IPADDR="10.211.55.100"
+IPADDR="${STATIC_IP}"
 NETMASK="255.255.255.0"
 GATEWAY="10.211.55.1"
 ETH0
@@ -224,13 +224,13 @@ install_bcc() {
 	cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX=/usr ../bcc
 	make -j ${THREADS}
 	sudo make install
-	rm -rf "/tmp/install-bcc/build-bcc"
+	sudo rm -rf "/tmp/install-bcc/build-bcc"
 	set +x
 }
 
 using_eBPF() {
-	# pre_install_bcc
-	# install_bcc_cmake
+	pre_install_bcc
+	install_bcc_cmake
 	install_ebpf_ply
 	install_llvm_clang
 	install_bcc
@@ -239,10 +239,5 @@ using_eBPF() {
 # init_etc
 # update_kernel_from_source
 # install_systemtap_from_source
-using_eBPF
-# yum_packages
-# pre_install_bcc
-# install_bcc_cmake
-#install_llvm_clang
-# install_bcc
-# install_ebpf_ply
+# using_eBPF
+install_gdb
