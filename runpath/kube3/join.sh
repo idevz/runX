@@ -6,4 +6,4 @@
 # Description:       AUTO Generate by runX.
 # ./join.sh          Make a node join to a K8S cluster.
 ### END ###
-sudo   kubeadm join xxx.xxx.55.150:6443 --token dnjvuv.2q19dzhqxh4n68dk --discovery-token-ca-cert-hash sha256:eb77a3d9ad5c627e6d3e00bc73290abe8c857355929b4568b61b3d3ab3c54adc
+sudo kubeadm join 10.211.55.150:6443 --token gkp02r.2wwytrherkgyjy8a --discovery-token-ca-cert-hash sha256:6c2288df32f6b908fb80d5acff73f8739b769a261dd54b612f047285aaf9a523

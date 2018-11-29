@@ -4,10 +4,11 @@
 #10.211.55.7  php
 #10.211.55.8  python
 #10.211.55.9  lua
-10.211.55.150  kube1    #k8s  eBPF-base
-10.211.55.151  kube2    #k8s eBPF-base
-10.211.55.152  kube3    #k8s eBPF-base
+#10.211.55.150  kube1    #k8s  eBPF-base
+#10.211.55.151  kube2    #k8s eBPF-base
+#10.211.55.152  kube3    #k8s eBPF-base
 #10.211.55.180 eBPF #demo eBPF-base
 #10.211.55.181 X-eBPF #demo
 #10.211.55.182 I-eBPF #demo
+10.211.55.183 z-kernel #demo
 #10.211.55.10 z
