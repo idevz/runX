@@ -14,7 +14,7 @@
 # USI: set if using static ip, or dhcp. default is "yes" to using static ip.
 ### END ###
 
-set -e
+set -ex
 
 BASE_IMAGE=${BI:-"centos7-base-1708"}
 PARALLELS_ROOT=${PR:-${HOME}"/Documents/Parallels"}
@@ -83,10 +83,10 @@ x_clone() {
 		[ ! -z "${2}" ] && STATIC_IP=${2}
 		ynotic "hostname setting..."
 
-		_prlctl_exec "${HOST_NAME}" uname -a | grep -Eo '\.(el7)\.' >/dev/null 2>&1 &&
-			_prlctl_exec "${HOST_NAME}" hostnamectl set-hostname "${HOST_NAME}"
-		_prlctl_exec "${HOST_NAME}" uname -a | grep -Eo '\.(el6)\.' >/dev/null 2>&1 &&
-			_prlctl_exec "${HOST_NAME}" "echo '${HOST_NAME}' | sudo tee -a /etc/sysconfig/network"
+		# _prlctl_exec "${HOST_NAME}" uname -a | grep -Eo '\.(el7)\.' >/dev/null 2>&1 &&
+		_prlctl_exec "${HOST_NAME}" hostnamectl set-hostname "${HOST_NAME}"
+		# _prlctl_exec "${HOST_NAME}" uname -a | grep -Eo '\.(el6)\.' >/dev/null 2>&1 &&
+		# 	_prlctl_exec "${HOST_NAME}" "echo '${HOST_NAME}' | sudo tee -a /etc/sysconfig/network"
 
 		ynotic "eth0 setting..."
 		# _prlctl_exec ${HOST_NAME} sudo sed -i 's/BOOTPROTO=\"dhcp\"/BOOTPROTO=\"static\"/g' \
