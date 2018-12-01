@@ -1,0 +1,89 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby
+Vagrant.require_version ">= 2.0.0"
+
+$BUILD_NUMBER = ENV['BUILD_NUMBER'] || "0"
+$JOB_NAME = ENV['JOB_BASE_NAME'] || "LOCAL"
+$K8S_VERSION = ENV['K8S_VERSION'] || "1.11"
+$K8S_NODES = (ENV['K8S_NODES'] || "2").to_i
+$NFS = ENV['NFS']=="1"? true : false
+$SERVER_BOX = (ENV['SERVER_BOX'] || "cilium/ubuntu-dev")
+$SERVER_VERSION="106"
+$IPv6=(ENV['IPv6'] || "0")
+$CONTAINER_RUNTIME=(ENV['CONTAINER_RUNTIME'] || "docker")
+
+# RAM and CPU settings
+$MEMORY = (ENV['MEMORY'] || "4096").to_i
+$CPU = (ENV['CPUS'] || "2").to_i
+
+ENV["VAGRANT_DEFAULT_PROVIDER"] = "virtualbox"
+Vagrant.configure("2") do |config|
+
+    config.vm.define "runtime" do |server|
+        server.vm.provider "virtualbox" do |vb|
+            vb.customize ["modifyvm", :id, "--hwvirtex", "on"]
+            vb.cpus = $CPU
+            vb.memory= $MEMORY
+            vb.linked_clone = true
+        end
+
+        server.vm.box =  "#{$SERVER_BOX}"
+        server.vm.box_version = $SERVER_VERSION
+        server.vm.boot_timeout = 600
+        server.vm.hostname = "runtime"
+
+        # This network is only used by NFS
+        server.vm.network "private_network", type: "dhcp"
+        server.vm.synced_folder "../", "/home/vagrant/go/src/github.com/cilium/cilium",
+            nfs: $NFS
+
+        # Provision section
+        server.vm.provision :shell,
+            :inline => "sed -i 's/^mesg n$/tty -s \\&\\& mesg n/g' /root/.profile"
+        server.vm.provision "file", source: "provision", destination: "/tmp/provision"
+        server.vm.provision "shell" do |sh|
+            sh.path = "./provision/runtime_install.sh"
+            sh.env = {}
+        end
+    end
+
+    (1..$K8S_NODES).each do |i|
+        config.vm.define "k8s#{i}-#{$K8S_VERSION}" do |server|
+            server.vm.provider "virtualbox" do |vb|
+                vb.customize ["modifyvm", :id, "--hwvirtex", "on"]
+                vb.cpus = $CPU
+                vb.memory= $MEMORY
+                vb.linked_clone = true
+            end
+
+            server.vm.box =  "#{$SERVER_BOX}"
+            server.vm.box_version = $SERVER_VERSION
+            server.vm.hostname = "k8s#{i}"
+            server.vm.boot_timeout = 600
+            server.vm.network "private_network",
+                ip: "192.168.36.1#{i}",
+                virtualbox__intnet: "cilium-k8s#{$BUILD_NUMBER}-#{$JOB_NAME}-#{$K8S_VERSION}"
+
+            # @TODO: Clean this one when https://github.com/hashicorp/vagrant/issues/9822 is fixed.
+            server.vm.provision "ipv6-config",
+                type: "shell",
+                run: "always",
+                inline: "ip -6 a a fd04::1#{i}/96 dev enp0s8 || true"
+
+            # This network is only used by NFS
+            server.vm.network "private_network", type: "dhcp"
+            server.vm.synced_folder "../", "/home/vagrant/go/src/github.com/cilium/cilium",
+                nfs: $NFS
+            # Provision section
+            server.vm.provision :shell,
+                :inline => "sed -i 's/^mesg n$/tty -s \\&\\& mesg n/g' /root/.profile"
+            server.vm.provision "file", source: "provision", destination: "/tmp/provision"
+            server.vm.provision "shell" do |sh|
+                sh.path = "./provision/k8s_install.sh"
+                sh.args = [
+                    "k8s#{i}", "192.168.36.1#{i}", "#{$K8S_VERSION}",
+                    "#{$IPv6}", "#{$CONTAINER_RUNTIME}"]
+            end
+        end
+    end
+end

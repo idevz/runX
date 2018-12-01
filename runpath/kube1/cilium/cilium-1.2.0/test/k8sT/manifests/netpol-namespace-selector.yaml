@@ -1,0 +1,15 @@
+apiVersion: extensions/v1beta1
+kind: NetworkPolicy
+metadata:
+  name: "netpol-namespace-selector"
+spec:
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          nslabel: second
+  podSelector:
+    matchLabels:
+      id: app1
+  policyTypes:
+  - Ingress

@@ -1,0 +1,34 @@
+# Code owners groups and a brief description of their areas:
+# @cilium-janitors      Catch-all for code not otherwise owned
+# @cilium/agent         Cilium Agent
+# @cilium/bpf           BPF Data Path
+# @cilium/bpf-loader    Agent -> Kernel interaction
+# @cilium/ci            Continuous integration, testing
+# @cilium/cli           Commandline interfaces
+# @cilium/contributing  Developer documentation
+# @cilium/docker        Docker plugin
+# @cilium/docs          Documentation, examples
+# @cilium/endpoint      Endpoint package
+# @cilium/health        Cilium cluster health tool
+# @cilium/kubernetes    K8s integration, K8s CNI plugin
+# @cilium/kvstore       Key/Value store: Consul, etcd
+# @cilium/loadbalancer  Load balancer
+# @cilium/monitor       Cilium node monitor tool
+# @cilium/policy        Policy behaviour
+# @cilium/proxy         L7 proxy, Envoy
+# @cilium/vendor        Vendoring, dependency management
+#
+# Specific code owners:
+# @eloycoto             Debian packaging
+# @aanm @ianvernon      Docker packaging
+# @scanf @borkmann      BPF documentation
+
+# The following filepaths should be sorted so that more specific paths occur
+# after the less specific paths, otherwise the ownership for the specific paths
+# is not properly picked up in Github.
+* @cilium/janitors
+api/ @cilium/api
+monitor/payload @cilium/api
+pkg/apisocket/ @cilium/api
+pkg/policy/api/ @cilium/api
+pkg/proxy/accesslog @cilium/api
