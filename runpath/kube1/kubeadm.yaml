@@ -6,7 +6,4 @@ controllerManagerExtraArgs:
   node-monitor-grace-period: "10s"
 apiServerExtraArgs:
   runtime-config: "api/all=true"
-  service-node-port-range: 8000-31274
-kubernetesVersion: "stable-1.11"
-networking:
-  podSubnet: xxx.xxx.0.0/16
+kubernetesVersion: "v1.12.3"
