@@ -75,6 +75,7 @@ plugins=(
 
 [ -f "${PRLCTL_HOME}/shell/runX.funcs.sh" ] && source "${PRLCTL_HOME}/shell/runX.funcs.sh"
 [ -f "${PRLCTL_HOME}/shell/${HOSTNAME}/pvm.sh" ] && source "${PRLCTL_HOME}/shell/${HOSTNAME}/pvm.sh"
+[ -x $(which kubectl) ] && source <(kubectl completion zsh)
 source $ZSH/oh-my-zsh.sh
 
 # User configuration

@@ -6,9 +6,16 @@
 Make sure the latest version of Parallels Tools is installed 
 in this virtual machine and it has finished booting.*
 
+# 部署多内核 base
+
+* 先通网 （prl_ctl 窗口操作）
+* scp 推送内核代码到 `/usr/src/kernel/` 目录 `scp $RUNX_PKGS/linux-4.9.93.tar.xz z@$10.211.55.160:/usr/src/kernel`
+* ssh 登录 pvm，编译安装内核
+
 # base pvm 手动部署流程
 
 * 默认为无网环境，先手动配置 eth0，拨通网络
+* ssh 登录，安装 Parallels Tools
 * 然后安装 Parallels Tools 为远程管理提供基础（先挂载，然后安装依赖包）
 * 设置语言和位置环境变量，启动 sshd 服务，初始化 `~/.ssh` 目录
 * 挂载共享目录（runX，code）

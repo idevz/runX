@@ -7,3 +7,4 @@ controllerManagerExtraArgs:
 apiServerExtraArgs:
   runtime-config: "api/all=true"
 kubernetesVersion: "v1.12.3"
+# pod-network-cidr="10.244.0.0/16" Flannel

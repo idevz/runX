@@ -143,7 +143,7 @@ update_ml_kernel_headers() {
 update_kernel_from_source() {
 	local kernel_version="4.18.18"
 	local kernel_src_dir="/usr/src/kernels/linux-${kernel_version}"
-	sudo yum install -y bc pciutils ncurses-devel util-linux bison flex openssl-devel glibc-static
+	sudo yum install -y bc pciutils ncurses-devel util-linux bison flex openssl-devel gcc gcc-c++ glibc-static
 	sudo tar -Jxf "$RUNX_PKGS/linux-${kernel_version}.tar.xz" -C "/usr/src/kernels"
 	sudo cp "${PRLCTL_HOME}/scripts/z-kernel.config" "${kernel_src_dir}/.config"
 	cd ${kernel_src_dir}
@@ -246,7 +246,7 @@ back_to_iptables() {
 }
 
 # init_etc
-update_kernel_from_source
+# update_kernel_from_source
 # back_to_iptables
 # install_systemtap_from_source
 # using_eBPF
