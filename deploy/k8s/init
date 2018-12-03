@@ -182,6 +182,22 @@ DDJ
 		sudo systemctl start docker
 }
 
+update_docker() {
+	sudo yum remove -y 'docker*'
+	sudo yum install -y yum-utils \
+		device-mapper-persistent-data \
+		lvm2
+	sudo yum-config-manager \
+		--add-repo \
+		https://download.docker.com/linux/centos/docker-ce.repo
+	sudo yum-config-manager --enable docker-ce-edge
+	sudo yum-config-manager --enable docker-ce-test
+	# sudo yum-config-manager --disable docker-ce-edge
+	sudo yum install -y docker-ce-18.06.1.ce
+	sudo systemctl start docker
+	sudo systemctl enable docker
+}
+
 preper_kubeadm() {
 	KUBE_YUM=$(
 		cat <<KUBE_Y
@@ -257,3 +273,5 @@ init() {
 	preper_kubeadm
 	init_kubeadm
 }
+
+update_docker
