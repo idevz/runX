@@ -30,7 +30,7 @@ sudo_write() {
 }
 
 init_out_going() {
-	sudo yum -y install python-pip privoxy
+	sudo yum -y install python-pip privoxy net-tools
 	sudo pip install --upgrade pip
 	sudo pip install shadowsocks
 	local shadowsocks_conf=
@@ -194,6 +194,47 @@ update_docker() {
 	sudo yum-config-manager --enable docker-ce-test
 	# sudo yum-config-manager --disable docker-ce-edge
 	sudo yum install -y docker-ce-18.06.1.ce
+	local docker_service_unit=
+	docker_service_unit=$(
+		cat <<DOCKER_SERVICE
+[Unit]
+Description=Docker Application Container Engine
+Documentation=https://docs.docker.com
+After=network-online.target firewalld.service
+Wants=network-online.target
+
+[Service]
+Type=notify
+# the default is not to use systemd for cgroups because the delegate issues still
+# exists and systemd currently does not support the cgroup feature set required
+# for containers run by docker
+ExecStart=/usr/bin/dockerd \
+          --insecure-registry=${PRI_REGISTRY}
+		  --registry-mirror=https://registry.docker-cn.com
+ExecReload=/bin/kill -s HUP $MAINPID
+# Having non-zero Limit*s causes performance problems due to accounting overhead
+# in the kernel. We recommend using cgroups to do container-local accounting.
+LimitNOFILE=infinity
+LimitNPROC=infinity
+LimitCORE=infinity
+# Uncomment TasksMax if your systemd version supports it.
+# Only systemd 226 and above support this version.
+#TasksMax=infinity
+TimeoutStartSec=0
+# set delegate yes so that systemd does not reset the cgroups of docker containers
+Delegate=yes
+# kill only the docker process, not all processes in the cgroup
+KillMode=process
+# restart the docker process if it exits prematurely
+Restart=on-failure
+StartLimitBurst=3
+StartLimitInterval=60s
+
+[Install]
+WantedBy=multi-user.target
+DOCKER_SERVICE
+	)
+	sudo_write "${docker_service_unit}" "/lib/systemd/system/docker.service"
 	sudo mkdir "/etc/docker"
 	local docker_daemon_json=
 	docker_daemon_json=$(
