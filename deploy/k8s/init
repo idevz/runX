@@ -183,7 +183,7 @@ DDJ
 }
 
 update_docker() {
-	sudo yum remove -y 'docker*'
+	# sudo yum remove -y 'docker*'
 	sudo yum install -y yum-utils \
 		device-mapper-persistent-data \
 		lvm2
@@ -194,6 +194,26 @@ update_docker() {
 	sudo yum-config-manager --enable docker-ce-test
 	# sudo yum-config-manager --disable docker-ce-edge
 	sudo yum install -y docker-ce-18.06.1.ce
+	sudo mkdir "/etc/docker"
+	local docker_daemon_json=
+	docker_daemon_json=$(
+		cat <<EOF
+{
+  "exec-opts": ["native.cgroupdriver=systemd"],
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "50m"
+  },
+  "storage-driver": "overlay2",
+  "storage-opts": [
+    "overlay2.override_kernel_check=true"
+  ]
+}
+EOF
+	)
+	sudo_write "${docker_daemon_json}" "/etc/docker/daemon.json"
+	sudo mkdir -p /etc/systemd/system/docker.service.d
+	sudo systemctl daemon-reload
 	sudo systemctl start docker
 	sudo systemctl enable docker
 }
@@ -215,7 +235,7 @@ KUBE_Y
 
 	# Set SELinux in permissive mode (effectively disabling it)
 	sudo setenforce 0
-	sudo sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
+	sudo sed -i 's/^SELINUX=enforcing$/SELINUX=Disabled/' /etc/selinux/config
 
 	sudo yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
 
@@ -225,6 +245,7 @@ KUBE_Y
 		cat <<KUBE_S
 net.bridge.bridge-nf-call-ip6tables = 1
 net.bridge.bridge-nf-call-iptables = 1
+net.ipv4.ip_forward = 1
 KUBE_S
 	)
 	sudo_write "${KUBE_SYSCTL_CONF}" /etc/sysctl.d/k8s.conf
@@ -269,9 +290,7 @@ init() {
 	sudo systemctl stop firewalld &&
 		sudo systemctl disable firewalld
 	init_out_going
-	init_docker
+	update_docker
 	preper_kubeadm
 	init_kubeadm
 }
-
-update_docker

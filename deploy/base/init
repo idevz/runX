@@ -13,9 +13,10 @@
 set -e
 
 [ -z $PRLCTL_HOME ] && PRLCTL_HOME=/media/psf/runX
-[ -z $RUNX_PKGS ] && PRLCTL_HOME=/media/psf/runX-pkgs
+[ -z $RUNX_PKGS ] && RUNX_PKGS=/media/psf/runX-pkgs
 STATIC_IP=${SIP:-"10.211.55.100"}
 BASE_DIR=${BASE_DIR:-"$(readlink -f "$(dirname "$0")")"}
+HOST_NAME_SET=${HNS:-"base"}
 export THREADS=$(grep -c ^processor /proc/cpuinfo)
 
 # manualset eth0
@@ -75,7 +76,7 @@ using_zsh() {
 }
 
 init_etc() {
-	sudo hostnamectl set-hostname base
+	sudo hostnamectl set-hostname ${HOST_NAME_SET}
 	using_zsh
 	sudo cp "${PRLCTL_HOME}/shell/etc-sudoers" /etc/sudoers
 	sudo cp "${PRLCTL_HOME}/shell/etc-profile" /etc/profile
@@ -246,8 +247,9 @@ back_to_iptables() {
 	sudo systemctl enable iptables
 }
 
-# init_etc
-update_kernel_from_source
+# HNS="centos7-kube-base-1708-2" /media/psf/runX/deploy/base/init
+init_etc
+# update_kernel_from_source
 # back_to_iptables
 # install_systemtap_from_source
 # using_eBPF
