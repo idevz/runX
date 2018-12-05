@@ -74,7 +74,7 @@ WT_CONF
 	local out_profile=
 	out_profile=$(
 		cat <<OUT_PROFILE
-alias unstart_out="unset HTTP_PROXY HTTPS_PROXY http_proxy https_proxy"
+alias unstart_out="unset ALL_PROXY HTTP_PROXY HTTPS_PROXY all_proxy http_proxy https_proxy"
 alias reload_out="sudo systemctl restart out_going.service && sudo systemctl restart privoxy.service"
 
 proxy="${H_PROXY_ADDR}"

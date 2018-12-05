@@ -1,0 +1,300 @@
+# or-depoly.yaml
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: idevz-or
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        run: idevz-or
+    spec:
+      containers:
+      - name: idevz-or
+        securityContext:
+          privileged: true
+        image: openresty/openresty
+        ports:
+        - containerPort: 80
+---
+
+# or-nodeport-svc.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: idevz-or-nodeport
+  labels:
+    run: idevz-or-nodeport
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  externalName: idevz-or-nodeport.com
+  type: NodePort
+  selector:
+    run: idevz-or
+---
+
+# or-service-1.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: idevz-or-svc-1
+  labels:
+    run: idevz-or-svc-1
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  externalName: idevz-or-svc-1.com
+  selector:
+    run: idevz-or
+---
+
+# or-service-2.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: idevz-or-svc-2
+  labels:
+    run: idevz-or-svc-2
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  externalName: idevz-or-svc-2.com
+  selector:
+    run: idevz-or
+---
+
+# or-ingress.yaml
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: test
+  annotations:
+    ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: idevz.or.com
+    http:
+      paths:
+      - path: /foo
+        backend:
+          serviceName: idevz-or-svc-1
+          servicePort: 80
+      - path: /bar
+        backend:
+          serviceName: idevz-or-svc-2
+          servicePort: 80
+---
+
+# or-ingress-controller.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-ingress
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      name: http
+    - port: 443
+      name: https
+  selector:
+    k8s-app: or-ingress-lb
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: nginx-ingress-controller
+  labels:
+    k8s-app: nginx-ingress-controller
+spec:
+  replicas: 2
+  revisionHistoryLimit: 3
+  template:
+    metadata:
+      labels:
+        k8s-app: or-ingress-lb
+    spec:
+      terminationGracePeriodSeconds: 60
+      serviceAccountName: nginx-ingress-serviceaccount
+      containers:
+        - name: nginx-ingress-controller
+          image: quay.io/kubernetes-ingress-controller/nginx-ingress-controller:0.10.1
+          args:
+            - /nginx-ingress-controller
+            - --default-backend-service=$(POD_NAMESPACE)/default-http-backend
+            - --configmap=$(POD_NAMESPACE)/nginx-configuration
+            - --tcp-services-configmap=$(POD_NAMESPACE)/tcp-services
+            - --udp-services-configmap=$(POD_NAMESPACE)/udp-services
+            - --annotations-prefix=nginx.ingress.kubernetes.io
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          ports:
+          - name: http
+            containerPort: 80
+          - name: https
+            containerPort: 443
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /healthz
+              port: 10254
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /healthz
+              port: 10254
+              scheme: HTTP
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: nginx-ingress-serviceaccount
+  namespace: ingress-nginx
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  name: nginx-ingress-clusterrole
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+      - endpoints
+      - nodes
+      - pods
+      - secrets
+    verbs:
+      - list
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - nodes
+    verbs:
+      - get
+  - apiGroups:
+      - ""
+    resources:
+      - services
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - "extensions"
+    resources:
+      - ingresses
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+        - events
+    verbs:
+        - create
+        - patch
+  - apiGroups:
+      - "extensions"
+    resources:
+      - ingresses/status
+    verbs:
+      - update
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: Role
+metadata:
+  name: nginx-ingress-role
+  namespace: ingress-nginx
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+      - pods
+      - secrets
+      - namespaces
+    verbs:
+      - get
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+    resourceNames:
+      # Defaults to "<election-id>-<ingress-class>"
+      # Here: "<ingress-controller-leader>-<nginx>"
+      # This has to be adapted if you change either parameter
+      # when launching the nginx-ingress-controller.
+      - "ingress-controller-leader-nginx"
+    verbs:
+      - get
+      - update
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+    verbs:
+      - create
+  - apiGroups:
+      - ""
+    resources:
+      - endpoints
+    verbs:
+      - get
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: RoleBinding
+metadata:
+  name: nginx-ingress-role-nisa-binding
+  namespace: ingress-nginx
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: nginx-ingress-role
+subjects:
+  - kind: ServiceAccount
+    name: nginx-ingress-serviceaccount
+    namespace: ingress-nginx
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: nginx-ingress-clusterrole-nisa-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: nginx-ingress-clusterrole
+subjects:
+  - kind: ServiceAccount
+    name: nginx-ingress-serviceaccount
+    namespace: ingress-nginx
