@@ -1,0 +1,67 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: idevz-k8s-test
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: idevz-test-http
+  labels:
+    app: idevz-test-http
+  namespace: idevz-k8s-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: idevz-test-http
+  template:
+    metadata:
+      labels:
+        app: idevz-test-http
+    spec:
+      terminationGracePeriodSeconds: 60
+      containers:
+      - name: idevz-test-http
+        image: zhoujing/k8s-test-server
+        args:
+            - /k8s_test_server
+        livenessProbe:
+          httpGet:
+            path: /idevz
+            port: 8888
+            scheme: HTTP
+          initialDelaySeconds: 30
+          timeoutSeconds: 5
+        ports:
+        - containerPort: 8888
+        resources:
+          limits:
+            cpu: 10m
+            memory: 20Mi
+          requests:
+            cpu: 10m
+            memory: 20Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: idevz-test-http
+  namespace: idevz-k8s-test
+  labels:
+    app: idevz-test-http
+spec:
+  type: NodePort
+  ports:
+  - port: 80
+    targetPort: 8888
+    nodePort: 31888
+    protocol: TCP
+    name: http
+  - port: 443
+    targetPort: 8443
+    nodePort: 31443
+    protocol: TCP
+    name: https
+  selector:
+    app: idevz-test-http
