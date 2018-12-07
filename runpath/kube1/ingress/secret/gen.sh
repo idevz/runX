@@ -47,7 +47,13 @@ CNF
 	cd -
 }
 
+clean_ca_keys() {
+	rm ${BASE_DIR}/ca*
+	rm ${BASE_DIR}/ing*
+}
+
 ingress_secret_x() {
+	clean_ca_keys
 	cd ${BASE_DIR}
 	# create CA
 	openssl genrsa -out ca.key 2048
@@ -60,7 +66,7 @@ ingress_secret_x() {
 	openssl req -new -key ingress.key -out ingress.csr -subj "/CN=nginx-svc-tls" -config ${openssl_conf_file}
 	# ssl CA
 	openssl x509 -req -in ingress.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out ingress.crt -days 3650 -extensions v3_req -extfile ${openssl_conf_file}
-	kubectl create secret tls idevz-org-secret --key "${BASE_DIR}/ingress.key" --cert "${BASE_DIR}/ingress.crt" -n idevz-k8s-test
+	# kubectl create secret tls idevz-org-secret --key "${BASE_DIR}/ingress.key" --cert "${BASE_DIR}/ingress.crt" -n idevz-k8s-test
 	kubectl create secret tls ingress-secret --key "${BASE_DIR}/ingress.key" --cert "${BASE_DIR}/ingress.crt" -n kube-system
 	cd -
 }

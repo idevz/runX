@@ -3,6 +3,19 @@ kind: Namespace
 metadata:
   name: idevz-k8s-test
 ---
+# generater secret by ingress/secret/gen.sh
+# apiVersion: v1
+# data:
+#   tls.crt: 
+#   tls.key: 
+# kind: Secret
+# metadata:
+#   name: idevz-org-secret
+#   namespace: idevz-k8s-test
+# # before 1.8.x is Opaque type
+# # type: Opaque
+# type: kubernetes.io/tls
+---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:

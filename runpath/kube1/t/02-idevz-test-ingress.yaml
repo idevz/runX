@@ -36,23 +36,28 @@ kind: Ingress
 metadata:
   name: idevz-ingress
   namespace: idevz-k8s-test
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/secure-backends: "true"
 spec:
   tls:
   - hosts:
     - idevz.org
     secretName: idevz-org-secret
   rules:
-  # - host: idevz.or.com
-  #   http:
-  #     paths:
-  #     - path: /
-  #       backend:
-  #         serviceName: idevz-test-ingress-svc-http
-  #         servicePort: 80
+  - host: idevz.or.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: idevz-test-ingress-svc-http
+          servicePort: 80
   - host: idevz.org
     http:
       paths:
       - path: /
         backend:
-          serviceName: idevz-test-ingress-svc-tls
-          servicePort: 443
+          # serviceName: idevz-test-ingress-svc-tls
+          # servicePort: 443
+          serviceName: idevz-test-ingress-svc-http
+          servicePort: 80
