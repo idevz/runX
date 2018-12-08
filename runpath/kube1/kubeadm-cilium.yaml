@@ -4,10 +4,13 @@ controllerManagerExtraArgs:
   horizontal-pod-autoscaler-use-rest-clients: "true"
   horizontal-pod-autoscaler-sync-period: "10s"
   node-monitor-grace-period: "10s"
+  allocate-node-cidrs: "true" # not required but highly recommended
 apiServerExtraArgs:
   runtime-config: "api/all=true"
+  allow-privileged: "true"
 kubernetesVersion: "v1.13.0"
-# networking:
+networking:
+  network-plugin: "cni"
   #dnsDomain: cluster.local
   # podSubnet: 192.168.0.0/16
 # --pod-network-cidr:192.168.0.0/16
