@@ -12,7 +12,13 @@
 set -e
 BASE_DIR=${BASE_DIR:-"$(readlink -f "$(dirname "$0")")"}
 
-INGERSS_HOST=${IH:-"dashboard-ingress.idevz.com"}
+SECRET_HOST=${IH:-"idevz.org"}
+T_HOST="k.idevz.org"
+
+[ $# -lt 2 ] && echo "At least need 2 params for secret name and namespace" && exit 1
+
+[ ! -z ${1} ] && SECRET_NAME=${1}
+[ ! -z ${2} ] && NAME_SPACE=${2}
 
 ingress_secret() {
 	local ssl_dir="/etc/kubernetes/ssl"
@@ -33,14 +39,15 @@ basicConstraints = CA:FALSE
 keyUsage = nonRepudiation, digitalSignature, keyEncipherment
 subjectAltName = @alt_names
 [alt_names]
-DNS = ${INGERSS_HOST}
-DNS.1 = idevz.org
+DNS = ${SECRET_HOST}
+DNS.1 = t.idevz.org
 DNS.2 = dashboard-ingress.idevz.org
+DNS.3 = ${T_HOST}
 CNF
 	)
 	echo "${openssl_cnf}" | sudo tee "${ssl_dir}/openssl.cnf"
 	sudo openssl genrsa -out ingress-key.pem 2048
-	sudo openssl req -new -key ingress-key.pem -out ingress.csr -subj "/CN=${INGERSS_HOST}" -config openssl.cnf
+	sudo openssl req -new -key ingress-key.pem -out ingress.csr -subj "/CN=${SECRET_HOST}" -config openssl.cnf
 	sudo openssl x509 -req -in ingress.csr -CA ca.pem -CAkey ca-key.pem -CAcreateserial -out ingress.pem -days 365 -extensions v3_req -extfile openssl.cnf
 	# kubectl create secret tls ingress-secret --key ingress-key.pem --cert ingress.pem -n kube-system
 	kubectl create secret tls idevz-org-secret --key ingress-key.pem --cert ingress.pem -n idevz-k8s-test
@@ -67,8 +74,9 @@ ingress_secret_x() {
 	# ssl CA
 	openssl x509 -req -in ingress.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out ingress.crt -days 3650 -extensions v3_req -extfile ${openssl_conf_file}
 	# kubectl create secret tls idevz-org-secret --key "${BASE_DIR}/ingress.key" --cert "${BASE_DIR}/ingress.crt" -n idevz-k8s-test
-	kubectl create secret tls ingress-secret --key "${BASE_DIR}/ingress.key" --cert "${BASE_DIR}/ingress.crt" -n kube-system
+	kubectl create secret tls ${1} --key "${BASE_DIR}/ingress.key" --cert "${BASE_DIR}/ingress.crt" -n ${2}
 	cd -
 }
-ingress_secret_x
+
+ingress_secret_x ${SECRET_NAME} ${NAME_SPACE}
 # kubectl create -f ../dashboard-ingress-tls.yaml

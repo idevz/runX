@@ -20,6 +20,43 @@ k_init_cilium() {
 		--from-file=etcd-client-crt=client.crt
 }
 
+deploy_weave() {
+	kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
+}
+
+clean_weave() {
+	kubectl delete -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
+}
+
+deploy_ingress() {
+	kubectl create -f "$RUN_PATH/ingress/kub-ngx/mandatory.yaml"
+	# x-service expose the service in k8s Cluster
+	kubectl create -f "$RUN_PATH/ingress/kub-ngx/x-service.yaml"
+}
+
+clean_ingress() {
+	kubectl delete -f "$RUN_PATH/ingress/kub-ngx/mandatory.yaml"
+	kubectl delete -f "$RUN_PATH/ingress/kub-ngx/x-service.yaml"
+}
+
+deploy_kube_dashboard() {
+	kubectl create -f "${RUN_PATH}/k-dashboard/kubernetes-dashboard.yaml"
+	kubectl create -f "${RUN_PATH}/k-dashboard/admin.yaml"
+	$RUN_PATH/ingress/secret/gen.sh "ingress-secret" "kube-system"
+	kubectl create -f "${RUN_PATH}/k-dashboard/ingress.yaml"
+}
+
+clean_kube_dashboard() {
+	kubectl delete -f "${RUN_PATH}/k-dashboard/kubernetes-dashboard.yaml"
+	kubectl delete -f "${RUN_PATH}/k-dashboard/admin.yaml"
+	kubectl delete secrets -n "kube-system" "ingress-secret"
+	kubectl delete -f "${RUN_PATH}/k-dashboard/ingress.yaml"
+}
+
+get_dashboard_secrets() {
+	kubectl describe secrets -n kube-system $(kubectl get secrets -n kube-system | grep admin | awk '{print $1}')
+}
+
 k_init_cgroup() {
 	cat >/etc/sysconfig/kubelet <<EO
 	KUBELET_EXTRA_ARGS=--runtime-cgroups=/systemd/system.slice --kubelet-cgroups=/systemd/system.slice
@@ -32,6 +69,11 @@ k_init_c_memery() {
 	CPUAccounting=true
 	MemoryAccounting=true
 cgroup
+}
+
+k_reset_x() {
+	sudo kubeadm reset -f
+	sudo iptables -F && sudo iptables -t nat -F && sudo iptables -t mangle -F && sudo iptables -X
 }
 
 k_docker_completion() {

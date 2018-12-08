@@ -164,6 +164,30 @@ has_k8() {
 	which kubeadm >/dev/null 2>&1
 }
 
+has_k8 && k_reset_x() {
+	sudo kubeadm reset -f
+	sudo iptables -F && sudo iptables -t nat -F && sudo iptables -t mangle -F && sudo iptables -X
+}
+
+has_k8 && sysd_mount_bfpfs() {
+	cat <<EOF | sudo tee /etc/systemd/system/sys-fs-bpf.mount
+[Unit]
+Description=Cilium BPF mounts
+Documentation=http://docs.cilium.io/
+DefaultDependencies=no
+Before=local-fs.target umount.target
+After=swap.target
+
+[Mount]
+What=bpffs
+Where=/sys/fs/bpf
+Type=bpf
+
+[Install]
+WantedBy=multi-user.target
+EOF
+}
+
 has_k8 && k8() {
 	while getopts "in" OPTS; do
 		case "${OPTS}" in
@@ -173,21 +197,7 @@ has_k8 && k8() {
 			sudo chown $(id -u):$(id -g) $HOME/.kube/config
 			;;
 		n)
-			# Download required manifests from Cilium repository
-			wget https://github.com/cilium/cilium/archive/v1.2.0.zip
-			unzip v1.2.0.zip
-			cd cilium-1.2.0/examples/kubernetes/addons/etcd-operator
-
-			# Generate and deploy etcd certificates
-			export CLUSTER_DOMAIN=$(kubectl get ConfigMap --namespace kube-system coredns -o yaml | awk '/kubernetes/ {print $2}')
-			tls/certs/gen-cert.sh $CLUSTER_DOMAIN
-			tls/deploy-certs.sh
-
-			# Label kube-dns with fixed identity label
-			kubectl label -n kube-system pod $(kubectl -n kube-system get pods -l k8s-app=kube-dns -o jsonpath='{range .items[]}{.metadata.name}{" "}{end}') io.cilium.fixed-identity=kube-dns
-
-			kubectl create -f ./
-			# Wait several minutes for Cilium, coredns and etcd pods to converge to a working state
+			echo "deploy network"
 			;;
 		\?)
 			echo "
@@ -214,8 +224,13 @@ The options are:
 #------------------------------------------  docker funcs  -----------------------------------------#
 # docker fetch
 dk_fc() {
+	local OUT_GOING_ACCOUNT_FILE=${OGA:-"out-accounts-info.zj"}
+	[ -f "$PRLCTL_HOME/deploy/k8s/${OUT_GOING_ACCOUNT_FILE}" ] &&
+		source "$PRLCTL_HOME/deploy/k8s/${OUT_GOING_ACCOUNT_FILE}"
+	local PRI_REGISTRY="${OUT_IP}:5000"
 	local pub_image="${1}"
-	local pri_image="$(hostname -I | awk '{print $1}'):5000/${pub_image}"
+	# local pri_image="$(hostname -I | awk '{print $1}'):5000/${pub_image}"
+	local pri_image="${PRI_REGISTRY}/${pub_image}"
 	docker pull "${pub_image}" >/dev/null 2>&1
 	docker tag "${pub_image}" "${pri_image}" >/dev/null 2>&1
 	docker push "${pri_image}" >/dev/null 2>&1
