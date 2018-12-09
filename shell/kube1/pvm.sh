@@ -11,13 +11,28 @@ k_init_kubeadm() {
 }
 
 k_init_cilium() {
-	# ca-file: '/etc/kubernetes/pki/etcd/ca.crt'
-	# key-file: '/etc/kubernetes/pki/etcd/peer.key'
-	# cert-file: '/etc/kubernetes/pki/etcd/peer.crt'
+	local key_path="${PRLCTL_HOME}/runpath/kube1/cilium/etcd-secret/"
+	local ca="${key_path}/ca.crt"
+	local client_key="${key_path}/client.key"
+	local client_crt="${key_path}/client.crt"
+
+	[ -f "${ca}" ] && rm "${ca}"
+	[ -f "${client_key}" ] && rm "${client_key}"
+	[ -f "${client_crt}" ] && rm "${client_crt}"
+
+	sudo cp "/etc/kubernetes/pki/etcd/ca.crt" "${ca}"
+	sudo cp "/etc/kubernetes/pki/etcd/peer.key" "${client_key}"
+	sudo cp "/etc/kubernetes/pki/etcd/peer.crt" "${client_crt}"
 	kubectl create secret generic -n kube-system cilium-etcd-secrets \
-		--from-file=etcd-ca=ca.crt \
-		--from-file=etcd-client-key=client.key \
-		--from-file=etcd-client-crt=client.crt
+		--from-file=etcd-ca="${ca}" \
+		--from-file=etcd-client-key="${client_key}" \
+		--from-file=etcd-client-crt="${client_crt}"
+	kubectl create -f $RUN_PATH/cilium/cilium.yaml
+}
+
+clean_cilium() {
+	kubectl delete secrets -n kube-system cilium-etcd-secrets
+	kubectl delete -f $RUN_PATH/cilium/cilium.yaml
 }
 
 deploy_weave() {

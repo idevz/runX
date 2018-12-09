@@ -1,18 +1,55 @@
-apiVersion: kubeadm.k8s.io/v1alpha3
+apiVersion: kubeadm.k8s.io/v1beta1
 kind: InitConfiguration
-controllerManagerExtraArgs:
+# bootstrapTokens:
+# - groups:
+#   - system:bootstrappers:kubeadm:default-node-token
+#   token: abcdef.0123456789abcdef
+#   ttl: 24h0m0s
+#   usages:
+#   - signing
+#   - authentication
+# localAPIEndpoint:
+#   advertiseAddress: 1.2.3.4
+#   bindPort: 6443
+# nodeRegistration:
+#   criSocket: /var/run/dockershim.sock
+#   name: kube1
+#   taints:
+#   - effect: NoSchedule
+#     key: node-role.kubernetes.io/master
+---
+apiVersion: kubeadm.k8s.io/v1beta1
+kind: ClusterConfiguration
+kubernetesVersion: v1.13.0
+apiServer:
+  timeoutForControlPlane: 4m0s
+  runtime-config: "api/all=true"
+  allow-privileged: "true"
+controllerManager:
   horizontal-pod-autoscaler-use-rest-clients: "true"
   horizontal-pod-autoscaler-sync-period: "10s"
   node-monitor-grace-period: "10s"
   allocate-node-cidrs: "true" # not required but highly recommended
-apiServerExtraArgs:
-  runtime-config: "api/all=true"
-  allow-privileged: "true"
-kubernetesVersion: "v1.13.0"
+certificatesDir: /etc/kubernetes/pki
+clusterName: kubernetes
+controlPlaneEndpoint: ""
+dns:
+  type: CoreDNS
+etcd:
+  local:
+    dataDir: /var/lib/etcd
+imageRepository: k8s.gcr.io
 networking:
-  network-plugin: "cni"
-  #dnsDomain: cluster.local
-  # podSubnet: 192.168.0.0/16
-# --pod-network-cidr:192.168.0.0/16
-featureGates:
-  CoreDNS: true
+  dnsDomain: cluster.local
+  podSubnet: "10.0.0.0/8"
+  # serviceSubnet: 10.96.0.0/12
+scheduler: {}
+---
+apiVersion: kubelet.config.k8s.io/v1beta1
+kind: KubeletConfiguration
+---
+apiVersion: kubeproxy.config.k8s.io/v1alpha1
+kind: KubeProxyConfiguration
+---
+apiVersion: kubeadm.k8s.io/v1beta1
+kind: JoinConfiguration
