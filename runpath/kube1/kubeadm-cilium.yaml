@@ -1,4 +1,5 @@
 apiVersion: kubeadm.k8s.io/v1beta1
+# https://godoc.org/k8s.io/kubernetes/cmd/kubeadm/app/apis/kubeadm/v1beta1
 kind: InitConfiguration
 # bootstrapTokens:
 # - groups:
@@ -23,13 +24,13 @@ kind: ClusterConfiguration
 kubernetesVersion: v1.13.0
 apiServer:
   timeoutForControlPlane: 4m0s
-  runtime-config: "api/all=true"
-  allow-privileged: "true"
-controllerManager:
-  horizontal-pod-autoscaler-use-rest-clients: "true"
-  horizontal-pod-autoscaler-sync-period: "10s"
-  node-monitor-grace-period: "10s"
-  allocate-node-cidrs: "true" # not required but highly recommended
+  # runtime-config: "api/all=true" xxxx v1beta1
+  # allow-privileged: "true" xxxx v1beta1
+# controllerManager:
+  # horizontal-pod-autoscaler-use-rest-clients: "true" xxxx 
+  # horizontal-pod-autoscaler-sync-period: "10s" xxxx
+  # node-monitor-grace-period: "10s" xxxx
+  # allocate-node-cidrs: "true" # not required but highly recommended xxxx
 certificatesDir: /etc/kubernetes/pki
 clusterName: kubernetes
 controlPlaneEndpoint: ""
@@ -38,12 +39,12 @@ dns:
 etcd:
   local:
     dataDir: /var/lib/etcd
-imageRepository: k8s.gcr.io
+# imageRepository: k8s.gcr.io
 networking:
-  dnsDomain: cluster.local
+  # dnsDomain: cluster.local
   podSubnet: "10.0.0.0/8"
   # serviceSubnet: 10.96.0.0/12
-scheduler: {}
+# scheduler: {}
 ---
 apiVersion: kubelet.config.k8s.io/v1beta1
 kind: KubeletConfiguration
