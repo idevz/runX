@@ -116,6 +116,7 @@ install_gdb() {
 	cd -
 }
 
+# https://www.ibm.com/developerworks/cn/linux/1607_caoyq_sysdig/index.html
 install_sysdig() {
 	curl -s https://s3.amazonaws.com/download.draios.com/stable/install-sysdig | sudo bash
 }

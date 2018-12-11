@@ -2,11 +2,11 @@
 #10.211.55.5  golang
 #10.211.55.6  openresty
 #10.211.55.7  php
-#10.211.55.8  python
+10.211.55.8  python #python  kube4
 #10.211.55.9  lua
 #10.211.55.150  kube1    #k8s  kube4
 #10.211.55.151  kube2    #k8s  kube5
-10.211.55.152  kube3    #k8s  kube6
+#10.211.55.152  kube3    #k8s  kube6
 #10.211.55.110  kube4    #demo  centos7-kube-base-1708-1
 #10.211.55.111  kube5    #demo centos7-kube-base-1708-2
 #10.211.55.112  kube6    #demo centos7-kube-base-1708-3
