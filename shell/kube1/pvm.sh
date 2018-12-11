@@ -4,12 +4,19 @@ HOSTNAME=$(hostname)
 PRLCTL_HOME=${PRLCTL_HOME:-"/media/psf/runX"}
 sudo swapoff -a
 
+# --------- kubeadm --------- #
 k_init_kubeadm() {
 	mkdir -p $HOME/.kube
 	sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 	sudo chown $(id -u):$(id -g) $HOME/.kube/config
 }
 
+k_reset_x() {
+	sudo kubeadm reset -f
+	sudo iptables -F && sudo iptables -t nat -F && sudo iptables -t mangle -F && sudo iptables -X
+}
+
+# --------- cilium --------- #
 k_init_cilium() {
 	local key_path="${PRLCTL_HOME}/runpath/kube1/cilium/etcd-secret/"
 	local ca="${key_path}/ca.crt"
@@ -35,6 +42,7 @@ clean_cilium() {
 	kubectl delete -f $RUN_PATH/cilium/cilium.yaml
 }
 
+# --------- weave --------- #
 deploy_weave() {
 	kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
 }
@@ -43,6 +51,7 @@ clean_weave() {
 	kubectl delete -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
 }
 
+# --------- ingress --------- #
 deploy_ingress() {
 	kubectl create -f "$RUN_PATH/ingress/kub-ngx/mandatory.yaml"
 	# x-service expose the service in k8s Cluster
@@ -54,6 +63,7 @@ clean_ingress() {
 	kubectl delete -f "$RUN_PATH/ingress/kub-ngx/x-service.yaml"
 }
 
+# --------- dashboard --------- #
 deploy_kube_dashboard() {
 	kubectl create -f "${RUN_PATH}/k-dashboard/kubernetes-dashboard.yaml"
 	kubectl create -f "${RUN_PATH}/k-dashboard/admin.yaml"
@@ -72,23 +82,13 @@ get_dashboard_secrets() {
 	kubectl describe secrets -n kube-system $(kubectl get secrets -n kube-system | grep admin | awk '{print $1}')
 }
 
-k_init_cgroup() {
-	cat >/etc/sysconfig/kubelet <<EO
-	KUBELET_EXTRA_ARGS=--runtime-cgroups=/systemd/system.slice --kubelet-cgroups=/systemd/system.slice
-EO
+# --------- idevz-t --------- #
+deploy_idevz_t() {
+	kubectl create -f "${RUN_PATH}/t/"
 }
 
-k_init_c_memery() {
-	cat >/etc/systemd/system/kubelet.service.d/11-cgroups.conf <<cgroup
-	[Service]
-	CPUAccounting=true
-	MemoryAccounting=true
-cgroup
-}
-
-k_reset_x() {
-	sudo kubeadm reset -f
-	sudo iptables -F && sudo iptables -t nat -F && sudo iptables -t mangle -F && sudo iptables -X
+clean_idevz_t() {
+	kubectl delete -f "${RUN_PATH}/t/"
 }
 
 k_docker_completion() {
