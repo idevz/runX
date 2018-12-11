@@ -12,6 +12,13 @@ xnotic() {
 	sudo env "PATH=$PATH" "$@"
 }
 
+# start a echo server for test
+t_echo() {
+	local test_port=9100
+	[ ! -z "${1}" ] && test_port="${1}"
+	ncat -l "${test_port}" --keep-open --exec "/bin/cat" &
+}
+
 hz_ns() {
 	TIMES=${1}
 	while [ "${TIMES}" -gt 0 ]; do
