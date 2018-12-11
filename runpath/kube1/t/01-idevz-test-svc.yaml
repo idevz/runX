@@ -56,6 +56,7 @@ spec:
             cpu: 10m
             memory: 20Mi
 ---
+# export k8s service though NodePort Service
 apiVersion: v1
 kind: Service
 metadata:
@@ -78,3 +79,19 @@ spec:
     name: https
   selector:
     app: idevz-test-http
+---
+# export k8s service though ExternalName Service
+# provide by kube-dns after kube 1.7 version
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: idevz-test-http-external-name
+#   namespace: idevz-k8s-test
+#   labels:
+#     app: idevz-test-http
+# spec:
+#   type: ExternalName
+#   externalName: external.svc.idevz.org
+#   selector:
+#     app: idevz-test-http

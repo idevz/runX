@@ -7,7 +7,6 @@ metadata:
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
 spec:
-  # type: NodePort
   type: ClusterIP
   externalIPs:
   - 10.211.55.151
