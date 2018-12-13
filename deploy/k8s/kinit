@@ -1,0 +1,152 @@
+#!/usr/bin/env bash
+
+### BEGIN ###
+# Author: idevz
+# Since: 21:41:15 2018/12/13
+# Description:       deploy k8s
+# kinit          ./kinit
+#
+# Environment variables that control this script:
+#
+### END ###
+
+set -e
+BASE_DIR=${BASE_DIR:-"$(readlink -f "$(dirname "$0")")"}
+PRI_REGISTRY="${OUT_IP}:5000"
+
+sudo_write() {
+	local content="${1}"
+	local file_name="${2}"
+	local if_add=
+	[ ! -z ${3} ] && if_add="-a"
+	echo "${content}" | sudo tee ${if_add} "${file_name}" >/dev/null 2>&1
+}
+
+update_docker() {
+	# sudo yum remove -y 'docker*'
+	sudo yum install -y yum-utils \
+		device-mapper-persistent-data \
+		lvm2
+	sudo yum-config-manager \
+		--add-repo \
+		https://download.docker.com/linux/centos/docker-ce.repo
+	sudo yum-config-manager --enable docker-ce-edge
+	sudo yum-config-manager --enable docker-ce-test
+	# sudo yum-config-manager --disable docker-ce-edge
+	sudo yum install -y docker-ce-18.06.1.ce
+	local docker_service_unit=
+	docker_service_unit=$(
+		cat <<DOCKER_SERVICE
+[Unit]
+Description=Docker Application Container Engine
+Documentation=https://docs.docker.com
+After=network-online.target firewalld.service
+Wants=network-online.target
+
+[Service]
+Type=notify
+# the default is not to use systemd for cgroups because the delegate issues still
+# exists and systemd currently does not support the cgroup feature set required
+# for containers run by docker
+ExecStart=/usr/bin/dockerd \
+          --insecure-registry=${PRI_REGISTRY} \
+		  --registry-mirror=http://${PRI_REGISTRY}
+ExecReload=/bin/kill -s HUP $MAINPID
+# Having non-zero Limit*s causes performance problems due to accounting overhead
+# in the kernel. We recommend using cgroups to do container-local accounting.
+LimitNOFILE=infinity
+LimitNPROC=infinity
+LimitCORE=infinity
+# Uncomment TasksMax if your systemd version supports it.
+# Only systemd 226 and above support this version.
+#TasksMax=infinity
+TimeoutStartSec=0
+# set delegate yes so that systemd does not reset the cgroups of docker containers
+Delegate=yes
+# kill only the docker process, not all processes in the cgroup
+KillMode=process
+# restart the docker process if it exits prematurely
+Restart=on-failure
+StartLimitBurst=3
+StartLimitInterval=60s
+
+[Install]
+WantedBy=multi-user.target
+DOCKER_SERVICE
+	)
+	sudo_write "${docker_service_unit}" "/lib/systemd/system/docker.service"
+	sudo mkdir "/etc/docker"
+	local docker_daemon_json=
+	docker_daemon_json=$(
+		cat <<EOF
+{
+  "exec-opts": ["native.cgroupdriver=systemd"],
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "50m"
+  },
+  "storage-driver": "overlay2",
+  "storage-opts": [
+    "overlay2.override_kernel_check=true"
+  ]
+}
+EOF
+	)
+	sudo_write "${docker_daemon_json}" "/etc/docker/daemon.json"
+	sudo mkdir -p /etc/systemd/system/docker.service.d
+	sudo systemctl daemon-reload
+	sudo systemctl start docker
+	sudo systemctl enable docker
+}
+
+preper_kubeadm() {
+	KUBE_YUM=$(
+		cat <<KUBE_Y
+[kubernetes]
+name=Kubernetes
+baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+enabled=1
+gpgcheck=1
+repo_gpgcheck=1
+gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+exclude=kube*
+KUBE_Y
+	)
+	sudo_write "${KUBE_YUM}" "/etc/yum.repos.d/kubernetes.repo"
+
+	# Set SELinux in permissive mode (effectively disabling it)
+	sudo setenforce 0
+	sudo sed -i 's/^SELINUX=enforcing$/SELINUX=Disabled/' /etc/selinux/config
+
+	sudo yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
+
+	sudo systemctl enable kubelet && sudo systemctl start kubelet
+
+	KUBE_SYSCTL_CONF=$(
+		cat <<KUBE_S
+net.bridge.bridge-nf-call-ip6tables = 1
+net.bridge.bridge-nf-call-iptables = 1
+net.ipv4.ip_forward = 1
+KUBE_S
+	)
+	sudo_write "${KUBE_SYSCTL_CONF}" /etc/sysctl.d/k8s.conf
+	sudo sysctl --system
+}
+
+init_kubeadm() {
+	sudo swapoff -a #KUBELET_EXTRA_ARGS="--fail-swap-on=false"
+
+	for kube_image in $(kubeadm config images list); do
+		local private_kube_image="${PRI_REGISTRY}/${kube_image}"
+		sudo docker pull "${private_kube_image}"
+		sudo docker tag "${private_kube_image}" "${kube_image}"
+	done
+}
+
+init() {
+	sudo systemctl stop firewalld &&
+		sudo systemctl disable firewalld
+	update_docker
+	preper_kubeadm
+	init_kubeadm
+}
