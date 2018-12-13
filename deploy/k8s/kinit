@@ -23,7 +23,7 @@ sudo_write() {
 }
 
 update_docker() {
-	# sudo yum remove -y 'docker*'
+	sudo yum remove -y 'docker*'
 	sudo yum install -y yum-utils \
 		device-mapper-persistent-data \
 		lvm2
