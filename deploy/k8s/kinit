@@ -75,7 +75,7 @@ WantedBy=multi-user.target
 DOCKER_SERVICE
 	)
 	sudo_write "${docker_service_unit}" "/lib/systemd/system/docker.service"
-	sudo mkdir "/etc/docker"
+	sudo mkdir -p "/etc/docker"
 	local docker_daemon_json=
 	docker_daemon_json=$(
 		cat <<EOF
