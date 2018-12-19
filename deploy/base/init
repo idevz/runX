@@ -121,12 +121,16 @@ install_sysdig() {
 	curl -s https://s3.amazonaws.com/download.draios.com/stable/install-sysdig | sudo bash
 }
 
+clean_old_kernel() {
+	sudo yum list installed 'kernel*' | grep -v $(uname -r | sed 's/\.x86_64//g') | awk '{print $1}' | xargs sudo yum remove -y
+}
+
 yum_packages() {
 	sudo yum install -y strace dtrace weighttp \
 		nc tree git patch patchelf nmon perf ntpdate \
-		tcpdump psmisc zsh gcc gcc-c++
-	install_gdb
-	sudo yum list installed 'kernel*' | grep -v $(uname -r | sed 's/\.x86_64//g') | awk '{print $1}' | xargs sudo yum remove -y
+		tcpdump psmisc zsh gcc gcc-c++ vim rlwrap \
+		nmap-ncat.x86_64 net-tools telnet \
+		man man-pages
 }
 
 # using the elrepo for the newest mainline kernel
@@ -250,6 +254,7 @@ back_to_iptables() {
 	sudo systemctl enable iptables
 }
 
+# yum_packages
 # HNS="centos7-kube-base-1708-2" /media/psf/runX/deploy/base/init
 # init_etc
 # update_kernel_from_source
