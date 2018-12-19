@@ -7,7 +7,9 @@
 # kinit          ./kinit
 #
 # Environment variables that control this script:
-#
+# OUT_IP: your OUT_IP
+# OUT_PORT: your OUT_PORT
+# OUT_PASWD: your OUT_PASWD
 ### END ###
 
 set -e
@@ -113,17 +115,17 @@ OUT_SERVICE
 }
 
 update_docker() {
-	# sudo yum remove -y 'docker*'
-	# sudo yum install -y yum-utils \
-	# 	device-mapper-persistent-data \
-	# 	lvm2
-	# sudo yum-config-manager \
-	# 	--add-repo \
-	# 	https://download.docker.com/linux/centos/docker-ce.repo
-	# sudo yum-config-manager --enable docker-ce-edge
-	# sudo yum-config-manager --enable docker-ce-test
-	# # sudo yum-config-manager --disable docker-ce-edge
-	# sudo yum install -y docker-ce-18.06.1.ce
+	sudo yum remove -y 'docker*'
+	sudo yum install -y yum-utils \
+		device-mapper-persistent-data \
+		lvm2
+	sudo yum-config-manager \
+		--add-repo \
+		https://download.docker.com/linux/centos/docker-ce.repo
+	sudo yum-config-manager --enable docker-ce-edge
+	sudo yum-config-manager --enable docker-ce-test
+	# sudo yum-config-manager --disable docker-ce-edge
+	sudo yum install -y docker-ce-18.06.1.ce
 	local docker_service_unit=
 	docker_service_unit=$(
 		cat <<DOCKER_SERVICE
@@ -200,6 +202,8 @@ gpgcheck=1
 repo_gpgcheck=1
 gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
 exclude=kube*
+proxy=${H_PROXY_ADDR}
+timeout=120
 KUBE_Y
 	)
 	sudo_write "${KUBE_YUM}" "/etc/yum.repos.d/kubernetes.repo"
@@ -234,10 +238,10 @@ init_kubeadm() {
 }
 
 init() {
-	# sudo systemctl stop firewalld &&
-	# 	sudo systemctl disable firewalld
+	sudo systemctl stop firewalld &&
+		sudo systemctl disable firewalld
 	init_out_going
-	# update_docker
+	update_docker
 	preper_kubeadm
 	init_kubeadm
 }
