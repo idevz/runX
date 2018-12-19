@@ -271,8 +271,8 @@ install_weighttp() {
 install_test_nginx() {
 	sudo curl -fSL http://xrl.us/cpanm -o /usr/bin/cpanm &&
 		sudo chmod +x /usr/bin/cpanm
-	cpanm --force Test::Nginx
-	cpanm --force Digest::SHA
+	sudo $(which cpanm) --force Test::Nginx
+	sudo $(which cpanm) --force Digest::SHA
 	install_weighttp
 }
 
@@ -312,9 +312,9 @@ export PRD_OR_ROOT=/usr/local/${OR_VERSION}-prd
 export DBG_OR_ROOT=/usr/local/${OR_VERSION}-debug
 export VGD_OR_ROOT=/usr/local/${OR_VERSION}-valgrind
 
-alias prd_or='[ -z \${OLD_PATH} ] && OLD_PATH=\${PATH}; export PATH=\${PRD_OR_ROOT}/bin:\${OLD_PATH}'
-alias dbg_or='[ -z \${OLD_PATH} ] && OLD_PATH=\${PATH}; export PATH=\${DBG_OR_ROOT}/bin:\${OLD_PATH}'
-alias vgd_or='[ -z \${OLD_PATH} ] && OLD_PATH=\${PATH}; export PATH=\${VGD_OR_ROOT}/bin:\${OLD_PATH}'
+alias prd_or='[ -z \${OLD_PATH} ] && OLD_PATH=\${PATH}; export NGX_BIN_ROOT=\${PRD_OR_ROOT}/nginx/sbin; export PATH=\${NGX_BIN_ROOT}:\${PRD_OR_ROOT}/bin:\${OLD_PATH}; export OR_ROOT=\${PRD_OR_ROOT}'
+alias dbg_or='[ -z \${OLD_PATH} ] && OLD_PATH=\${PATH}; export NGX_BIN_ROOT=\${DBG_OR_ROOT}/nginx/sbin; export PATH=\${NGX_BIN_ROOT}:\${DBG_OR_ROOT}/bin:\${OLD_PATH}; export OR_ROOT=\${DBG_OR_ROOT}'
+alias vgd_or='[ -z \${OLD_PATH} ] && OLD_PATH=\${PATH}; export NGX_BIN_ROOT=\${VGD_OR_ROOT}/nginx/sbin; export PATH=\${NGX_BIN_ROOT}:\${VGD_OR_ROOT}/bin:\${OLD_PATH}; export OR_ROOT=\${VGD_OR_ROOT}'
 
 EOF
 )
