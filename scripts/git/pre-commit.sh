@@ -13,6 +13,7 @@ set -e
 BASE_DIR="./"
 PROBLEM_PATTERN='zhoujing2|idevz@'
 SAFE_FILES=".//shell/etc-profile,.//runX,.//shell/runX.funcs.sh"
+export LC_ALL=C
 
 safe_grep() {
 	local pattern="${1}"
