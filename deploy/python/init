@@ -60,6 +60,8 @@ install_python_from_src() {
 init_pip() {
 	curl "https://bootstrap.pypa.io/get-pip.py" -o "/tmp/get-pip.py"
 	sudo python36 "/tmp/get-pip.py"
+	sudo $(which pip3) install --upgrade pip
+	sudo $(which pip3) install uvloop attrs six coverage bpython
 }
 
 PROFILE=$(
