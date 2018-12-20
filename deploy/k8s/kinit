@@ -20,13 +20,15 @@ H_PROXY_ADDR="http://127.0.0.1:8118"
 sudo_write() {
 	local content="${1}"
 	local file_name="${2}"
+	[ ! -f ${file_name} ] && sudo mkdir -p $(dirname ${file_name}) && sudo touch ${file_name}
 	local if_add=
 	[ ! -z ${3} ] && if_add="-a"
 	echo "${content}" | sudo tee ${if_add} "${file_name}" >/dev/null 2>&1
 }
 
 init_out_going() {
-	sudo yum -y install python-pip privoxy net-tools
+	sudo yum -y install python-pip net-tools
+	sudo yum install -y https://dl.fedoraproject.org/pub/epel/7/x86_64/Packages/p/privoxy-3.0.26-1.el7.x86_64.rpm
 	sudo pip install --upgrade pip
 	sudo pip install shadowsocks
 	local shadowsocks_conf=
