@@ -12,9 +12,12 @@
 
 KUBE_VERSION=${KV:-"1.13.0"}
 
+[ -z ${OUT_IP} ] && echo "need a private ip for docker images." && exit 1
+
 dk_fc() {
 	local pub_image="${1}"
-	local pri_image="$(hostname -I | awk '{print $1}'):5000/${pub_image}"
+	local pri_image="${OUT_IP}:5000/${pub_image}"
+	# local pri_image="$(hostname -I | awk '{print $1}'):5000/${pub_image}"
 	docker pull "${pub_image}" >/dev/null 2>&1
 	docker tag "${pub_image}" "${pri_image}" >/dev/null 2>&1
 	docker push "${pri_image}" >/dev/null 2>&1
