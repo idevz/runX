@@ -10,6 +10,8 @@
 #  KV: kubernet version
 ### END ###
 
+#!!! now just for registry server
+
 KUBE_VERSION=${KV:-"1.13.0"}
 
 [ -z ${OUT_IP} ] && echo "need a private ip for docker images." && exit 1
