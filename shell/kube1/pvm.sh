@@ -43,6 +43,9 @@ clean_cilium() {
 }
 
 # --------- weave --------- #
+# !!! the weave Network 10.32.0.0/12 overlaps with existing route 10.0.0.0/8 on host
+# !!! setting the IPALLOC_RANGE in weave-net DaemonSet container weave
+# !!! and make sure that your "serviceSubnet" in kubeadm config "networking" setting could be accecc througt your node-hosts
 deploy_weave() {
 	kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
 }
@@ -52,6 +55,7 @@ clean_weave() {
 }
 
 # --------- ingress --------- #
+# !!! the externalIPs in x-service.yaml
 deploy_ingress() {
 	kubectl create -f "$RUN_PATH/ingress/kub-ngx/mandatory.yaml"
 	# x-service expose the service in k8s Cluster
@@ -64,6 +68,8 @@ clean_ingress() {
 }
 
 # --------- dashboard --------- #
+# !!! the "DNS." settings in runpath/kube1/ingress/secret/openssl.cnf
+# !!! the ingress "host" in k-dashboard/ingress.yaml
 deploy_kube_dashboard() {
 	kubectl create -f "${RUN_PATH}/k-dashboard/kubernetes-dashboard.yaml"
 	kubectl create -f "${RUN_PATH}/k-dashboard/admin.yaml"
