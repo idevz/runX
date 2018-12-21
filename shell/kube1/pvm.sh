@@ -43,6 +43,7 @@ clean_cilium() {
 }
 
 # --------- weave --------- #
+# https://www.weave.works/docs/net/latest/tasks/ipam/configuring-weave/
 # !!! the weave Network 10.32.0.0/12 overlaps with existing route 10.0.0.0/8 on host
 # !!! setting the IPALLOC_RANGE in weave-net DaemonSet container weave
 # !!! and make sure that your "serviceSubnet" in kubeadm config "networking" setting could be accecc througt your node-hosts
