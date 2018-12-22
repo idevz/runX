@@ -90,3 +90,4 @@ alias mcode="cd $MCODE"
 alias mac="ssh zhoujing2@10.211.55.2"
 alias ctime='sudo ntpdate us.pool.ntp.org'
 alias ngxps="ps axw -o pid,ppid,user,%cpu,vsz,wchan,command | egrep '(nginx|PID)'"
+alias cman='man -M /usr/local/zhman/share/man/zh_CN'
