@@ -75,6 +75,23 @@ using_zsh() {
 	sudo chsh -s ${zsh_location}
 }
 
+setup_zh_man() {
+	sudo yum install -y doxygen
+	curl -fSL https://github.com/BYVoid/OpenCC/archive/ver.1.0.5.tar.gz -o /tmp/OpenCC-ver.1.0.5.tar.gz
+	tar zxf /tmp/OpenCC-ver.1.0.5.tar.gz -C /tmp
+	cd /tmp/OpenCC-ver.1.0.5
+	# need cmake
+	make && x make install
+	sudo ln -sf /usr/lib/libopencc.so.1.0.0 /lib64/libopencc.so.2
+	curl -fSL https://src.fedoraproject.org/repo/pkgs/man-pages-zh-CN/v1.6.2.1.tar.gz/sha512/e5bdc98fdc3caba8b82d99a59eb37d60cf53c082a3a4bd07bbcd800d1a87130fa9cdfe26d5426486c30d461db1d1ee2fcc2621d615925498e725665483acf688/v1.6.2.1.tar.gz -o /tmp/c-man.tar.gz
+	tar zxf /tmp/c-man.tar.gz -C /tmp
+	cd /tmp/manpages-zh-1.6.2.1
+	autoreconf -i
+	./configure --prefix=/usr/local/zhman --disable-zhtw
+	make && x make install
+	# alias cman='man -M /usr/local/zhman/share/man/zh_CN'
+}
+
 init_etc() {
 	sudo hostnamectl set-hostname ${HOST_NAME_SET}
 	using_zsh
