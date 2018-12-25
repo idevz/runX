@@ -98,6 +98,10 @@ clean_idevz_t() {
 	kubectl delete -f "${RUN_PATH}/t/"
 }
 
+sk() {
+	[ -x $(which kubectl) ] && source <(kubectl completion zsh)
+}
+
 k_docker_completion() {
 	# https://gist.github.com/ro31337/b2c33ad0b90636e9e3bb76fb4fb76907
 	mkdir -p ~/.oh-my-zsh/plugins/docker/

@@ -48,3 +48,6 @@ SYN
 FIN
 U A P R S F
 32 16 8 4 2 1
+
+
+strace -Ttt -o rs curl -I -w ‘%{time_namelookup}’ xxx.cn
