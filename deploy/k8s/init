@@ -74,17 +74,17 @@ WT_CONF
 	local out_profile=
 	out_profile=$(
 		cat <<OUT_PROFILE
-alias unstart_out="unset ALL_PROXY HTTP_PROXY HTTPS_PROXY all_proxy http_proxy https_proxy"
+# alias unstart_out="unset ALL_PROXY HTTP_PROXY HTTPS_PROXY all_proxy http_proxy https_proxy"
 alias reload_out="sudo systemctl restart out_going.service && sudo systemctl restart privoxy.service"
 
-proxy="${H_PROXY_ADDR}"
-export ALL_PROXY=\${proxy}
-export HTTP_PROXY=\${proxy}
-export HTTPS_PROXY=\${proxy}
-export all_proxy=\${proxy}
-export http_proxy=\${proxy}
-export https_proxy=\${proxy}
-export NO_PROXY="${NO_PROXY}"
+# proxy="${H_PROXY_ADDR}"
+# export ALL_PROXY=\${proxy}
+# export HTTP_PROXY=\${proxy}
+# export HTTPS_PROXY=\${proxy}
+# export all_proxy=\${proxy}
+# export http_proxy=\${proxy}
+# export https_proxy=\${proxy}
+# export NO_PROXY="${NO_PROXY}"
 OUT_PROFILE
 	)
 	sudo_write "${out_profile}" "/etc/profile" true

@@ -3,6 +3,7 @@
 HOSTNAME=$(hostname)
 PRLCTL_HOME=${PRLCTL_HOME:-"/media/psf/runX"}
 sudo swapoff -a
+[ $(hostname) = "kube1" ] && export PATH="$PATH:$PRLCTL_HOME/code/istio-1.0.5/bin"
 
 # --------- kubeadm --------- #
 k_init_kubeadm() {
