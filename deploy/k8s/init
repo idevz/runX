@@ -212,6 +212,7 @@ ExecStart=/usr/bin/dockerd \
           --insecure-registry=${PRI_REGISTRY} \
 		  --registry-mirror=http://${PRI_REGISTRY}
 ExecReload=/bin/kill -s HUP $MAINPID
+Environment="HTTP_PROXY=${H_PROXY_ADDR}" "HTTPS_PROXY=${H_PROXY_ADDR}" "NO_PROXY=${NO_PROXY}"
 # Having non-zero Limit*s causes performance problems due to accounting overhead
 # in the kernel. We recommend using cgroups to do container-local accounting.
 LimitNOFILE=infinity
