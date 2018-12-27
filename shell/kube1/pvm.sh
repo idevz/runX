@@ -2,13 +2,58 @@
 
 HOSTNAME=$(hostname)
 PRLCTL_HOME=${PRLCTL_HOME:-"/media/psf/runX"}
+[ ! -d ${PRLCTL_HOME} ] && PRLCTL_HOME="/tmp"
 sudo swapoff -a
 [ $(hostname) = "kube1" ] && export PATH="$PATH:$PRLCTL_HOME/code/istio-1.0.5/bin:$PRLCTL_HOME/code/helm-v2.12.1"
 
+fetch_tar_pkg() {
+	[ -z ${1} -o -z ${2} ] && echo "need a src url and local full file name" && exit 1
+	local src_url=${1}
+	local local_name=${2}
+
+	local dir_name=$(dirname ${local_name})
+	[ ! -d ${dir_name} ] && mkdir -p ${dir_name}
+	[ ! -f ${local_name} ] &&
+		curl -fSL ${src_url} -o ${local_name}
+
+	if [ ! -z ${3} ]; then
+		local res_dir_name=${3}
+		cd ${dir_name}
+		[ -d "${dir_name}/${res_dir_name}" ] && rm -rf "${dir_name}/${res_dir_name}"
+		tar zxf $(basename ${local_name})
+		cd -
+	fi
+}
+
 # ----------- helm ---------- #
 deploy_helm() {
+	local helm_version="v2.12.1"
+	local src_url="https://storage.googleapis.com/kubernetes-helm/helm-${helm_version}-linux-amd64.tar.gz"
+	local local_name="${PRLCTL_HOME}/code/helm-${helm_version}-linux-amd64.tar.gz"
+	local res_dir_name="helm-${helm_version}"
+	fetch_tar_pkg ${src_url} ${local_name} ${res_dir_name}
+	mv "${PRLCTL_HOME}/code/linux-amd64" "${PRLCTL_HOME}/code/${res_dir_name}"
 	kubectl create -f $RUN_PATH/helm/rbac.yaml
+	# @TODO try to init with --tiller-tls-verify option
 	helm init --service-account tiller
+}
+
+# --------- kubeadm --------- #
+deploy_istio() {
+	local istio_version=${IV:-"1.0.5"}
+	local src_url="https://github.com/istio/istio/releases/download/${istio_version}/istio-${istio_version}-linux.tar.gz"
+	local local_name="${PRLCTL_HOME}/code/istio-${istio_version}-linux.tar.gz"
+	local res_dir_name="istio-${istio_version}"
+	fetch_tar_pkg ${src_url} ${local_name} ${res_dir_name}
+	helm template $PRLCTL_HOME/code/istio-${istio_version}/install/kubernetes/helm/istio --name istio --namespace istio-system >$RUN_PATH/istio/helm-istio-${istio_version}.yaml
+	kubectl create namespace istio-system
+	kubectl create -f $RUN_PATH/istio/helm-istio-${istio_version}.yaml
+}
+
+clean_istio() {
+	local istio_version=${IV:-"1.0.5"}
+	kubectl delete namespace istio-system
+	kubectl delete -f $RUN_PATH/istio/helm-istio-${istio_version}.yaml
 }
 
 # --------- kubeadm --------- #
