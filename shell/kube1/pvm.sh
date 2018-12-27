@@ -39,13 +39,31 @@ deploy_helm() {
 }
 
 # --------- kubeadm --------- #
-deploy_istio() {
+gen_istio_yaml_with_helm() {
 	local istio_version=${IV:-"1.0.5"}
 	local src_url="https://github.com/istio/istio/releases/download/${istio_version}/istio-${istio_version}-linux.tar.gz"
 	local local_name="${PRLCTL_HOME}/code/istio-${istio_version}-linux.tar.gz"
 	local res_dir_name="istio-${istio_version}"
 	fetch_tar_pkg ${src_url} ${local_name} ${res_dir_name}
 	helm template $PRLCTL_HOME/code/istio-${istio_version}/install/kubernetes/helm/istio --name istio --namespace istio-system >$RUN_PATH/istio/helm-istio-${istio_version}.yaml
+
+	helm template $PRLCTL_HOME/code/istio-${istio_version}/install/kubernetes/helm/istio \
+		--name istio --namespace istio-system \
+		--set sidecarInjectorWebhook.enabled=true \
+		--set ingress.service.type=NodePort \
+		--set gateways.istio-ingressgateway.type=NodePort \
+		--set gateways.istio-egressgateway.type=NodePort \
+		--set tracing.enabled=true \
+		--set servicegraph.enabled=true \
+		--set prometheus.enabled=true \
+		--set tracing.jaeger.enabled=true \
+		--set grafana.enabled=true >$RUN_PATH/istio/helm-istio-${istio_version}.yaml
+}
+
+deploy_istio() {
+	local istio_version=${IV:-"1.0.5"}
+	[ ! -f $RUN_PATH/istio/helm-istio-${istio_version}.yaml ] &&
+		gen_istio_yaml_with_helm
 	kubectl create namespace istio-system
 	# remeber change "memory: 2048Mi" to "memory: 1024Mi" in PVMs for less memery
 	kubectl create -f $RUN_PATH/istio/helm-istio-${istio_version}.yaml
@@ -53,8 +71,18 @@ deploy_istio() {
 
 clean_istio() {
 	local istio_version=${IV:-"1.0.5"}
-	kubectl delete namespace istio-system
 	kubectl delete -f $RUN_PATH/istio/helm-istio-${istio_version}.yaml
+	kubectl delete namespace istio-system
+}
+
+istio_ingress() {
+	$RUN_PATH/ingress/secret/gen.sh "istio-ingress-secret" "istio-system"
+	kubectl create -f "${RUN_PATH}/istio/istio-ingress.yaml"
+}
+
+x_istio_ingress() {
+	kubectl delete -f "${RUN_PATH}/istio/istio-ingress.yaml"
+	kubectl delete secrets -n "istio-system" "istio-ingress-secret"
 }
 
 # --------- kubeadm --------- #
@@ -134,8 +162,8 @@ deploy_kube_dashboard() {
 clean_kube_dashboard() {
 	kubectl delete -f "${RUN_PATH}/k-dashboard/kubernetes-dashboard.yaml"
 	kubectl delete -f "${RUN_PATH}/k-dashboard/admin.yaml"
-	kubectl delete secrets -n "kube-system" "ingress-secret"
 	kubectl delete -f "${RUN_PATH}/k-dashboard/ingress.yaml"
+	kubectl delete secrets -n "kube-system" "ingress-secret"
 }
 
 get_dashboard_secrets() {

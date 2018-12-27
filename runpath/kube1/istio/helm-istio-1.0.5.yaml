@@ -2556,23 +2556,24 @@ metadata:
     app: istio-ingressgateway
     istio: ingressgateway
 spec:
-  type: LoadBalancer
+  # type: LoadBalancer
+  type: ClusterIP
   selector:
     app: istio-ingressgateway
     istio: ingressgateway
   ports:
     -
       name: http2
-      nodePort: 31380
+      # nodePort: 31380
       port: 80
       targetPort: 80
     -
       name: https
-      nodePort: 31390
+      # nodePort: 31390
       port: 443
     -
       name: tcp
-      nodePort: 31400
+      # nodePort: 31400
       port: 31400
     -
       name: tcp-pilot-grpc-tls
