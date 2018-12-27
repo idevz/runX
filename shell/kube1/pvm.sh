@@ -47,6 +47,7 @@ deploy_istio() {
 	fetch_tar_pkg ${src_url} ${local_name} ${res_dir_name}
 	helm template $PRLCTL_HOME/code/istio-${istio_version}/install/kubernetes/helm/istio --name istio --namespace istio-system >$RUN_PATH/istio/helm-istio-${istio_version}.yaml
 	kubectl create namespace istio-system
+	# remeber change "memory: 2048Mi" to "memory: 1024Mi" in PVMs for less memery
 	kubectl create -f $RUN_PATH/istio/helm-istio-${istio_version}.yaml
 }
 
@@ -150,8 +151,12 @@ clean_idevz_t() {
 	kubectl delete -f "${RUN_PATH}/t/"
 }
 
-sk() {
+k_zh() {
 	[ -x $(which kubectl) ] && source <(kubectl completion zsh)
+}
+
+k_bash() {
+	[ -x $(which kubectl) ] && source <(kubectl completion bash)
 }
 
 k_docker_completion() {

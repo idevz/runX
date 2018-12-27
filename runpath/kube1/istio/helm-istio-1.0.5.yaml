@@ -3445,7 +3445,7 @@ spec:
           resources:
             requests:
               cpu: 500m
-              memory: 2048Mi
+              memory: 1024Mi
             
           volumeMounts:
           - name: config-volume
