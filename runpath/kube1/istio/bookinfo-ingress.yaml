@@ -1,0 +1,14 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: bookinfo-ingress
+  namespace: default
+spec:
+  rules:
+  - host: bookinfo.idevz.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: productpage
+          servicePort: 9080

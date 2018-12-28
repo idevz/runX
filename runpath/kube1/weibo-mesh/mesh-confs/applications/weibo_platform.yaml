@@ -1,0 +1,8 @@
+#config fo agent
+motan-agent:
+  application: "weibo_platform"
+
+import-refer:
+  # - idevz
+  # - abtestService
+  # - cardService 

@@ -1,0 +1,16 @@
+# all configs in this file will enable by default. so these configids can be used in all service yamls.  
+# do not modify!
+
+#config fo agent
+motan-agent:
+  port: 9981
+  mport: 8002
+  log_dir: "./logs"
+  snapshot_dir: "./snapshot"
+
+#config of registries
+motan-registry:
+  py-http-4-http_mesh-test:
+    protocol: direct
+    host: http-mesh-sever
+    port: 9982

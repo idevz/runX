@@ -50,14 +50,13 @@ gen_istio_yaml_with_helm() {
 	helm template $PRLCTL_HOME/code/istio-${istio_version}/install/kubernetes/helm/istio \
 		--name istio --namespace istio-system \
 		--set sidecarInjectorWebhook.enabled=true \
-		--set ingress.service.type=NodePort \
-		--set gateways.istio-ingressgateway.type=NodePort \
-		--set gateways.istio-egressgateway.type=NodePort \
 		--set tracing.enabled=true \
 		--set servicegraph.enabled=true \
 		--set prometheus.enabled=true \
 		--set tracing.jaeger.enabled=true \
+		--set kiali.enabled=true \
 		--set grafana.enabled=true >$RUN_PATH/istio/helm-istio-${istio_version}.yaml
+	[ $(hostname) = "kube1" ] && sed -i 's/memory: 2048Mi/memory: 1024Mi/g' $RUN_PATH/istio/helm-istio-${istio_version}.yaml
 }
 
 deploy_istio() {
@@ -83,6 +82,14 @@ istio_ingress() {
 x_istio_ingress() {
 	kubectl delete -f "${RUN_PATH}/istio/istio-ingress.yaml"
 	kubectl delete secrets -n "istio-system" "istio-ingress-secret"
+}
+
+istio_bookinfo() {
+	kubectl apply -f $PRLCTL_HOME/code/istio-1.0.5/samples/bookinfo/platform/kube/bookinfo.yaml
+}
+
+x_istio_bookinfo() {
+	kubectl delete -f $PRLCTL_HOME/code/istio-1.0.5/samples/bookinfo/platform/kube/bookinfo.yaml
 }
 
 # --------- kubeadm --------- #

@@ -1,0 +1,7 @@
+motan-basicRefer:
+  # card-abtest-basicRefer:
+  #   requestTimeout: 8000
+  #   loadbalance: roundrobin
+
+dynamic-param:
+  service.i_http-mesh-test_weibo_com.group: "yf-i.http-mesh-test.weibo.com-core"

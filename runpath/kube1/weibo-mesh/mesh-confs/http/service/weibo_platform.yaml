@@ -1,0 +1,15 @@
+import-http-location: # 将被导出的服务列表，与 域名 一一对应
+  - i.http-mesh-test.weibo.com
+
+motan-service:
+  i.http-mesh-test.weibo.com-test:
+    registry: py-http-4-http_mesh-test
+    group: "${service.i_http-mesh-test_weibo_com.group}"
+    domain: i.http-mesh-test.weibo.com
+    path: http_backend
+    export: "motan2:9982"
+    provider: http
+    serialization: simple
+    proxyAddress: http-mesh-sever:8000
+    requestTimeout: 2000
+    filter: "accessLog,metrics"

@@ -5,26 +5,39 @@ metadata:
   namespace: istio-system
 spec:
   rules:
-  - host: idevz.or.com
+  - host: prometheus.idevz.com
     http:
       paths:
       - path: /
         backend:
           serviceName: prometheus
           servicePort: 9090
-
-
-# apiVersion: extensions/v1beta1
-# kind: Ingress
-# metadata:
-#   name: prometheus
-#   namespace: istio-system
-# spec:
-#   rules:
-#   - host: prometheus.istio.io
-#     http:
-#       paths:
-#       - path: /
-#         backend:
-#           serviceName: prometheus
-#           servicePort: 9090
+  - host: grafana.idevz.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: grafana
+          servicePort: 3000
+  - host: servicegraph.idevz.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: servicegraph
+          servicePort: 8080
+  - host: tracing.idevz.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: tracing
+          servicePort: 80
+  - host: kiali.idevz.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: kiali
+          servicePort: 20001
+ 

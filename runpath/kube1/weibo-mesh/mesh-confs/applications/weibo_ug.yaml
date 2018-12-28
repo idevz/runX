@@ -1,0 +1,8 @@
+#config fo agent
+motan-agent:
+  application: "weibo_ug"
+
+import-refer:
+  - i.http-mesh-test.weibo.com
+  # - abtestService
+  # - cardService 

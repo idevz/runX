@@ -6,38 +6,49 @@ metadata:
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: default-http-backend
+  name: http-mesh-sever
   labels:
-    app: default-http-backend
-  namespace: ingress-nginx
+    app: http-mesh-sever
+  namespace: http-mesh
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: default-http-backend
+      app: http-mesh-sever
   template:
     metadata:
       labels:
-        app: default-http-backend
+        app: http-mesh-sever
     spec:
       terminationGracePeriodSeconds: 60
+      initContainers:
+      - name: http-mesh-server-agent
+        image: weibocom/weibo-mesh:0.0.11
+        command: ["/weibo-mesh", "-c", "/mesh-confs", "-pool", "weibo_platform-yf-core"]
+        workingDir: /server-mesh-run-path
+        volumeMounts:
+        - mountPath: /mesh-confs
+          name: mesh-confs
+        - mountPath: /server-mesh-run-path
+          name: server-mesh-run-path
+        ports:
+        - containerPort: 9982
       containers:
-      - name: default-http-backend
-        # Any image is permissible as long as:
-        # 1. It serves a 404 page at /
-        # 2. It serves 200 on a /healthz endpoint
-        image: gcr.io/google_containers/defaultbackend:1.4
-        # https://github.com/kubernetes/kubernetes/blob/master/cluster/addons/cluster-loadbalancing/glbc/default-svc-controller.yaml
-        # image: k8s.gcr.io/defaultbackend-amd64:1.5
+      - name: http-mesh-sever
+        image: python:3.7-alpine
+        command: ["python3", "-m", "http.server", "--directory", "/www/"]
+        volumeMounts:
+        - mountPath: /www
+          name: python-www
         livenessProbe:
           httpGet:
             path: /healthz
-            port: 8080
+            port: 8000
             scheme: HTTP
           initialDelaySeconds: 30
           timeoutSeconds: 5
         ports:
-        - containerPort: 8080
+        - containerPort: 8000
         resources:
           limits:
             cpu: 10m
@@ -45,18 +56,141 @@ spec:
           requests:
             cpu: 10m
             memory: 20Mi
+      volumes:
+      - name: mesh-confs
+        hostPath:
+          path: /media/psf/runX/runpath/kube1/weibo-mesh/mesh-confs/
+      - name: python-www
+        hostPath:
+          path: /media/psf/runX/runpath/kube1/weibo-mesh/www
+      - name: server-mesh-run-path
+        hostPath:
+          path: /media/psf/runX/runpath/kube1/weibo-mesh/run_path/server 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: default-http-backend
-  namespace: ingress-nginx
+  name: http-mesh-sever
+  namespace: http-mesh
   labels:
-    app: default-http-backend
+    app: http-mesh-sever
 spec:
   ports:
-  - port: 80
-    targetPort: 8080
+  - port: 9982
+    targetPort: 9982
   selector:
-    app: default-http-backend
+    app: http-mesh-sever
+# ---
+# apiVersion: extensions/v1beta1
+# kind: Deployment
+# metadata:
+#   name: wb-zookeeper
+#   labels:
+#     app: wb-zookeeper
+#   namespace: http-mesh
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: wb-zookeeper
+#   template:
+#     metadata:
+#       labels:
+#         app: wb-zookeeper
+#     spec:
+#       containers:
+#       - name: wb-zookeeper
+#         image: python:3.7-alpine
+#         # command: ["zookeeper"]
+#         ports:
+#         - containerPort: 2181
+#         resources:
+#           limits:
+#             cpu: 10m
+#             memory: 20Mi
+#           requests:
+#             cpu: 10m
+#             memory: 20Mi
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: wb-zookeeper
+#   namespace: http-mesh
+#   labels:
+#     app: wb-zookeeper
+# spec:
+#   ports:
+#   - port: 2181
+#     targetPort: 2181
+#   selector:
+#     app: wb-zookeeper
 ---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: http-mesh-client
+  labels:
+    app: http-mesh-client
+  namespace: http-mesh
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: http-mesh-client
+  template:
+    metadata:
+      labels:
+        app: http-mesh-client
+    spec:
+      terminationGracePeriodSeconds: 60
+      initContainers:
+      - name: http-mesh-client-agent
+        image: weibocom/weibo-mesh:0.0.11
+        command: ["/weibo-mesh", "-c", "/mesh-confs", "-pool", "weibo_ug-yf-core"]
+        workingDir: /client-mesh-run-path
+        volumeMounts:
+        - mountPath: /mesh-confs
+          name: mesh-confs
+        - mountPath: /client-mesh-run-path
+          name: client-mesh-run-path
+        ports:
+        - containerPort: 9983
+      containers:
+      - name: http-mesh-client
+        image: php:7.3-zts-alpine 
+        command: ["http_proxy=127.0.0.1:9983", "php", "req-http.php"]
+        volumeMounts:
+        - mountPath: /client
+          name: php-client
+        resources:
+          limits:
+            cpu: 10m
+            memory: 20Mi
+          requests:
+            cpu: 10m
+            memory: 20Mi
+      volumes:
+      - name: mesh-confs
+        hostPath:
+          path: /media/psf/runX/runpath/kube1/weibo-mesh/mesh-confs/
+      - name: php-client
+        hostPath:
+          path: /media/psf/runX/runpath/kube1/weibo-mesh/client
+      - name: client-mesh-run-path
+        hostPath:
+          path: /media/psf/runX/runpath/kube1/weibo-mesh/run_path/client 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: http-mesh-client
+  namespace: http-mesh
+  labels:
+    app: http-mesh-client
+spec:
+  ports:
+  - port: 9983
+    targetPort: 9983
+  selector:
+    app: http-mesh-client

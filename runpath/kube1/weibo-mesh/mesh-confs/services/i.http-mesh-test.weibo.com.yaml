@@ -1,0 +1,16 @@
+import-http-location: # 导入所需 location 配置
+  - i.http-mesh-test.weibo.com
+
+dynamic-param:
+  refer.i_http-mesh-test_weibo_com.group: "default-group-could overlaied by pools settings"
+  refer.i_http-mesh-test_weibo_com.preload: "http_backend"
+
+http-client:
+  i.http-mesh-test.weibo.com:
+    registry: py-http-4-http_mesh-test
+    domain: i.http-mesh-test.weibo.com
+    group: "${refer.i_http-mesh-test_weibo_com.group}"
+    preload: "${refer.i_http-mesh-test_weibo_com.preload}"
+    serialization: simple
+    filter: "accessLog,metrics"
+    protocol: motan2
