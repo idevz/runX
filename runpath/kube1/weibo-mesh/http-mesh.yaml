@@ -33,6 +33,7 @@ spec:
           name: server-mesh-run-path
         ports:
         - containerPort: 9982
+        - containerPort: 8002
       containers:
       - name: http-mesh-sever
         image: python:3.7-alpine
@@ -78,53 +79,12 @@ spec:
   ports:
   - port: 9982
     targetPort: 9982
+    name: http-server-mesh
+  - port: 8002
+    targetPort: 8002
+    name: http-server-mesh-manage
   selector:
     app: http-mesh-sever
-# ---
-# apiVersion: extensions/v1beta1
-# kind: Deployment
-# metadata:
-#   name: wb-zookeeper
-#   labels:
-#     app: wb-zookeeper
-#   namespace: http-mesh
-# spec:
-#   replicas: 1
-#   selector:
-#     matchLabels:
-#       app: wb-zookeeper
-#   template:
-#     metadata:
-#       labels:
-#         app: wb-zookeeper
-#     spec:
-#       containers:
-#       - name: wb-zookeeper
-#         image: python:3.7-alpine
-#         # command: ["zookeeper"]
-#         ports:
-#         - containerPort: 2181
-#         resources:
-#           limits:
-#             cpu: 10m
-#             memory: 20Mi
-#           requests:
-#             cpu: 10m
-#             memory: 20Mi
-# ---
-# apiVersion: v1
-# kind: Service
-# metadata:
-#   name: wb-zookeeper
-#   namespace: http-mesh
-#   labels:
-#     app: wb-zookeeper
-# spec:
-#   ports:
-#   - port: 2181
-#     targetPort: 2181
-#   selector:
-#     app: wb-zookeeper
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -156,6 +116,15 @@ spec:
           name: client-mesh-run-path
         ports:
         - containerPort: 9983
+        - containerPort: 8002
+        # livenessProbe:
+        #   httpGet:
+        #     path: /version
+        #     port: 8002
+        # readinessProbe:
+        #   httpGet:
+        #     path: /version
+        #     port: 8002
       containers:
       - name: http-mesh-client
         image: php:7.3-zts-alpine 
@@ -192,5 +161,9 @@ spec:
   ports:
   - port: 9983
     targetPort: 9983
+    name: http-client-mesh
+  - port: 8002
+    targetPort: 8002
+    name: http-client-mesh-manage
   selector:
     app: http-mesh-client
