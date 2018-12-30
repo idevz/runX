@@ -24,7 +24,7 @@ spec:
       initContainers:
       - name: http-mesh-server-agent
         image: weibocom/weibo-mesh:0.0.11
-        command: ["/weibo-mesh", "-c", "/mesh-confs", "-pool", "weibo_platform-yf-core"]
+        command: ["/weibo-mesh", "-c", "/mesh-confs", "-pool", "weibo_platform-yf-core", "&"]
         workingDir: /server-mesh-run-path
         volumeMounts:
         - mountPath: /mesh-confs
@@ -107,7 +107,7 @@ spec:
       initContainers:
       - name: http-mesh-client-agent
         image: weibocom/weibo-mesh:0.0.11
-        command: ["/weibo-mesh", "-c", "/mesh-confs", "-pool", "weibo_ug-yf-core"]
+        command: ["/weibo-mesh", "-c", "/mesh-confs", "-pool", "weibo_ug-yf-core", "&"]
         workingDir: /client-mesh-run-path
         volumeMounts:
         - mountPath: /mesh-confs
