@@ -96,21 +96,23 @@ x_clone() {
 		# didn't use DNS setting which in files like ifcfg-eth0
 		# to generate nameserver settings in /etc/resolv.conf1
 		# set to disable NetworkManager to manage /etc/resolv.conf
+
+		# PEERDNS="no"
+		# NM_CONTROLLED="no"
+
 		EHT0_CFG=$(
 			cat <<CFG
 BOOTPROTO="static"
 IPADDR="${STATIC_IP}"
 NETMASK="255.255.255.0"
 GATEWAY="${GATEWAY_IP}"
-PEERDNS="no"
-NM_CONTROLLED="no"
 CFG
 		)
 		_prlctl_exec ${HOST_NAME} \
 			"sudo echo '${EHT0_CFG}' >> /etc/sysconfig/network-scripts/ifcfg-eth0"
 
-		_prlctl_exec ${HOST_NAME} \
-			sudo systemctl restart network
+		# _prlctl_exec ${HOST_NAME} \
+		# 	sudo systemctl restart network
 
 		ynotic "/etc/resolv.conf setting..."
 		DNS_RESOLV_CFG=$(
