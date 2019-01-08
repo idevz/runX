@@ -83,9 +83,16 @@ install_phpunit_skelgen() {
 	sudo chmod +x /usr/local/bin/phpunit-skelgen
 }
 
+install_composer() {
+	curl -fSL https://getcomposer.org/installer -o /tmp/composer-installer
+	sudo $(which php) /tmp/composer-installer --install-dir=/usr/local/bin --filename=composer
+	rm /tmp/composer-installer
+}
+
 init() {
 	install_or
 	install_php_from_src
 	install_phpunit_skelgen
+	install_composer
 	create_profile "${PROFILE}"
 }
