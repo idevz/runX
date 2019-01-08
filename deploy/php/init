@@ -77,8 +77,15 @@ install_or() {
 	PROFILE=${OLD_PROFILE}
 }
 
+install_phpunit_skelgen() {
+	curl -fSL https://phar.phpunit.de/phpunit-skelgen.phar -o /tmp/phpunit-skelgen.phar
+	sudo mv /tmp/phpunit-skelgen.phar /usr/local/bin/phpunit-skelgen
+	sudo chmod +x /usr/local/bin/phpunit-skelgen
+}
+
 init() {
 	install_or
 	install_php_from_src
+	install_phpunit_skelgen
 	create_profile "${PROFILE}"
 }
