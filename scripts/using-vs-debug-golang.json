@@ -1,0 +1,23 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    // dlv debug --headless --listen=:2345 --log --build-flags="-gcflags '-N -l'" -- -c /media/psf/code/z/git/weibo-mesh/testhelpers/mesh.yaml
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "weibo-motan-go",
+            "type": "go",
+            "request": "launch",
+            "mode": "remote",
+            "remotePath": "/media/psf/code/z/idevz-go/src/weibo-motan-go/main",
+            "program": "/Users/idevz/code/z/idevz-go/src/weibo-motan-go/main",
+            "port": 2345,
+            "host": "10.211.55.5",
+            "env": {},
+            "args": [
+                "-c /media/psf/code/z/git/weibo-mesh/testhelpers/mesh.yaml"
+            ]
+        }
+    ]
+}
