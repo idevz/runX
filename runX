@@ -105,7 +105,7 @@ x_clone() {
 BOOTPROTO="static"
 IPADDR="${STATIC_IP}"
 NETMASK="255.255.255.0"
-GATEWAY="${GATEWAY_IP}"
+GATEWAY="${GATEWAY_IP}1"
 CFG
 		)
 		_prlctl_exec ${HOST_NAME} \

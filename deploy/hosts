@@ -1,9 +1,10 @@
 #10.211.55.2  demo
 #10.211.55.5  golang
 #10.211.55.6  openresty
-10.211.55.7  php      #php kube4 
+#10.211.55.7  php      #php kube4 
 #10.211.55.8  python #python  kube4
 #10.211.55.9  lua
+10.211.55.100  dk      #k8s kube4 
 #10.211.55.150  kube1    #k8s  kube4
 #10.211.55.151  kube2    #k8s  kube5
 #10.211.55.152  kube3    #k8s  kube6
