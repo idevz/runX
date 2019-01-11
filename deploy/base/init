@@ -147,7 +147,8 @@ yum_packages() {
 		nc tree git patch patchelf nmon perf ntpdate \
 		tcpdump psmisc zsh gcc gcc-c++ vim rlwrap \
 		nmap-ncat.x86_64 net-tools telnet \
-		man man-pages
+		man man-pages \
+		bind-utils # for nslookup, host OR dig
 }
 
 # using the elrepo for the newest mainline kernel
