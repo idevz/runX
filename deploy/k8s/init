@@ -261,6 +261,12 @@ EOF
 	sudo systemctl enable docker
 }
 
+install_docker_compose() {
+	sudo yum install epel-release
+	sudo yum install -y python-pip
+	sudo pip install docker-compose
+}
+
 preper_kubeadm() {
 	KUBE_YUM=$(
 		cat <<KUBE_Y
@@ -339,6 +345,7 @@ init() {
 		sudo systemctl disable firewalld
 	init_out_going
 	update_docker
+	# install_docker_compose
 	preper_kubeadm
 	init_kubeadm
 }
