@@ -12,3 +12,12 @@ luajit_prove() {
 	prove "$@"
 }
 export PATH=/usr/local/openresty-1.15.6.1rc0-debug/nginx/sbin:$PATH
+
+start_debug_or() {
+	sudo pkill openresty
+	x openresty -p ${RUN_PATH}/ngx.d
+}
+
+stop_or() {
+	sudo pkill openresty
+}
