@@ -20,8 +20,6 @@ mst_debug() {
 }
 
 pid_debug() {
-	set -x
-	echo "start or."
 	x $(which openresty) \
 		-p ${RUN_PATH}/ngx.d \
 		-c $RUN_PATH/ngx.d/conf/pid-debug.conf
@@ -29,7 +27,6 @@ pid_debug() {
 	local or_pid=$(ps aux | grep 'nginx: worker process' | grep -v grep | awk '{print $2}')
 	echo "get pid: ${or_pid}"
 	x gdbserver --attach :222 ${or_pid} &
-	set +x
 }
 
 stop_debug() {
