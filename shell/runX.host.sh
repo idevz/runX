@@ -49,7 +49,7 @@ _waiting_til_done() {
 }
 
 i() {
-	while getopts "t:d:s:c:i:rl" OPTS; do
+	while getopts "t:d:s:c:i:rlw:p:" OPTS; do
 		case "${OPTS}" in
 		t)
 			OLD_IFS=${IFS}
@@ -106,6 +106,12 @@ i() {
 		l)
 			prlctl list ${2}
 			;;
+		w)
+			prlctl resume ${2}
+			;;
+		p)
+			prlctl suspend ${2}
+			;;
 		\?)
 			echo "
 i is a tool for manage the pvms such as login, stop, start and so on.
@@ -122,6 +128,8 @@ The options are:
 	-i       list the ip of the pvms
 	-r       exec the $(runX nx) command to deploy a pvm
 	-l       list the pvms
+	-w       weakup the suspended pvm
+	-p       suspend the pvm
 			"
 			;;
 		esac
