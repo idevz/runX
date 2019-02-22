@@ -48,16 +48,23 @@ _waiting_til_done() {
 	done
 }
 
+multi_for_i() {
+	DO=${1}
+	OPTARG=${2}
+
+	OLD_IFS=${IFS}
+	IFS=',| |;' read -rA HOST_NAMES <<<"${OPTARG}"
+	for HOST_NAME in ${HOST_NAMES}; do
+		prlctl ${DO} "${HOST_NAME}" &
+	done
+	IFS=${OLD_IFS}
+}
+
 i() {
 	while getopts "t:d:s:c:i:rlw:p:" OPTS; do
 		case "${OPTS}" in
 		t)
-			OLD_IFS=${IFS}
-			IFS=',| |;' read -rA HOST_NAMES <<<"${OPTARG}"
-			for HOST_NAME in ${HOST_NAMES}; do
-				prlctl stop "${HOST_NAME}" &
-			done
-			IFS=${OLD_IFS}
+			multi_for_i "stop" "${OPTARG}"
 			;;
 		d)
 			OLD_IFS=${IFS}
@@ -79,12 +86,7 @@ i() {
 			IFS=${OLD_IFS}
 			;;
 		s)
-			OLD_IFS=${IFS}
-			IFS=',| |;' read -rA HOST_NAMES <<<"${OPTARG}"
-			for HOST_NAME in ${HOST_NAMES}; do
-				prlctl start "${HOST_NAME}" &
-			done
-			IFS=${OLD_IFS}
+			multi_for_i "start" "${OPTARG}"
 			;;
 		c)
 			echo "${OPTS}"
@@ -107,10 +109,10 @@ i() {
 			prlctl list ${2}
 			;;
 		w)
-			prlctl resume ${2}
+			multi_for_i "resume" "${OPTARG}"
 			;;
 		p)
-			prlctl suspend ${2}
+			multi_for_i "suspend" "${OPTARG}"
 			;;
 		\?)
 			echo "
