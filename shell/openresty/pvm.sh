@@ -2,6 +2,7 @@
 # set -x
 # default set to using debug version openresty
 dbg_or
+export PATH=/usr/local/openresty-1.13.6.2-debug/luajit/bin:$PATH
 
 luajit_prove() {
 	if [ ! -z ${VALGRIND} ]; then
