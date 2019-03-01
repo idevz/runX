@@ -16,9 +16,11 @@ set -ex
 [ $HOME != '/home/z' ] && echo 'Are U Z ?' && exit 1
 
 BASE_DIR=${BASE_DIR:-$(dirname $(cd $(dirname "$0") && pwd -P)/$(basename "$0"))}
+BUILD_ENV="${BUILD_ENV}"
 OR_ENV=${OE:-"debug"}
 
 SRC_ROOT=${BASE_DIR}/srcs
+[ ! -d "${SRC_ROOT}" ] && x mkdir -p "${SRC_ROOT}"
 OR_VERSION=${LV:-"openresty-1.15.6.1rc0"}
 DEFAULT_LUAJIT_PREFIX=/usr/local/luajit
 DEFAULT_LUAJIT_VERSION=${DEFAULT_LUAJIT_VERSION:-"2.1.0-beta3"}
@@ -32,7 +34,7 @@ RESTY_J=${RESTY_J:-"4"}
 RESTY_CONFIG_OPTIONS_MORE=""
 
 yum_base_preparing() {
-	sudo yum install --nogpgcheck -y \
+	x yum install --nogpgcheck -y \
 		systemtap-sdt-devel readline-devel libxslt-devel gd-devel geoip-devel \
 		unzip patch \
 		perl perl-ExtUtils-Embed \
@@ -51,9 +53,31 @@ local_pkg_preparing() {
 	tar xzf luarocks-${RESTY_LUAROCKS_VERSION}.tar.gz
 }
 
+pkg_preparing() {
+	cd ${SRC_ROOT}
+	curl -fSL https://www.openssl.org/source/openssl-${RESTY_OPENSSL_VERSION}.tar.gz -o openssl-${RESTY_OPENSSL_VERSION}.tar.gz
+	curl -fSL https://ftp.pcre.org/pub/pcre/pcre-${RESTY_PCRE_VERSION}.tar.gz -o pcre-${RESTY_PCRE_VERSION}.tar.gz
+	curl -fSL https://openresty.org/download/openresty-${RESTY_VERSION}.tar.gz -o openresty-${RESTY_VERSION}.tar.gz
+	curl -fSL https://github.com/luarocks/luarocks/archive/${RESTY_LUAROCKS_VERSION}.tar.gz -o luarocks-${RESTY_LUAROCKS_VERSION}.tar.gz
+	curl -fSL https://zlib.net/zlib-${RESTY_ZLIB_VERSION}.tar.gz -o zlib-${RESTY_ZLIB_VERSION}.tar.gz
+
+	[ -d openssl-${RESTY_OPENSSL_VERSION} ] && rm -rf openssl-${RESTY_OPENSSL_VERSION}
+	tar xzf openssl-${RESTY_OPENSSL_VERSION}.tar.gz
+	[ -d pcre-${RESTY_PCRE_VERSION} ] && rm -rf pcre-${RESTY_PCRE_VERSION}
+	tar xzf pcre-${RESTY_PCRE_VERSION}.tar.gz
+	[ -d zlib-${RESTY_ZLIB_VERSION} ] && rm -rf zlib-${RESTY_ZLIB_VERSION}
+	tar xzf zlib-${RESTY_ZLIB_VERSION}.tar.gz
+	[ -d luarocks-${RESTY_LUAROCKS_VERSION} ] && rm -rf luarocks-${RESTY_LUAROCKS_VERSION}
+	tar xzf luarocks-${RESTY_LUAROCKS_VERSION}.tar.gz
+}
+
 # debug install prepare
 dev_preparing() {
-	local_pkg_preparing
+	if [ ${BUILD_ENV} = "docker" ]; then
+		pkg_preparing
+	else
+		local_pkg_preparing
+	fi
 
 	OR_ENV=${1}
 	cd ${SRC_ROOT}
@@ -67,7 +91,7 @@ dev_preparing() {
 		./configure --prefix=${ZLIB_PREFIX} &&
 		make CFLAGS='-O3 -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN -g' \
 			SFLAGS='-O3 -fPIC -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN -g' &&
-		sudo make install
+		x make install
 
 	OPENSSL_PREFIX=${OR_PREFIX}/openssl
 	cd ${SRC_ROOT}/openssl-${RESTY_OPENSSL_VERSION} &&
@@ -82,7 +106,7 @@ dev_preparing() {
 			-Wl,-rpath,${ZLIB_PREFIX}/lib:${OPENSSL_PREFIX}/lib &&
 		sed -i 's/ -O3 / -O0 /g' Makefile &&
 		make &&
-		sudo make install_sw
+		x make install_sw
 
 	PCRE_PREFIX=${OR_PREFIX}/pcre
 	cd ${SRC_ROOT}/pcre-${RESTY_PCRE_VERSION} &&
@@ -94,7 +118,7 @@ dev_preparing() {
 			--enable-utf \
 			--enable-unicode-properties &&
 		make V=1 &&
-		sudo make install
+		x make install
 }
 
 or_for_debug() {
@@ -139,10 +163,10 @@ or_for_debug() {
 			--user=root --group=root \
 			${RESTY_CONFIG_OPTIONS_MORE} &&
 		make -j${RESTY_J} &&
-		sudo make -j${RESTY_J} install &&
-		sudo mkdir -p ${OR_PREFIX}/nginx/sbin/lib &&
+		x make -j${RESTY_J} install &&
+		x mkdir -p ${OR_PREFIX}/nginx/sbin/lib &&
 		for DEP_F in $(ldd ${OR_PREFIX}/nginx/sbin/nginx | grep -Eo '(\/.*) |(/lib64/.*) '); do
-			sudo cp ${DEP_F} ${OR_PREFIX}/nginx/sbin/lib/$(basename ${DEP_F})
+			x cp ${DEP_F} ${OR_PREFIX}/nginx/sbin/lib/$(basename ${DEP_F})
 		done
 }
 
@@ -151,11 +175,11 @@ install_default_luajit() {
 		tar xzf LuaJIT-${DEFAULT_LUAJIT_VERSION}.tar.gz
 	cd ${SRC_ROOT}/LuaJIT-${DEFAULT_LUAJIT_VERSION} &&
 		make PREFIX=${DEFAULT_LUAJIT_PREFIX} &&
-		sudo make install PREFIX=${DEFAULT_LUAJIT_PREFIX}
+		x make install PREFIX=${DEFAULT_LUAJIT_PREFIX}
 }
 
 or_for_valgrind() {
-	sudo yum install --nogpgcheck -y systemtap-sdt-devel valgrind-devel
+	x yum install --nogpgcheck -y systemtap-sdt-devel valgrind-devel
 
 	dev_preparing 'valgrind'
 
@@ -199,7 +223,7 @@ or_for_valgrind() {
 			--with-threads \
 			${RESTY_CONFIG_OPTIONS_MORE} &&
 		make -j${RESTY_J} &&
-		sudo make -j${RESTY_J} install
+		x make -j${RESTY_J} install
 }
 
 or_for_prd() {
@@ -248,31 +272,31 @@ or_for_prd() {
 			--user=root --group=root \
 			${RESTY_CONFIG_OPTIONS_MORE} &&
 		make -j${RESTY_J} &&
-		sudo make -j${RESTY_J} install &&
-		sudo mkdir -p ${OR_PREFIX}/nginx/sbin/lib &&
+		x make -j${RESTY_J} install &&
+		x mkdir -p ${OR_PREFIX}/nginx/sbin/lib &&
 		for DEP_F in $(ldd ${OR_PREFIX}/nginx/sbin/nginx | grep -Eo '(\/.*) |(/lib64/.*) '); do
-			sudo cp ${DEP_F} ${OR_PREFIX}/nginx/sbin/lib/$(basename ${DEP_F})
+			x cp ${DEP_F} ${OR_PREFIX}/nginx/sbin/lib/$(basename ${DEP_F})
 		done
 }
 
 install_weighttp() {
-	sudo yum install --nogpgcheck -y gcc make libev-devel expect
+	x yum install --nogpgcheck -y gcc make libev-devel expect
 	cd ${SRC_ROOT} &&
 		curl -fSL http://cgit.lighttpd.net/weighttp.git/snapshot/weighttp-master.tar.gz -o weighttp-master.tar.gz &&
 		tar xzf weighttp-master.tar.gz &&
 		cd weighttp-master/ &&
 		./waf configure &&
 		./waf build &&
-		sudo ./waf install &&
-		# sudo ln -sf /media/psf/runX/deploy/openresty/srcs/weighttp-master/build/default/weighttp /usr/local/bin/weighttp
+		x ./waf install &&
+		# x ln -sf /media/psf/runX/deploy/openresty/srcs/weighttp-master/build/default/weighttp /usr/local/bin/weighttp
 		cd -
 }
 
 install_test_nginx() {
-	sudo curl -fSL http://xrl.us/cpanm -o /usr/bin/cpanm &&
-		sudo chmod +x /usr/bin/cpanm
-	sudo $(which cpanm) --force Test::Nginx
-	sudo $(which cpanm) --force Digest::SHA
+	x curl -fSL http://xrl.us/cpanm -o /usr/bin/cpanm &&
+		x chmod +x /usr/bin/cpanm
+	x $(which cpanm) --force Test::Nginx
+	x $(which cpanm) --force Digest::SHA
 	install_weighttp
 }
 
@@ -288,14 +312,19 @@ install_luarocks() {
 			--lua-suffix=jit-2.1.0-beta3 \
 			--with-lua-include=${X_LUAJIT_PREFIX}/include/luajit-2.1 &&
 		make build &&
-		sudo make install
+		x make install
 }
 
 install_openresty_from_src() {
-	for or4env in debug valgrind prd; do
-		[ -d "/usr/local/${OR_VERSION}-${or4env}" ] && sudo rm -rf "/usr/local/${OR_VERSION}-${or4env}"
-		or_for_${or4env}
-	done
+	if [ ${BUILD_ENV} = "docker" ]; then
+		[ -d "/usr/local/${OR_VERSION}-debug" ] && x rm -rf "/usr/local/${OR_VERSION}-debug"
+		or_for_debug
+	else
+		for or4env in debug valgrind prd; do
+			[ -d "/usr/local/${OR_VERSION}-${or4env}" ] && x rm -rf "/usr/local/${OR_VERSION}-${or4env}"
+			or_for_${or4env}
+		done
+	fi
 }
 
 PROFILE=$(
@@ -326,4 +355,8 @@ init() {
 	install_test_nginx
 	install_luarocks
 	create_profile "${PROFILE}"
+}
+
+clean_srcs() {
+	x rm -rf "${SRC_ROOT}"
 }

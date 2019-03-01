@@ -12,7 +12,7 @@
 
 set -ex
 
-# [ $HOME != '/home/z' ] && echo 'Are U Z ?' && exit 1
+[ $HOME != '/home/z' ] && echo 'Are U Z ?' && exit 1
 
 # BASE_DIR=$(dirname $(cd $(dirname "$0") && pwd -P)/$(basename "$0"))
 BASE_DIR=${BASE_DIR:-$(dirname $(cd $(dirname "$0") && pwd -P)/$(basename "$0"))}
@@ -22,8 +22,8 @@ LUA_ROOT=${LR:-"/usr/local/${LUA_VERSION}"}
 
 # debug install prepare
 dp() {
-	sudo yum -y install readline-devel
-	# sudo debuginfo-install -y --skip-broken \
+	x yum -y install readline-devel
+	# x debuginfo-install -y --skip-broken \
 	# ncurses-libs-5.9-14.20130511.el7_4.x86_64 readline-6.2-10.el7.x86_64
 }
 
@@ -33,21 +33,21 @@ install_lua_from_src() {
 	[ ${PLAT} = 'darwin' ] &&
 		SED="sed -i '' "
 
-	[ -d ${LUA_ROOT} ] && sudo rm -rf ${LUA_ROOT}
+	[ -d ${LUA_ROOT} ] && x rm -rf ${LUA_ROOT}
 
 	LUA_SRC="http://www.lua.org/ftp/${LUA_VERSION}.tar.gz"
 	LUA_SRC_ROOT=${BASE_DIR}/srcs
 	[ ! -f ${LUA_SRC_ROOT}/${LUA_VERSION}.tar.gz ] &&
 		curl -fSL ${LUA_SRC} -o ${LUA_SRC_ROOT}/${LUA_VERSION}.tar.gz
 
-	[ -d ${LUA_SRC_ROOT}/${LUA_VERSION} ] && sudo rm -rf ${LUA_SRC_ROOT}/${LUA_VERSION}
+	[ -d ${LUA_SRC_ROOT}/${LUA_VERSION} ] && x rm -rf ${LUA_SRC_ROOT}/${LUA_VERSION}
 
 	cd ${LUA_SRC_ROOT} &&
 		tar zxf ${LUA_VERSION}.tar.gz &&
 		cd ${LUA_VERSION} &&
 		# \$$$$ORIGIN/lib
 		${SED} 's/^CC= gcc$/CC= gcc -ggdb/g;s/-O2/-O0/g' src/Makefile &&
-		sudo make ${PLAT} install INSTALL_TOP=${LUA_ROOT}
+		x make ${PLAT} install INSTALL_TOP=${LUA_ROOT}
 }
 
 PROFILE=$(
