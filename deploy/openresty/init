@@ -319,6 +319,7 @@ install_openresty_from_src() {
 	if [ ${BUILD_ENV} = "docker" ]; then
 		[ -d "/usr/local/${OR_VERSION}-debug" ] && x rm -rf "/usr/local/${OR_VERSION}-debug"
 		or_for_debug
+		echo "export PATH=/usr/local/${OR_VERSION}-debug/nginx/sbin:/usr/local/${OR_VERSION}-debug/bin:${PATH}" | x tee -a /etc/profile >/dev/null 2>&1
 	else
 		for or4env in debug valgrind prd; do
 			[ -d "/usr/local/${OR_VERSION}-${or4env}" ] && x rm -rf "/usr/local/${OR_VERSION}-${or4env}"
