@@ -1,4 +1,6 @@
 # runX
+[![https://travis-ci.org/idevz/runX.svg?branch=master](https://travis-ci.org/idevz/runX.svg?branch=master)](https://travis-ci.org/idevz/runX)
+
 A framework for create a language development environment using Parallels Vms.
 
 
