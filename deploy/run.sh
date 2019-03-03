@@ -38,16 +38,16 @@ prepare_deploy_scripts() {
     local des_path="${BUILDING_RUN_PATH}/${proj_name}"
     local src_path="${BASE_DIR}/${proj_name}"
     if [ -d "${des_path}" ]; then
-        rm -rf "${des_path}"
+        x rm -rf "${des_path}"
     fi
     [ ! -d "${des_path}" ] && x mkdir -p "${des_path}"
-    cp -rf "${src_path}/init" "${des_path}/init"
+    x cp -rf "${src_path}/init" "${des_path}/init"
 }
 
 clean_deploy_scripts() {
     check_param ${1}
     local proj_name=${1}
-    rm -rf "${BUILDING_RUN_PATH}/${proj_name}"
+    x rm -rf "${BUILDING_RUN_PATH}/${proj_name}"
 }
 
 build_and_push_docker_images() {
