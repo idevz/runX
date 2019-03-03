@@ -19,6 +19,7 @@ BASE_DIR=${BASE_DIR:-$(dirname $(cd $(dirname "$0") && pwd -P)/$(basename "$0"))
 
 LUA_VERSION=${LV:-"lua-5.1.5"}
 LUA_ROOT=${LR:-"/usr/local/${LUA_VERSION}"}
+LUA_SRC_ROOT=${BASE_DIR}/srcs
 
 # debug install prepare
 dp() {
@@ -36,7 +37,6 @@ install_lua_from_src() {
 	[ -d ${LUA_ROOT} ] && x rm -rf ${LUA_ROOT}
 
 	LUA_SRC="http://www.lua.org/ftp/${LUA_VERSION}.tar.gz"
-	LUA_SRC_ROOT=${BASE_DIR}/srcs
 	[ ! -f ${LUA_SRC_ROOT}/${LUA_VERSION}.tar.gz ] &&
 		curl -fSL ${LUA_SRC} -o ${LUA_SRC_ROOT}/${LUA_VERSION}.tar.gz
 
@@ -72,4 +72,8 @@ init() {
 	dp
 	install_lua_from_src
 	create_profile "${PROFILE}"
+}
+
+clean_srcs() {
+	[ -d "${LUA_SRC_ROOT}" ] && x rm -rf "${LUA_SRC_ROOT}"
 }
