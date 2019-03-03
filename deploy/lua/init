@@ -36,6 +36,8 @@ install_lua_from_src() {
 
 	[ -d ${LUA_ROOT} ] && x rm -rf ${LUA_ROOT}
 
+	[ ! -d ${LUA_SRC_ROOT} ] && x mkdir -p ${LUA_SRC_ROOT}
+
 	LUA_SRC="http://www.lua.org/ftp/${LUA_VERSION}.tar.gz"
 	[ ! -f ${LUA_SRC_ROOT}/${LUA_VERSION}.tar.gz ] &&
 		curl -fSL ${LUA_SRC} -o ${LUA_SRC_ROOT}/${LUA_VERSION}.tar.gz

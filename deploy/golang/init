@@ -55,6 +55,7 @@ go_bootstrap() {
 	BOOT_ROOT=${BASE_DIR}/bootstraps
 	BOOT_SRC=${BOOT_ROOT}/"go1.4-bootstrap-20171003.tar.gz"
 	[ -d ${BOOT_ROOT}/go ] && rm -rf ${BOOT_ROOT}/go
+	[ ! -d ${BOOT_ROOT} ] && x mkdir -p ${BOOT_ROOT}
 	cd ${BOOT_ROOT} &&
 		tar zxf ${BOOT_SRC} &&
 		cd go/src &&
@@ -63,6 +64,7 @@ go_bootstrap() {
 }
 
 install_from_src() {
+	[ ! -d ${GO_SRC_ROOT} ] && x mkdir -p ${GO_SRC_ROOT}
 	[ ! -x ${GOROOT_BOOTSTRAP}/bin/go ] && go_bootstrap
 	# download golang source from github
 	GOLANG_SRC="https://github.com/golang/go/archive/${GOLANG_VERSION}.tar.gz"

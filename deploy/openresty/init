@@ -73,6 +73,7 @@ pkg_preparing() {
 
 # debug install prepare
 dev_preparing() {
+	[ ! -d ${SRC_ROOT} ] && x mkdir -p ${SRC_ROOT}
 	if [ ${BUILD_ENV} = "docker" ]; then
 		pkg_preparing
 	else
