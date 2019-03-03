@@ -18,8 +18,6 @@ cache:
 env:
   global:
     # - LUA_INCLUDE_DIR=$LUAJIT_INC
-    # - LD_LIBRARY_PATH=$LUAJIT_LIB:$LD_LIBRARY_PATH
-    - TEST_NGINX_SLEEP=0.006
   matrix:
     # - NGINX_VERSION=1.10.0
 
