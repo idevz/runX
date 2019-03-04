@@ -11,39 +11,40 @@
 # http://jp2.php.net/distributions/php-7.2.11.tar.gz
 ### END ###
 
-set -e
+set -ex
 
 [ -z $PRLCTL_HOME ] && PRLCTL_HOME=/media/psf/runX
 [ $HOME != '/home/z' ] && echo 'Are U Z ?' && exit 1
 
 BASE_DIR=${BASE_DIR:-$(dirname $(cd $(dirname "$0") && pwd -P)/$(basename "$0"))}
 
-PHP_VERSION=${PV:-"php-7.2.11"}
+PHP_VERSION=${PV:-"php-7.3.2"}
 PHP_ROOT=${LR:-"/usr/local/${PHP_VERSION}"}
 
 install_php_from_src() {
-	sudo yum install -y openssl-devel curl-devel
-	[ -d ${PHP_ROOT} ] && sudo rm -rf ${PHP_ROOT}
+	x yum install -y openssl-devel curl-devel libxml2-devel
+	[ -d ${PHP_ROOT} ] && x rm -rf ${PHP_ROOT}
 
 	PHP_SRC="http://jp2.php.net/distributions/${PHP_VERSION}.tar.gz"
 	PHP_SRC_ROOT=${BASE_DIR}/srcs
+	[ ! -d "${PHP_SRC_ROOT}" ] && x mkdir -p "${PHP_SRC_ROOT}"
 	[ ! -f ${PHP_SRC_ROOT}/${PHP_VERSION}.tar.gz ] &&
 		curl -fSL ${PHP_SRC} -o ${PHP_SRC_ROOT}/${PHP_VERSION}.tar.gz
 
-	[ -d ${PHP_SRC_ROOT}/${PHP_VERSION} ] && sudo rm -rf ${PHP_SRC_ROOT}/${PHP_VERSION}
+	[ -d ${PHP_SRC_ROOT}/${PHP_VERSION} ] && x rm -rf ${PHP_SRC_ROOT}/${PHP_VERSION}
 
+	# --with-jpeg-dir --with-png-dir --with-gd --enable-gd-native-ttf --enable-pcntl --with-freetype-dir\
 	cd ${PHP_SRC_ROOT} &&
 		tar zxf ${PHP_VERSION}.tar.gz &&
 		cd ${PHP_VERSION} &&
 		./configure --prefix=${PHP_ROOT} --enable-phpdbg --enable-phpdbg-debug \
 			--enable-phpdbg-webhelper --enable-debug --enable-fpm --with-mysqli --with-zlib \
-			--enable-mbstring=all --with-iconv-dir=/usr/local/idevz --enable-sockets --with-pear \
-			--enable-ftp --with-libxml-dir --with-mcrypt --with-pdo-mysql --with-freetype-dir \
-			--with-jpeg-dir --with-png-dir --with-gd --enable-gd-native-ttf --enable-pcntl \
-			--with-curl --enable-soap --with-gdbm --with-libdir=lib64 --with-openssl --enable-shmop \
+			--enable-mbstring=all --enable-sockets --with-pear \
+			--enable-ftp --enable-libxml --disable-dom --with-mcrypt --with-pdo-mysql \
+			--with-curl --enable-soap --with-libdir=lib64 --with-openssl --enable-shmop \
 			--enable-sysvsem --enable-sysvshm --enable-sysvmsg &&
 		make -j4 &&
-		sudo make install
+		x make install
 }
 
 PROFILE=$(
@@ -79,20 +80,27 @@ install_or() {
 
 install_phpunit_skelgen() {
 	curl -fSL https://phar.phpunit.de/phpunit-skelgen.phar -o /tmp/phpunit-skelgen.phar
-	sudo mv /tmp/phpunit-skelgen.phar /usr/local/bin/phpunit-skelgen
-	sudo chmod +x /usr/local/bin/phpunit-skelgen
+	x mv /tmp/phpunit-skelgen.phar /usr/local/bin/phpunit-skelgen
+	x chmod +x /usr/local/bin/phpunit-skelgen
 }
 
 install_composer() {
 	curl -fSL https://getcomposer.org/installer -o /tmp/composer-installer
-	sudo $(which php) /tmp/composer-installer --install-dir=/usr/local/bin --filename=composer
+	x chmod +x /tmp/composer-installer
+	x "${PHP_ROOT}/bin/php" /tmp/composer-installer --install-dir=/usr/local/bin --filename=composer
 	rm /tmp/composer-installer
 }
 
 init() {
-	install_or
+	if [ ! ${BUILD_ENV} = "docker" ]; then
+		install_or
+	fi
 	install_php_from_src
 	install_phpunit_skelgen
 	install_composer
 	create_profile "${PROFILE}"
+}
+
+clean_srcs() {
+	[ -d "${PHP_SRC_ROOT}" ] && x rm -rf "${PHP_SRC_ROOT}"
 }

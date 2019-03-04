@@ -18,9 +18,10 @@ DOCKER_ACCOUNT=${DK_ACT:-"zhoujing"}
 BUILDING_RUN_PATH="${BASE_DIR}/docker-build-run-path"
 
 PROJS=(
-    lua
-    openresty
-    golang
+    # lua
+    # openresty
+    # golang
+    php
 )
 
 [ $(uname) = 'Linux' ] && x() {
