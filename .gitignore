@@ -68,6 +68,7 @@ srcs/
 *_temp
 
 code/
+deploy/docker-build-run-path/*
 shell/.oh-my-zsh
 already_init_base
 runnig.err
