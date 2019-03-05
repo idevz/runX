@@ -53,6 +53,7 @@ set_up() {
 	}
 
 	install_yum_pkgs() {
+		# x yum install -y gcc gcc-c++ vim make
 		x yum install -y strace dtrace weighttp \
 			nc tree git patch patchelf nmon perf ntpdate \
 			tcpdump psmisc zsh gcc gcc-c++ vim rlwrap make \

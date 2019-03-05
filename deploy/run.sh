@@ -13,15 +13,14 @@
 set -ex
 
 BASE_DIR=${BASE_DIR:-"$(readlink -f "$(dirname "$0")")"}
-IMAGE_VERSION=${IMV:-"1.0.0"}
 DOCKER_ACCOUNT=${DK_ACT:-"zhoujing"}
 BUILDING_RUN_PATH="${BASE_DIR}/docker-build-run-path"
 
 PROJS=(
-    # lua
-    # openresty
-    # golang
-    php
+    "lua 5.1.5"
+    "openresty 1.15.6.1rc0"
+    "golang 1.12"
+    "php 7.3.2"
 )
 
 [ $(uname) = 'Linux' ] && x() {
@@ -53,21 +52,29 @@ clean_deploy_scripts() {
 
 build_and_push_docker_images() {
     check_param ${1}
+    check_param ${2}
     local proj_name=${1}
-    local docker_image_tag="${DOCKER_ACCOUNT}/idevz-runx-${proj_name}:${IMAGE_VERSION}"
+    local version=${2}
+    local docker_image_tag="${DOCKER_ACCOUNT}/idevz-runx-${proj_name}:${version}"
     x docker build --network=host \
         --build-arg BUILD_ENV="docker" \
+        --build-arg RBV="${version}" \
         --build-arg PROJ="${proj_name}" -t "${docker_image_tag}" .
     x docker push "${docker_image_tag}"
 }
 
-for proj in "${PROJS[@]}"; do
-    [ -f "${proj}/init" ] || continue
-    (
-        prepare_deploy_scripts "${proj}"
-        echo "start build and push ${proj} image."
-        build_and_push_docker_images "${proj}"
-        echo "${proj} is done."
-        clean_deploy_scripts "${proj}"
-    )
-done
+init() {
+    for proj_conf in "${PROJS[@]}"; do
+        local proj=$(echo ${proj_conf} | awk '{print $1}')
+        local version=$(echo ${proj_conf} | awk '{print $2}')
+        [ -f "${proj}/init" ] || continue
+        (
+            prepare_deploy_scripts "${proj}"
+            echo "start build and push ${proj} image."
+            build_and_push_docker_images "${proj}" "${version}"
+            echo "${proj} is done."
+            clean_deploy_scripts "${proj}"
+        )
+    done
+}
+init

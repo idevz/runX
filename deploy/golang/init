@@ -20,8 +20,9 @@ set -e
 
 # BASE_DIR=$(dirname $(cd $(dirname "$0") && pwd -P)/$(basename "$0"))
 BASE_DIR=${BASE_DIR:-$(dirname $(cd $(dirname "$0") && pwd -P)/$(basename "$0"))}
+RUNX_BUILDING_VERSION=${RBV:-"1.12"}
 
-GOLANG_VERSION=${GV:-"go1.12"}
+GOLANG_VERSION=${GV:-"go${RUNX_BUILDING_VERSION}"}
 INSTALLATION_TYPE=${IT:-"bin"}
 GO_SRC_ROOT=${BASE_DIR}/srcs
 GO_BINARY_ROOT=${BASE_DIR}/binaries
