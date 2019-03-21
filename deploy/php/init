@@ -23,7 +23,7 @@ PHP_VERSION=${PV:-"php-${RUNX_BUILDING_VERSION}"}
 PHP_ROOT=${LR:-"/usr/local/${PHP_VERSION}"}
 
 install_php_from_src() {
-	x yum install -y openssl-devel curl-devel libxml2-devel
+	x yum install -y openssl-devel curl-devel libxml2-devel tc
 	[ -d ${PHP_ROOT} ] && x rm -rf ${PHP_ROOT}
 
 	PHP_SRC="http://jp2.php.net/distributions/${PHP_VERSION}.tar.gz"
