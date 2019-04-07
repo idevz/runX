@@ -1,0 +1,28 @@
+version: '2'
+services:
+  motan-go:
+    image: zhoujing/idevz-runx-golang:1.12
+    container_name: run-go
+    # ulimits:
+    #   core: 9999
+    # ports:
+      # - '1234:1234'
+    environment:
+      - MOTAN_ENV=development
+      - PATH=/go/bin:$PATH
+    volumes:
+      - $MCODE/z/git/go:/go
+      - $MCODE/z/idevz-go:/idevz-go
+    command: go test -v -race -coverprofile=coverage.txt -covermode=atomic ./
+    working_dir: /idevz-go/src/github.com/weibocom/motan-go
+  bench:
+    image: zhoujing/idevz-runx-golang:1.12
+    container_name: bench-go
+    environment:
+      - MOTAN_ENV=development
+      - PATH=/go/bin:$PATH
+    volumes:
+      - $MCODE/z/git/go:/go
+      - $MCODE/z/idevz-go:/idevz-go
+    command: go test -bench . -benchmem -gcflags "-N -l"
+    working_dir: /idevz-go/src/idevz/bench
