@@ -1,28 +1,104 @@
 version: '2'
 services:
-  motan-go:
+  go-base:
     image: zhoujing/idevz-runx-golang:1.12
-    container_name: run-go
+    privileged: true
+    network_mode: host
     # ulimits:
     #   core: 9999
     # ports:
-      # - '1234:1234'
+    #   - '1234:1234'
     environment:
-      - MOTAN_ENV=development
       - PATH=/go/bin:$PATH
     volumes:
       - $MCODE/z/git/go:/go
-      - $MCODE/z/idevz-go:/idevz-go
-    command: go test -v -race -coverprofile=coverage.txt -covermode=atomic ./
+      - $MCODE/z/idevz-go:/z/idevz-go
+  wm-go:
+    extends: go-base
+    container_name: wm-go
     working_dir: /idevz-go/src/github.com/weibocom/motan-go
-  bench:
-    image: zhoujing/idevz-runx-golang:1.12
-    container_name: bench-go
+    command: go test -v -race -coverprofile=coverage.txt -covermode=atomic $$(go list ./... | grep -v main)
+  gdbug:
+    extends: go-base
+    container_name: gdbug
+    volumes:
+      - $GIT/weibo-mesh/testhelpers:/runX/testhelpers
+      - $GIT/weibo-mesh/mesh-confs/:/mesh-confs
+    working_dir: /runX/testhelpers/cmd/tmesh
+    command: dlv-pvm debug --headless --listen=:2345 --log --api-version=2 --build-flags="-gcflags '-N -l'" -- -c /mesh-confs -pool testhelper
+  go-bench:
+    extends: go-base
+    container_name: go-bench
+    working_dir: /idevz-go/src/idevz/bench
+    # -bench 接受表达式做参数，匹配基准测试的函数，`.` 表示运行所有基准测试
+    # -run 匹配单元测试函数，为避免单元测试结果影响查看基准测试，将其设置为一个不存在的单元测试方法 `None`
+    # -benchtime 测试时长，默认为 1 秒
+    # -benchmem 每次操作分配内存的次数以及分配的字节数
+    # 结果中 `-number` 这个 Number 代表 GOMAXPROCS 的值
+    # -gcflags "-N -l" 忽略编译器优化
+    command: go test -bench . -benchmem -run None -gcflags "-N -l"
+  gmr:
+    extends: go-base
+    container_name: gmr
+    environment:
+      - GO111MODULE=on
+    volumes:
+      - $PRJ_ROOT:/runx_go
+    working_dir: /runx_go
+    command: go mod edit --require=$R
+  gmtdy:
+    extends: go-base
+    container_name: gmtdy
+    environment:
+      - GO111MODULE=on
+    volumes:
+      - $PRJ_ROOT:/runx_go
+    working_dir: /runx_go
+    command: go mod tidy
+
+########## openresty start ##########
+  openresty-base:
+    image: zhoujing/idevz-runx-openresty:1.15.6.1rc0
     environment:
       - MOTAN_ENV=development
-      - PATH=/go/bin:$PATH
     volumes:
-      - $MCODE/z/git/go:/go
-      - $MCODE/z/idevz-go:/idevz-go
-    command: go test -bench . -benchmem -gcflags "-N -l"
-    working_dir: /idevz-go/src/idevz/bench
+      - $GIT/weibo-or/v/lib/v:/usr/local/openresty-1.15.6.1rc0-debug/site/lualib/v
+      - $GIT/weibo-or/motan-openresty/lib/motan:/usr/local/openresty-1.15.6.1rc0-debug/site/lualib/motan
+      - $GIT/weibo-or/motan-openresty/lib/motan/libs/libmotan_tools.so:/lib64/libmotan_tools.so
+      - $GIT/weibo-or/motan-openresty/lib/motan/libs/cmotan.so:/usr/local/openresty-1.15.6.1rc0-debug/site/lualib/cmotan.so
+      - $GIT/weibo-or/weibo-motan/lib/wmotan:/usr/local/openresty-1.15.6.1rc0-debug/site/lualib/wmotan
+      - $GIT/weibo-or/weibo-motan/t/resty:/usr/local/openresty-1.15.6.1rc0-debug/site/lualib/resty
+    # command: openresty -c v.conf -p run_path -g "daemon off;"
+  mort:
+    extends: openresty-base
+    container_name: mort
+    volumes:
+      - $GIT/weibo-or/motan-openresty:/motan-openresty
+    working_dir: /motan-openresty
+    command: prove -v ./t/000-sanity.t
+  video:
+    extends: openresty-base
+    container_name: video
+    ports:
+      - '1234:1234'
+    environment:
+      - MOTAN_ENV=development
+    volumes:
+      - $GIT/weibo-or/video/:/video_obj
+    working_dir: /video_obj
+    command: openresty -c v.conf -p /video_obj/run_path -g "daemon off;"
+
+########## php start ##########
+  php-base:
+    image: zhoujing/idevz-runx-php:7.3.2
+    volumes:
+      - $GIT/weibo-mesh/php-use/www/:/motan-php
+    working_dir: /motan-php
+  prun:
+    extends: php-base
+    container_name: prun
+    command: php -r '$$a=NULL;var_dump(isset($$a));'
+  pr:
+    extends: php-base
+    container_name: pr
+    command: $CMD
