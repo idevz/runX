@@ -25,7 +25,7 @@ services:
       - $GIT/weibo-mesh/testhelpers:/runX/testhelpers
       - $GIT/weibo-mesh/mesh-confs/:/mesh-confs
     working_dir: /runX/testhelpers/cmd/tmesh
-    command: dlv-pvm debug --headless --listen=:2345 --log --api-version=2 --build-flags="-gcflags '-N -l'" -- -c /mesh-confs -pool testhelper
+    command: dlv-pvm debug --headless --listen=:2345 --log --api-version=2 --build-flags="-gcflags '-N -l'" -- -c /mesh-confs -pool demo
   go-bench:
     extends: go-base
     container_name: go-bench
@@ -55,6 +55,7 @@ services:
       - $PRJ_ROOT:/runx_go
     working_dir: /runx_go
     command: go mod tidy
+    # GO111MODULE=on go mod edit -replace=golang.org/x/tools=github.com/golang/tools@master
 
 ########## openresty start ##########
   openresty-base:
