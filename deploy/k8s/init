@@ -346,6 +346,7 @@ init() {
 	init_out_going
 	update_docker
 	# install_docker_compose
-	preper_kubeadm
-	init_kubeadm
+	# preper_kubeadm
+	# init_kubeadm
 }
+init
