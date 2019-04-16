@@ -15,6 +15,7 @@
 
 http_proxy_on() {
     local proxy="http://10.211.55.3:8118"
+    # export http_proxy='socks5:127.0.0.1:1080'
     # proxy="http://127.0.0.1:8118"
     export ALL_PROXY=${proxy}
     export HTTP_PROXY=${proxy}

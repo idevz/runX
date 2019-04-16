@@ -37,6 +37,12 @@ services:
     # 结果中 `-number` 这个 Number 代表 GOMAXPROCS 的值
     # -gcflags "-N -l" 忽略编译器优化
     command: go test -bench . -benchmem -run None -gcflags "-N -l"
+  go-test:
+    extends: go-base
+    container_name: go-test
+    working_dir: /z/idevz-go/src/github.com/weibocom/motan-go/
+    command: go test -v -race -coverprofile=coverage.txt -covermode=atomic $$(go list ./... | grep -v main)
+    # go test -race -args -test.v -test.run ^TestAgent_InitCall$
   gmr:
     extends: go-base
     container_name: gmr
