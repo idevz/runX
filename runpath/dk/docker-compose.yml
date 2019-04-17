@@ -16,8 +16,13 @@ services:
   wm-go:
     extends: go-base
     container_name: wm-go
-    working_dir: /idevz-go/src/github.com/weibocom/motan-go
-    command: go test -v -race -coverprofile=coverage.txt -covermode=atomic $$(go list ./... | grep -v main)
+    # working_dir: /z/idevz-go/src/github.com/weibocom/motan-go
+    working_dir: /z/idevz-go/src/git.intra.weibo.com/openapi_rd/weibo-motan-go
+    command:
+      - bash
+      - -c
+      - |
+        go test -v -race -coverprofile=coverage.txt -covermode=atomic $$(go list ./... | grep -v main)
   gdbug:
     extends: go-base
     container_name: gdbug
