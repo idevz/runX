@@ -16,21 +16,59 @@ services:
   wm-go:
     extends: go-base
     container_name: wm-go
-    # working_dir: /z/idevz-go/src/github.com/weibocom/motan-go
     working_dir: /z/idevz-go/src/git.intra.weibo.com/openapi_rd/weibo-motan-go
     command:
       - bash
       - -c
       - |
         go test -v -race -coverprofile=coverage.txt -covermode=atomic $$(go list ./... | grep -v main)
+  m-go:
+    extends: go-base
+    container_name: m-go
+    working_dir: /z/idevz-go/src/github.com/weibocom/motan-go
+    command:
+      - bash
+      - -c
+      - |
+        go test -v -race -coverprofile=coverage.txt -covermode=atomic $$(go list ./... | grep -v main)
+  th:
+    extends: go-base
+    container_name: th
+    volumes:
+      - $GIT/weibo-mesh/testhelpers:/runX/testhelpers
+    working_dir: /runX/testhelpers
+    command: 
+      - bash
+      - -c
+      - |
+        go build -a -installsuffix cgo -o /runX/testhelpers/tmesh /runX/testhelpers/cmd/tmesh/main.go
+        go build -a -installsuffix cgo -o /runX/testhelpers/mtserver /runX/testhelpers/cmd/mtserver/main.go
+  rth:
+    extends: go-base
+    container_name: rth
+    environment:
+      - MESH_DETECT_BACKEND_URL=http://10.75.24.199:8080/2/
+      # - MESH_DETECT_BACKEND_URL=10.75.24.199:8080/2/
+      # - MESH_DETECT_OK_STATUS=200
+    volumes:
+      - $GIT/weibo-mesh/testhelpers:/runX/testhelpers
+    working_dir: /runX/testhelpers/cmd/tmesh
+    command: 
+      - bash
+      - -c
+      - |
+        go run main.go -c /runX/testhelpers/mesh-confs -pool testhelper -detect
+        # dlv-pvm debug --headless --listen=:2345 --log --api-version=2 --build-flags="-gcflags '-N -l'" -- -c /runX/testhelpers/mesh-confs -pool testhelper -detect
   gdbug:
     extends: go-base
     container_name: gdbug
     volumes:
       - $GIT/weibo-mesh/testhelpers:/runX/testhelpers
-      - $GIT/weibo-mesh/mesh-confs/:/mesh-confs
+      # - $GIT/weibo-mesh/mesh-confs/:/mesh-confs
+      - $GIT/weibo-mesh/testhelpers/mesh-confs/:/mesh-confs
     working_dir: /runX/testhelpers/cmd/tmesh
     command: dlv-pvm debug --headless --listen=:2345 --log --api-version=2 --build-flags="-gcflags '-N -l'" -- -c /mesh-confs -pool demo
+    # x docker run --privileged --net host --rm --name=golang-debug -e PATH=/go/bin:$PATH -v $MCODE/z/git/go:/go -v $MCODE/z/idevz-go:/z/idevz-go -v $GIT/weibo-mesh/testhelpers:/runX/testhelpers -v $GIT/weibo-mesh/testhelpers/mesh-confs/:/mesh-confs -w /runX/testhelpers/cmd/tmesh zhoujing/idevz-runx-golang:1.12 dlv-pvm debug --headless --listen=:2345 --log --api-version=2 --build-flags="-gcflags '-N -l'" -- -c /mesh-confs -pool testhelper
   go-bench:
     extends: go-base
     container_name: go-bench
