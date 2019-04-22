@@ -22,6 +22,35 @@ services:
       - -c
       - |
         go test -v -race -coverprofile=coverage.txt -covermode=atomic $$(go list ./... | grep -v main)
+  wm-go-b:
+    extends: go-base
+    container_name: wm-go-b
+    working_dir: /z/idevz-go/src/git.intra.weibo.com/openapi_rd/weibo-motan-go/main
+    command:
+      - bash
+      - -c
+      - |
+        go build -a -installsuffix cgo -o weibo-mesh
+  wm-go-r:
+    extends: go-base
+    container_name: wm-go-r
+    volumes:
+      # - $GIT/weibo-mesh/testhelpers:/runX/testhelpers
+      - $GIT/weibo-mesh/mesh-confs:/runX/mesh-confs
+      - $GIT/weibo-mesh/testhelpers/logs:/data1/motan/logs
+      - $GIT/weibo-mesh/testhelpers/snapshot:/data1/motan/snapshot
+    working_dir: /z/idevz-go/src/git.intra.weibo.com/openapi_rd/weibo-motan-go/main
+    command: go run agent.go -c /runX/mesh-confs -pool demo -application demo
+  wm-go-d:
+    extends: go-base
+    container_name: wm-go-d
+    volumes:
+      # - $GIT/weibo-mesh/testhelpers:/runX/testhelpers
+      - $GIT/weibo-mesh/mesh-confs:/runX/mesh-confs
+      - $GIT/weibo-mesh/testhelpers/logs:/data1/motan/logs
+      - $GIT/weibo-mesh/testhelpers/snapshot:/data1/motan/snapshot
+    working_dir: /z/idevz-go/src/git.intra.weibo.com/openapi_rd/weibo-motan-go/main
+    command: dlv-pvm debug --headless --listen=:2345 --log --api-version=2 --build-flags="-gcflags '-N -l'" -- -c /runX/mesh-confs -pool demo -application demo
   m-go:
     extends: go-base
     container_name: m-go
@@ -43,6 +72,22 @@ services:
       - |
         go build -a -installsuffix cgo -o /runX/testhelpers/tmesh /runX/testhelpers/cmd/tmesh/main.go
         go build -a -installsuffix cgo -o /runX/testhelpers/mtserver /runX/testhelpers/cmd/mtserver/main.go
+  mc-th:
+    extends: go-base
+    # image: zhoujing/wm-testhelper:1.0.0
+    # image: registry.api.weibo.com/openapi_rd/weibo-mesh-with-mesh-confs:test-0.0.6
+    image: registry.api.weibo.com/openapi_rd/weibo-mesh:test
+    container_name: mc-th
+    volumes:
+      # - $GIT/weibo-mesh/testhelpers:/runX/testhelpers
+      - $GIT/weibo-mesh/mesh-confs:/runX/mesh-confs
+      - $GIT/weibo-mesh/testhelpers/logs:/data1/motan/logs
+      - $GIT/weibo-mesh/testhelpers/snapshot:/data1/motan/snapshot
+    command: /weibo-mesh -c /runX/mesh-confs -pool demo -application demo
+      # - bash
+      # - -c
+      # - |
+      #   /weibo-mesh -c /runX/mesh-confs -pool demo -application demo
   rth:
     extends: go-base
     container_name: rth
@@ -137,6 +182,19 @@ services:
       - $GIT/weibo-or/video/:/video_obj
     working_dir: /video_obj
     command: openresty -c v.conf -p /video_obj/run_path -g "daemon off;"
+  video-x:
+    extends: openresty-base
+    container_name: video-x
+    ports:
+      - '1234:1234'
+    environment:
+      - MOTAN_ENV=development
+    volumes:
+      - $GIT/weibo-or/unistore_interface/:/unistore_interface
+      - $GIT/weibo-or/unistore_interface/logs/:/data0/logs/nginx/
+    working_dir: /unistore_interface
+    command: openresty -c nginx.conf -p /unistore_interface/src/nginx -g "daemon off;"
+    # command: ll /usr/local/openresty-1.15.6.1rc0-debug/ng
 
 ########## php start ##########
   php-base:
