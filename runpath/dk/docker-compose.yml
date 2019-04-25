@@ -129,7 +129,10 @@ services:
     extends: go-base
     container_name: go-test
     working_dir: /z/idevz-go/src/github.com/weibocom/motan-go/
-    command: go test -v -race -coverprofile=coverage.txt -covermode=atomic $$(go list ./... | grep -v main)
+    command: 
+      - bash
+      - -c
+      - go test -v -race -coverprofile=coverage.txt -covermode=atomic $$(go list ./... | grep -v main)
     # go test -race -args -test.v -test.run ^TestAgent_InitCall$
   gmr:
     extends: go-base
