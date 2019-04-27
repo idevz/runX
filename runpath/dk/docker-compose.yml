@@ -181,23 +181,11 @@ services:
       - '1234:1234'
     environment:
       - MOTAN_ENV=development
+      - APP_ROOT=/video_obj/
     volumes:
       - $GIT/weibo-or/video/:/video_obj
     working_dir: /video_obj
     command: openresty -c v.conf -p /video_obj/run_path -g "daemon off;"
-  video-x:
-    extends: openresty-base
-    container_name: video-x
-    ports:
-      - '1234:1234'
-    environment:
-      - MOTAN_ENV=development
-    volumes:
-      - $GIT/weibo-or/unistore_interface/:/unistore_interface
-      - $GIT/weibo-or/unistore_interface/logs/:/data0/logs/nginx/
-    working_dir: /unistore_interface
-    command: openresty -c nginx.conf -p /unistore_interface/src/nginx -g "daemon off;"
-    # command: ll /usr/local/openresty-1.15.6.1rc0-debug/ng
 
 ########## php start ##########
   php-base:
