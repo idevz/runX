@@ -157,6 +157,7 @@ services:
 ########## openresty start ##########
   openresty-base:
     image: zhoujing/idevz-runx-openresty:1.15.6.1rc0
+    network_mode: host
     environment:
       - MOTAN_ENV=development
     volumes:
@@ -174,6 +175,10 @@ services:
       - $GIT/weibo-or/motan-openresty:/motan-openresty
     working_dir: /motan-openresty
     command: prove -v ./t/000-sanity.t
+  orv:
+    extends: openresty-base
+    container_name: orv
+    command: openresty -V
   video:
     extends: openresty-base
     container_name: video
