@@ -123,6 +123,12 @@ dev_preparing() {
 		x make install
 }
 
+install_or_tools() {
+	git clone https://github.com/openresty/stapxx.git ${OR_PREFIX}/tools/stapxx
+	git clone https://github.com/brendangregg/FlameGraph.git ${OR_PREFIX}/tools/FlameGraph
+	git clone https://github.com/openresty/openresty-systemtap-toolkit.git ${OR_PREFIX}/tools/openresty-systemtap-toolkit
+}
+
 or_for_debug() {
 	dev_preparing 'debug'
 
@@ -170,6 +176,7 @@ or_for_debug() {
 		for DEP_F in $(ldd ${OR_PREFIX}/nginx/sbin/nginx | grep -Eo '(\/.*) |(/lib64/.*) '); do
 			x cp ${DEP_F} ${OR_PREFIX}/nginx/sbin/lib/$(basename ${DEP_F})
 		done
+	install_or_tools
 }
 
 install_default_luajit() {
@@ -226,6 +233,7 @@ or_for_valgrind() {
 			${RESTY_CONFIG_OPTIONS_MORE} &&
 		make -j${RESTY_J} &&
 		x make -j${RESTY_J} install
+	install_or_tools
 }
 
 or_for_prd() {
@@ -279,6 +287,7 @@ or_for_prd() {
 		for DEP_F in $(ldd ${OR_PREFIX}/nginx/sbin/nginx | grep -Eo '(\/.*) |(/lib64/.*) '); do
 			x cp ${DEP_F} ${OR_PREFIX}/nginx/sbin/lib/$(basename ${DEP_F})
 		done
+	install_or_tools
 }
 
 install_weighttp() {
@@ -343,6 +352,7 @@ PROFILE=$(
 export PRD_OR_ROOT=/usr/local/${OR_VERSION}-prd
 export DBG_OR_ROOT=/usr/local/${OR_VERSION}-debug
 export VGD_OR_ROOT=/usr/local/${OR_VERSION}-valgrind
+export PATH=\${PATH}:${OR_PREFIX}/tools/stapxx:${OR_PREFIX}/tools/FlameGraph:${OR_PREFIX}/tools/openresty-systemtap-toolkit
 
 alias prd_or='[ -z \${OLD_PATH} ] && OLD_PATH=\${PATH}; export NGX_BIN_ROOT=\${PRD_OR_ROOT}/nginx/sbin; export PATH=\${NGX_BIN_ROOT}:\${PRD_OR_ROOT}/bin:\${OLD_PATH}; export OR_ROOT=\${PRD_OR_ROOT}'
 alias dbg_or='[ -z \${OLD_PATH} ] && OLD_PATH=\${PATH}; export NGX_BIN_ROOT=\${DBG_OR_ROOT}/nginx/sbin; export PATH=\${NGX_BIN_ROOT}:\${DBG_OR_ROOT}/bin:\${OLD_PATH}; export OR_ROOT=\${DBG_OR_ROOT}'
