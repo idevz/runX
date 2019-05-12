@@ -20,6 +20,8 @@ BUILD_ENV="${BUILD_ENV}"
 OR_ENV=${OE:-"debug"}
 RUNX_BUILDING_VERSION=${RBV:-"1.15.6.1rc0"}
 
+PF_TOOLS_ROOT="/usr/local/tools"
+
 SRC_ROOT=${BASE_DIR}/srcs
 [ ! -d "${SRC_ROOT}" ] && x mkdir -p "${SRC_ROOT}"
 OR_VERSION=${LV:-"openresty-${RUNX_BUILDING_VERSION}"}
@@ -124,9 +126,9 @@ dev_preparing() {
 }
 
 install_or_tools() {
-	git clone https://github.com/openresty/stapxx.git ${OR_PREFIX}/tools/stapxx
-	git clone https://github.com/brendangregg/FlameGraph.git ${OR_PREFIX}/tools/FlameGraph
-	git clone https://github.com/openresty/openresty-systemtap-toolkit.git ${OR_PREFIX}/tools/openresty-systemtap-toolkit
+	git clone https://github.com/openresty/stapxx.git ${PF_TOOLS_ROOT}/stapxx
+	git clone https://github.com/brendangregg/FlameGraph.git ${PF_TOOLS_ROOT}/FlameGraph
+	git clone https://github.com/openresty/openresty-systemtap-toolkit.git ${PF_TOOLS_ROOT}/openresty-systemtap-toolkit
 }
 
 or_for_debug() {
@@ -354,7 +356,7 @@ PROFILE=$(
 export PRD_OR_ROOT=/usr/local/${OR_VERSION}-prd
 export DBG_OR_ROOT=/usr/local/${OR_VERSION}-debug
 export VGD_OR_ROOT=/usr/local/${OR_VERSION}-valgrind
-export PATH=\${PATH}:${OR_PREFIX}/tools/stapxx:${OR_PREFIX}/tools/FlameGraph:${OR_PREFIX}/tools/openresty-systemtap-toolkit
+export PATH=\${PATH}:${PF_TOOLS_ROOT}/stapxx:${PF_TOOLS_ROOT}/FlameGraph:${PF_TOOLS_ROOT}/openresty-systemtap-toolkit
 
 alias prd_or='[ -z \${OLD_PATH} ] && OLD_PATH=\${PATH}; export NGX_BIN_ROOT=\${PRD_OR_ROOT}/nginx/sbin; export PATH=\${NGX_BIN_ROOT}:\${PRD_OR_ROOT}/bin:\${OLD_PATH}; export OR_ROOT=\${PRD_OR_ROOT}'
 alias dbg_or='[ -z \${OLD_PATH} ] && OLD_PATH=\${PATH}; export NGX_BIN_ROOT=\${DBG_OR_ROOT}/nginx/sbin; export PATH=\${NGX_BIN_ROOT}:\${DBG_OR_ROOT}/bin:\${OLD_PATH}; export OR_ROOT=\${DBG_OR_ROOT}'
