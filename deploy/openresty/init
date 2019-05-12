@@ -306,7 +306,7 @@ install_weighttp() {
 install_test_nginx() {
 	# x curl -fSL http://xrl.us/cpanm -o /usr/bin/cpanm &&
 	# 	x chmod +x /usr/bin/cpanm
-	curl -L http://cpanmin.us | perl - --sudo --force App::cpanminus
+	sudo curl -L http://cpanmin.us | sudo perl - --sudo --force App::cpanminus
 	x $(which cpanm) --force Test::Nginx
 	x $(which cpanm) --force Digest::SHA
 	install_weighttp
