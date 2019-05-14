@@ -45,3 +45,28 @@ start_debug_or() {
 stop_or() {
 	sudo pkill openresty
 }
+
+fire_lua() {
+	local pid="$1"
+	local time="${2:-10}"
+	x /usr/local/tools/openresty-systemtap-toolkit/ngx-sample-lua-bt --luajit20 -a '-DMAXACTION=100000' -p "$pid" -t "$time" >"$RUN_PATH/ss/lua.bt"
+	x /usr/local/tools/openresty-systemtap-toolkit/fix-lua-bt "$RUN_PATH/ss/lua.bt" >"$RUN_PATH/ss/lua-fix.bt"
+	x /usr/local/tools/FlameGraph/stackcollapse-stap.pl "$RUN_PATH/ss/lua-fix.bt" >"$RUN_PATH/ss/lua.cbt"
+	x /usr/local/tools/FlameGraph/flamegraph.pl "$RUN_PATH/ss/lua.cbt" >"$RUN_PATH/ss/lua-fix.svg"
+}
+
+fire_c_oncpu() {
+	local pid="$1"
+	local time="${2:-10}"
+	x /usr/local/tools/openresty-systemtap-toolkit/sample-bt -u -a '-DMAXACTION=100000' -p "$pid" -t "$time" >"$RUN_PATH/ss/ngx-oncpu.bt"
+	x /usr/local/tools/FlameGraph/stackcollapse-stap.pl "$RUN_PATH/ss/ngx-oncpu.bt" >"$RUN_PATH/ss/ngx-oncpu.cbt"
+	x /usr/local/tools/FlameGraph/flamegraph.pl "$RUN_PATH/ss/ngx-oncpu.cbt" >"$RUN_PATH/ss/ngx-oncpu.svg"
+}
+
+fire_c_offcpu() {
+	local pid="$1"
+	local time="${2:-10}"
+	x /usr/local/tools/openresty-systemtap-toolkit/sample-bt-off-cpu -u -a '-DMAXACTION=100000' -p "$pid" -t "$time" >"$RUN_PATH/ss/ngx-offcpu.bt"
+	x /usr/local/tools/FlameGraph/stackcollapse-stap.pl "$RUN_PATH/ss/ngx-offcpu.bt" >"$RUN_PATH/ss/ngx-offcpu.cbt"
+	x /usr/local/tools/FlameGraph/flamegraph.pl "$RUN_PATH/ss/ngx-offcpu.cbt" >"$RUN_PATH/ss/ngx-offcpu.svg"
+}
