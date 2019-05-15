@@ -70,3 +70,15 @@ fire_c_offcpu() {
 	x /usr/local/tools/FlameGraph/stackcollapse-stap.pl "$RUN_PATH/ss/ngx-offcpu.bt" >"$RUN_PATH/ss/ngx-offcpu.cbt"
 	x /usr/local/tools/FlameGraph/flamegraph.pl "$RUN_PATH/ss/ngx-offcpu.cbt" >"$RUN_PATH/ss/ngx-offcpu.svg"
 }
+
+fire_memx() {
+	local pid="$1"
+	x /usr/local/tools/stapxx/samples//sample-bt-leaks.sxx -x "$pid" -v >"$RUN_PATH/ss/ngx-mem.bt"
+	x /usr/local/tools/FlameGraph/stackcollapse-stap.pl "$RUN_PATH/ss/ngx-mem.bt" >"$RUN_PATH/ss/ngx-mem.cbt"
+	x /usr/local/tools/FlameGraph/flamegraph.pl --encoding="ISO-8859-1" --title="Lua-land on-CPU flamegraph" "$RUN_PATH/ss/ngx-mem.cbt" >"$RUN_PATH/ss/ngx-mem.svg"
+}
+
+fire_mem() {
+	local pid="$1"
+	x /usr/local/tools/openresty-systemtap-toolkit/ngx-leaked-pools -p "$pid"
+}

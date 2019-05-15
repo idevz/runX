@@ -3,63 +3,49 @@ motan.server.init:_M.motan_server_do_request
 motan.server.init:_M.run
 motan.init:Motan.content_motan_server
 =content_by_lua(app-dev.conf:29):1
-	2435
-C:ngx_stream_lua_ngx_log
-VideoService.lua:_M:JustForT
-C:lj_ffh_pcall
-motan.provider.motan:_M.call
-motan.filter.metrics:_M.filter
-motan.filter.accesslog:_M.filter
-motan.server.init:invoker
-motan.server.init:service_calling
-motan.thread:15
-	247
+	2259
 C:ngx_stream_lua_socket_tcp_send
 motan.server.init:service_calling
 motan.thread:15
-	218
-C:lj_cf_debug_getinfo
-motan.server.init:get_service_method_args_num
-motan.server.init:invoker
-motan.server.init:service_calling
-motan.thread:15
-	67
+	211
 C:ngx_stream_lua_socket_tcp_receive
 motan.protocol.motan2.codec:_M.decode
 motan.server.init:_M.motan_server_do_request
 motan.server.init:_M.run
 motan.init:Motan.content_motan_server
 =content_by_lua(app-dev.conf:29):1
-	53
-motan.protocol.motan2.codec:_M.encode
+	184
+C:ngx_stream_lua_ngx_get
+motan.init:clean_motan_ctx
+motan.thread:15
+	88
+C:lj_cf_debug_getinfo
+motan.server.init:get_service_method_args_num
+motan.server.init:invoker
 motan.server.init:service_calling
 motan.thread:15
-	46
+	76
+motan.protocol.motan2.message:_M.new
+motan.protocol.motan2.init:_M.convert_to_response_msg
+motan.server.init:service_calling
+motan.thread:15
+	56
 motan.utils:_M.explode
 motan.protocol.motan2.codec:_M.decode
 motan.server.init:_M.motan_server_do_request
 motan.server.init:_M.run
 motan.init:Motan.content_motan_server
 =content_by_lua(app-dev.conf:29):1
-	34
-C:ngx_stream_lua_ngx_get
-motan.init:motan_ctx
-VideoService.lua:_M:JustForT
-C:lj_ffh_pcall
-motan.provider.motan:_M.call
-motan.filter.metrics:_M.filter
-motan.filter.accesslog:_M.filter
-motan.server.init:invoker
-motan.server.init:service_calling
-motan.thread:15
-	30
-C:lj_cf_ffi_new
-motan.utils:_M.pack_request_id
-motan.protocol.motan2.header:_M.pack_header
+	56
 motan.protocol.motan2.codec:_M.encode
 motan.server.init:service_calling
 motan.thread:15
-	29
+	47
+motan.core.request:_M.new
+motan.server.init:invoker
+motan.server.init:service_calling
+motan.thread:15
+	45
 C:lj_cf_ffi_new
 motan.utils:_M.unpack_request_id
 motan.protocol.motan2.codec:_M.decode
@@ -67,9 +53,43 @@ motan.server.init:_M.motan_server_do_request
 motan.server.init:_M.run
 motan.init:Motan.content_motan_server
 =content_by_lua(app-dev.conf:29):1
-	27
-motan.utils:writeit
-motan.utils:_M.write
+	36
+C:lj_cf_ffi_new
+motan.utils:_M.pack_request_id
+motan.protocol.motan2.header:_M.pack_header
+motan.protocol.motan2.codec:_M.encode
+motan.server.init:service_calling
+motan.thread:15
+	36
+motan.thread:15
+	32
+motan.protocol.motan2.codec:_M.decode
+motan.server.init:_M.motan_server_do_request
+motan.server.init:_M.run
+motan.init:Motan.content_motan_server
+=content_by_lua(app-dev.conf:29):1
+	31
+C:motan_simple_serialize
+C:lj_ffh_pcall
+motan.serialize.simple_native.init:_serialize
+motan.protocol.motan2.init:_M.convert_to_response_msg
+motan.server.init:service_calling
+motan.thread:15
+	30
+motan.utils:_M.msb_stringtonumber
+motan.protocol.motan2.codec:_M.decode
+motan.server.init:_M.motan_server_do_request
+motan.server.init:_M.run
+motan.init:Motan.content_motan_server
+=content_by_lua(app-dev.conf:29):1
+	30
+motan.provider.motan:_M.call
+motan.filter.metrics:_M.filter
+motan.filter.accesslog:_M.filter
+motan.server.init:invoker
+motan.server.init:service_calling
+motan.thread:15
+	29
 VideoService.lua:_M:JustForT
 C:lj_ffh_pcall
 motan.provider.motan:_M.call
@@ -78,24 +98,26 @@ motan.filter.accesslog:_M.filter
 motan.server.init:invoker
 motan.server.init:service_calling
 motan.thread:15
-	26
-VideoService.lua:_M:JustForT
+	28
+C:motan_simple_deserialize
 C:lj_ffh_pcall
-motan.provider.motan:_M.call
-motan.filter.metrics:_M.filter
-motan.filter.accesslog:_M.filter
+motan.serialize.simple_native.init:_M.deserialize
+motan.protocol.motan2.init:_M.convert_to_request
 motan.server.init:invoker
 motan.server.init:service_calling
 motan.thread:15
-	25
-C:ngx_stream_lua_ngx_get
-motan.init:clean_motan_ctx
-motan.thread:15
-	25
-motan.provider.motan:_M.call
-motan.filter.metrics:_M.filter
-motan.filter.accesslog:_M.filter
+	24
 motan.server.init:invoker
+motan.server.init:service_calling
+motan.thread:15
+	22
+motan.utils:_M.msb_numbertobytes
+motan.protocol.motan2.codec:_M.encode
+motan.server.init:service_calling
+motan.thread:15
+	22
+C:lj_cf_table_concat
+motan.protocol.motan2.codec:_M.encode
 motan.server.init:service_calling
 motan.thread:15
 	20
@@ -107,20 +129,15 @@ motan.filter.accesslog:_M.filter
 motan.server.init:invoker
 motan.server.init:service_calling
 motan.thread:15
-	18
-motan.server.init:_M.resp
-motan.server.init:service_calling
-motan.thread:15
-	17
-C:motan_simple_serialize
-C:lj_ffh_pcall
-motan.serialize.simple_native.init:_serialize
-motan.protocol.motan2.init:_M.convert_to_response_msg
-motan.server.init:service_calling
-motan.thread:15
-	17
+	19
 motan.protocol.motan2.header:_M.pack_header
 motan.protocol.motan2.codec:_M.encode
+motan.server.init:service_calling
+motan.thread:15
+	15
+C:lj_ffh_tonumber
+motan.protocol.motan2.message:_M.get_service_key
+motan.server.init:invoker
 motan.server.init:service_calling
 motan.thread:15
 	15
@@ -130,30 +147,40 @@ motan.protocol.motan2.codec:_M.encode
 motan.server.init:service_calling
 motan.thread:15
 	14
-C:motan_simple_deserialize
-C:lj_ffh_pcall
-motan.serialize.simple_native.init:_M.deserialize
-motan.protocol.motan2.init:_M.convert_to_request
-motan.server.init:invoker
+motan.utils:_n2b
+motan.protocol.motan2.codec:_M.encode
 motan.server.init:service_calling
 motan.thread:15
-	14
+	13
+C:lj_cf_ffi_meta___call
+motan.utils:_M.unpack_request_id
 motan.protocol.motan2.codec:_M.decode
 motan.server.init:_M.motan_server_do_request
 motan.server.init:_M.run
 motan.init:Motan.content_motan_server
 =content_by_lua(app-dev.conf:29):1
-	14
-motan.utils:_M.msb_numbertobytes
+	13
+C:lj_cf_table_concat
+C:lj_ffh_pcall
+motan.protocol.motan2.codec:_M.decode
+motan.server.init:_M.motan_server_do_request
+motan.server.init:_M.run
+motan.init:Motan.content_motan_server
+=content_by_lua(app-dev.conf:29):1
+	12
+C:lj_cf_table_concat
+motan.server.init:service_calling
+motan.thread:15
+	12
+C:lj_cf_table_insert
+motan.utils:_n2b
 motan.protocol.motan2.header:_M.pack_header
 motan.protocol.motan2.codec:_M.encode
 motan.server.init:service_calling
 motan.thread:15
-	13
-C:lj_cf_table_insert
-motan.utils:putln
-motan.utils:writeit
-motan.utils:_M.write
+	12
+C:ngx_stream_lua_ngx_get
+motan.init:motan_ctx
 VideoService.lua:_M:JustForT
 C:lj_ffh_pcall
 motan.provider.motan:_M.call
@@ -162,32 +189,31 @@ motan.filter.accesslog:_M.filter
 motan.server.init:invoker
 motan.server.init:service_calling
 motan.thread:15
-	13
-C:lj_cf_table_insert
-motan.utils:_n2b
-motan.protocol.motan2.header:_M.pack_header
-motan.protocol.motan2.codec:_M.encode
-motan.server.init:service_calling
-motan.thread:15
-	12
-C:lj_cf_table_concat
-motan.protocol.motan2.codec:_M.encode
-motan.server.init:service_calling
-motan.thread:15
-	12
-C:lj_cf_ffi_meta___call
-motan.utils:_M.unpack_request_id
+	11
+C:lj_cf_table_new
 motan.protocol.motan2.codec:_M.decode
 motan.server.init:_M.motan_server_do_request
 motan.server.init:_M.run
 motan.init:Motan.content_motan_server
 =content_by_lua(app-dev.conf:29):1
-	11
+	10
+C:lj_cf_ffi_string
+motan.protocol.motan2.codec:_M.decode
+motan.server.init:_M.motan_server_do_request
+motan.server.init:_M.run
+motan.init:Motan.content_motan_server
+=content_by_lua(app-dev.conf:29):1
+	10
 motan.utils:_M.msb_numbertobytes
+motan.protocol.motan2.header:_M.pack_header
 motan.protocol.motan2.codec:_M.encode
 motan.server.init:service_calling
 motan.thread:15
 	9
+C:lj_cf_table_concat
+motan.protocol.motan2.header:_M.pack_header
+motan.protocol.motan2.codec:_M.encode
+motan.server.init:service_calling
 motan.thread:15
 	9
 C:lj_cf_ffi_meta___call
@@ -196,44 +222,38 @@ motan.protocol.motan2.header:_M.pack_header
 motan.protocol.motan2.codec:_M.encode
 motan.server.init:service_calling
 motan.thread:15
-	9
-motan.utils:_M.write
-VideoService.lua:_M:JustForT
-C:lj_ffh_pcall
-motan.provider.motan:_M.call
-motan.filter.metrics:_M.filter
-motan.filter.accesslog:_M.filter
-motan.server.init:invoker
-motan.server.init:service_calling
-motan.thread:15
 	8
+motan.protocol.motan2.init:_M.convert_to_request
 motan.server.init:invoker
 motan.server.init:service_calling
 motan.thread:15
 	7
-C:lj_cf_table_concat
-VideoService.lua:_M:JustForT
-C:lj_ffh_pcall
-motan.provider.motan:_M.call
-motan.filter.metrics:_M.filter
-motan.filter.accesslog:_M.filter
-motan.server.init:invoker
-motan.server.init:service_calling
-motan.thread:15
-	7
-C:lj_cf_ffi_string
+motan.protocol.motan2.header:_M.new
 motan.protocol.motan2.codec:_M.decode
 motan.server.init:_M.motan_server_do_request
 motan.server.init:_M.run
 motan.init:Motan.content_motan_server
 =content_by_lua(app-dev.conf:29):1
-	6
-motan.core.response:_M.new
-motan.filter.metrics:_M.filter
-motan.filter.accesslog:_M.filter
-motan.server.init:invoker
+	7
+motan.init:clean_motan_ctx
+motan.thread:15
+	7
+C:ngx_stream_lua_ngx_log
+motan.init:clean_motan_ctx
+motan.thread:15
+	7
+motan.utils:_n2b
+motan.protocol.motan2.header:_M.pack_header
+motan.protocol.motan2.codec:_M.encode
 motan.server.init:service_calling
 motan.thread:15
+	7
+motan.utils:_b2n
+motan.protocol.motan2.codec:_M.decode
+motan.server.init:_M.motan_server_do_request
+motan.server.init:_M.run
+motan.init:Motan.content_motan_server
+=content_by_lua(app-dev.conf:29):1
 	6
 motan.init:motan_ctx
 motan.provider.motan:_M.call
@@ -243,40 +263,6 @@ motan.server.init:invoker
 motan.server.init:service_calling
 motan.thread:15
 	6
-motan.core.request:_M.new
-motan.server.init:invoker
-motan.server.init:service_calling
-motan.thread:15
-	6
-C:lj_ffh_tostring
-motan.init:clean_motan_ctx
-motan.thread:15
-	6
-motan.utils:_M.msb_stringtonumber
-motan.protocol.motan2.codec:_M.decode
-motan.server.init:_M.motan_server_do_request
-motan.server.init:_M.run
-motan.init:Motan.content_motan_server
-=content_by_lua(app-dev.conf:29):1
-	6
-motan.utils:_n2b
-motan.protocol.motan2.header:_M.pack_header
-motan.protocol.motan2.codec:_M.encode
-motan.server.init:service_calling
-motan.thread:15
-	5
-C:lj_cf_table_new
-motan.protocol.motan2.codec:_M.decode
-motan.server.init:_M.motan_server_do_request
-motan.server.init:_M.run
-motan.init:Motan.content_motan_server
-=content_by_lua(app-dev.conf:29):1
-	5
-motan.protocol.motan2.init:_M.convert_to_request
-motan.server.init:invoker
-motan.server.init:service_calling
-motan.thread:15
-	5
 C:ngx_stream_lua_ngx_now
 motan.provider.motan:_M.call
 motan.filter.metrics:_M.filter
@@ -284,49 +270,44 @@ motan.filter.accesslog:_M.filter
 motan.server.init:invoker
 motan.server.init:service_calling
 motan.thread:15
-	4
-motan.protocol.motan2.message:_M.new
-motan.protocol.motan2.codec:_M.decode
-motan.server.init:_M.motan_server_do_request
-motan.server.init:_M.run
-motan.init:Motan.content_motan_server
-=content_by_lua(app-dev.conf:29):1
-	4
-motan.init:motan_ctx
-VideoService.lua:_M:JustForT
-C:lj_ffh_pcall
-motan.provider.motan:_M.call
-motan.filter.metrics:_M.filter
-motan.filter.accesslog:_M.filter
-motan.server.init:invoker
-motan.server.init:service_calling
-motan.thread:15
-	4
-motan.server.init:_M.run
-motan.init:Motan.content_motan_server
-=content_by_lua(app-dev.conf:29):1
-	4
+	6
+C:ngx_stream_lua_ngx_now
+	6
 C:lj_cf_ffi_string
 motan.protocol.motan2.header:_M.pack_header
 motan.protocol.motan2.codec:_M.encode
 motan.server.init:service_calling
 motan.thread:15
-	4
-motan.utils:eat_last_comma
-motan.utils:_M.write
-VideoService.lua:_M:JustForT
-C:lj_ffh_pcall
-motan.provider.motan:_M.call
-motan.filter.metrics:_M.filter
-motan.filter.accesslog:_M.filter
-motan.server.init:invoker
-motan.server.init:service_calling
+	5
+C:lj_ffh_tostring
+motan.init:clean_motan_ctx
 motan.thread:15
+	5
+motan.server.init:_M.run
+motan.init:Motan.content_motan_server
+=content_by_lua(app-dev.conf:29):1
+	5
+C:lj_ffh_string_byte
+motan.utils:_M.msb_stringtonumber
+motan.protocol.motan2.codec:_M.decode
+motan.server.init:_M.motan_server_do_request
+motan.server.init:_M.run
+motan.init:Motan.content_motan_server
+=content_by_lua(app-dev.conf:29):1
+	4
+motan.protocol.motan2.message:_M.new
+motan.protocol.motan2.codec:_M.decode
+motan.server.init:_M.motan_server_do_request
+motan.server.init:_M.run
+motan.init:Motan.content_motan_server
+=content_by_lua(app-dev.conf:29):1
+	4
+C:lj_cf_unpack
 	3
+C:lj_cf_coroutine_running
 motan.init:clean_motan_ctx
 motan.thread:15
 	3
-C:lj_cf_coroutine_running
 motan.init:motan_ctx
 VideoService.lua:_M:JustForT
 C:lj_ffh_pcall
@@ -337,49 +318,75 @@ motan.server.init:invoker
 motan.server.init:service_calling
 motan.thread:15
 	3
-C:lj_cf_table_concat
-motan.protocol.motan2.header:_M.pack_header
-motan.protocol.motan2.codec:_M.encode
-motan.server.init:service_calling
-motan.thread:15
-	3
-C:lj_cf_coroutine_running
-motan.init:clean_motan_ctx
-motan.thread:15
-	3
-motan.utils:_b2n
-motan.protocol.motan2.codec:_M.decode
+motan.thread:_M.spawn
 motan.server.init:_M.motan_server_do_request
 motan.server.init:_M.run
 motan.init:Motan.content_motan_server
 =content_by_lua(app-dev.conf:29):1
 	3
-motan.protocol.motan2.init:_M.convert_to_response_msg
-motan.server.init:service_calling
-motan.thread:15
-	2
-motan.server.init:_M.motan_server_do_request
-motan.server.init:_M.run
-motan.init:Motan.content_motan_server
-=content_by_lua(app-dev.conf:29):1
-	2
-motan.protocol.motan2.message:_M.new
-motan.protocol.motan2.init:_M.convert_to_response_msg
-motan.server.init:service_calling
-motan.thread:15
-	2
+C:lj_cf_ffi_clib___index
 motan.utils:_M.unpack_request_id
 motan.protocol.motan2.codec:_M.decode
 motan.server.init:_M.motan_server_do_request
 motan.server.init:_M.run
 motan.init:Motan.content_motan_server
 =content_by_lua(app-dev.conf:29):1
-	2
+	3
+motan.utils:_M.unpack_request_id
+motan.protocol.motan2.codec:_M.decode
+motan.server.init:_M.motan_server_do_request
+motan.server.init:_M.run
+motan.init:Motan.content_motan_server
+=content_by_lua(app-dev.conf:29):1
+	3
+C:lj_cf_ffi_clib___index
 motan.utils:_M.pack_request_id
 motan.protocol.motan2.header:_M.pack_header
 motan.protocol.motan2.codec:_M.encode
 motan.server.init:service_calling
 motan.thread:15
+	3
+C:ngx_stream_lua_ngx_worker_exiting
+motan.server.init:_M.run
+motan.init:Motan.content_motan_server
+=content_by_lua(app-dev.conf:29):1
+	2
+C:lj_cf_coroutine_running
+motan.init:motan_ctx
+VideoService.lua:_M:JustForT
+C:lj_ffh_pcall
+motan.provider.motan:_M.call
+motan.filter.metrics:_M.filter
+motan.filter.accesslog:_M.filter
+motan.server.init:invoker
+motan.server.init:service_calling
+motan.thread:15
+	2
+motan.core.response:_M.new
+motan.filter.metrics:_M.filter
+motan.filter.accesslog:_M.filter
+motan.server.init:invoker
+motan.server.init:service_calling
+motan.thread:15
+	2
+C:lj_ffh_next
+motan.utils:_M.is_empty
+motan.server.init:invoker
+motan.server.init:service_calling
+motan.thread:15
+	2
+motan.provider.motan:_M.get_service_obj
+motan.provider.motan:_M.call
+motan.filter.metrics:_M.filter
+motan.filter.accesslog:_M.filter
+motan.server.init:invoker
+motan.server.init:service_calling
+motan.thread:15
+	2
+motan.server.init:_M.motan_server_do_request
+motan.server.init:_M.run
+motan.init:Motan.content_motan_server
+=content_by_lua(app-dev.conf:29):1
 	2
 C:lj_ffh_next
 motan.utils:_M.is_empty
@@ -389,39 +396,8 @@ motan.server.init:invoker
 motan.server.init:service_calling
 motan.thread:15
 	2
-C:ngx_stream_lua_ngx_log
-motan.init:clean_motan_ctx
+motan.server.init:service_calling
 motan.thread:15
-	2
-C:ngx_stream_lua_ngx_now
-	1
-C:ngx_stream_lua_ngx_worker_exiting
-motan.server.init:_M.run
-motan.init:Motan.content_motan_server
-=content_by_lua(app-dev.conf:29):1
-	1
-motan.protocol.motan2.header:_M.new
-motan.protocol.motan2.codec:_M.decode
-motan.server.init:_M.motan_server_do_request
-motan.server.init:_M.run
-motan.init:Motan.content_motan_server
-=content_by_lua(app-dev.conf:29):1
-	1
-C:lj_ffh_string_byte
-motan.utils:_M.msb_stringtonumber
-motan.protocol.motan2.codec:_M.decode
-motan.server.init:_M.motan_server_do_request
-motan.server.init:_M.run
-motan.init:Motan.content_motan_server
-=content_by_lua(app-dev.conf:29):1
-	1
-C:lj_cf_table_concat
-C:lj_ffh_pcall
-motan.protocol.motan2.codec:_M.decode
-motan.server.init:_M.motan_server_do_request
-motan.server.init:_M.run
-motan.init:Motan.content_motan_server
-=content_by_lua(app-dev.conf:29):1
 	1
 C:lj_ffh_next
 motan.utils:_M.is_empty
@@ -433,6 +409,8 @@ motan.server.init:invoker
 motan.server.init:service_calling
 motan.thread:15
 	1
+C:lj_cf_ffi_string
+	1
 C:lj_cf_table_insert
 motan.protocol.motan2.codec:_M.decode
 motan.server.init:_M.motan_server_do_request
@@ -440,42 +418,10 @@ motan.server.init:_M.run
 motan.init:Motan.content_motan_server
 =content_by_lua(app-dev.conf:29):1
 	1
-motan.server.init:service_calling
-motan.thread:15
-	1
-motan.thread:_M.spawn
+C:lj_ffh_setmetatable
+motan.protocol.motan2.codec:_M.decode
 motan.server.init:_M.motan_server_do_request
 motan.server.init:_M.run
 motan.init:Motan.content_motan_server
 =content_by_lua(app-dev.conf:29):1
-	1
-C:lj_cf_ffi_clib___index
-motan.utils:_M.pack_request_id
-motan.protocol.motan2.header:_M.pack_header
-motan.protocol.motan2.codec:_M.encode
-motan.server.init:service_calling
-motan.thread:15
-	1
-C:lj_cf_unpack
-	1
-C:lj_ffh_setmetatable
-motan.filter.metrics:_M.filter
-motan.filter.accesslog:_M.filter
-motan.server.init:invoker
-motan.server.init:service_calling
-motan.thread:15
-	1
-C:lj_cf_coroutine_running
-motan.init:motan_ctx
-motan.provider.motan:_M.call
-motan.filter.metrics:_M.filter
-motan.filter.accesslog:_M.filter
-motan.server.init:invoker
-motan.server.init:service_calling
-motan.thread:15
-	1
-motan.utils:_n2b
-motan.protocol.motan2.codec:_M.encode
-motan.server.init:service_calling
-motan.thread:15
 	1

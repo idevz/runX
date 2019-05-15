@@ -1,6 +1,6 @@
 <?xml version="1.0" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg version="1.1" width="1200" height="502" onload="init(evt)" viewBox="0 0 1200 502" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg version="1.1" width="1200" height="422" onload="init(evt)" viewBox="0 0 1200 422" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <!-- Flame graph stack visualization. See https://github.com/brendangregg/FlameGraph for latest version, and http://www.brendangregg.com/flamegraphs.html for examples. -->
 <!-- NOTES:  -->
 <defs>
@@ -334,160 +334,112 @@
 	}
 ]]>
 </script>
-<rect x="0.0" y="0" width="1200.0" height="502.0" fill="url(#background)"  />
+<rect x="0.0" y="0" width="1200.0" height="422.0" fill="url(#background)"  />
 <text id="title" x="600.00" y="24" >Flame Graph</text>
-<text id="details" x="10.00" y="485" > </text>
+<text id="details" x="10.00" y="405" > </text>
 <text id="unzoom" x="10.00" y="24" class="hide">Reset Zoom</text>
 <text id="search" x="1090.00" y="24" >Search</text>
-<text id="matched" x="1090.00" y="485" > </text>
+<text id="matched" x="1090.00" y="405" > </text>
 <g id="frames">
 <g >
-<title>ngx_stream_lua_socket_read_handler (442,115 samples, 99.96%)</title><rect x="10.0" y="261" width="1179.5" height="15.0" fill="rgb(232,98,8)" rx="2" ry="2" />
-<text  x="13.00" y="271.5" >ngx_stream_lua_socket_read_handler</text>
+<title>ngx_process_events_and_timers (13 samples, 8.90%)</title><rect x="90.8" y="245" width="105.1" height="15.0" fill="rgb(241,64,53)" rx="2" ry="2" />
+<text  x="93.82" y="255.5" >ngx_process_..</text>
 </g>
 <g >
-<title>ngx_stream_lua_socket_tcp_read_resume (442,115 samples, 99.96%)</title><rect x="10.0" y="197" width="1179.5" height="15.0" fill="rgb(212,6,6)" rx="2" ry="2" />
-<text  x="13.00" y="207.5" >ngx_stream_lua_socket_tcp_read_resume</text>
+<title>ngx_stream_lua_socket_tcp_resume_helper (13 samples, 8.90%)</title><rect x="90.8" y="101" width="105.1" height="15.0" fill="rgb(227,176,33)" rx="2" ry="2" />
+<text  x="93.82" y="111.5" >ngx_stream_l..</text>
 </g>
 <g >
-<title>ngx_start_worker_processes (442,115 samples, 99.96%)</title><rect x="10.0" y="373" width="1179.5" height="15.0" fill="rgb(231,92,3)" rx="2" ry="2" />
-<text  x="13.00" y="383.5" >ngx_start_worker_processes</text>
+<title>ngx_stream_lua_socket_read_handler (13 samples, 8.90%)</title><rect x="90.8" y="181" width="105.1" height="15.0" fill="rgb(238,7,5)" rx="2" ry="2" />
+<text  x="93.82" y="191.5" >ngx_stream_l..</text>
 </g>
 <g >
-<title>ngx_stream_lua_content_wev_handler (442,115 samples, 99.96%)</title><rect x="10.0" y="213" width="1179.5" height="15.0" fill="rgb(240,104,54)" rx="2" ry="2" />
-<text  x="13.00" y="223.5" >ngx_stream_lua_content_wev_handler</text>
+<title>lj_BC_RET (13 samples, 8.90%)</title><rect x="90.8" y="37" width="105.1" height="15.0" fill="rgb(231,126,19)" rx="2" ry="2" />
+<text  x="93.82" y="47.5" >lj_BC_RET</text>
 </g>
 <g >
-<title>ngx_write_fd (437,157 samples, 98.84%)</title><rect x="10.1" y="53" width="1166.3" height="15.0" fill="rgb(237,95,41)" rx="2" ry="2" />
-<text  x="13.10" y="63.5" >ngx_write_fd</text>
+<title>ngx_stream_lua_post_zombie_thread (78 samples, 53.42%)</title><rect x="559.6" y="357" width="630.4" height="15.0" fill="rgb(244,184,35)" rx="2" ry="2" />
+<text  x="562.59" y="367.5" >ngx_stream_lua_post_zombie_thread</text>
 </g>
 <g >
-<title>log_wrapper (4,922 samples, 1.11%)</title><rect x="1176.4" y="101" width="13.1" height="15.0" fill="rgb(232,40,12)" rx="2" ry="2" />
-<text  x="1179.37" y="111.5" ></text>
+<title>ngx_stream_lua_socket_tcp_read (13 samples, 8.90%)</title><rect x="90.8" y="165" width="105.1" height="15.0" fill="rgb(212,46,50)" rx="2" ry="2" />
+<text  x="93.82" y="175.5" >ngx_stream_l..</text>
 </g>
 <g >
-<title>ngx_log_error_core (4,922 samples, 1.11%)</title><rect x="1176.4" y="85" width="13.1" height="15.0" fill="rgb(233,51,33)" rx="2" ry="2" />
-<text  x="1179.37" y="95.5" ></text>
+<title>ngx_stream_lua_req_socket_rev_handler (13 samples, 8.90%)</title><rect x="90.8" y="197" width="105.1" height="15.0" fill="rgb(252,84,19)" rx="2" ry="2" />
+<text  x="93.82" y="207.5" >ngx_stream_l..</text>
 </g>
 <g >
-<title>ngx_stream_lua_run_thread (437,193 samples, 98.84%)</title><rect x="10.0" y="149" width="1166.4" height="15.0" fill="rgb(209,27,30)" rx="2" ry="2" />
-<text  x="13.00" y="159.5" >ngx_stream_lua_run_thread</text>
+<title>ngx_stream_lua_run_posted_threads (13 samples, 8.90%)</title><rect x="90.8" y="85" width="105.1" height="15.0" fill="rgb(205,24,53)" rx="2" ry="2" />
+<text  x="93.82" y="95.5" >ngx_stream_l..</text>
 </g>
 <g >
-<title>ngx_stream_lua_run_thread (4,922 samples, 1.11%)</title><rect x="1176.4" y="165" width="13.1" height="15.0" fill="rgb(245,102,54)" rx="2" ry="2" />
-<text  x="1179.37" y="175.5" ></text>
+<title>ngx_epoll_process_events (13 samples, 8.90%)</title><rect x="90.8" y="229" width="105.1" height="15.0" fill="rgb(220,190,53)" rx="2" ry="2" />
+<text  x="93.82" y="239.5" >ngx_epoll_pr..</text>
 </g>
 <g >
-<title>log_wrapper (437,157 samples, 98.84%)</title><rect x="10.1" y="85" width="1166.3" height="15.0" fill="rgb(237,219,4)" rx="2" ry="2" />
-<text  x="13.10" y="95.5" >log_wrapper</text>
+<title>all (146 samples, 100%)</title><rect x="10.0" y="373" width="1180.0" height="15.0" fill="rgb(229,144,14)" rx="2" ry="2" />
+<text  x="13.00" y="383.5" ></text>
 </g>
 <g >
-<title>main (442,115 samples, 99.96%)</title><rect x="10.0" y="405" width="1179.5" height="15.0" fill="rgb(220,192,45)" rx="2" ry="2" />
-<text  x="13.00" y="415.5" >main</text>
+<title>ngx_stream_lua_content_wev_handler (13 samples, 8.90%)</title><rect x="90.8" y="133" width="105.1" height="15.0" fill="rgb(250,159,12)" rx="2" ry="2" />
+<text  x="93.82" y="143.5" >ngx_stream_l..</text>
 </g>
 <g >
-<title>ngx_stream_lua_ngx_log (4,922 samples, 1.11%)</title><rect x="1176.4" y="117" width="13.1" height="15.0" fill="rgb(218,39,44)" rx="2" ry="2" />
-<text  x="1179.37" y="127.5" ></text>
+<title>_start (13 samples, 8.90%)</title><rect x="90.8" y="357" width="105.1" height="15.0" fill="rgb(217,148,3)" rx="2" ry="2" />
+<text  x="93.82" y="367.5" >_start</text>
 </g>
 <g >
-<title>ngx_log_error_core (437,157 samples, 98.84%)</title><rect x="10.1" y="69" width="1166.3" height="15.0" fill="rgb(214,224,1)" rx="2" ry="2" />
-<text  x="13.10" y="79.5" >ngx_log_error_core</text>
+<title>0x7f78530cf363 (10 samples, 6.85%)</title><rect x="10.0" y="357" width="80.8" height="15.0" fill="rgb(252,176,1)" rx="2" ry="2" />
+<text  x="13.00" y="367.5" >0x7f78530..</text>
 </g>
 <g >
-<title>ngx_stream_lua_socket_handle_read_success (442,115 samples, 99.96%)</title><rect x="10.0" y="229" width="1179.5" height="15.0" fill="rgb(211,108,36)" rx="2" ry="2" />
-<text  x="13.00" y="239.5" >ngx_stream_lua_socket_handle_read_success</text>
+<title>ngx_stream_lua_request_handler (13 samples, 8.90%)</title><rect x="90.8" y="213" width="105.1" height="15.0" fill="rgb(246,164,24)" rx="2" ry="2" />
+<text  x="93.82" y="223.5" >ngx_stream_l..</text>
 </g>
 <g >
-<title>ngx_stream_lua_ngx_log (437,157 samples, 98.84%)</title><rect x="10.1" y="101" width="1166.3" height="15.0" fill="rgb(236,165,34)" rx="2" ry="2" />
-<text  x="13.10" y="111.5" >ngx_stream_lua_ngx_log</text>
+<title>__libc_start_main (13 samples, 8.90%)</title><rect x="90.8" y="341" width="105.1" height="15.0" fill="rgb(246,91,22)" rx="2" ry="2" />
+<text  x="93.82" y="351.5" >__libc_start..</text>
 </g>
 <g >
-<title>ngx_stream_lua_socket_tcp_read (442,115 samples, 99.96%)</title><rect x="10.0" y="245" width="1179.5" height="15.0" fill="rgb(206,3,51)" rx="2" ry="2" />
-<text  x="13.00" y="255.5" >ngx_stream_lua_socket_tcp_read</text>
+<title>ngx_stream_lua_get_co_ctx (45 samples, 30.82%)</title><rect x="195.9" y="357" width="363.7" height="15.0" fill="rgb(229,142,39)" rx="2" ry="2" />
+<text  x="198.89" y="367.5" >ngx_stream_lua_get_co_ctx</text>
 </g>
 <g >
-<title>lj_BC_FUNCC (4,922 samples, 1.11%)</title><rect x="1176.4" y="133" width="13.1" height="15.0" fill="rgb(247,222,11)" rx="2" ry="2" />
-<text  x="1179.37" y="143.5" ></text>
+<title>lua_resume (13 samples, 8.90%)</title><rect x="90.8" y="53" width="105.1" height="15.0" fill="rgb(228,37,13)" rx="2" ry="2" />
+<text  x="93.82" y="63.5" >lua_resume</text>
 </g>
 <g >
-<title>_start (442,115 samples, 99.96%)</title><rect x="10.0" y="437" width="1179.5" height="15.0" fill="rgb(241,86,14)" rx="2" ry="2" />
-<text  x="13.00" y="447.5" >_start</text>
+<title>ngx_worker_process_cycle (13 samples, 8.90%)</title><rect x="90.8" y="261" width="105.1" height="15.0" fill="rgb(240,197,2)" rx="2" ry="2" />
+<text  x="93.82" y="271.5" >ngx_worker_p..</text>
 </g>
 <g >
-<title>ngx_spawn_process (442,115 samples, 99.96%)</title><rect x="10.0" y="357" width="1179.5" height="15.0" fill="rgb(207,75,28)" rx="2" ry="2" />
-<text  x="13.00" y="367.5" >ngx_spawn_process</text>
+<title>ngx_stream_lua_socket_tcp_read_resume (13 samples, 8.90%)</title><rect x="90.8" y="117" width="105.1" height="15.0" fill="rgb(210,53,24)" rx="2" ry="2" />
+<text  x="93.82" y="127.5" >ngx_stream_l..</text>
 </g>
 <g >
-<title>ngx_stream_lua_post_zombie_thread (90 samples, 0.02%)</title><rect x="1189.8" y="437" width="0.2" height="15.0" fill="rgb(234,18,25)" rx="2" ry="2" />
-<text  x="1192.76" y="447.5" ></text>
+<title>ngx_stream_lua_run_thread (13 samples, 8.90%)</title><rect x="90.8" y="69" width="105.1" height="15.0" fill="rgb(224,212,4)" rx="2" ry="2" />
+<text  x="93.82" y="79.5" >ngx_stream_l..</text>
 </g>
 <g >
-<title>__write_nocancel (437,157 samples, 98.84%)</title><rect x="10.1" y="37" width="1166.3" height="15.0" fill="rgb(243,75,43)" rx="2" ry="2" />
-<text  x="13.10" y="47.5" >__write_nocancel</text>
+<title>ngx_stream_lua_socket_handle_read_success (13 samples, 8.90%)</title><rect x="90.8" y="149" width="105.1" height="15.0" fill="rgb(216,207,11)" rx="2" ry="2" />
+<text  x="93.82" y="159.5" >ngx_stream_l..</text>
 </g>
 <g >
-<title>lua_resume (437,193 samples, 98.84%)</title><rect x="10.0" y="133" width="1166.4" height="15.0" fill="rgb(210,56,29)" rx="2" ry="2" />
-<text  x="13.00" y="143.5" >lua_resume</text>
+<title>ngx_master_process_cycle (13 samples, 8.90%)</title><rect x="90.8" y="309" width="105.1" height="15.0" fill="rgb(235,73,14)" rx="2" ry="2" />
+<text  x="93.82" y="319.5" >ngx_master_p..</text>
 </g>
 <g >
-<title>ngx_worker_process_cycle (442,115 samples, 99.96%)</title><rect x="10.0" y="341" width="1179.5" height="15.0" fill="rgb(213,128,40)" rx="2" ry="2" />
-<text  x="13.00" y="351.5" >ngx_worker_process_cycle</text>
+<title>main (13 samples, 8.90%)</title><rect x="90.8" y="325" width="105.1" height="15.0" fill="rgb(215,26,25)" rx="2" ry="2" />
+<text  x="93.82" y="335.5" >main</text>
 </g>
 <g >
-<title>ngx_master_process_cycle (442,115 samples, 99.96%)</title><rect x="10.0" y="389" width="1179.5" height="15.0" fill="rgb(225,123,35)" rx="2" ry="2" />
-<text  x="13.00" y="399.5" >ngx_master_process_cycle</text>
+<title>ngx_start_worker_processes (13 samples, 8.90%)</title><rect x="90.8" y="293" width="105.1" height="15.0" fill="rgb(226,211,14)" rx="2" ry="2" />
+<text  x="93.82" y="303.5" >ngx_start_wo..</text>
 </g>
 <g >
-<title>ngx_write_fd (4,922 samples, 1.11%)</title><rect x="1176.4" y="69" width="13.1" height="15.0" fill="rgb(235,158,43)" rx="2" ry="2" />
-<text  x="1179.37" y="79.5" ></text>
-</g>
-<g >
-<title>ngx_stream_lua_get_co_ctx (98 samples, 0.02%)</title><rect x="1189.5" y="437" width="0.3" height="15.0" fill="rgb(220,123,8)" rx="2" ry="2" />
-<text  x="1192.50" y="447.5" ></text>
-</g>
-<g >
-<title>ngx_stream_lua_socket_tcp_resume_helper (442,115 samples, 99.96%)</title><rect x="10.0" y="181" width="1179.5" height="15.0" fill="rgb(248,158,31)" rx="2" ry="2" />
-<text  x="13.00" y="191.5" >ngx_stream_lua_socket_tcp_resume_helper</text>
-</g>
-<g >
-<title>all (442,303 samples, 100%)</title><rect x="10.0" y="453" width="1180.0" height="15.0" fill="rgb(237,22,19)" rx="2" ry="2" />
-<text  x="13.00" y="463.5" ></text>
-</g>
-<g >
-<title>ngx_stream_lua_request_handler (442,115 samples, 99.96%)</title><rect x="10.0" y="293" width="1179.5" height="15.0" fill="rgb(239,163,31)" rx="2" ry="2" />
-<text  x="13.00" y="303.5" >ngx_stream_lua_request_handler</text>
-</g>
-<g >
-<title>ngx_process_events_and_timers (442,115 samples, 99.96%)</title><rect x="10.0" y="325" width="1179.5" height="15.0" fill="rgb(226,178,19)" rx="2" ry="2" />
-<text  x="13.00" y="335.5" >ngx_process_events_and_timers</text>
-</g>
-<g >
-<title>__libc_start_main (442,115 samples, 99.96%)</title><rect x="10.0" y="421" width="1179.5" height="15.0" fill="rgb(213,137,9)" rx="2" ry="2" />
-<text  x="13.00" y="431.5" >__libc_start_main</text>
-</g>
-<g >
-<title>ngx_stream_lua_run_posted_threads (437,193 samples, 98.84%)</title><rect x="10.0" y="165" width="1166.4" height="15.0" fill="rgb(206,71,11)" rx="2" ry="2" />
-<text  x="13.00" y="175.5" >ngx_stream_lua_run_posted_threads</text>
-</g>
-<g >
-<title>__write_nocancel (4,922 samples, 1.11%)</title><rect x="1176.4" y="53" width="13.1" height="15.0" fill="rgb(209,160,38)" rx="2" ry="2" />
-<text  x="1179.37" y="63.5" ></text>
-</g>
-<g >
-<title>ngx_epoll_process_events (442,115 samples, 99.96%)</title><rect x="10.0" y="309" width="1179.5" height="15.0" fill="rgb(232,194,15)" rx="2" ry="2" />
-<text  x="13.00" y="319.5" >ngx_epoll_process_events</text>
-</g>
-<g >
-<title>lua_resume (4,922 samples, 1.11%)</title><rect x="1176.4" y="149" width="13.1" height="15.0" fill="rgb(249,150,35)" rx="2" ry="2" />
-<text  x="1179.37" y="159.5" ></text>
-</g>
-<g >
-<title>lj_BC_FUNCC (437,157 samples, 98.84%)</title><rect x="10.1" y="117" width="1166.3" height="15.0" fill="rgb(251,19,24)" rx="2" ry="2" />
-<text  x="13.10" y="127.5" >lj_BC_FUNCC</text>
-</g>
-<g >
-<title>ngx_stream_lua_req_socket_rev_handler (442,115 samples, 99.96%)</title><rect x="10.0" y="277" width="1179.5" height="15.0" fill="rgb(236,186,49)" rx="2" ry="2" />
-<text  x="13.00" y="287.5" >ngx_stream_lua_req_socket_rev_handler</text>
+<title>ngx_spawn_process (13 samples, 8.90%)</title><rect x="90.8" y="277" width="105.1" height="15.0" fill="rgb(244,18,46)" rx="2" ry="2" />
+<text  x="93.82" y="287.5" >ngx_spawn_pr..</text>
 </g>
 </g>
 </svg>

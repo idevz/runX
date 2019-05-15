@@ -1,6 +1,6 @@
 <?xml version="1.0" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg version="1.1" width="1200" height="278" onload="init(evt)" viewBox="0 0 1200 278" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg version="1.1" width="1200" height="246" onload="init(evt)" viewBox="0 0 1200 246" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <!-- Flame graph stack visualization. See https://github.com/brendangregg/FlameGraph for latest version, and http://www.brendangregg.com/flamegraphs.html for examples. -->
 <!-- NOTES:  -->
 <defs>
@@ -334,372 +334,364 @@
 	}
 ]]>
 </script>
-<rect x="0.0" y="0" width="1200.0" height="278.0" fill="url(#background)"  />
+<rect x="0.0" y="0" width="1200.0" height="246.0" fill="url(#background)"  />
 <text id="title" x="600.00" y="24" >Flame Graph</text>
-<text id="details" x="10.00" y="261" > </text>
+<text id="details" x="10.00" y="229" > </text>
 <text id="unzoom" x="10.00" y="24" class="hide">Reset Zoom</text>
 <text id="search" x="1090.00" y="24" >Search</text>
-<text id="matched" x="1090.00" y="261" > </text>
+<text id="matched" x="1090.00" y="229" > </text>
 <g id="frames">
 <g >
-<title>C:lj_cf_ffi_clib___index (1 samples, 0.03%)</title><rect x="980.6" y="133" width="0.3" height="15.0" fill="rgb(244,22,51)" rx="2" ry="2" />
-<text  x="983.61" y="143.5" ></text>
+<title>C:lj_cf_table_insert (1 samples, 0.03%)</title><rect x="753.2" y="101" width="0.3" height="15.0" fill="rgb(225,68,17)" rx="2" ry="2" />
+<text  x="756.21" y="111.5" ></text>
 </g>
 <g >
-<title>motan.utils:_M.pack_request_id (41 samples, 1.13%)</title><rect x="980.0" y="149" width="13.3" height="15.0" fill="rgb(219,216,18)" rx="2" ry="2" />
-<text  x="982.96" y="159.5" ></text>
+<title>motan.utils:_n2b (19 samples, 0.52%)</title><rect x="1043.2" y="117" width="6.1" height="15.0" fill="rgb(228,190,51)" rx="2" ry="2" />
+<text  x="1046.22" y="127.5" ></text>
 </g>
 <g >
-<title>C:lj_cf_ffi_meta___call (11 samples, 0.30%)</title><rect x="848.2" y="117" width="3.6" height="15.0" fill="rgb(231,92,47)" rx="2" ry="2" />
-<text  x="851.20" y="127.5" ></text>
+<title>C:lj_ffh_string_byte (4 samples, 0.11%)</title><rect x="851.4" y="85" width="1.3" height="15.0" fill="rgb(240,100,2)" rx="2" ry="2" />
+<text  x="854.39" y="95.5" ></text>
 </g>
 <g >
-<title>motan.server.init:_M.resp (17 samples, 0.47%)</title><rect x="1013.6" y="181" width="5.5" height="15.0" fill="rgb(252,161,11)" rx="2" ry="2" />
-<text  x="1016.55" y="191.5" ></text>
+<title>C:lj_cf_ffi_clib___index (3 samples, 0.08%)</title><rect x="1028.1" y="101" width="1.0" height="15.0" fill="rgb(226,122,50)" rx="2" ry="2" />
+<text  x="1031.10" y="111.5" ></text>
 </g>
 <g >
-<title>C:lj_cf_table_concat (12 samples, 0.33%)</title><rect x="964.6" y="165" width="3.9" height="15.0" fill="rgb(246,112,11)" rx="2" ry="2" />
-<text  x="967.63" y="175.5" ></text>
+<title>C:ngx_stream_lua_ngx_now (6 samples, 0.16%)</title><rect x="1138.5" y="85" width="1.9" height="15.0" fill="rgb(230,12,2)" rx="2" ry="2" />
+<text  x="1141.50" y="95.5" ></text>
 </g>
 <g >
-<title>C:ngx_stream_lua_uthread_spawn (2,435 samples, 67.30%)</title><rect x="12.3" y="149" width="794.2" height="15.0" fill="rgb(245,54,27)" rx="2" ry="2" />
-<text  x="15.28" y="159.5" >C:ngx_stream_lua_uthread_spawn</text>
+<title>C:lj_cf_table_concat (20 samples, 0.55%)</title><rect x="1009.4" y="133" width="6.5" height="15.0" fill="rgb(233,225,2)" rx="2" ry="2" />
+<text  x="1012.43" y="143.5" ></text>
 </g>
 <g >
-<title>motan.utils:_M.is_empty (1 samples, 0.03%)</title><rect x="1161.0" y="101" width="0.3" height="15.0" fill="rgb(217,180,30)" rx="2" ry="2" />
-<text  x="1163.97" y="111.5" ></text>
+<title>motan.server.init:_M.motan_server_do_request (2,675 samples, 72.97%)</title><rect x="12.3" y="133" width="861.0" height="15.0" fill="rgb(232,59,2)" rx="2" ry="2" />
+<text  x="15.25" y="143.5" >motan.server.init:_M.motan_server_do_request</text>
 </g>
 <g >
-<title>C:lj_cf_table_insert (12 samples, 0.33%)</title><rect x="995.0" y="133" width="3.9" height="15.0" fill="rgb(254,25,19)" rx="2" ry="2" />
-<text  x="997.96" y="143.5" ></text>
+<title>motan.protocol.motan2.codec:_M.decode (411 samples, 11.21%)</title><rect x="740.0" y="117" width="132.3" height="15.0" fill="rgb(235,112,16)" rx="2" ry="2" />
+<text  x="743.02" y="127.5" >motan.protocol.m..</text>
 </g>
 <g >
-<title>C:lj_cf_ffi_string (6 samples, 0.17%)</title><rect x="811.0" y="133" width="2.0" height="15.0" fill="rgb(249,164,4)" rx="2" ry="2" />
-<text  x="814.02" y="143.5" ></text>
+<title>motan.server.init:invoker (302 samples, 8.24%)</title><rect x="1092.8" y="149" width="97.2" height="15.0" fill="rgb(243,11,48)" rx="2" ry="2" />
+<text  x="1095.79" y="159.5" >motan.serve..</text>
 </g>
 <g >
-<title>C:lj_ffh_pcall (366 samples, 10.12%)</title><rect x="1032.1" y="117" width="119.4" height="15.0" fill="rgb(237,37,11)" rx="2" ry="2" />
-<text  x="1035.14" y="127.5" >C:lj_ffh_pcall</text>
+<title>C:lj_ffh_setmetatable (1 samples, 0.03%)</title><rect x="760.6" y="101" width="0.3" height="15.0" fill="rgb(229,154,4)" rx="2" ry="2" />
+<text  x="763.62" y="111.5" ></text>
 </g>
 <g >
-<title>motan.protocol.motan2.init:_M.convert_to_response_msg (21 samples, 0.58%)</title><rect x="1006.7" y="181" width="6.9" height="15.0" fill="rgb(215,82,44)" rx="2" ry="2" />
-<text  x="1009.71" y="191.5" ></text>
+<title>C:lj_cf_table_concat (9 samples, 0.25%)</title><rect x="1022.3" y="117" width="2.9" height="15.0" fill="rgb(243,18,8)" rx="2" ry="2" />
+<text  x="1025.30" y="127.5" ></text>
 </g>
 <g >
-<title>motan.utils:_M.is_empty (2 samples, 0.06%)</title><rect x="1189.3" y="133" width="0.7" height="15.0" fill="rgb(208,108,20)" rx="2" ry="2" />
-<text  x="1192.35" y="143.5" ></text>
+<title>C:lj_cf_table_insert (14 samples, 0.38%)</title><rect x="1060.6" y="117" width="4.5" height="15.0" fill="rgb(230,115,11)" rx="2" ry="2" />
+<text  x="1063.61" y="127.5" ></text>
 </g>
 <g >
-<title>motan.filter.accesslog:_M.filter (423 samples, 11.69%)</title><rect x="1023.3" y="165" width="138.0" height="15.0" fill="rgb(236,177,36)" rx="2" ry="2" />
-<text  x="1026.34" y="175.5" >motan.filter.acce..</text>
+<title>C:lj_ffh_pcall (12 samples, 0.33%)</title><rect x="756.8" y="101" width="3.8" height="15.0" fill="rgb(223,29,10)" rx="2" ry="2" />
+<text  x="759.75" y="111.5" ></text>
 </g>
 <g >
-<title>motan.provider.motan:_M.call (416 samples, 11.50%)</title><rect x="1025.6" y="133" width="135.7" height="15.0" fill="rgb(225,184,11)" rx="2" ry="2" />
-<text  x="1028.62" y="143.5" >motan.provider.mo..</text>
+<title>C:motan_simple_deserialize (24 samples, 0.65%)</title><rect x="1151.7" y="85" width="7.7" height="15.0" fill="rgb(249,98,43)" rx="2" ry="2" />
+<text  x="1154.70" y="95.5" ></text>
 </g>
 <g >
-<title>motan.utils:_M.msb_numbertobytes (13 samples, 0.36%)</title><rect x="975.7" y="149" width="4.3" height="15.0" fill="rgb(228,167,53)" rx="2" ry="2" />
-<text  x="978.72" y="159.5" ></text>
+<title>C:ngx_stream_lua_ngx_worker_exiting (2 samples, 0.05%)</title><rect x="11.6" y="133" width="0.7" height="15.0" fill="rgb(220,28,11)" rx="2" ry="2" />
+<text  x="14.61" y="143.5" ></text>
 </g>
 <g >
-<title>motan.server.init:invoker (524 samples, 14.48%)</title><rect x="1019.1" y="181" width="170.9" height="15.0" fill="rgb(214,206,5)" rx="2" ry="2" />
-<text  x="1022.10" y="191.5" >motan.server.init:invo..</text>
+<title>=content_by_lua(app-dev.conf:29):1 (2,682 samples, 73.16%)</title><rect x="10.0" y="181" width="863.3" height="15.0" fill="rgb(210,5,31)" rx="2" ry="2" />
+<text  x="13.00" y="191.5" >=content_by_lua(app-dev.conf:29):1</text>
 </g>
 <g >
-<title>C:lj_ffh_string_byte (1 samples, 0.03%)</title><rect x="847.2" y="117" width="0.3" height="15.0" fill="rgb(230,114,28)" rx="2" ry="2" />
-<text  x="850.22" y="127.5" ></text>
+<title>motan.utils:_M.msb_stringtonumber (34 samples, 0.93%)</title><rect x="841.7" y="101" width="11.0" height="15.0" fill="rgb(249,82,25)" rx="2" ry="2" />
+<text  x="844.73" y="111.5" ></text>
 </g>
 <g >
-<title>motan.provider.motan:_M.get_service_obj (2 samples, 0.06%)</title><rect x="1189.3" y="149" width="0.7" height="15.0" fill="rgb(241,229,33)" rx="2" ry="2" />
-<text  x="1192.35" y="159.5" ></text>
+<title>C:motan_simple_serialize (30 samples, 0.82%)</title><rect x="1083.1" y="101" width="9.7" height="15.0" fill="rgb(209,16,32)" rx="2" ry="2" />
+<text  x="1086.14" y="111.5" ></text>
 </g>
 <g >
-<title>motan.core.response:_M.new (6 samples, 0.17%)</title><rect x="1023.7" y="133" width="1.9" height="15.0" fill="rgb(211,213,46)" rx="2" ry="2" />
-<text  x="1026.67" y="143.5" ></text>
+<title>motan.utils:_M.msb_numbertobytes (22 samples, 0.60%)</title><rect x="1049.3" y="133" width="7.1" height="15.0" fill="rgb(225,141,14)" rx="2" ry="2" />
+<text  x="1052.34" y="143.5" ></text>
 </g>
 <g >
-<title>C:lj_ffh_pcall (17 samples, 0.47%)</title><rect x="1008.0" y="149" width="5.6" height="15.0" fill="rgb(251,168,12)" rx="2" ry="2" />
-<text  x="1011.01" y="159.5" ></text>
+<title>motan.protocol.motan2.header:_M.pack_header (104 samples, 2.84%)</title><rect x="1015.9" y="133" width="33.4" height="15.0" fill="rgb(211,9,43)" rx="2" ry="2" />
+<text  x="1018.86" y="143.5" >mo..</text>
 </g>
 <g >
-<title>C:lj_cf_table_insert (13 samples, 0.36%)</title><rect x="1147.3" y="37" width="4.2" height="15.0" fill="rgb(230,134,44)" rx="2" ry="2" />
-<text  x="1150.27" y="47.5" ></text>
+<title>C:lj_cf_unpack (3 samples, 0.08%)</title><rect x="873.6" y="181" width="1.0" height="15.0" fill="rgb(238,153,44)" rx="2" ry="2" />
+<text  x="876.60" y="191.5" ></text>
 </g>
 <g >
-<title>motan.protocol.motan2.codec:_M.decode (169 samples, 4.67%)</title><rect x="806.5" y="149" width="55.1" height="15.0" fill="rgb(221,220,37)" rx="2" ry="2" />
-<text  x="809.45" y="159.5" >motan..</text>
+<title>C:lj_cf_debug_getinfo (76 samples, 2.07%)</title><rect x="1164.2" y="117" width="24.5" height="15.0" fill="rgb(242,80,33)" rx="2" ry="2" />
+<text  x="1167.25" y="127.5" >C..</text>
 </g>
 <g >
-<title>C:lj_cf_table_concat (7 samples, 0.19%)</title><rect x="1040.3" y="85" width="2.3" height="15.0" fill="rgb(216,112,33)" rx="2" ry="2" />
-<text  x="1043.30" y="95.5" ></text>
+<title>motan.serialize.simple_native.init:_M.deserialize (24 samples, 0.65%)</title><rect x="1151.7" y="117" width="7.7" height="15.0" fill="rgb(246,218,35)" rx="2" ry="2" />
+<text  x="1154.70" y="127.5" ></text>
 </g>
 <g >
-<title>C:lj_cf_ffi_string (4 samples, 0.11%)</title><rect x="973.4" y="149" width="1.3" height="15.0" fill="rgb(233,52,29)" rx="2" ry="2" />
-<text  x="976.44" y="159.5" ></text>
+<title>C:lj_cf_ffi_string (10 samples, 0.27%)</title><rect x="750.0" y="101" width="3.2" height="15.0" fill="rgb(251,194,44)" rx="2" ry="2" />
+<text  x="752.99" y="111.5" ></text>
 </g>
 <g >
-<title>motan.core.request:_M.new (6 samples, 0.17%)</title><rect x="1021.4" y="165" width="1.9" height="15.0" fill="rgb(213,153,42)" rx="2" ry="2" />
-<text  x="1024.38" y="175.5" ></text>
+<title>motan.provider.motan:_M.get_service_obj (2 samples, 0.05%)</title><rect x="1188.7" y="117" width="0.7" height="15.0" fill="rgb(227,13,17)" rx="2" ry="2" />
+<text  x="1191.71" y="127.5" ></text>
 </g>
 <g >
-<title>C:motan_simple_deserialize (14 samples, 0.39%)</title><rect x="1162.9" y="117" width="4.6" height="15.0" fill="rgb(242,30,21)" rx="2" ry="2" />
-<text  x="1165.93" y="127.5" ></text>
+<title>motan.thread:_M.spawn (3 samples, 0.08%)</title><rect x="872.3" y="117" width="1.0" height="15.0" fill="rgb(219,29,31)" rx="2" ry="2" />
+<text  x="875.31" y="127.5" ></text>
 </g>
 <g >
-<title>motan.init:motan_ctx (37 samples, 1.02%)</title><rect x="1123.1" y="85" width="12.1" height="15.0" fill="rgb(220,120,43)" rx="2" ry="2" />
-<text  x="1126.14" y="95.5" ></text>
+<title>C:lj_ffh_tonumber (15 samples, 0.41%)</title><rect x="1159.4" y="117" width="4.8" height="15.0" fill="rgb(248,83,16)" rx="2" ry="2" />
+<text  x="1162.42" y="127.5" ></text>
 </g>
 <g >
-<title>C:lj_cf_coroutine_running (1 samples, 0.03%)</title><rect x="1154.8" y="101" width="0.3" height="15.0" fill="rgb(239,86,3)" rx="2" ry="2" />
-<text  x="1157.78" y="111.5" ></text>
+<title>C:lj_cf_coroutine_running (3 samples, 0.08%)</title><rect x="889.0" y="149" width="1.0" height="15.0" fill="rgb(226,91,45)" rx="2" ry="2" />
+<text  x="892.05" y="159.5" ></text>
 </g>
 <g >
-<title>C:lj_ffh_tostring (6 samples, 0.17%)</title><rect x="867.4" y="181" width="2.0" height="15.0" fill="rgb(225,20,24)" rx="2" ry="2" />
-<text  x="870.44" y="191.5" ></text>
+<title>C:lj_cf_ffi_meta___call (13 samples, 0.35%)</title><rect x="854.6" y="85" width="4.2" height="15.0" fill="rgb(254,92,54)" rx="2" ry="2" />
+<text  x="857.60" y="95.5" ></text>
 </g>
 <g >
-<title>VideoService.lua:_M:JustForT (366 samples, 10.12%)</title><rect x="1032.1" y="101" width="119.4" height="15.0" fill="rgb(211,132,19)" rx="2" ry="2" />
-<text  x="1035.14" y="111.5" >VideoService.l..</text>
+<title>motan.utils:_M.unpack_request_id (55 samples, 1.50%)</title><rect x="852.7" y="101" width="17.7" height="15.0" fill="rgb(253,31,15)" rx="2" ry="2" />
+<text  x="855.67" y="111.5" ></text>
 </g>
 <g >
-<title>C:ngx_stream_lua_ngx_now (4 samples, 0.11%)</title><rect x="1151.5" y="117" width="1.3" height="15.0" fill="rgb(222,110,2)" rx="2" ry="2" />
-<text  x="1154.51" y="127.5" ></text>
+<title>C:lj_cf_ffi_clib___index (3 samples, 0.08%)</title><rect x="853.6" y="85" width="1.0" height="15.0" fill="rgb(233,193,47)" rx="2" ry="2" />
+<text  x="856.64" y="95.5" ></text>
 </g>
 <g >
-<title>motan.utils:_b2n (3 samples, 0.08%)</title><rect x="860.6" y="133" width="1.0" height="15.0" fill="rgb(221,98,48)" rx="2" ry="2" />
-<text  x="863.59" y="143.5" ></text>
+<title>motan.protocol.motan2.codec:_M.encode (220 samples, 6.00%)</title><rect x="994.3" y="149" width="70.8" height="15.0" fill="rgb(245,93,48)" rx="2" ry="2" />
+<text  x="997.30" y="159.5" >motan.pr..</text>
 </g>
 <g >
-<title>motan.server.init:_M.motan_server_do_request (2,607 samples, 72.06%)</title><rect x="11.6" y="165" width="850.3" height="15.0" fill="rgb(233,69,30)" rx="2" ry="2" />
-<text  x="14.63" y="175.5" >motan.server.init:_M.motan_server_do_request</text>
+<title>motan.core.response:_M.new (2 samples, 0.05%)</title><rect x="1114.4" y="101" width="0.6" height="15.0" fill="rgb(222,162,50)" rx="2" ry="2" />
+<text  x="1117.36" y="111.5" ></text>
 </g>
 <g >
-<title>motan.server.init:service_calling (956 samples, 26.42%)</title><rect x="878.2" y="197" width="311.8" height="15.0" fill="rgb(229,59,22)" rx="2" ry="2" />
-<text  x="881.20" y="207.5" >motan.server.init:service_calling</text>
+<title>C:ngx_stream_lua_socket_tcp_receive (184 samples, 5.02%)</title><rect x="760.9" y="101" width="59.3" height="15.0" fill="rgb(246,48,48)" rx="2" ry="2" />
+<text  x="763.94" y="111.5" >C:ngx_..</text>
 </g>
 <g >
-<title>motan.filter.metrics:_M.filter (423 samples, 11.69%)</title><rect x="1023.3" y="149" width="138.0" height="15.0" fill="rgb(210,168,21)" rx="2" ry="2" />
-<text  x="1026.34" y="159.5" >motan.filter.metr..</text>
+<title>C:lj_cf_table_new (10 samples, 0.27%)</title><rect x="753.5" y="101" width="3.3" height="15.0" fill="rgb(238,136,33)" rx="2" ry="2" />
+<text  x="756.54" y="111.5" ></text>
 </g>
 <g >
-<title>motan.serialize.simple_native.init:_M.deserialize (14 samples, 0.39%)</title><rect x="1162.9" y="149" width="4.6" height="15.0" fill="rgb(208,194,31)" rx="2" ry="2" />
-<text  x="1165.93" y="159.5" ></text>
+<title>C:ngx_stream_lua_socket_tcp_send (211 samples, 5.76%)</title><rect x="926.4" y="149" width="67.9" height="15.0" fill="rgb(249,127,44)" rx="2" ry="2" />
+<text  x="929.38" y="159.5" >C:ngx_s..</text>
 </g>
 <g >
-<title>motan.utils:_M.unpack_request_id (40 samples, 1.11%)</title><rect x="847.5" y="133" width="13.1" height="15.0" fill="rgb(228,151,28)" rx="2" ry="2" />
-<text  x="850.55" y="143.5" ></text>
+<title>C:lj_cf_table_concat (12 samples, 0.33%)</title><rect x="922.5" y="149" width="3.9" height="15.0" fill="rgb(230,183,49)" rx="2" ry="2" />
+<text  x="925.52" y="159.5" ></text>
 </g>
 <g >
-<title>C:lj_ffh_next (2 samples, 0.06%)</title><rect x="1189.3" y="117" width="0.7" height="15.0" fill="rgb(226,148,17)" rx="2" ry="2" />
-<text  x="1192.35" y="127.5" ></text>
+<title>motan.filter.metrics:_M.filter (109 samples, 2.97%)</title><rect x="1114.4" y="117" width="35.0" height="15.0" fill="rgb(210,23,42)" rx="2" ry="2" />
+<text  x="1117.36" y="127.5" >mo..</text>
 </g>
 <g >
-<title>motan.init:motan_ctx (25 samples, 0.69%)</title><rect x="1152.8" y="117" width="8.2" height="15.0" fill="rgb(234,96,51)" rx="2" ry="2" />
-<text  x="1155.82" y="127.5" ></text>
+<title>motan.protocol.motan2.header:_M.new (7 samples, 0.19%)</title><rect x="820.2" y="101" width="2.2" height="15.0" fill="rgb(241,133,9)" rx="2" ry="2" />
+<text  x="823.16" y="111.5" ></text>
 </g>
 <g >
-<title>=content_by_lua(app-dev.conf:29):1 (2,612 samples, 72.19%)</title><rect x="10.0" y="213" width="851.9" height="15.0" fill="rgb(220,127,29)" rx="2" ry="2" />
-<text  x="13.00" y="223.5" >=content_by_lua(app-dev.conf:29):1</text>
+<title>motan.utils:_b2n (6 samples, 0.16%)</title><rect x="870.4" y="101" width="1.9" height="15.0" fill="rgb(236,65,30)" rx="2" ry="2" />
+<text  x="873.38" y="111.5" ></text>
 </g>
 <g >
-<title>C:lj_cf_table_insert (14 samples, 0.39%)</title><rect x="1002.1" y="149" width="4.6" height="15.0" fill="rgb(247,35,41)" rx="2" ry="2" />
-<text  x="1005.14" y="159.5" ></text>
+<title>C:lj_ffh_next (2 samples, 0.05%)</title><rect x="1189.4" y="117" width="0.6" height="15.0" fill="rgb(212,22,43)" rx="2" ry="2" />
+<text  x="1192.36" y="127.5" ></text>
 </g>
 <g >
-<title>C:lj_ffh_pcall (14 samples, 0.39%)</title><rect x="1162.9" y="133" width="4.6" height="15.0" fill="rgb(220,57,40)" rx="2" ry="2" />
-<text  x="1165.93" y="143.5" ></text>
+<title>motan.init:Motan.content_motan_server (2,682 samples, 73.16%)</title><rect x="10.0" y="165" width="863.3" height="15.0" fill="rgb(220,20,9)" rx="2" ry="2" />
+<text  x="13.00" y="175.5" >motan.init:Motan.content_motan_server</text>
 </g>
 <g >
-<title>all (3,618 samples, 100%)</title><rect x="10.0" y="229" width="1180.0" height="15.0" fill="rgb(231,3,12)" rx="2" ry="2" />
-<text  x="13.00" y="239.5" ></text>
+<title>C:ngx_stream_lua_ngx_now (6 samples, 0.16%)</title><rect x="874.6" y="181" width="1.9" height="15.0" fill="rgb(205,175,14)" rx="2" ry="2" />
+<text  x="877.56" y="191.5" ></text>
 </g>
 <g >
-<title>motan.thread:15 (1,004 samples, 27.75%)</title><rect x="862.5" y="213" width="327.5" height="15.0" fill="rgb(212,207,29)" rx="2" ry="2" />
-<text  x="865.55" y="223.5" >motan.thread:15</text>
+<title>C:lj_cf_table_concat (12 samples, 0.33%)</title><rect x="756.8" y="85" width="3.8" height="15.0" fill="rgb(234,67,54)" rx="2" ry="2" />
+<text  x="759.75" y="95.5" ></text>
 </g>
 <g >
-<title>motan.utils:_n2b (15 samples, 0.41%)</title><rect x="1001.8" y="165" width="4.9" height="15.0" fill="rgb(242,130,1)" rx="2" ry="2" />
-<text  x="1004.81" y="175.5" ></text>
+<title>motan.init:clean_motan_ctx (110 samples, 3.00%)</title><rect x="886.8" y="165" width="35.4" height="15.0" fill="rgb(247,26,23)" rx="2" ry="2" />
+<text  x="889.79" y="175.5" >mot..</text>
 </g>
 <g >
-<title>motan.utils:_M.write (50 samples, 1.38%)</title><rect x="1135.2" y="85" width="16.3" height="15.0" fill="rgb(207,201,25)" rx="2" ry="2" />
-<text  x="1138.21" y="95.5" ></text>
+<title>all (3,666 samples, 100%)</title><rect x="10.0" y="197" width="1180.0" height="15.0" fill="rgb(235,179,47)" rx="2" ry="2" />
+<text  x="13.00" y="207.5" ></text>
 </g>
 <g >
-<title>motan.provider.motan:_M.get_service_obj (1 samples, 0.03%)</title><rect x="1161.0" y="117" width="0.3" height="15.0" fill="rgb(225,219,53)" rx="2" ry="2" />
-<text  x="1163.97" y="127.5" ></text>
+<title>motan.utils:_M.explode (56 samples, 1.53%)</title><rect x="823.7" y="101" width="18.0" height="15.0" fill="rgb(252,111,34)" rx="2" ry="2" />
+<text  x="826.70" y="111.5" ></text>
 </g>
 <g >
-<title>C:lj_cf_unpack (1 samples, 0.03%)</title><rect x="861.9" y="213" width="0.3" height="15.0" fill="rgb(245,46,34)" rx="2" ry="2" />
-<text  x="864.90" y="223.5" ></text>
+<title>motan.utils:_M.msb_numbertobytes (9 samples, 0.25%)</title><rect x="1025.2" y="117" width="2.9" height="15.0" fill="rgb(231,15,22)" rx="2" ry="2" />
+<text  x="1028.20" y="127.5" ></text>
 </g>
 <g >
-<title>C:lj_cf_debug_getinfo (67 samples, 1.85%)</title><rect x="1167.5" y="149" width="21.8" height="15.0" fill="rgb(251,159,12)" rx="2" ry="2" />
-<text  x="1170.50" y="159.5" >C..</text>
+<title>C:lj_ffh_pcall (30 samples, 0.82%)</title><rect x="1083.1" y="117" width="9.7" height="15.0" fill="rgb(220,87,38)" rx="2" ry="2" />
+<text  x="1086.14" y="127.5" ></text>
 </g>
 <g >
-<title>C:lj_ffh_next (1 samples, 0.03%)</title><rect x="1161.0" y="85" width="0.3" height="15.0" fill="rgb(241,85,17)" rx="2" ry="2" />
-<text  x="1163.97" y="95.5" ></text>
+<title>motan.filter.accesslog:_M.filter (109 samples, 2.97%)</title><rect x="1114.4" y="133" width="35.0" height="15.0" fill="rgb(220,133,54)" rx="2" ry="2" />
+<text  x="1117.36" y="143.5" >mo..</text>
 </g>
 <g >
-<title>motan.protocol.motan2.init:_M.convert_to_request (19 samples, 0.53%)</title><rect x="1161.3" y="165" width="6.2" height="15.0" fill="rgb(225,162,47)" rx="2" ry="2" />
-<text  x="1164.30" y="175.5" ></text>
+<title>motan.thread:15 (974 samples, 26.57%)</title><rect x="876.5" y="181" width="313.5" height="15.0" fill="rgb(241,115,35)" rx="2" ry="2" />
+<text  x="879.49" y="191.5" >motan.thread:15</text>
 </g>
 <g >
-<title>C:ngx_stream_lua_ngx_log (2 samples, 0.06%)</title><rect x="877.6" y="181" width="0.6" height="15.0" fill="rgb(228,217,5)" rx="2" ry="2" />
-<text  x="880.55" y="191.5" ></text>
+<title>C:ngx_stream_lua_ngx_get (19 samples, 0.52%)</title><rect x="1142.4" y="69" width="6.1" height="15.0" fill="rgb(211,84,52)" rx="2" ry="2" />
+<text  x="1145.36" y="79.5" ></text>
 </g>
 <g >
-<title>C:lj_cf_coroutine_running (3 samples, 0.08%)</title><rect x="1124.4" y="69" width="1.0" height="15.0" fill="rgb(220,100,26)" rx="2" ry="2" />
-<text  x="1127.44" y="79.5" ></text>
+<title>C:lj_cf_ffi_string (1 samples, 0.03%)</title><rect x="873.3" y="181" width="0.3" height="15.0" fill="rgb(233,180,38)" rx="2" ry="2" />
+<text  x="876.27" y="191.5" ></text>
 </g>
 <g >
-<title>motan.utils:eat_last_comma (3 samples, 0.08%)</title><rect x="1137.8" y="69" width="1.0" height="15.0" fill="rgb(245,78,23)" rx="2" ry="2" />
-<text  x="1140.82" y="79.5" ></text>
+<title>VideoService.lua:_M:JustForT (44 samples, 1.20%)</title><rect x="1124.3" y="69" width="14.2" height="15.0" fill="rgb(247,180,25)" rx="2" ry="2" />
+<text  x="1127.34" y="79.5" ></text>
 </g>
 <g >
-<title>motan.init:Motan.content_motan_server (2,612 samples, 72.19%)</title><rect x="10.0" y="197" width="851.9" height="15.0" fill="rgb(238,94,54)" rx="2" ry="2" />
-<text  x="13.00" y="207.5" >motan.init:Motan.content_motan_server</text>
+<title>motan.init:motan_ctx (25 samples, 0.68%)</title><rect x="1140.4" y="85" width="8.1" height="15.0" fill="rgb(224,214,28)" rx="2" ry="2" />
+<text  x="1143.43" y="95.5" ></text>
 </g>
 <g >
-<title>motan.utils:putln (13 samples, 0.36%)</title><rect x="1147.3" y="53" width="4.2" height="15.0" fill="rgb(245,157,31)" rx="2" ry="2" />
-<text  x="1150.27" y="63.5" ></text>
+<title>C:lj_ffh_next (1 samples, 0.03%)</title><rect x="1149.1" y="53" width="0.3" height="15.0" fill="rgb(243,26,28)" rx="2" ry="2" />
+<text  x="1152.12" y="63.5" ></text>
 </g>
 <g >
-<title>motan.protocol.motan2.header:_M.new (1 samples, 0.03%)</title><rect x="832.5" y="133" width="0.4" height="15.0" fill="rgb(235,209,20)" rx="2" ry="2" />
-<text  x="835.54" y="143.5" ></text>
+<title>C:lj_cf_table_insert (12 samples, 0.33%)</title><rect x="1045.5" y="101" width="3.8" height="15.0" fill="rgb(225,128,53)" rx="2" ry="2" />
+<text  x="1048.48" y="111.5" ></text>
 </g>
 <g >
-<title>C:ngx_stream_lua_ngx_get (25 samples, 0.69%)</title><rect x="869.4" y="181" width="8.2" height="15.0" fill="rgb(254,52,8)" rx="2" ry="2" />
-<text  x="872.40" y="191.5" ></text>
+<title>motan.protocol.motan2.message:_M.new (56 samples, 1.53%)</title><rect x="1065.1" y="133" width="18.0" height="15.0" fill="rgb(207,110,46)" rx="2" ry="2" />
+<text  x="1068.11" y="143.5" ></text>
 </g>
 <g >
-<title>motan.utils:_M.msb_stringtonumber (7 samples, 0.19%)</title><rect x="845.3" y="133" width="2.2" height="15.0" fill="rgb(243,104,14)" rx="2" ry="2" />
-<text  x="848.26" y="143.5" ></text>
+<title>C:ngx_stream_lua_ngx_get (88 samples, 2.40%)</title><rect x="891.6" y="149" width="28.3" height="15.0" fill="rgb(235,136,18)" rx="2" ry="2" />
+<text  x="894.62" y="159.5" >C:..</text>
 </g>
 <g >
-<title>C:ngx_stream_lua_socket_tcp_send (218 samples, 6.03%)</title><rect x="878.5" y="181" width="71.1" height="15.0" fill="rgb(238,84,54)" rx="2" ry="2" />
-<text  x="881.53" y="191.5" >C:ngx_st..</text>
+<title>C:lj_ffh_next (2 samples, 0.05%)</title><rect x="1188.7" y="85" width="0.7" height="15.0" fill="rgb(247,44,36)" rx="2" ry="2" />
+<text  x="1191.71" y="95.5" ></text>
 </g>
 <g >
-<title>motan.serialize.simple_native.init:_serialize (17 samples, 0.47%)</title><rect x="1008.0" y="165" width="5.6" height="15.0" fill="rgb(239,12,9)" rx="2" ry="2" />
-<text  x="1011.01" y="175.5" ></text>
+<title>motan.init:motan_ctx (16 samples, 0.44%)</title><rect x="1133.3" y="53" width="5.2" height="15.0" fill="rgb(242,133,44)" rx="2" ry="2" />
+<text  x="1136.35" y="63.5" ></text>
 </g>
 <g >
-<title>motan.protocol.motan2.message:_M.new (2 samples, 0.06%)</title><rect x="1007.4" y="165" width="0.6" height="15.0" fill="rgb(209,194,54)" rx="2" ry="2" />
-<text  x="1010.36" y="175.5" ></text>
+<title>motan.provider.motan:_M.get_service_obj (3 samples, 0.08%)</title><rect x="1148.5" y="85" width="0.9" height="15.0" fill="rgb(229,197,24)" rx="2" ry="2" />
+<text  x="1151.48" y="95.5" ></text>
 </g>
 <g >
-<title>C:lj_cf_table_insert (1 samples, 0.03%)</title><rect x="813.0" y="133" width="0.3" height="15.0" fill="rgb(228,82,3)" rx="2" ry="2" />
-<text  x="815.97" y="143.5" ></text>
+<title>C:lj_ffh_pcall (24 samples, 0.65%)</title><rect x="1151.7" y="101" width="7.7" height="15.0" fill="rgb(222,48,29)" rx="2" ry="2" />
+<text  x="1154.70" y="111.5" ></text>
 </g>
 <g >
-<title>C:lj_cf_ffi_new (27 samples, 0.75%)</title><rect x="851.8" y="117" width="8.8" height="15.0" fill="rgb(233,131,39)" rx="2" ry="2" />
-<text  x="854.79" y="127.5" ></text>
+<title>C:lj_cf_ffi_new (36 samples, 0.98%)</title><rect x="1031.6" y="101" width="11.6" height="15.0" fill="rgb(228,43,28)" rx="2" ry="2" />
+<text  x="1034.64" y="111.5" ></text>
 </g>
 <g >
-<title>C:ngx_stream_lua_ngx_get (18 samples, 0.50%)</title><rect x="1155.1" y="101" width="5.9" height="15.0" fill="rgb(239,97,31)" rx="2" ry="2" />
-<text  x="1158.10" y="111.5" ></text>
+<title>motan.server.init:service_calling (832 samples, 22.70%)</title><rect x="922.2" y="165" width="267.8" height="15.0" fill="rgb(210,161,13)" rx="2" ry="2" />
+<text  x="925.20" y="175.5" >motan.server.init:service_calling</text>
 </g>
 <g >
-<title>motan.protocol.motan2.codec:_M.encode (175 samples, 4.84%)</title><rect x="949.6" y="181" width="57.1" height="15.0" fill="rgb(252,68,30)" rx="2" ry="2" />
-<text  x="952.63" y="191.5" >motan...</text>
+<title>motan.utils:_M.is_empty (2 samples, 0.05%)</title><rect x="1188.7" y="101" width="0.7" height="15.0" fill="rgb(246,118,44)" rx="2" ry="2" />
+<text  x="1191.71" y="111.5" ></text>
 </g>
 <g >
-<title>C:lj_cf_table_concat (3 samples, 0.08%)</title><rect x="974.7" y="149" width="1.0" height="15.0" fill="rgb(243,174,41)" rx="2" ry="2" />
-<text  x="977.74" y="159.5" ></text>
+<title>motan.server.init:get_service_method_args_num (78 samples, 2.13%)</title><rect x="1164.2" y="133" width="25.2" height="15.0" fill="rgb(212,116,30)" rx="2" ry="2" />
+<text  x="1167.25" y="143.5" >m..</text>
 </g>
 <g >
-<title>C:lj_cf_table_new (5 samples, 0.14%)</title><rect x="813.3" y="133" width="1.6" height="15.0" fill="rgb(215,145,50)" rx="2" ry="2" />
-<text  x="816.30" y="143.5" ></text>
+<title>motan.protocol.motan2.message:_M.get_service_key (15 samples, 0.41%)</title><rect x="1159.4" y="133" width="4.8" height="15.0" fill="rgb(231,166,53)" rx="2" ry="2" />
+<text  x="1162.42" y="143.5" ></text>
 </g>
 <g >
-<title>motan.utils:_M.explode (34 samples, 0.94%)</title><rect x="834.2" y="133" width="11.1" height="15.0" fill="rgb(252,90,11)" rx="2" ry="2" />
-<text  x="837.17" y="143.5" ></text>
+<title>C:ngx_stream_lua_ngx_log (7 samples, 0.19%)</title><rect x="919.9" y="149" width="2.3" height="15.0" fill="rgb(228,128,5)" rx="2" ry="2" />
+<text  x="922.95" y="159.5" ></text>
 </g>
 <g >
-<title>C:lj_cf_table_concat (1 samples, 0.03%)</title><rect x="814.9" y="117" width="0.4" height="15.0" fill="rgb(209,86,34)" rx="2" ry="2" />
-<text  x="817.93" y="127.5" ></text>
+<title>motan.core.request:_M.new (45 samples, 1.23%)</title><rect x="1099.9" y="133" width="14.5" height="15.0" fill="rgb(211,123,25)" rx="2" ry="2" />
+<text  x="1102.87" y="143.5" ></text>
 </g>
 <g >
-<title>C:ngx_stream_lua_ngx_worker_exiting (1 samples, 0.03%)</title><rect x="11.3" y="165" width="0.3" height="15.0" fill="rgb(249,159,34)" rx="2" ry="2" />
-<text  x="14.30" y="175.5" ></text>
+<title>C:lj_cf_ffi_string (5 samples, 0.14%)</title><rect x="1020.7" y="117" width="1.6" height="15.0" fill="rgb(232,76,8)" rx="2" ry="2" />
+<text  x="1023.69" y="127.5" ></text>
 </g>
 <g >
-<title>motan.server.init:_M.run (2,612 samples, 72.19%)</title><rect x="10.0" y="181" width="851.9" height="15.0" fill="rgb(254,25,51)" rx="2" ry="2" />
-<text  x="13.00" y="191.5" >motan.server.init:_M.run</text>
+<title>motan.protocol.motan2.init:_M.convert_to_request (31 samples, 0.85%)</title><rect x="1149.4" y="133" width="10.0" height="15.0" fill="rgb(245,96,14)" rx="2" ry="2" />
+<text  x="1152.44" y="143.5" ></text>
 </g>
 <g >
-<title>C:lj_cf_ffi_new (29 samples, 0.80%)</title><rect x="983.9" y="133" width="9.4" height="15.0" fill="rgb(227,63,0)" rx="2" ry="2" />
-<text  x="986.88" y="143.5" ></text>
+<title>C:lj_cf_ffi_new (36 samples, 0.98%)</title><rect x="858.8" y="85" width="11.6" height="15.0" fill="rgb(250,92,13)" rx="2" ry="2" />
+<text  x="861.79" y="95.5" ></text>
 </g>
 <g >
-<title>motan.protocol.motan2.header:_M.pack_header (93 samples, 2.57%)</title><rect x="968.5" y="165" width="30.4" height="15.0" fill="rgb(229,136,52)" rx="2" ry="2" />
-<text  x="971.55" y="175.5" >mo..</text>
+<title>C:lj_ffh_tostring (5 samples, 0.14%)</title><rect x="890.0" y="149" width="1.6" height="15.0" fill="rgb(234,228,14)" rx="2" ry="2" />
+<text  x="893.01" y="159.5" ></text>
 </g>
 <g >
-<title>C:ngx_stream_lua_ngx_now (1 samples, 0.03%)</title><rect x="862.2" y="213" width="0.3" height="15.0" fill="rgb(214,17,9)" rx="2" ry="2" />
-<text  x="865.22" y="223.5" ></text>
+<title>motan.serialize.simple_native.init:_serialize (30 samples, 0.82%)</title><rect x="1083.1" y="133" width="9.7" height="15.0" fill="rgb(206,8,37)" rx="2" ry="2" />
+<text  x="1086.14" y="143.5" ></text>
 </g>
 <g >
-<title>C:lj_ffh_pcall (1 samples, 0.03%)</title><rect x="814.9" y="133" width="0.4" height="15.0" fill="rgb(230,148,1)" rx="2" ry="2" />
-<text  x="817.93" y="143.5" ></text>
+<title>motan.protocol.motan2.init:_M.convert_to_response_msg (86 samples, 2.35%)</title><rect x="1065.1" y="149" width="27.7" height="15.0" fill="rgb(246,39,53)" rx="2" ry="2" />
+<text  x="1068.11" y="159.5" >m..</text>
 </g>
 <g >
-<title>C:lj_cf_coroutine_running (3 samples, 0.08%)</title><rect x="866.5" y="181" width="0.9" height="15.0" fill="rgb(243,162,34)" rx="2" ry="2" />
-<text  x="869.46" y="191.5" ></text>
+<title>motan.provider.motan:_M.call (107 samples, 2.92%)</title><rect x="1115.0" y="101" width="34.4" height="15.0" fill="rgb(253,118,39)" rx="2" ry="2" />
+<text  x="1118.00" y="111.5" >mo..</text>
 </g>
 <g >
-<title>motan.utils:_M.msb_numbertobytes (9 samples, 0.25%)</title><rect x="998.9" y="165" width="2.9" height="15.0" fill="rgb(208,0,20)" rx="2" ry="2" />
-<text  x="1001.88" y="175.5" ></text>
+<title>motan.utils:_n2b (27 samples, 0.74%)</title><rect x="1056.4" y="133" width="8.7" height="15.0" fill="rgb(223,177,21)" rx="2" ry="2" />
+<text  x="1059.42" y="143.5" ></text>
 </g>
 <g >
-<title>motan.utils:writeit (39 samples, 1.08%)</title><rect x="1138.8" y="69" width="12.7" height="15.0" fill="rgb(213,193,15)" rx="2" ry="2" />
-<text  x="1141.79" y="79.5" ></text>
+<title>C:ngx_stream_lua_ngx_get (11 samples, 0.30%)</title><rect x="1135.0" y="37" width="3.5" height="15.0" fill="rgb(213,122,35)" rx="2" ry="2" />
+<text  x="1137.96" y="47.5" ></text>
 </g>
 <g >
-<title>C:ngx_stream_lua_socket_tcp_receive (53 samples, 1.46%)</title><rect x="815.3" y="133" width="17.2" height="15.0" fill="rgb(240,177,1)" rx="2" ry="2" />
-<text  x="818.26" y="143.5" ></text>
+<title>C:ngx_stream_lua_uthread_spawn (2,259 samples, 61.62%)</title><rect x="12.9" y="117" width="727.1" height="15.0" fill="rgb(216,221,41)" rx="2" ry="2" />
+<text  x="15.90" y="127.5" >C:ngx_stream_lua_uthread_spawn</text>
 </g>
 <g >
-<title>motan.protocol.motan2.message:_M.new (4 samples, 0.11%)</title><rect x="832.9" y="133" width="1.3" height="15.0" fill="rgb(215,33,31)" rx="2" ry="2" />
-<text  x="835.87" y="143.5" ></text>
+<title>motan.utils:_M.is_empty (1 samples, 0.03%)</title><rect x="1149.1" y="69" width="0.3" height="15.0" fill="rgb(227,25,48)" rx="2" ry="2" />
+<text  x="1152.12" y="79.5" ></text>
 </g>
 <g >
-<title>motan.thread:_M.spawn (1 samples, 0.03%)</title><rect x="861.6" y="149" width="0.3" height="15.0" fill="rgb(248,65,37)" rx="2" ry="2" />
-<text  x="864.57" y="159.5" ></text>
+<title>motan.protocol.motan2.message:_M.new (4 samples, 0.11%)</title><rect x="822.4" y="101" width="1.3" height="15.0" fill="rgb(242,189,5)" rx="2" ry="2" />
+<text  x="825.42" y="111.5" ></text>
 </g>
 <g >
-<title>C:lj_ffh_setmetatable (1 samples, 0.03%)</title><rect x="1023.3" y="133" width="0.4" height="15.0" fill="rgb(251,69,48)" rx="2" ry="2" />
-<text  x="1026.34" y="143.5" ></text>
+<title>motan.utils:_M.pack_request_id (47 samples, 1.28%)</title><rect x="1028.1" y="117" width="15.1" height="15.0" fill="rgb(224,183,48)" rx="2" ry="2" />
+<text  x="1031.10" y="127.5" ></text>
 </g>
 <g >
-<title>C:ngx_stream_lua_ngx_get (30 samples, 0.83%)</title><rect x="1125.4" y="69" width="9.8" height="15.0" fill="rgb(248,2,21)" rx="2" ry="2" />
-<text  x="1128.42" y="79.5" ></text>
+<title>motan.server.init:_M.run (2,682 samples, 73.16%)</title><rect x="10.0" y="149" width="863.3" height="15.0" fill="rgb(219,22,38)" rx="2" ry="2" />
+<text  x="13.00" y="159.5" >motan.server.init:_M.run</text>
 </g>
 <g >
-<title>motan.init:clean_motan_ctx (39 samples, 1.08%)</title><rect x="865.5" y="197" width="12.7" height="15.0" fill="rgb(217,67,50)" rx="2" ry="2" />
-<text  x="868.48" y="207.5" ></text>
+<title>C:lj_cf_ffi_meta___call (8 samples, 0.22%)</title><rect x="1029.1" y="101" width="2.5" height="15.0" fill="rgb(205,153,17)" rx="2" ry="2" />
+<text  x="1032.06" y="111.5" ></text>
 </g>
 <g >
-<title>motan.utils:_n2b (17 samples, 0.47%)</title><rect x="993.3" y="149" width="5.6" height="15.0" fill="rgb(254,112,23)" rx="2" ry="2" />
-<text  x="996.33" y="159.5" ></text>
+<title>C:lj_ffh_pcall (44 samples, 1.20%)</title><rect x="1124.3" y="85" width="14.2" height="15.0" fill="rgb(240,164,7)" rx="2" ry="2" />
+<text  x="1127.34" y="95.5" ></text>
 </g>
 <g >
-<title>C:motan_simple_serialize (17 samples, 0.47%)</title><rect x="1008.0" y="133" width="5.6" height="15.0" fill="rgb(210,160,21)" rx="2" ry="2" />
-<text  x="1011.01" y="143.5" ></text>
+<title>motan.utils:_M.is_empty (2 samples, 0.05%)</title><rect x="1189.4" y="133" width="0.6" height="15.0" fill="rgb(232,217,49)" rx="2" ry="2" />
+<text  x="1192.36" y="143.5" ></text>
 </g>
 <g >
-<title>motan.server.init:get_service_method_args_num (69 samples, 1.91%)</title><rect x="1167.5" y="165" width="22.5" height="15.0" fill="rgb(226,101,42)" rx="2" ry="2" />
-<text  x="1170.50" y="175.5" >m..</text>
-</g>
-<g >
-<title>C:lj_cf_ffi_meta___call (9 samples, 0.25%)</title><rect x="980.9" y="133" width="3.0" height="15.0" fill="rgb(212,31,9)" rx="2" ry="2" />
-<text  x="983.94" y="143.5" ></text>
-</g>
-<g >
-<title>C:ngx_stream_lua_ngx_log (247 samples, 6.83%)</title><rect x="1042.6" y="85" width="80.5" height="15.0" fill="rgb(248,228,31)" rx="2" ry="2" />
-<text  x="1045.58" y="95.5" >C:ngx_str..</text>
+<title>C:lj_cf_coroutine_running (2 samples, 0.05%)</title><rect x="1134.3" y="37" width="0.7" height="15.0" fill="rgb(228,172,10)" rx="2" ry="2" />
+<text  x="1137.32" y="47.5" ></text>
 </g>
 </g>
 </svg>

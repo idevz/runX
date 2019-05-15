@@ -3,73 +3,93 @@ C:ngx_stream_lua_uthread_spawn
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:143
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/init.lua:125
 =content_by_lua(app-dev.conf:29):1
-	2435
-C:ngx_stream_lua_ngx_log
-@//media/psf/code/z/git/weibo-or/video//video//VideoService.lua:63
-C:lj_ffh_pcall
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/provider/motan.lua:81
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/filter/metrics.lua:33
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/filter/accesslog.lua:34
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:64
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:105
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
-	247
+	2259
 C:ngx_stream_lua_socket_tcp_send
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:105
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
-	218
+	211
+C:ngx_stream_lua_socket_tcp_receive
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/codec.lua:80
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:119
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:143
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/init.lua:125
+=content_by_lua(app-dev.conf:29):1
+	184
+C:ngx_stream_lua_ngx_get
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/init.lua:28
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
+	88
 C:lj_cf_debug_getinfo
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:53
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:64
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:105
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
-	67
-C:ngx_stream_lua_socket_tcp_receive
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/codec.lua:48
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:119
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:143
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/init.lua:125
-=content_by_lua(app-dev.conf:29):1
-	53
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/codec.lua:24
+	76
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/message.lua:12
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/init.lua:101
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:105
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
-	46
+	56
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/utils.lua:130
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/codec.lua:48
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/codec.lua:80
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:119
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:143
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/init.lua:125
 =content_by_lua(app-dev.conf:29):1
-	34
-C:ngx_stream_lua_ngx_get
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/init.lua:20
-@//media/psf/code/z/git/weibo-or/video//video//VideoService.lua:63
-C:lj_ffh_pcall
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/provider/motan.lua:81
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/filter/metrics.lua:33
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/filter/accesslog.lua:34
+	56
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/codec.lua:48
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:105
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
+	47
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/core/request.lua:9
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:64
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:105
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
-	30
+	45
+C:lj_cf_ffi_new
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/utils.lua:57
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/codec.lua:80
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:119
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:143
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/init.lua:125
+=content_by_lua(app-dev.conf:29):1
+	36
 C:lj_cf_ffi_new
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/utils.lua:50
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/header.lua:37
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/codec.lua:24
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/codec.lua:48
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:105
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
-	29
-C:lj_cf_ffi_new
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/utils.lua:57
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/codec.lua:48
+	36
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
+	32
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/codec.lua:80
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:119
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:143
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/init.lua:125
 =content_by_lua(app-dev.conf:29):1
-	27
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/utils.lua:530
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/utils.lua:488
+	31
+C:motan_simple_serialize
+C:lj_ffh_pcall
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/serialize/simple_native/init.lua:6
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/init.lua:101
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:105
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
+	30
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/utils.lua:241
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/codec.lua:80
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:119
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:143
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/init.lua:125
+=content_by_lua(app-dev.conf:29):1
+	30
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/provider/motan.lua:81
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/filter/metrics.lua:33
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/filter/accesslog.lua:34
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:64
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:105
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
+	29
 @//media/psf/code/z/git/weibo-or/video//video//VideoService.lua:63
 C:lj_ffh_pcall
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/provider/motan.lua:81
@@ -78,24 +98,26 @@ C:lj_ffh_pcall
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:64
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:105
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
-	26
-@//media/psf/code/z/git/weibo-or/video//video//VideoService.lua:63
+	28
+C:motan_simple_deserialize
 C:lj_ffh_pcall
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/provider/motan.lua:81
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/filter/metrics.lua:33
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/filter/accesslog.lua:34
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/serialize/simple_native/init.lua:25
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/init.lua:116
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:64
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:105
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
-	25
-C:ngx_stream_lua_ngx_get
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/init.lua:28
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
-	25
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/provider/motan.lua:81
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/filter/metrics.lua:33
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/filter/accesslog.lua:34
+	24
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:64
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:105
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
+	22
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/utils.lua:252
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/codec.lua:48
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:105
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
+	22
+C:lj_cf_table_concat
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/codec.lua:48
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:105
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
 	20
@@ -107,53 +129,58 @@ C:ngx_stream_lua_ngx_get
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:64
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:105
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
-	18
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:43
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:105
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
-	17
-C:motan_simple_serialize
-C:lj_ffh_pcall
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/serialize/simple_native/init.lua:6
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/init.lua:101
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:105
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
-	17
+	19
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/header.lua:37
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/codec.lua:24
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/codec.lua:48
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:105
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
+	15
+C:lj_ffh_tonumber
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/message.lua:33
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:64
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:105
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
 	15
 C:lj_cf_table_insert
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/utils.lua:253
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/codec.lua:24
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:105
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
-	14
-C:motan_simple_deserialize
-C:lj_ffh_pcall
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/serialize/simple_native/init.lua:25
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/init.lua:116
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:64
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:105
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
-	14
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/codec.lua:48
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:105
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
+	14
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/utils.lua:253
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/codec.lua:48
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:105
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
+	13
+C:lj_cf_ffi_meta___call
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/utils.lua:57
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/codec.lua:80
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:119
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:143
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/init.lua:125
 =content_by_lua(app-dev.conf:29):1
-	14
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/utils.lua:252
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/header.lua:37
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/codec.lua:24
+	13
+C:lj_cf_table_concat
+C:lj_ffh_pcall
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/codec.lua:80
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:119
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:143
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/init.lua:125
+=content_by_lua(app-dev.conf:29):1
+	12
+C:lj_cf_table_concat
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:105
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
-	13
+	12
 C:lj_cf_table_insert
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/utils.lua:511
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/utils.lua:530
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/utils.lua:488
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/utils.lua:253
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/header.lua:37
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/codec.lua:48
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:105
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
+	12
+C:ngx_stream_lua_ngx_get
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/init.lua:20
 @//media/psf/code/z/git/weibo-or/video//video//VideoService.lua:63
 C:lj_ffh_pcall
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/provider/motan.lua:81
@@ -162,78 +189,71 @@ C:lj_ffh_pcall
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:64
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:105
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
-	13
-C:lj_cf_table_insert
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/utils.lua:253
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/header.lua:37
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/codec.lua:24
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:105
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
-	12
-C:lj_cf_table_concat
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/codec.lua:24
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:105
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
-	12
-C:lj_cf_ffi_meta___call
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/utils.lua:57
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/codec.lua:48
+	11
+C:lj_cf_table_new
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/codec.lua:80
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:119
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:143
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/init.lua:125
 =content_by_lua(app-dev.conf:29):1
-	11
+	10
+C:lj_cf_ffi_string
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/codec.lua:80
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:119
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:143
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/init.lua:125
+=content_by_lua(app-dev.conf:29):1
+	10
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/utils.lua:252
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/codec.lua:24
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/header.lua:37
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/codec.lua:48
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:105
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
 	9
+C:lj_cf_table_concat
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/header.lua:37
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/codec.lua:48
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:105
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
 	9
 C:lj_cf_ffi_meta___call
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/utils.lua:50
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/header.lua:37
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/codec.lua:24
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:105
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
-	9
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/utils.lua:488
-@//media/psf/code/z/git/weibo-or/video//video//VideoService.lua:63
-C:lj_ffh_pcall
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/provider/motan.lua:81
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/filter/metrics.lua:33
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/filter/accesslog.lua:34
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:64
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/codec.lua:48
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:105
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
 	8
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/init.lua:116
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:64
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:105
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
 	7
-C:lj_cf_table_concat
-@//media/psf/code/z/git/weibo-or/video//video//VideoService.lua:63
-C:lj_ffh_pcall
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/provider/motan.lua:81
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/filter/metrics.lua:33
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/filter/accesslog.lua:34
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:64
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:105
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
-	7
-C:lj_cf_ffi_string
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/codec.lua:48
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/header.lua:26
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/codec.lua:80
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:119
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:143
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/init.lua:125
 =content_by_lua(app-dev.conf:29):1
-	6
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/core/response.lua:9
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/filter/metrics.lua:33
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/filter/accesslog.lua:34
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:64
+	7
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/init.lua:28
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
+	7
+C:ngx_stream_lua_ngx_log
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/init.lua:28
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
+	7
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/utils.lua:253
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/header.lua:37
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/codec.lua:48
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:105
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
+	7
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/utils.lua:242
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/codec.lua:80
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:119
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:143
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/init.lua:125
+=content_by_lua(app-dev.conf:29):1
 	6
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/init.lua:20
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/provider/motan.lua:81
@@ -243,40 +263,6 @@ C:lj_cf_ffi_string
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:105
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
 	6
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/core/request.lua:9
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:64
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:105
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
-	6
-C:lj_ffh_tostring
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/init.lua:28
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
-	6
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/utils.lua:241
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/codec.lua:48
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:119
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:143
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/init.lua:125
-=content_by_lua(app-dev.conf:29):1
-	6
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/utils.lua:253
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/header.lua:37
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/codec.lua:24
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:105
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
-	5
-C:lj_cf_table_new
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/codec.lua:48
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:119
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:143
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/init.lua:125
-=content_by_lua(app-dev.conf:29):1
-	5
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/init.lua:116
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:64
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:105
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
-	5
 C:ngx_stream_lua_ngx_now
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/provider/motan.lua:81
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/filter/metrics.lua:33
@@ -284,49 +270,44 @@ C:ngx_stream_lua_ngx_now
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:64
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:105
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
-	4
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/message.lua:12
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/codec.lua:48
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:119
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:143
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/init.lua:125
-=content_by_lua(app-dev.conf:29):1
-	4
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/init.lua:20
-@//media/psf/code/z/git/weibo-or/video//video//VideoService.lua:63
-C:lj_ffh_pcall
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/provider/motan.lua:81
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/filter/metrics.lua:33
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/filter/accesslog.lua:34
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:64
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:105
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
-	4
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:143
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/init.lua:125
-=content_by_lua(app-dev.conf:29):1
-	4
+	6
+C:ngx_stream_lua_ngx_now
+	6
 C:lj_cf_ffi_string
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/header.lua:37
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/codec.lua:24
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/codec.lua:48
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:105
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
+	5
+C:lj_ffh_tostring
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/init.lua:28
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
+	5
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:143
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/init.lua:125
+=content_by_lua(app-dev.conf:29):1
+	5
+C:lj_ffh_string_byte
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/utils.lua:241
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/codec.lua:80
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:119
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:143
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/init.lua:125
+=content_by_lua(app-dev.conf:29):1
 	4
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/utils.lua:521
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/utils.lua:488
-@//media/psf/code/z/git/weibo-or/video//video//VideoService.lua:63
-C:lj_ffh_pcall
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/provider/motan.lua:81
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/filter/metrics.lua:33
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/filter/accesslog.lua:34
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:64
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:105
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/message.lua:12
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/codec.lua:80
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:119
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:143
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/init.lua:125
+=content_by_lua(app-dev.conf:29):1
+	4
+C:lj_cf_unpack
 	3
+C:lj_cf_coroutine_running
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/init.lua:28
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
 	3
-C:lj_cf_coroutine_running
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/init.lua:20
 @//media/psf/code/z/git/weibo-or/video//video//VideoService.lua:63
 C:lj_ffh_pcall
@@ -337,49 +318,75 @@ C:lj_ffh_pcall
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:105
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
 	3
-C:lj_cf_table_concat
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/header.lua:37
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/codec.lua:24
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:105
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
-	3
-C:lj_cf_coroutine_running
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/init.lua:28
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
-	3
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/utils.lua:242
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/codec.lua:48
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:13
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:119
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:143
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/init.lua:125
 =content_by_lua(app-dev.conf:29):1
 	3
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/init.lua:101
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:105
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
-	2
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:119
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:143
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/init.lua:125
-=content_by_lua(app-dev.conf:29):1
-	2
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/message.lua:12
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/init.lua:101
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:105
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
-	2
+C:lj_cf_ffi_clib___index
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/utils.lua:57
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/codec.lua:48
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/codec.lua:80
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:119
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:143
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/init.lua:125
 =content_by_lua(app-dev.conf:29):1
-	2
+	3
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/utils.lua:57
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/codec.lua:80
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:119
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:143
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/init.lua:125
+=content_by_lua(app-dev.conf:29):1
+	3
+C:lj_cf_ffi_clib___index
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/utils.lua:50
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/header.lua:37
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/codec.lua:24
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/codec.lua:48
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:105
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
+	3
+C:ngx_stream_lua_ngx_worker_exiting
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:143
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/init.lua:125
+=content_by_lua(app-dev.conf:29):1
+	2
+C:lj_cf_coroutine_running
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/init.lua:20
+@//media/psf/code/z/git/weibo-or/video//video//VideoService.lua:63
+C:lj_ffh_pcall
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/provider/motan.lua:81
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/filter/metrics.lua:33
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/filter/accesslog.lua:34
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:64
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:105
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
+	2
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/core/response.lua:9
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/filter/metrics.lua:33
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/filter/accesslog.lua:34
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:64
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:105
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
+	2
+C:lj_ffh_next
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/utils.lua:110
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:64
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:105
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
+	2
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/provider/motan.lua:50
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/provider/motan.lua:81
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/filter/metrics.lua:33
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/filter/accesslog.lua:34
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:64
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:105
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
+	2
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:119
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:143
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/init.lua:125
+=content_by_lua(app-dev.conf:29):1
 	2
 C:lj_ffh_next
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/utils.lua:110
@@ -389,39 +396,8 @@ C:lj_ffh_next
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:105
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
 	2
-C:ngx_stream_lua_ngx_log
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/init.lua:28
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:105
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
-	2
-C:ngx_stream_lua_ngx_now
-	1
-C:ngx_stream_lua_ngx_worker_exiting
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:143
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/init.lua:125
-=content_by_lua(app-dev.conf:29):1
-	1
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/header.lua:26
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/codec.lua:48
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:119
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:143
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/init.lua:125
-=content_by_lua(app-dev.conf:29):1
-	1
-C:lj_ffh_string_byte
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/utils.lua:241
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/codec.lua:48
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:119
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:143
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/init.lua:125
-=content_by_lua(app-dev.conf:29):1
-	1
-C:lj_cf_table_concat
-C:lj_ffh_pcall
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/codec.lua:48
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:119
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:143
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/init.lua:125
-=content_by_lua(app-dev.conf:29):1
 	1
 C:lj_ffh_next
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/utils.lua:110
@@ -433,49 +409,19 @@ C:lj_ffh_next
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:105
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
 	1
+C:lj_cf_ffi_string
+	1
 C:lj_cf_table_insert
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/codec.lua:48
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/codec.lua:80
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:119
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:143
 @/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/init.lua:125
 =content_by_lua(app-dev.conf:29):1
-	1
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:105
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
-	1
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:13
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:119
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:143
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/init.lua:125
-=content_by_lua(app-dev.conf:29):1
-	1
-C:lj_cf_ffi_clib___index
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/utils.lua:50
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/header.lua:37
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/codec.lua:24
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:105
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
-	1
-C:lj_cf_unpack
 	1
 C:lj_ffh_setmetatable
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/filter/metrics.lua:33
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/filter/accesslog.lua:34
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:64
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:105
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
-	1
-C:lj_cf_coroutine_running
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/init.lua:20
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/provider/motan.lua:81
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/filter/metrics.lua:33
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/filter/accesslog.lua:34
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:64
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:105
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
-	1
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/utils.lua:253
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/codec.lua:24
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:105
-@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/thread.lua:15
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/protocol/motan2/codec.lua:80
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:119
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/server/init.lua:143
+@/usr/local/openresty-1.13.6.2-debug/site/lualib/motan/init.lua:125
+=content_by_lua(app-dev.conf:29):1
 	1
