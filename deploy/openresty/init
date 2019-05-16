@@ -15,15 +15,21 @@ set -ex
 [ -z $PRLCTL_HOME ] && PRLCTL_HOME=/media/psf/runX
 [ $HOME != '/home/z' ] && echo 'Are U Z ?' && exit 1
 
+# sudo pkill openresty
+# a good way to "workaround" the `secure_path` setted in the `/etc/sudoers` file
+[ $(uname) = 'Linux' ] && x() {
+	sudo env "PATH=$PATH" "$@"
+}
+
 BASE_DIR=${BASE_DIR:-$(dirname $(cd $(dirname "$0") && pwd -P)/$(basename "$0"))}
 BUILD_ENV="${BUILD_ENV}"
 OR_ENV=${OE:-"debug"}
-RUNX_BUILDING_VERSION=${RBV:-"1.15.6.1rc0"}
+RUNX_BUILDING_VERSION=${RBV:-"1.15.8.1rc2"}
 
 PF_TOOLS_ROOT="/usr/local/tools"
 
 SRC_ROOT=${BASE_DIR}/srcs
-[ ! -d "${SRC_ROOT}" ] && x mkdir -p "${SRC_ROOT}"
+[ ! -d "${SRC_ROOT}" ] && sudo mkdir -p "${SRC_ROOT}"
 OR_VERSION=${LV:-"openresty-${RUNX_BUILDING_VERSION}"}
 DEFAULT_LUAJIT_PREFIX=/usr/local/luajit
 DEFAULT_LUAJIT_VERSION=${DEFAULT_LUAJIT_VERSION:-"2.1.0-beta3"}
@@ -36,8 +42,18 @@ RESTY_ZLIB_VERSION=${RESTY_ZLIB_VERSION:-"1.2.11"}
 RESTY_J=${RESTY_J:-"4"}
 RESTY_CONFIG_OPTIONS_MORE=""
 
+using_163_yum() {
+	local old_yum="/etc/yum.repos.d/CentOS-Base.repo"
+	local yum_163="$PRLCTL_HOME/CentOS7-Base-163.repo"
+	[ -f $old_yum ] &&
+		sudo mv $old_yum "$old_yum.backup"
+	[ -f "$yum_163" ] && sudo cp "$yum_163" /etc/yum.repos.d/CentOS7-Base-163.repo
+	sudo yum clean all
+	sudo yum makecache
+}
+
 yum_base_preparing() {
-	x yum install --nogpgcheck -y \
+	sudo yum install --nogpgcheck -y \
 		systemtap-sdt-devel readline-devel libxslt-devel gd-devel geoip-devel \
 		unzip patch \
 		perl perl-ExtUtils-Embed \
@@ -76,7 +92,7 @@ pkg_preparing() {
 
 # debug install prepare
 dev_preparing() {
-	[ ! -d ${SRC_ROOT} ] && x mkdir -p ${SRC_ROOT}
+	[ ! -d ${SRC_ROOT} ] && sudo mkdir -p ${SRC_ROOT}
 	if [ ${BUILD_ENV} = "docker" ]; then
 		pkg_preparing
 	else
@@ -95,7 +111,7 @@ dev_preparing() {
 		./configure --prefix=${ZLIB_PREFIX} &&
 		make CFLAGS='-O3 -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN -g' \
 			SFLAGS='-O3 -fPIC -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN -g' &&
-		x make install
+		sudo make install
 
 	OPENSSL_PREFIX=${OR_PREFIX}/openssl
 	cd ${SRC_ROOT}/openssl-${RESTY_OPENSSL_VERSION} &&
@@ -110,7 +126,7 @@ dev_preparing() {
 			-Wl,-rpath,${ZLIB_PREFIX}/lib:${OPENSSL_PREFIX}/lib &&
 		sed -i 's/ -O3 / -O0 /g' Makefile &&
 		make &&
-		x make install_sw
+		sudo make install_sw
 
 	PCRE_PREFIX=${OR_PREFIX}/pcre
 	cd ${SRC_ROOT}/pcre-${RESTY_PCRE_VERSION} &&
@@ -122,13 +138,13 @@ dev_preparing() {
 			--enable-utf \
 			--enable-unicode-properties &&
 		make V=1 &&
-		x make install
+		sudo make install
 }
 
 install_or_tools() {
-	git clone https://github.com/openresty/stapxx.git ${PF_TOOLS_ROOT}/stapxx
-	git clone https://github.com/brendangregg/FlameGraph.git ${PF_TOOLS_ROOT}/FlameGraph
-	git clone https://github.com/openresty/openresty-systemtap-toolkit.git ${PF_TOOLS_ROOT}/openresty-systemtap-toolkit
+	sudo git clone https://github.com/openresty/stapxx.git ${PF_TOOLS_ROOT}/stapxx
+	sudo git clone https://github.com/brendangregg/FlameGraph.git ${PF_TOOLS_ROOT}/FlameGraph
+	sudo git clone https://github.com/openresty/openresty-systemtap-toolkit.git ${PF_TOOLS_ROOT}/openresty-systemtap-toolkit
 }
 
 or_for_debug() {
@@ -171,14 +187,14 @@ or_for_debug() {
 			--with-stream_ssl_module \
 			--with-threads \
 			--user=root --group=root \
-			${RESTY_CONFIG_OPTIONS_MORE} &&
-		make -j${RESTY_J} &&
-		x make -j${RESTY_J} install &&
-		x mkdir -p ${OR_PREFIX}/nginx/sbin/lib &&
-		for DEP_F in $(ldd ${OR_PREFIX}/nginx/sbin/nginx | grep -Eo '(\/.*) |(/lib64/.*) '); do
-			x cp ${DEP_F} ${OR_PREFIX}/nginx/sbin/lib/$(basename ${DEP_F})
-		done
-	install_or_tools
+			${RESTY_CONFIG_OPTIONS_MORE}
+	# 	 &&
+	# make -j${RESTY_J} &&
+	# sudo make -j${RESTY_J} install &&
+	# sudo mkdir -p ${OR_PREFIX}/nginx/sbin/lib &&
+	# for DEP_F in $(ldd ${OR_PREFIX}/nginx/sbin/nginsudo | grep -Eo '(\/.*) |(/lib64/.*) '); do
+	# 	sudo cp ${DEP_F} ${OR_PREFIX}/nginx/sbin/lib/$(basename ${DEP_F})
+	# done
 }
 
 install_default_luajit() {
@@ -186,11 +202,11 @@ install_default_luajit() {
 		tar xzf LuaJIT-${DEFAULT_LUAJIT_VERSION}.tar.gz
 	cd ${SRC_ROOT}/LuaJIT-${DEFAULT_LUAJIT_VERSION} &&
 		make PREFIX=${DEFAULT_LUAJIT_PREFIX} &&
-		x make install PREFIX=${DEFAULT_LUAJIT_PREFIX}
+		sudo make install PREFIX=${DEFAULT_LUAJIT_PREFIX}
 }
 
 or_for_valgrind() {
-	x yum install --nogpgcheck -y systemtap-sdt-devel valgrind-devel
+	sudo yum install --nogpgcheck -y systemtap-sdt-devel valgrind-devel
 
 	dev_preparing 'valgrind'
 
@@ -234,8 +250,7 @@ or_for_valgrind() {
 			--with-threads \
 			${RESTY_CONFIG_OPTIONS_MORE} &&
 		make -j${RESTY_J} &&
-		x make -j${RESTY_J} install
-	install_or_tools
+		sudo make -j${RESTY_J} install
 }
 
 or_for_prd() {
@@ -284,34 +299,33 @@ or_for_prd() {
 			--user=root --group=root \
 			${RESTY_CONFIG_OPTIONS_MORE} &&
 		make -j${RESTY_J} &&
-		x make -j${RESTY_J} install &&
-		x mkdir -p ${OR_PREFIX}/nginx/sbin/lib &&
-		for DEP_F in $(ldd ${OR_PREFIX}/nginx/sbin/nginx | grep -Eo '(\/.*) |(/lib64/.*) '); do
-			x cp ${DEP_F} ${OR_PREFIX}/nginx/sbin/lib/$(basename ${DEP_F})
+		sudo make -j${RESTY_J} install &&
+		sudo mkdir -p ${OR_PREFIX}/nginx/sbin/lib &&
+		for DEP_F in $(ldd ${OR_PREFIX}/nginx/sbin/nginsudo | grep -Eo '(\/.*) |(/lib64/.*) '); do
+			sudo cp ${DEP_F} ${OR_PREFIX}/nginx/sbin/lib/$(basename ${DEP_F})
 		done
-	install_or_tools
 }
 
 install_weighttp() {
-	x yum install --nogpgcheck -y gcc make libev-devel expect
+	sudo yum install --nogpgcheck -y gcc make libev-devel expect
 	cd ${SRC_ROOT} &&
 		curl -fSL http://cgit.lighttpd.net/weighttp.git/snapshot/weighttp-master.tar.gz -o weighttp-master.tar.gz &&
 		tar xzf weighttp-master.tar.gz &&
 		cd weighttp-master/ &&
 		./waf configure &&
 		./waf build &&
-		x ./waf install &&
-		# x ln -sf /media/psf/runX/deploy/openresty/srcs/weighttp-master/build/default/weighttp /usr/local/bin/weighttp
+		sudo ./waf install &&
+		# sudo ln -sf /media/psf/runX/deploy/openresty/srcs/weighttp-master/build/default/weighttp /usr/local/bin/weighttp
 		cd -
 }
 
 install_test_nginx() {
-	# x curl -fSL http://xrl.us/cpanm -o /usr/bin/cpanm &&
-	# 	x chmod +x /usr/bin/cpanm
+	# sudo curl -fSL http://xrl.us/cpanm -o /usr/bin/cpanm &&
+	# 	sudo chmod +sudo /usr/bin/cpanm
 	# curl -L http://cpanmin.us | perl - --sudo --force App::cpanminus
-	x yum -y install perl-App-cpanminus.noarch
-	x $(which cpanm) --force Test::Nginx
-	x $(which cpanm) --force Digest::SHA
+	sudo yum -y install perl-App-cpanminus.noarch
+	sudo $(which cpanm) --force Test::Nginx
+	sudo $(which cpanm) --force Digest::SHA
 	install_weighttp
 }
 
@@ -327,17 +341,17 @@ install_luarocks() {
 			--lua-suffix=jit-2.1.0-beta3 \
 			--with-lua-include=${X_LUAJIT_PREFIX}/include/luajit-2.1 &&
 		make build &&
-		x make install
+		sudo make install
 }
 
 install_openresty_from_src() {
 	if [ ${BUILD_ENV} = "docker" ]; then
-		[ -d "/usr/local/${OR_VERSION}-debug" ] && x rm -rf "/usr/local/${OR_VERSION}-debug"
+		[ -d "/usr/local/${OR_VERSION}-debug" ] && sudo rm -rf "/usr/local/${OR_VERSION}-debug"
 		or_for_debug
-		echo "export PATH=/usr/local/${OR_VERSION}-debug/nginx/sbin:/usr/local/${OR_VERSION}-debug/bin:${PATH}" | x tee -a /etc/profile >/dev/null 2>&1
+		echo "export PATH=/usr/local/${OR_VERSION}-debug/nginx/sbin:/usr/local/${OR_VERSION}-debug/bin:${PATH}" | sudo tee -a /etc/profile >/dev/null 2>&1
 	else
 		for or4env in debug valgrind prd; do
-			[ -d "/usr/local/${OR_VERSION}-${or4env}" ] && x rm -rf "/usr/local/${OR_VERSION}-${or4env}"
+			[ -d "/usr/local/${OR_VERSION}-${or4env}" ] && sudo rm -rf "/usr/local/${OR_VERSION}-${or4env}"
 			or_for_${or4env}
 		done
 	fi
@@ -368,6 +382,7 @@ EOF
 init() {
 	yum_base_preparing
 	install_openresty_from_src
+	install_or_tools
 	install_weighttp
 	install_test_nginx
 	install_luarocks
@@ -375,5 +390,6 @@ init() {
 }
 
 clean_srcs() {
-	x rm -rf "${SRC_ROOT}"
+	sudo rm -rf "${SRC_ROOT}"
 }
+or_for_debug

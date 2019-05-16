@@ -73,12 +73,22 @@ fire_c_offcpu() {
 
 fire_memx() {
 	local pid="$1"
-	x /usr/local/tools/stapxx/samples//sample-bt-leaks.sxx -x "$pid" -v >"$RUN_PATH/ss/ngx-mem.bt"
+	x /usr/local/tools/stapxx/samples/sample-bt-leaks.sxx -x "$pid" -v -D STP_NO_OVERLOAD -D MAXMAPENTRIES=100000 >"$RUN_PATH/ss/ngx-mem.bt"
 	x /usr/local/tools/FlameGraph/stackcollapse-stap.pl "$RUN_PATH/ss/ngx-mem.bt" >"$RUN_PATH/ss/ngx-mem.cbt"
-	x /usr/local/tools/FlameGraph/flamegraph.pl --encoding="ISO-8859-1" --title="Lua-land on-CPU flamegraph" "$RUN_PATH/ss/ngx-mem.cbt" >"$RUN_PATH/ss/ngx-mem.svg"
+	x /usr/local/tools/FlameGraph/flamegraph.pl --encoding="ISO-8859-1" --title="Memery usage flamegraph" "$RUN_PATH/ss/ngx-mem.cbt" >"$RUN_PATH/ss/ngx-mem.svg"
 }
 
 fire_mem() {
 	local pid="$1"
 	x /usr/local/tools/openresty-systemtap-toolkit/ngx-leaked-pools -p "$pid"
+}
+
+motan_init() {
+	local or_version="1.15.8.1rc2"
+	sudo ln -sf $GIT/weibo-or/motan-openresty/lib/motan /usr/local/openresty-"$or_version"-debug/site/lualib/motan
+	sudo ln -sf $GIT/weibo-or/motan-openresty/lib/motan/libs/cmotan.so /usr/local/openresty-"$or_version"-debug/site/lualib/cmotan.so
+	sudo ln -sf $GIT/weibo-or/v/lib/v /usr/local/openresty-"$or_version"-debug/site/lualib/v
+	sudo ln -sf $GIT/weibo-or/weibo-motan/lib/wmotan /usr/local/openresty-"$or_version"-debug/site/lualib/wmotan
+	sudo ln -sf $GIT/weibo-or/weibo-motan/t/resty /usr/local/openresty-"$or_version"-debug/site/lualib/resty
+	sudo ln -sf $GIT/weibo-or/motan-openresty/lib/motan/libs/libmotan_tools.so /lib64/libmotan_tools.so
 }
