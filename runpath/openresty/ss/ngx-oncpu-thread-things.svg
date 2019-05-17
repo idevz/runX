@@ -1,0 +1,3505 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" width="1200" height="646" onload="init(evt)" viewBox="0 0 1200 646" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<!-- Flame graph stack visualization. See https://github.com/brendangregg/FlameGraph for latest version, and http://www.brendangregg.com/flamegraphs.html for examples. -->
+<!-- NOTES:  -->
+<defs>
+	<linearGradient id="background" y1="0" y2="1" x1="0" x2="0" >
+		<stop stop-color="#eeeeee" offset="5%" />
+		<stop stop-color="#eeeeb0" offset="95%" />
+	</linearGradient>
+</defs>
+<style type="text/css">
+	text { font-family:Verdana; font-size:12px; fill:rgb(0,0,0); }
+	#search { opacity:0.1; cursor:pointer; }
+	#search:hover, #search.show { opacity:1; }
+	#subtitle { text-anchor:middle; font-color:rgb(160,160,160); }
+	#title { text-anchor:middle; font-size:17px}
+	#unzoom { cursor:pointer; }
+	#frames > *:hover { stroke:black; stroke-width:0.5; cursor:pointer; }
+	.hide { display:none; }
+	.parent { opacity:0.5; }
+</style>
+<script type="text/ecmascript">
+<![CDATA[
+	"use strict";
+	var details, searchbtn, unzoombtn, matchedtxt, svg, searching;
+	function init(evt) {
+		details = document.getElementById("details").firstChild;
+		searchbtn = document.getElementById("search");
+		unzoombtn = document.getElementById("unzoom");
+		matchedtxt = document.getElementById("matched");
+		svg = document.getElementsByTagName("svg")[0];
+		searching = 0;
+	}
+
+	window.addEventListener("click", function(e) {
+		var target = find_group(e.target);
+		if (target) {
+			if (target.nodeName == "a") {
+				if (e.ctrlKey === false) return;
+				e.preventDefault();
+			}
+			if (target.classList.contains("parent")) unzoom();
+			zoom(target);
+		}
+		else if (e.target.id == "unzoom") unzoom();
+		else if (e.target.id == "search") search_prompt();
+	}, false)
+
+	// mouse-over for info
+	// show
+	window.addEventListener("mouseover", function(e) {
+		var target = find_group(e.target);
+		if (target) details.nodeValue = "Function: " + g_to_text(target);
+	}, false)
+
+	// clear
+	window.addEventListener("mouseout", function(e) {
+		var target = find_group(e.target);
+		if (target) details.nodeValue = ' ';
+	}, false)
+
+	// ctrl-F for search
+	window.addEventListener("keydown",function (e) {
+		if (e.keyCode === 114 || (e.ctrlKey && e.keyCode === 70)) {
+			e.preventDefault();
+			search_prompt();
+		}
+	}, false)
+
+	// functions
+	function find_child(node, selector) {
+		var children = node.querySelectorAll(selector);
+		if (children.length) return children[0];
+		return;
+	}
+	function find_group(node) {
+		var parent = node.parentElement;
+		if (!parent) return;
+		if (parent.id == "frames") return node;
+		return find_group(parent);
+	}
+	function orig_save(e, attr, val) {
+		if (e.attributes["_orig_" + attr] != undefined) return;
+		if (e.attributes[attr] == undefined) return;
+		if (val == undefined) val = e.attributes[attr].value;
+		e.setAttribute("_orig_" + attr, val);
+	}
+	function orig_load(e, attr) {
+		if (e.attributes["_orig_"+attr] == undefined) return;
+		e.attributes[attr].value = e.attributes["_orig_" + attr].value;
+		e.removeAttribute("_orig_"+attr);
+	}
+	function g_to_text(e) {
+		var text = find_child(e, "title").firstChild.nodeValue;
+		return (text)
+	}
+	function g_to_func(e) {
+		var func = g_to_text(e);
+		// if there's any manipulation we want to do to the function
+		// name before it's searched, do it here before returning.
+		return (func);
+	}
+	function update_text(e) {
+		var r = find_child(e, "rect");
+		var t = find_child(e, "text");
+		var w = parseFloat(r.attributes.width.value) -3;
+		var txt = find_child(e, "title").textContent.replace(/\([^(]*\)$/,"");
+		t.attributes.x.value = parseFloat(r.attributes.x.value) + 3;
+
+		// Smaller than this size won't fit anything
+		if (w < 2 * 12 * 0.59) {
+			t.textContent = "";
+			return;
+		}
+
+		t.textContent = txt;
+		// Fit in full text width
+		if (/^ *$/.test(txt) || t.getSubStringLength(0, txt.length) < w)
+			return;
+
+		for (var x = txt.length - 2; x > 0; x--) {
+			if (t.getSubStringLength(0, x + 2) <= w) {
+				t.textContent = txt.substring(0, x) + "..";
+				return;
+			}
+		}
+		t.textContent = "";
+	}
+
+	// zoom
+	function zoom_reset(e) {
+		if (e.attributes != undefined) {
+			orig_load(e, "x");
+			orig_load(e, "width");
+		}
+		if (e.childNodes == undefined) return;
+		for (var i = 0, c = e.childNodes; i < c.length; i++) {
+			zoom_reset(c[i]);
+		}
+	}
+	function zoom_child(e, x, ratio) {
+		if (e.attributes != undefined) {
+			if (e.attributes.x != undefined) {
+				orig_save(e, "x");
+				e.attributes.x.value = (parseFloat(e.attributes.x.value) - x - 10) * ratio + 10;
+				if (e.tagName == "text")
+					e.attributes.x.value = find_child(e.parentNode, "rect[x]").attributes.x.value + 3;
+			}
+			if (e.attributes.width != undefined) {
+				orig_save(e, "width");
+				e.attributes.width.value = parseFloat(e.attributes.width.value) * ratio;
+			}
+		}
+
+		if (e.childNodes == undefined) return;
+		for (var i = 0, c = e.childNodes; i < c.length; i++) {
+			zoom_child(c[i], x - 10, ratio);
+		}
+	}
+	function zoom_parent(e) {
+		if (e.attributes) {
+			if (e.attributes.x != undefined) {
+				orig_save(e, "x");
+				e.attributes.x.value = 10;
+			}
+			if (e.attributes.width != undefined) {
+				orig_save(e, "width");
+				e.attributes.width.value = parseInt(svg.width.baseVal.value) - (10 * 2);
+			}
+		}
+		if (e.childNodes == undefined) return;
+		for (var i = 0, c = e.childNodes; i < c.length; i++) {
+			zoom_parent(c[i]);
+		}
+	}
+	function zoom(node) {
+		var attr = find_child(node, "rect").attributes;
+		var width = parseFloat(attr.width.value);
+		var xmin = parseFloat(attr.x.value);
+		var xmax = parseFloat(xmin + width);
+		var ymin = parseFloat(attr.y.value);
+		var ratio = (svg.width.baseVal.value - 2 * 10) / width;
+
+		// XXX: Workaround for JavaScript float issues (fix me)
+		var fudge = 0.0001;
+
+		unzoombtn.classList.remove("hide");
+
+		var el = document.getElementById("frames").children;
+		for (var i = 0; i < el.length; i++) {
+			var e = el[i];
+			var a = find_child(e, "rect").attributes;
+			var ex = parseFloat(a.x.value);
+			var ew = parseFloat(a.width.value);
+			var upstack;
+			// Is it an ancestor
+			if (0 == 0) {
+				upstack = parseFloat(a.y.value) > ymin;
+			} else {
+				upstack = parseFloat(a.y.value) < ymin;
+			}
+			if (upstack) {
+				// Direct ancestor
+				if (ex <= xmin && (ex+ew+fudge) >= xmax) {
+					e.classList.add("parent");
+					zoom_parent(e);
+					update_text(e);
+				}
+				// not in current path
+				else
+					e.classList.add("hide");
+			}
+			// Children maybe
+			else {
+				// no common path
+				if (ex < xmin || ex + fudge >= xmax) {
+					e.classList.add("hide");
+				}
+				else {
+					zoom_child(e, xmin, ratio);
+					update_text(e);
+				}
+			}
+		}
+	}
+	function unzoom() {
+		unzoombtn.classList.add("hide");
+		var el = document.getElementById("frames").children;
+		for(var i = 0; i < el.length; i++) {
+			el[i].classList.remove("parent");
+			el[i].classList.remove("hide");
+			zoom_reset(el[i]);
+			update_text(el[i]);
+		}
+	}
+
+	// search
+	function reset_search() {
+		var el = document.querySelectorAll("#frames rect");
+		for (var i = 0; i < el.length; i++) {
+			orig_load(el[i], "fill")
+		}
+	}
+	function search_prompt() {
+		if (!searching) {
+			var term = prompt("Enter a search term (regexp " +
+			    "allowed, eg: ^ext4_)", "");
+			if (term != null) {
+				search(term)
+			}
+		} else {
+			reset_search();
+			searching = 0;
+			searchbtn.classList.remove("show");
+			searchbtn.firstChild.nodeValue = "Search"
+			matchedtxt.classList.add("hide");
+			matchedtxt.firstChild.nodeValue = ""
+		}
+	}
+	function search(term) {
+		var re = new RegExp(term);
+		var el = document.getElementById("frames").children;
+		var matches = new Object();
+		var maxwidth = 0;
+		for (var i = 0; i < el.length; i++) {
+			var e = el[i];
+			var func = g_to_func(e);
+			var rect = find_child(e, "rect");
+			if (func == null || rect == null)
+				continue;
+
+			// Save max width. Only works as we have a root frame
+			var w = parseFloat(rect.attributes.width.value);
+			if (w > maxwidth)
+				maxwidth = w;
+
+			if (func.match(re)) {
+				// highlight
+				var x = parseFloat(rect.attributes.x.value);
+				orig_save(rect, "fill");
+				rect.attributes.fill.value = "rgb(230,0,230)";
+
+				// remember matches
+				if (matches[x] == undefined) {
+					matches[x] = w;
+				} else {
+					if (w > matches[x]) {
+						// overwrite with parent
+						matches[x] = w;
+					}
+				}
+				searching = 1;
+			}
+		}
+		if (!searching)
+			return;
+
+		searchbtn.classList.add("show");
+		searchbtn.firstChild.nodeValue = "Reset Search";
+
+		// calculate percent matched, excluding vertical overlap
+		var count = 0;
+		var lastx = -1;
+		var lastw = 0;
+		var keys = Array();
+		for (k in matches) {
+			if (matches.hasOwnProperty(k))
+				keys.push(k);
+		}
+		// sort the matched frames by their x location
+		// ascending, then width descending
+		keys.sort(function(a, b){
+			return a - b;
+		});
+		// Step through frames saving only the biggest bottom-up frames
+		// thanks to the sort order. This relies on the tree property
+		// where children are always smaller than their parents.
+		var fudge = 0.0001;	// JavaScript floating point
+		for (var k in keys) {
+			var x = parseFloat(keys[k]);
+			var w = matches[keys[k]];
+			if (x >= lastx + lastw - fudge) {
+				count += w;
+				lastx = x;
+				lastw = w;
+			}
+		}
+		// display matched percent
+		matchedtxt.classList.remove("hide");
+		var pct = 100 * count / maxwidth;
+		if (pct != 100) pct = pct.toFixed(1)
+		matchedtxt.firstChild.nodeValue = "Matched: " + pct + "%";
+	}
+]]>
+</script>
+<rect x="0.0" y="0" width="1200.0" height="646.0" fill="url(#background)"  />
+<text id="title" x="600.00" y="24" >Flame Graph</text>
+<text id="details" x="10.00" y="629" > </text>
+<text id="unzoom" x="10.00" y="24" class="hide">Reset Zoom</text>
+<text id="search" x="1090.00" y="24" >Search</text>
+<text id="matched" x="1090.00" y="629" > </text>
+<g id="frames">
+<g >
+<title>lua_pushthread (1 samples, 0.01%)</title><rect x="34.9" y="229" width="0.1" height="15.0" fill="rgb(248,88,37)" rx="2" ry="2" />
+<text  x="37.92" y="239.5" ></text>
+</g>
+<g >
+<title>0x7fee3efdf675 (1 samples, 0.01%)</title><rect x="26.1" y="581" width="0.1" height="15.0" fill="rgb(210,16,28)" rx="2" ry="2" />
+<text  x="29.06" y="591.5" ></text>
+</g>
+<g >
+<title>_int_malloc (1 samples, 0.01%)</title><rect x="1177.1" y="213" width="0.1" height="15.0" fill="rgb(250,228,36)" rx="2" ry="2" />
+<text  x="1180.13" y="223.5" ></text>
+</g>
+<g >
+<title>rehashtab (14 samples, 0.14%)</title><rect x="402.9" y="213" width="1.6" height="15.0" fill="rgb(251,58,42)" rx="2" ry="2" />
+<text  x="405.86" y="223.5" ></text>
+</g>
+<g >
+<title>lj_tab_newkey (3 samples, 0.03%)</title><rect x="393.9" y="245" width="0.3" height="15.0" fill="rgb(220,202,44)" rx="2" ry="2" />
+<text  x="396.88" y="255.5" ></text>
+</g>
+<g >
+<title>0x7fee3efdbc5b (3 samples, 0.03%)</title><rect x="14.7" y="581" width="0.4" height="15.0" fill="rgb(246,110,50)" rx="2" ry="2" />
+<text  x="17.72" y="591.5" ></text>
+</g>
+<g >
+<title>0x7fee3efdac46 (1 samples, 0.01%)</title><rect x="14.3" y="581" width="0.1" height="15.0" fill="rgb(230,225,28)" rx="2" ry="2" />
+<text  x="17.25" y="591.5" ></text>
+</g>
+<g >
+<title>lj_BC_TGETS (38 samples, 0.38%)</title><rect x="387.4" y="261" width="4.5" height="15.0" fill="rgb(211,163,54)" rx="2" ry="2" />
+<text  x="390.39" y="271.5" ></text>
+</g>
+<g >
+<title>lj_alloc_free (1 samples, 0.01%)</title><rect x="74.5" y="69" width="0.1" height="15.0" fill="rgb(240,133,49)" rx="2" ry="2" />
+<text  x="77.49" y="79.5" ></text>
+</g>
+<g >
+<title>__GI_____strtoul_l_internal (2 samples, 0.02%)</title><rect x="396.1" y="229" width="0.3" height="15.0" fill="rgb(207,139,38)" rx="2" ry="2" />
+<text  x="399.13" y="239.5" ></text>
+</g>
+<g >
+<title>lua_touserdata (1 samples, 0.01%)</title><rect x="77.7" y="229" width="0.1" height="15.0" fill="rgb(207,74,43)" rx="2" ry="2" />
+<text  x="80.68" y="239.5" ></text>
+</g>
+<g >
+<title>lj_cconv_ct_init (11 samples, 0.11%)</title><rect x="47.4" y="229" width="1.3" height="15.0" fill="rgb(211,182,6)" rx="2" ry="2" />
+<text  x="50.44" y="239.5" ></text>
+</g>
+<g >
+<title>0x7fee3efd6b10 (1 samples, 0.01%)</title><rect x="10.9" y="581" width="0.2" height="15.0" fill="rgb(215,155,51)" rx="2" ry="2" />
+<text  x="13.94" y="591.5" ></text>
+</g>
+<g >
+<title>motan_simple_deserialize_data (19 samples, 0.19%)</title><rect x="56.5" y="229" width="2.3" height="15.0" fill="rgb(249,84,40)" rx="2" ry="2" />
+<text  x="59.54" y="239.5" ></text>
+</g>
+<g >
+<title>lj_func_freeuv (1 samples, 0.01%)</title><rect x="74.5" y="101" width="0.1" height="15.0" fill="rgb(225,68,10)" rx="2" ry="2" />
+<text  x="77.49" y="111.5" ></text>
+</g>
+<g >
+<title>lua_createtable (3 samples, 0.03%)</title><rect x="55.5" y="229" width="0.3" height="15.0" fill="rgb(231,170,3)" rx="2" ry="2" />
+<text  x="58.48" y="239.5" ></text>
+</g>
+<g >
+<title>newtab (3 samples, 0.03%)</title><rect x="55.5" y="181" width="0.3" height="15.0" fill="rgb(205,151,47)" rx="2" ry="2" />
+<text  x="58.48" y="191.5" ></text>
+</g>
+<g >
+<title>lj_str_hash (1 samples, 0.01%)</title><rect x="47.3" y="85" width="0.1" height="15.0" fill="rgb(218,82,40)" rx="2" ry="2" />
+<text  x="50.33" y="95.5" ></text>
+</g>
+<g >
+<title>_init (1 samples, 0.01%)</title><rect x="28.0" y="277" width="0.1" height="15.0" fill="rgb(250,158,24)" rx="2" ry="2" />
+<text  x="30.95" y="287.5" ></text>
+</g>
+<g >
+<title>ngx_stream_lua_socket_tcp_send (1 samples, 0.01%)</title><rect x="1177.5" y="261" width="0.1" height="15.0" fill="rgb(246,13,47)" rx="2" ry="2" />
+<text  x="1180.48" y="271.5" ></text>
+</g>
+<g >
+<title>__memcpy_ssse3_back (1 samples, 0.01%)</title><rect x="30.8" y="213" width="0.1" height="15.0" fill="rgb(250,202,27)" rx="2" ry="2" />
+<text  x="33.79" y="223.5" ></text>
+</g>
+<g >
+<title>ngx_unix_send (3 samples, 0.03%)</title><rect x="1189.6" y="581" width="0.4" height="15.0" fill="rgb(239,44,25)" rx="2" ry="2" />
+<text  x="1192.65" y="591.5" ></text>
+</g>
+<g >
+<title>luaL_checktype (1 samples, 0.01%)</title><rect x="1177.2" y="245" width="0.2" height="15.0" fill="rgb(234,101,35)" rx="2" ry="2" />
+<text  x="1180.24" y="255.5" ></text>
+</g>
+<g >
+<title>cp_decl_single (13 samples, 0.13%)</title><rect x="44.3" y="165" width="1.5" height="15.0" fill="rgb(254,191,49)" rx="2" ry="2" />
+<text  x="47.25" y="175.5" ></text>
+</g>
+<g >
+<title>cp_declarator (8 samples, 0.08%)</title><rect x="44.8" y="149" width="1.0" height="15.0" fill="rgb(209,190,22)" rx="2" ry="2" />
+<text  x="47.84" y="159.5" ></text>
+</g>
+<g >
+<title>lj_ffh_tostring (6 samples, 0.06%)</title><rect x="397.1" y="245" width="0.7" height="15.0" fill="rgb(248,62,22)" rx="2" ry="2" />
+<text  x="400.07" y="255.5" ></text>
+</g>
+<g >
+<title>lj_mem_newgco (1 samples, 0.01%)</title><rect x="13.8" y="533" width="0.1" height="15.0" fill="rgb(248,216,45)" rx="2" ry="2" />
+<text  x="16.78" y="543.5" ></text>
+</g>
+<g >
+<title>lua_createtable (10 samples, 0.10%)</title><rect x="54.3" y="229" width="1.2" height="15.0" fill="rgb(247,115,4)" rx="2" ry="2" />
+<text  x="57.29" y="239.5" ></text>
+</g>
+<g >
+<title>gc_propagate_gray (35 samples, 0.35%)</title><rect x="69.2" y="101" width="4.1" height="15.0" fill="rgb(238,65,27)" rx="2" ry="2" />
+<text  x="72.18" y="111.5" ></text>
+</g>
+<g >
+<title>ngx_stream_lua_chain_get_free_buf (1 samples, 0.01%)</title><rect x="77.8" y="229" width="0.1" height="15.0" fill="rgb(209,43,21)" rx="2" ry="2" />
+<text  x="80.80" y="239.5" ></text>
+</g>
+<g >
+<title>lj_meta_lookup (1 samples, 0.01%)</title><rect x="400.9" y="229" width="0.1" height="15.0" fill="rgb(227,113,27)" rx="2" ry="2" />
+<text  x="403.85" y="239.5" ></text>
+</g>
+<g >
+<title>lj_gc_step_fixtop (48 samples, 0.48%)</title><rect x="380.1" y="245" width="5.6" height="15.0" fill="rgb(242,207,6)" rx="2" ry="2" />
+<text  x="383.06" y="255.5" ></text>
+</g>
+<g >
+<title>gc_sweep (1 samples, 0.01%)</title><rect x="383.0" y="181" width="0.1" height="15.0" fill="rgb(224,205,53)" rx="2" ry="2" />
+<text  x="386.02" y="191.5" ></text>
+</g>
+<g >
+<title>lj_alloc_f (1 samples, 0.01%)</title><rect x="25.8" y="501" width="0.1" height="15.0" fill="rgb(254,199,31)" rx="2" ry="2" />
+<text  x="28.83" y="511.5" ></text>
+</g>
+<g >
+<title>ngx_stream_lua_request_handler (9,838 samples, 98.48%)</title><rect x="27.4" y="437" width="1162.0" height="15.0" fill="rgb(231,88,14)" rx="2" ry="2" />
+<text  x="30.36" y="447.5" >ngx_stream_lua_request_handler</text>
+</g>
+<g >
+<title>lj_alloc_f (1 samples, 0.01%)</title><rect x="16.3" y="517" width="0.1" height="15.0" fill="rgb(254,143,45)" rx="2" ry="2" />
+<text  x="19.26" y="527.5" ></text>
+</g>
+<g >
+<title>recv (1 samples, 0.01%)</title><rect x="1189.3" y="357" width="0.1" height="15.0" fill="rgb(219,91,32)" rx="2" ry="2" />
+<text  x="1192.29" y="367.5" ></text>
+</g>
+<g >
+<title>lj_str_new (5 samples, 0.05%)</title><rect x="62.0" y="197" width="0.6" height="15.0" fill="rgb(220,169,14)" rx="2" ry="2" />
+<text  x="64.97" y="207.5" ></text>
+</g>
+<g >
+<title>lj_buf_puttab (1 samples, 0.01%)</title><rect x="18.6" y="565" width="0.1" height="15.0" fill="rgb(206,197,33)" rx="2" ry="2" />
+<text  x="21.62" y="575.5" ></text>
+</g>
+<g >
+<title>luaL_pushresult (68 samples, 0.68%)</title><rect x="69.1" y="197" width="8.0" height="15.0" fill="rgb(213,207,25)" rx="2" ry="2" />
+<text  x="72.06" y="207.5" ></text>
+</g>
+<g >
+<title>lj_tab_len (2 samples, 0.02%)</title><rect x="52.6" y="229" width="0.3" height="15.0" fill="rgb(254,179,7)" rx="2" ry="2" />
+<text  x="55.64" y="239.5" ></text>
+</g>
+<g >
+<title>ngx_stream_lua_run_posted_threads (9,729 samples, 97.39%)</title><rect x="27.4" y="309" width="1149.1" height="15.0" fill="rgb(214,65,0)" rx="2" ry="2" />
+<text  x="30.36" y="319.5" >ngx_stream_lua_run_posted_threads</text>
+</g>
+<g >
+<title>lj_BC_JLOOP (18 samples, 0.18%)</title><rect x="375.8" y="261" width="2.1" height="15.0" fill="rgb(252,146,43)" rx="2" ry="2" />
+<text  x="378.81" y="271.5" ></text>
+</g>
+<g >
+<title>0x7fee3efdd121 (1 samples, 0.01%)</title><rect x="16.7" y="581" width="0.2" height="15.0" fill="rgb(206,176,10)" rx="2" ry="2" />
+<text  x="19.73" y="591.5" ></text>
+</g>
+<g >
+<title>0x7fee3efdb000 (1 samples, 0.01%)</title><rect x="14.5" y="581" width="0.1" height="15.0" fill="rgb(209,42,33)" rx="2" ry="2" />
+<text  x="17.49" y="591.5" ></text>
+</g>
+<g >
+<title>lj_tab_setstr (1 samples, 0.01%)</title><rect x="394.0" y="213" width="0.1" height="15.0" fill="rgb(235,159,32)" rx="2" ry="2" />
+<text  x="397.00" y="223.5" ></text>
+</g>
+<g >
+<title>0x7fee3efdf9f5 (1 samples, 0.01%)</title><rect x="27.2" y="581" width="0.2" height="15.0" fill="rgb(214,88,13)" rx="2" ry="2" />
+<text  x="30.25" y="591.5" ></text>
+</g>
+<g >
+<title>gc_onestep (3 samples, 0.03%)</title><rect x="34.3" y="197" width="0.4" height="15.0" fill="rgb(236,123,54)" rx="2" ry="2" />
+<text  x="37.33" y="207.5" ></text>
+</g>
+<g >
+<title>lj_tab_new (4 samples, 0.04%)</title><rect x="392.5" y="245" width="0.4" height="15.0" fill="rgb(235,1,13)" rx="2" ry="2" />
+<text  x="395.47" y="255.5" ></text>
+</g>
+<g >
+<title>lua_pushlstring (1 samples, 0.01%)</title><rect x="58.8" y="229" width="0.1" height="15.0" fill="rgb(215,14,44)" rx="2" ry="2" />
+<text  x="61.78" y="239.5" ></text>
+</g>
+<g >
+<title>memchr (3 samples, 0.03%)</title><rect x="22.6" y="549" width="0.4" height="15.0" fill="rgb(235,109,17)" rx="2" ry="2" />
+<text  x="25.64" y="559.5" ></text>
+</g>
+<g >
+<title>lj_str_new (9 samples, 0.09%)</title><rect x="21.3" y="549" width="1.1" height="15.0" fill="rgb(229,55,34)" rx="2" ry="2" />
+<text  x="24.34" y="559.5" ></text>
+</g>
+<g >
+<title>0x7fee3efd8d58 (1 samples, 0.01%)</title><rect x="12.8" y="581" width="0.2" height="15.0" fill="rgb(211,81,26)" rx="2" ry="2" />
+<text  x="15.83" y="591.5" ></text>
+</g>
+<g >
+<title>newtab (1 samples, 0.01%)</title><rect x="14.3" y="549" width="0.1" height="15.0" fill="rgb(251,119,30)" rx="2" ry="2" />
+<text  x="17.25" y="559.5" ></text>
+</g>
+<g >
+<title>lj_tab_free (8 samples, 0.08%)</title><rect x="74.6" y="101" width="1.0" height="15.0" fill="rgb(224,84,16)" rx="2" ry="2" />
+<text  x="77.61" y="111.5" ></text>
+</g>
+<g >
+<title>ngx_stream_lua_req_socket_rev_handler (9,838 samples, 98.48%)</title><rect x="27.4" y="421" width="1162.0" height="15.0" fill="rgb(226,21,3)" rx="2" ry="2" />
+<text  x="30.36" y="431.5" >ngx_stream_lua_req_socket_rev_handler</text>
+</g>
+<g >
+<title>lj_alloc_f (1 samples, 0.01%)</title><rect x="20.3" y="485" width="0.1" height="15.0" fill="rgb(212,161,54)" rx="2" ry="2" />
+<text  x="23.28" y="495.5" ></text>
+</g>
+<g >
+<title>lj_buf_puttab (2 samples, 0.02%)</title><rect x="17.9" y="565" width="0.3" height="15.0" fill="rgb(226,107,41)" rx="2" ry="2" />
+<text  x="20.91" y="575.5" ></text>
+</g>
+<g >
+<title>0x7fee3efd547e (1 samples, 0.01%)</title><rect x="10.2" y="581" width="0.2" height="15.0" fill="rgb(210,212,10)" rx="2" ry="2" />
+<text  x="13.24" y="591.5" ></text>
+</g>
+<g >
+<title>lj_meta_cache (3 samples, 0.03%)</title><rect x="400.5" y="229" width="0.4" height="15.0" fill="rgb(208,51,45)" rx="2" ry="2" />
+<text  x="403.50" y="239.5" ></text>
+</g>
+<g >
+<title>lj_alloc_f (15 samples, 0.15%)</title><rect x="383.8" y="165" width="1.8" height="15.0" fill="rgb(237,169,36)" rx="2" ry="2" />
+<text  x="386.84" y="175.5" ></text>
+</g>
+<g >
+<title>cp_decl_intern (1 samples, 0.01%)</title><rect x="44.3" y="149" width="0.1" height="15.0" fill="rgb(222,195,7)" rx="2" ry="2" />
+<text  x="47.25" y="159.5" ></text>
+</g>
+<g >
+<title>settabss (1 samples, 0.01%)</title><rect x="1176.7" y="245" width="0.1" height="15.0" fill="rgb(217,31,16)" rx="2" ry="2" />
+<text  x="1179.65" y="255.5" ></text>
+</g>
+<g >
+<title>lj_BC_MOV (2 samples, 0.02%)</title><rect x="378.5" y="261" width="0.3" height="15.0" fill="rgb(243,94,2)" rx="2" ry="2" />
+<text  x="381.53" y="271.5" ></text>
+</g>
+<g >
+<title>lj_alloc_free (2 samples, 0.02%)</title><rect x="44.0" y="165" width="0.3" height="15.0" fill="rgb(209,148,4)" rx="2" ry="2" />
+<text  x="47.02" y="175.5" ></text>
+</g>
+<g >
+<title>lj_alloc_malloc (10 samples, 0.10%)</title><rect x="33.2" y="181" width="1.1" height="15.0" fill="rgb(226,27,39)" rx="2" ry="2" />
+<text  x="36.15" y="191.5" ></text>
+</g>
+<g >
+<title>lj_cont_stitch (3 samples, 0.03%)</title><rect x="395.4" y="261" width="0.4" height="15.0" fill="rgb(225,40,43)" rx="2" ry="2" />
+<text  x="398.42" y="271.5" ></text>
+</g>
+<g >
+<title>lua_pushlstring (1 samples, 0.01%)</title><rect x="1177.4" y="181" width="0.1" height="15.0" fill="rgb(234,23,36)" rx="2" ry="2" />
+<text  x="1180.36" y="191.5" ></text>
+</g>
+<g >
+<title>lj_str_hash (1 samples, 0.01%)</title><rect x="58.4" y="117" width="0.1" height="15.0" fill="rgb(235,146,3)" rx="2" ry="2" />
+<text  x="61.43" y="127.5" ></text>
+</g>
+<g >
+<title>lj_strfmt_int (2 samples, 0.02%)</title><rect x="396.6" y="197" width="0.2" height="15.0" fill="rgb(244,218,3)" rx="2" ry="2" />
+<text  x="399.60" y="207.5" ></text>
+</g>
+<g >
+<title>0x7fee3efdd780 (1 samples, 0.01%)</title><rect x="17.4" y="581" width="0.2" height="15.0" fill="rgb(252,203,3)" rx="2" ry="2" />
+<text  x="20.44" y="591.5" ></text>
+</g>
+<g >
+<title>lj_buf_puttab (1 samples, 0.01%)</title><rect x="11.1" y="565" width="0.1" height="15.0" fill="rgb(229,105,42)" rx="2" ry="2" />
+<text  x="14.06" y="575.5" ></text>
+</g>
+<g >
+<title>lj_gc_step_jit (1 samples, 0.01%)</title><rect x="26.1" y="565" width="0.1" height="15.0" fill="rgb(213,176,42)" rx="2" ry="2" />
+<text  x="29.06" y="575.5" ></text>
+</g>
+<g >
+<title>lj_cdata_newx (3 samples, 0.03%)</title><rect x="48.7" y="229" width="0.4" height="15.0" fill="rgb(246,115,14)" rx="2" ry="2" />
+<text  x="51.74" y="239.5" ></text>
+</g>
+<g >
+<title>luaL_addlstring (9 samples, 0.09%)</title><rect x="67.9" y="197" width="1.0" height="15.0" fill="rgb(211,192,7)" rx="2" ry="2" />
+<text  x="70.88" y="207.5" ></text>
+</g>
+<g >
+<title>ngx_stream_lua_get_co_ctx (2,361 samples, 23.63%)</title><rect x="94.9" y="213" width="278.9" height="15.0" fill="rgb(219,205,50)" rx="2" ry="2" />
+<text  x="97.93" y="223.5" >ngx_stream_lua_get_co_ctx</text>
+</g>
+<g >
+<title>lj_alloc_f (1 samples, 0.01%)</title><rect x="20.2" y="485" width="0.1" height="15.0" fill="rgb(220,226,46)" rx="2" ry="2" />
+<text  x="23.16" y="495.5" ></text>
+</g>
+<g >
+<title>ngx_stream_lua_socket_tcp_receive (110 samples, 1.10%)</title><rect x="64.1" y="245" width="13.0" height="15.0" fill="rgb(240,74,49)" rx="2" ry="2" />
+<text  x="67.10" y="255.5" ></text>
+</g>
+<g >
+<title>rehashtab (1 samples, 0.01%)</title><rect x="394.1" y="229" width="0.1" height="15.0" fill="rgb(241,87,50)" rx="2" ry="2" />
+<text  x="397.12" y="239.5" ></text>
+</g>
+<g >
+<title>lua_remove (2 samples, 0.02%)</title><rect x="63.5" y="229" width="0.2" height="15.0" fill="rgb(206,184,40)" rx="2" ry="2" />
+<text  x="66.51" y="239.5" ></text>
+</g>
+<g >
+<title>0x7fee3efdc5fb (1 samples, 0.01%)</title><rect x="15.7" y="581" width="0.1" height="15.0" fill="rgb(224,182,19)" rx="2" ry="2" />
+<text  x="18.67" y="591.5" ></text>
+</g>
+<g >
+<title>lj_meta_tget (17 samples, 0.17%)</title><rect x="400.1" y="245" width="2.1" height="15.0" fill="rgb(245,39,0)" rx="2" ry="2" />
+<text  x="403.14" y="255.5" ></text>
+</g>
+<g >
+<title>send (118 samples, 1.18%)</title><rect x="78.0" y="197" width="14.0" height="15.0" fill="rgb(250,66,14)" rx="2" ry="2" />
+<text  x="81.04" y="207.5" ></text>
+</g>
+<g >
+<title>ngx_stream_lua_socket_read_chunk (1 samples, 0.01%)</title><rect x="65.2" y="213" width="0.1" height="15.0" fill="rgb(235,70,42)" rx="2" ry="2" />
+<text  x="68.16" y="223.5" ></text>
+</g>
+<g >
+<title>lj_alloc_realloc (9 samples, 0.09%)</title><rect x="398.1" y="181" width="1.1" height="15.0" fill="rgb(218,211,17)" rx="2" ry="2" />
+<text  x="401.14" y="191.5" ></text>
+</g>
+<g >
+<title>0x7fee3efda915 (1 samples, 0.01%)</title><rect x="14.1" y="581" width="0.2" height="15.0" fill="rgb(232,187,34)" rx="2" ry="2" />
+<text  x="17.13" y="591.5" ></text>
+</g>
+<g >
+<title>0x7fee3efdda02 (1 samples, 0.01%)</title><rect x="17.8" y="581" width="0.1" height="15.0" fill="rgb(218,37,20)" rx="2" ry="2" />
+<text  x="20.80" y="591.5" ></text>
+</g>
+<g >
+<title>counthash (1 samples, 0.01%)</title><rect x="403.2" y="197" width="0.1" height="15.0" fill="rgb(233,98,15)" rx="2" ry="2" />
+<text  x="406.22" y="207.5" ></text>
+</g>
+<g >
+<title>motan_simple_deserialize (28 samples, 0.28%)</title><rect x="55.5" y="245" width="3.3" height="15.0" fill="rgb(236,53,37)" rx="2" ry="2" />
+<text  x="58.48" y="255.5" ></text>
+</g>
+<g >
+<title>index2adr (1 samples, 0.01%)</title><rect x="1177.2" y="213" width="0.2" height="15.0" fill="rgb(212,100,29)" rx="2" ry="2" />
+<text  x="1180.24" y="223.5" ></text>
+</g>
+<g >
+<title>lua_rawgeti (2 samples, 0.02%)</title><rect x="92.6" y="213" width="0.2" height="15.0" fill="rgb(243,171,8)" rx="2" ry="2" />
+<text  x="95.56" y="223.5" ></text>
+</g>
+<g >
+<title>lua_pushinteger (2 samples, 0.02%)</title><rect x="37.8" y="213" width="0.2" height="15.0" fill="rgb(253,145,26)" rx="2" ry="2" />
+<text  x="40.76" y="223.5" ></text>
+</g>
+<g >
+<title>itoa (3 samples, 0.03%)</title><rect x="43.0" y="181" width="0.3" height="15.0" fill="rgb(249,187,14)" rx="2" ry="2" />
+<text  x="45.95" y="191.5" ></text>
+</g>
+<g >
+<title>0x7fee3efda66b (2 samples, 0.02%)</title><rect x="13.8" y="581" width="0.2" height="15.0" fill="rgb(238,110,9)" rx="2" ry="2" />
+<text  x="16.78" y="591.5" ></text>
+</g>
+<g >
+<title>lj_mem_realloc (9 samples, 0.09%)</title><rect x="403.5" y="181" width="1.0" height="15.0" fill="rgb(252,154,23)" rx="2" ry="2" />
+<text  x="406.45" y="191.5" ></text>
+</g>
+<g >
+<title>0x7fee3efda8a9 (1 samples, 0.01%)</title><rect x="14.0" y="581" width="0.1" height="15.0" fill="rgb(233,215,4)" rx="2" ry="2" />
+<text  x="17.02" y="591.5" ></text>
+</g>
+<g >
+<title>lj_meta_cat (15 samples, 0.15%)</title><rect x="30.4" y="245" width="1.8" height="15.0" fill="rgb(244,115,14)" rx="2" ry="2" />
+<text  x="33.43" y="255.5" ></text>
+</g>
+<g >
+<title>lj_tab_getstr (2 samples, 0.02%)</title><rect x="400.6" y="213" width="0.3" height="15.0" fill="rgb(218,168,12)" rx="2" ry="2" />
+<text  x="403.62" y="223.5" ></text>
+</g>
+<g >
+<title>lj_alloc_f (8 samples, 0.08%)</title><rect x="403.6" y="165" width="0.9" height="15.0" fill="rgb(223,207,11)" rx="2" ry="2" />
+<text  x="406.57" y="175.5" ></text>
+</g>
+<g >
+<title>lj_state_growstack (10 samples, 0.10%)</title><rect x="398.0" y="245" width="1.2" height="15.0" fill="rgb(250,57,38)" rx="2" ry="2" />
+<text  x="401.02" y="255.5" ></text>
+</g>
+<g >
+<title>tmalloc_small (1 samples, 0.01%)</title><rect x="392.8" y="165" width="0.1" height="15.0" fill="rgb(221,210,54)" rx="2" ry="2" />
+<text  x="395.82" y="175.5" ></text>
+</g>
+<g >
+<title>motan_new_bytes_buffer (3 samples, 0.03%)</title><rect x="59.1" y="229" width="0.4" height="15.0" fill="rgb(240,190,31)" rx="2" ry="2" />
+<text  x="62.14" y="239.5" ></text>
+</g>
+<g >
+<title>lj_str_hash_16_128 (2 samples, 0.02%)</title><rect x="25.2" y="517" width="0.3" height="15.0" fill="rgb(217,154,11)" rx="2" ry="2" />
+<text  x="28.24" y="527.5" ></text>
+</g>
+<g >
+<title>lj_alloc_malloc (1 samples, 0.01%)</title><rect x="13.8" y="501" width="0.1" height="15.0" fill="rgb(217,179,29)" rx="2" ry="2" />
+<text  x="16.78" y="511.5" ></text>
+</g>
+<g >
+<title>lj_alloc_f (1 samples, 0.01%)</title><rect x="24.3" y="517" width="0.1" height="15.0" fill="rgb(236,214,31)" rx="2" ry="2" />
+<text  x="27.29" y="527.5" ></text>
+</g>
+<g >
+<title>lj_alloc_free (1 samples, 0.01%)</title><rect x="26.1" y="469" width="0.1" height="15.0" fill="rgb(251,227,47)" rx="2" ry="2" />
+<text  x="29.06" y="479.5" ></text>
+</g>
+<g >
+<title>buf_grow (1 samples, 0.01%)</title><rect x="46.7" y="85" width="0.2" height="15.0" fill="rgb(235,171,27)" rx="2" ry="2" />
+<text  x="49.73" y="95.5" ></text>
+</g>
+<g >
+<title>lj_tab_resize (1 samples, 0.01%)</title><rect x="18.5" y="533" width="0.1" height="15.0" fill="rgb(212,210,52)" rx="2" ry="2" />
+<text  x="21.50" y="543.5" ></text>
+</g>
+<g >
+<title>lj_alloc_free (1 samples, 0.01%)</title><rect x="20.3" y="469" width="0.1" height="15.0" fill="rgb(227,161,27)" rx="2" ry="2" />
+<text  x="23.28" y="479.5" ></text>
+</g>
+<g >
+<title>lj_tab_free (5 samples, 0.05%)</title><rect x="20.4" y="501" width="0.6" height="15.0" fill="rgb(215,35,38)" rx="2" ry="2" />
+<text  x="23.39" y="511.5" ></text>
+</g>
+<g >
+<title>gc_traverse_tab (4 samples, 0.04%)</title><rect x="69.9" y="69" width="0.5" height="15.0" fill="rgb(218,40,29)" rx="2" ry="2" />
+<text  x="72.89" y="79.5" ></text>
+</g>
+<g >
+<title>lj_gc_step (48 samples, 0.48%)</title><rect x="380.1" y="229" width="5.6" height="15.0" fill="rgb(243,158,1)" rx="2" ry="2" />
+<text  x="383.06" y="239.5" ></text>
+</g>
+<g >
+<title>0x7fee3efdd3c3 (1 samples, 0.01%)</title><rect x="17.0" y="581" width="0.1" height="15.0" fill="rgb(243,116,7)" rx="2" ry="2" />
+<text  x="19.97" y="591.5" ></text>
+</g>
+<g >
+<title>lj_alloc_malloc (4 samples, 0.04%)</title><rect x="32.7" y="181" width="0.5" height="15.0" fill="rgb(244,14,7)" rx="2" ry="2" />
+<text  x="35.68" y="191.5" ></text>
+</g>
+<g >
+<title>lj_cconv_ct_tv (1 samples, 0.01%)</title><rect x="49.3" y="213" width="0.2" height="15.0" fill="rgb(223,60,4)" rx="2" ry="2" />
+<text  x="52.33" y="223.5" ></text>
+</g>
+<g >
+<title>0x7fee3efdda26 (3 samples, 0.03%)</title><rect x="18.2" y="581" width="0.3" height="15.0" fill="rgb(250,53,30)" rx="2" ry="2" />
+<text  x="21.15" y="591.5" ></text>
+</g>
+<g >
+<title>0x7fee3efd61f3 (1 samples, 0.01%)</title><rect x="10.8" y="581" width="0.1" height="15.0" fill="rgb(238,141,32)" rx="2" ry="2" />
+<text  x="13.83" y="591.5" ></text>
+</g>
+<g >
+<title>lj_BC_IFUNCV (1 samples, 0.01%)</title><rect x="375.1" y="261" width="0.1" height="15.0" fill="rgb(250,26,21)" rx="2" ry="2" />
+<text  x="378.10" y="271.5" ></text>
+</g>
+<g >
+<title>lj_mem_realloc (5 samples, 0.05%)</title><rect x="32.6" y="213" width="0.6" height="15.0" fill="rgb(244,194,49)" rx="2" ry="2" />
+<text  x="35.56" y="223.5" ></text>
+</g>
+<g >
+<title>lj_alloc_f (3 samples, 0.03%)</title><rect x="392.6" y="197" width="0.3" height="15.0" fill="rgb(246,154,28)" rx="2" ry="2" />
+<text  x="395.58" y="207.5" ></text>
+</g>
+<g >
+<title>lj_cf_debug_getinfo (54 samples, 0.54%)</title><rect x="35.0" y="245" width="6.4" height="15.0" fill="rgb(224,108,32)" rx="2" ry="2" />
+<text  x="38.04" y="255.5" ></text>
+</g>
+<g >
+<title>lj_strfmt_obj (6 samples, 0.06%)</title><rect x="397.1" y="229" width="0.7" height="15.0" fill="rgb(253,99,4)" rx="2" ry="2" />
+<text  x="400.07" y="239.5" ></text>
+</g>
+<g >
+<title>0x7fee3efdd6b2 (1 samples, 0.01%)</title><rect x="17.3" y="581" width="0.1" height="15.0" fill="rgb(240,140,34)" rx="2" ry="2" />
+<text  x="20.32" y="591.5" ></text>
+</g>
+<g >
+<title>lj_alloc_malloc (6 samples, 0.06%)</title><rect x="386.7" y="181" width="0.7" height="15.0" fill="rgb(226,186,21)" rx="2" ry="2" />
+<text  x="389.68" y="191.5" ></text>
+</g>
+<g >
+<title>resizestack (1 samples, 0.01%)</title><rect x="1181.3" y="245" width="0.1" height="15.0" fill="rgb(228,29,10)" rx="2" ry="2" />
+<text  x="1184.26" y="255.5" ></text>
+</g>
+<g >
+<title>lj_gc_step (4 samples, 0.04%)</title><rect x="392.0" y="229" width="0.5" height="15.0" fill="rgb(225,29,44)" rx="2" ry="2" />
+<text  x="394.99" y="239.5" ></text>
+</g>
+<g >
+<title>0x7fee3efde3b0 (14 samples, 0.14%)</title><rect x="19.3" y="581" width="1.7" height="15.0" fill="rgb(236,153,8)" rx="2" ry="2" />
+<text  x="22.33" y="591.5" ></text>
+</g>
+<g >
+<title>0x7fee3efde71d (5 samples, 0.05%)</title><rect x="22.4" y="581" width="0.6" height="15.0" fill="rgb(248,18,22)" rx="2" ry="2" />
+<text  x="25.40" y="591.5" ></text>
+</g>
+<g >
+<title>lj_cf_debug_getinfo (2 samples, 0.02%)</title><rect x="1176.7" y="261" width="0.2" height="15.0" fill="rgb(226,141,2)" rx="2" ry="2" />
+<text  x="1179.65" y="271.5" ></text>
+</g>
+<g >
+<title>lua_setfield (1 samples, 0.01%)</title><rect x="1176.7" y="229" width="0.1" height="15.0" fill="rgb(219,88,54)" rx="2" ry="2" />
+<text  x="1179.65" y="239.5" ></text>
+</g>
+<g >
+<title>gc_onestep (13 samples, 0.13%)</title><rect x="50.4" y="213" width="1.5" height="15.0" fill="rgb(228,57,23)" rx="2" ry="2" />
+<text  x="53.40" y="223.5" ></text>
+</g>
+<g >
+<title>ngx_process_events_and_timers (9,838 samples, 98.48%)</title><rect x="27.4" y="469" width="1162.0" height="15.0" fill="rgb(232,103,5)" rx="2" ry="2" />
+<text  x="30.36" y="479.5" >ngx_process_events_and_timers</text>
+</g>
+<g >
+<title>tmalloc_small (1 samples, 0.01%)</title><rect x="386.3" y="165" width="0.1" height="15.0" fill="rgb(243,54,39)" rx="2" ry="2" />
+<text  x="389.32" y="175.5" ></text>
+</g>
+<g >
+<title>ngx_unix_recv (19 samples, 0.19%)</title><rect x="65.3" y="213" width="2.2" height="15.0" fill="rgb(248,160,17)" rx="2" ry="2" />
+<text  x="68.28" y="223.5" ></text>
+</g>
+<g >
+<title>lj_buf_tostr (2 samples, 0.02%)</title><rect x="11.2" y="565" width="0.2" height="15.0" fill="rgb(247,100,46)" rx="2" ry="2" />
+<text  x="14.18" y="575.5" ></text>
+</g>
+<g >
+<title>ngx_malloc (4 samples, 0.04%)</title><rect x="374.0" y="197" width="0.5" height="15.0" fill="rgb(229,75,50)" rx="2" ry="2" />
+<text  x="377.04" y="207.5" ></text>
+</g>
+<g >
+<title>cp_ident (12 samples, 0.12%)</title><rect x="46.0" y="117" width="1.4" height="15.0" fill="rgb(232,141,50)" rx="2" ry="2" />
+<text  x="49.03" y="127.5" ></text>
+</g>
+<g >
+<title>lj_strfmt_pushvf (6 samples, 0.06%)</title><rect x="36.9" y="213" width="0.7" height="15.0" fill="rgb(226,51,42)" rx="2" ry="2" />
+<text  x="39.93" y="223.5" ></text>
+</g>
+<g >
+<title>lj_tab_free (3 samples, 0.03%)</title><rect x="392.1" y="181" width="0.4" height="15.0" fill="rgb(232,64,13)" rx="2" ry="2" />
+<text  x="395.11" y="191.5" ></text>
+</g>
+<g >
+<title>lj_mem_newgco (3 samples, 0.03%)</title><rect x="48.7" y="213" width="0.4" height="15.0" fill="rgb(220,134,23)" rx="2" ry="2" />
+<text  x="51.74" y="223.5" ></text>
+</g>
+<g >
+<title>lua_setfield (6 samples, 0.06%)</title><rect x="38.0" y="213" width="0.7" height="15.0" fill="rgb(248,13,33)" rx="2" ry="2" />
+<text  x="40.99" y="223.5" ></text>
+</g>
+<g >
+<title>0x7fee3efdcc07 (1 samples, 0.01%)</title><rect x="16.5" y="581" width="0.1" height="15.0" fill="rgb(209,100,41)" rx="2" ry="2" />
+<text  x="19.50" y="591.5" ></text>
+</g>
+<g >
+<title>lj_func_free (2 samples, 0.02%)</title><rect x="20.0" y="501" width="0.3" height="15.0" fill="rgb(219,59,27)" rx="2" ry="2" />
+<text  x="23.04" y="511.5" ></text>
+</g>
+<g >
+<title>lj_tab_new (6 samples, 0.06%)</title><rect x="35.9" y="197" width="0.7" height="15.0" fill="rgb(216,95,21)" rx="2" ry="2" />
+<text  x="38.87" y="207.5" ></text>
+</g>
+<g >
+<title>lj_BC_TSETS (1 samples, 0.01%)</title><rect x="1181.1" y="277" width="0.2" height="15.0" fill="rgb(214,14,12)" rx="2" ry="2" />
+<text  x="1184.14" y="287.5" ></text>
+</g>
+<g >
+<title>lj_tab_newkey (1 samples, 0.01%)</title><rect x="394.0" y="197" width="0.1" height="15.0" fill="rgb(247,58,48)" rx="2" ry="2" />
+<text  x="397.00" y="207.5" ></text>
+</g>
+<g >
+<title>ngx_stream_lua_run_thread (9,728 samples, 97.38%)</title><rect x="27.5" y="293" width="1149.0" height="15.0" fill="rgb(215,58,8)" rx="2" ry="2" />
+<text  x="30.48" y="303.5" >ngx_stream_lua_run_thread</text>
+</g>
+<g >
+<title>lj_gc_step_fixtop (4 samples, 0.04%)</title><rect x="392.0" y="245" width="0.5" height="15.0" fill="rgb(241,172,6)" rx="2" ry="2" />
+<text  x="394.99" y="255.5" ></text>
+</g>
+<g >
+<title>lj_mem_realloc (1 samples, 0.01%)</title><rect x="1181.3" y="229" width="0.1" height="15.0" fill="rgb(212,204,27)" rx="2" ry="2" />
+<text  x="1184.26" y="239.5" ></text>
+</g>
+<g >
+<title>ngx_stream_lua_socket_handle_read_success (1 samples, 0.01%)</title><rect x="65.0" y="213" width="0.2" height="15.0" fill="rgb(227,58,41)" rx="2" ry="2" />
+<text  x="68.04" y="223.5" ></text>
+</g>
+<g >
+<title>lj_vmeta_tgetv (17 samples, 0.17%)</title><rect x="400.1" y="261" width="2.1" height="15.0" fill="rgb(243,10,19)" rx="2" ry="2" />
+<text  x="403.14" y="271.5" ></text>
+</g>
+<g >
+<title>lj_alloc_f (4 samples, 0.04%)</title><rect x="32.7" y="197" width="0.5" height="15.0" fill="rgb(208,93,37)" rx="2" ry="2" />
+<text  x="35.68" y="207.5" ></text>
+</g>
+<g >
+<title>0x7fee3efd866f (1 samples, 0.01%)</title><rect x="12.2" y="581" width="0.2" height="15.0" fill="rgb(209,166,12)" rx="2" ry="2" />
+<text  x="15.24" y="591.5" ></text>
+</g>
+<g >
+<title>lua_pushlstring (11 samples, 0.11%)</title><rect x="57.2" y="149" width="1.3" height="15.0" fill="rgb(237,170,38)" rx="2" ry="2" />
+<text  x="60.25" y="159.5" ></text>
+</g>
+<g >
+<title>lj_gc_step (11 samples, 0.11%)</title><rect x="60.7" y="197" width="1.3" height="15.0" fill="rgb(206,65,29)" rx="2" ry="2" />
+<text  x="63.67" y="207.5" ></text>
+</g>
+<g >
+<title>__GI_memset (4 samples, 0.04%)</title><rect x="47.6" y="213" width="0.4" height="15.0" fill="rgb(231,64,22)" rx="2" ry="2" />
+<text  x="50.56" y="223.5" ></text>
+</g>
+<g >
+<title>lj_gc_step (1 samples, 0.01%)</title><rect x="26.1" y="549" width="0.1" height="15.0" fill="rgb(215,19,31)" rx="2" ry="2" />
+<text  x="29.06" y="559.5" ></text>
+</g>
+<g >
+<title>0x7fee3efdc448 (1 samples, 0.01%)</title><rect x="15.6" y="581" width="0.1" height="15.0" fill="rgb(230,224,44)" rx="2" ry="2" />
+<text  x="18.55" y="591.5" ></text>
+</g>
+<g >
+<title>all (9,990 samples, 100%)</title><rect x="10.0" y="597" width="1180.0" height="15.0" fill="rgb(214,122,24)" rx="2" ry="2" />
+<text  x="13.00" y="607.5" ></text>
+</g>
+<g >
+<title>lj_alloc_malloc (1 samples, 0.01%)</title><rect x="1181.3" y="181" width="0.1" height="15.0" fill="rgb(226,35,29)" rx="2" ry="2" />
+<text  x="1184.26" y="191.5" ></text>
+</g>
+<g >
+<title>lj_tab_newkey (6 samples, 0.06%)</title><rect x="15.8" y="565" width="0.7" height="15.0" fill="rgb(211,64,30)" rx="2" ry="2" />
+<text  x="18.79" y="575.5" ></text>
+</g>
+<g >
+<title>lj_tab_len (3 samples, 0.03%)</title><rect x="378.2" y="245" width="0.3" height="15.0" fill="rgb(219,121,20)" rx="2" ry="2" />
+<text  x="381.17" y="255.5" ></text>
+</g>
+<g >
+<title>__libc_malloc (1 samples, 0.01%)</title><rect x="1177.1" y="229" width="0.1" height="15.0" fill="rgb(205,67,1)" rx="2" ry="2" />
+<text  x="1180.13" y="239.5" ></text>
+</g>
+<g >
+<title>lj_meta_arith (4 samples, 0.04%)</title><rect x="399.4" y="245" width="0.5" height="15.0" fill="rgb(245,182,10)" rx="2" ry="2" />
+<text  x="402.44" y="255.5" ></text>
+</g>
+<g >
+<title>__strcpy_sse2_unaligned (2 samples, 0.02%)</title><rect x="35.5" y="197" width="0.2" height="15.0" fill="rgb(224,39,7)" rx="2" ry="2" />
+<text  x="38.51" y="207.5" ></text>
+</g>
+<g >
+<title>lj_buf_tostr (2 samples, 0.02%)</title><rect x="18.7" y="565" width="0.3" height="15.0" fill="rgb(216,161,44)" rx="2" ry="2" />
+<text  x="21.74" y="575.5" ></text>
+</g>
+<g >
+<title>lj_tab_get (1 samples, 0.01%)</title><rect x="1181.4" y="245" width="0.1" height="15.0" fill="rgb(243,17,45)" rx="2" ry="2" />
+<text  x="1184.38" y="255.5" ></text>
+</g>
+<g >
+<title>lua_rawgeti (1 samples, 0.01%)</title><rect x="58.9" y="229" width="0.1" height="15.0" fill="rgb(222,48,21)" rx="2" ry="2" />
+<text  x="61.90" y="239.5" ></text>
+</g>
+<g >
+<title>0x7fee3efded4a (1 samples, 0.01%)</title><rect x="23.7" y="581" width="0.1" height="15.0" fill="rgb(205,56,30)" rx="2" ry="2" />
+<text  x="26.70" y="591.5" ></text>
+</g>
+<g >
+<title>lj_buf_tostr (1 samples, 0.01%)</title><rect x="17.3" y="565" width="0.1" height="15.0" fill="rgb(219,146,7)" rx="2" ry="2" />
+<text  x="20.32" y="575.5" ></text>
+</g>
+<g >
+<title>lj_alloc_f (1 samples, 0.01%)</title><rect x="1181.3" y="213" width="0.1" height="15.0" fill="rgb(228,156,18)" rx="2" ry="2" />
+<text  x="1184.26" y="223.5" ></text>
+</g>
+<g >
+<title>lj_tab_dup (14 samples, 0.14%)</title><rect x="385.7" y="245" width="1.7" height="15.0" fill="rgb(245,33,54)" rx="2" ry="2" />
+<text  x="388.73" y="255.5" ></text>
+</g>
+<g >
+<title>__libc_malloc (3 samples, 0.03%)</title><rect x="374.2" y="165" width="0.3" height="15.0" fill="rgb(222,31,45)" rx="2" ry="2" />
+<text  x="377.16" y="175.5" ></text>
+</g>
+<g >
+<title>0x7fee3efdeea0 (1 samples, 0.01%)</title><rect x="23.8" y="581" width="0.1" height="15.0" fill="rgb(237,1,51)" rx="2" ry="2" />
+<text  x="26.82" y="591.5" ></text>
+</g>
+<g >
+<title>lj_alloc_f (1 samples, 0.01%)</title><rect x="13.9" y="517" width="0.1" height="15.0" fill="rgb(238,221,43)" rx="2" ry="2" />
+<text  x="16.90" y="527.5" ></text>
+</g>
+<g >
+<title>lj_func_freeuv (1 samples, 0.01%)</title><rect x="383.5" y="181" width="0.1" height="15.0" fill="rgb(216,189,25)" rx="2" ry="2" />
+<text  x="386.49" y="191.5" ></text>
+</g>
+<g >
+<title>lj_alloc_f (9 samples, 0.09%)</title><rect x="54.4" y="149" width="1.1" height="15.0" fill="rgb(205,166,28)" rx="2" ry="2" />
+<text  x="57.41" y="159.5" ></text>
+</g>
+<g >
+<title>lua_setfield (13 samples, 0.13%)</title><rect x="39.4" y="213" width="1.5" height="15.0" fill="rgb(212,151,10)" rx="2" ry="2" />
+<text  x="42.41" y="223.5" ></text>
+</g>
+<g >
+<title>lj_buf_putmem (3 samples, 0.03%)</title><rect x="30.6" y="229" width="0.3" height="15.0" fill="rgb(230,165,46)" rx="2" ry="2" />
+<text  x="33.55" y="239.5" ></text>
+</g>
+<g >
+<title>_int_free (1 samples, 0.01%)</title><rect x="59.0" y="213" width="0.1" height="15.0" fill="rgb(253,110,31)" rx="2" ry="2" />
+<text  x="62.02" y="223.5" ></text>
+</g>
+<g >
+<title>lua_createtable (7 samples, 0.07%)</title><rect x="35.7" y="229" width="0.9" height="15.0" fill="rgb(222,59,8)" rx="2" ry="2" />
+<text  x="38.75" y="239.5" ></text>
+</g>
+<g >
+<title>cp_next (1 samples, 0.01%)</title><rect x="44.5" y="133" width="0.1" height="15.0" fill="rgb(232,94,10)" rx="2" ry="2" />
+<text  x="47.49" y="143.5" ></text>
+</g>
+<g >
+<title>motan_simple_serialize (8 samples, 0.08%)</title><rect x="58.8" y="245" width="0.9" height="15.0" fill="rgb(225,149,30)" rx="2" ry="2" />
+<text  x="61.78" y="255.5" ></text>
+</g>
+<g >
+<title>lua_pushvalue (1 samples, 0.01%)</title><rect x="94.7" y="213" width="0.1" height="15.0" fill="rgb(244,37,27)" rx="2" ry="2" />
+<text  x="97.69" y="223.5" ></text>
+</g>
+<g >
+<title>0x7fee3efdd6a1 (1 samples, 0.01%)</title><rect x="17.2" y="581" width="0.1" height="15.0" fill="rgb(206,153,46)" rx="2" ry="2" />
+<text  x="20.21" y="591.5" ></text>
+</g>
+<g >
+<title>lj_str_hash_1_4 (1 samples, 0.01%)</title><rect x="22.3" y="517" width="0.1" height="15.0" fill="rgb(236,192,36)" rx="2" ry="2" />
+<text  x="25.28" y="527.5" ></text>
+</g>
+<g >
+<title>lj_ff_next (1 samples, 0.01%)</title><rect x="395.8" y="261" width="0.1" height="15.0" fill="rgb(233,76,8)" rx="2" ry="2" />
+<text  x="398.77" y="271.5" ></text>
+</g>
+<g >
+<title>lj_tab_newkey (1 samples, 0.01%)</title><rect x="18.5" y="565" width="0.1" height="15.0" fill="rgb(246,204,13)" rx="2" ry="2" />
+<text  x="21.50" y="575.5" ></text>
+</g>
+<g >
+<title>lua_objlen (1 samples, 0.01%)</title><rect x="92.4" y="213" width="0.2" height="15.0" fill="rgb(222,195,0)" rx="2" ry="2" />
+<text  x="95.45" y="223.5" ></text>
+</g>
+<g >
+<title>lj_mem_newgco (1 samples, 0.01%)</title><rect x="24.3" y="533" width="0.1" height="15.0" fill="rgb(218,130,15)" rx="2" ry="2" />
+<text  x="27.29" y="543.5" ></text>
+</g>
+<g >
+<title>0x7fee3efde522 (10 samples, 0.10%)</title><rect x="21.2" y="581" width="1.2" height="15.0" fill="rgb(230,176,33)" rx="2" ry="2" />
+<text  x="24.22" y="591.5" ></text>
+</g>
+<g >
+<title>0x7fee3efde1fe (1 samples, 0.01%)</title><rect x="19.2" y="581" width="0.1" height="15.0" fill="rgb(230,121,19)" rx="2" ry="2" />
+<text  x="22.21" y="591.5" ></text>
+</g>
+<g >
+<title>lj_gc_step (1 samples, 0.01%)</title><rect x="49.6" y="229" width="0.1" height="15.0" fill="rgb(245,175,36)" rx="2" ry="2" />
+<text  x="52.57" y="239.5" ></text>
+</g>
+<g >
+<title>lua_xmove (1 samples, 0.01%)</title><rect x="93.3" y="229" width="0.1" height="15.0" fill="rgb(235,67,44)" rx="2" ry="2" />
+<text  x="96.27" y="239.5" ></text>
+</g>
+<g >
+<title>cp_expr_kint (4 samples, 0.04%)</title><rect x="44.8" y="101" width="0.5" height="15.0" fill="rgb(251,196,49)" rx="2" ry="2" />
+<text  x="47.84" y="111.5" ></text>
+</g>
+<g >
+<title>0x7fee3efdc8fb (6 samples, 0.06%)</title><rect x="15.8" y="581" width="0.7" height="15.0" fill="rgb(254,190,4)" rx="2" ry="2" />
+<text  x="18.79" y="591.5" ></text>
+</g>
+<g >
+<title>mmap_probe (1 samples, 0.01%)</title><rect x="18.9" y="469" width="0.1" height="15.0" fill="rgb(230,32,6)" rx="2" ry="2" />
+<text  x="21.86" y="479.5" ></text>
+</g>
+<g >
+<title>ngx_unix_recv (1 samples, 0.01%)</title><rect x="1189.3" y="373" width="0.1" height="15.0" fill="rgb(234,12,21)" rx="2" ry="2" />
+<text  x="1192.29" y="383.5" ></text>
+</g>
+<g >
+<title>gc_onestep (11 samples, 0.11%)</title><rect x="60.7" y="181" width="1.3" height="15.0" fill="rgb(214,62,2)" rx="2" ry="2" />
+<text  x="63.67" y="191.5" ></text>
+</g>
+<g >
+<title>lua_createtable (1 samples, 0.01%)</title><rect x="56.5" y="197" width="0.2" height="15.0" fill="rgb(232,77,26)" rx="2" ry="2" />
+<text  x="59.54" y="207.5" ></text>
+</g>
+<g >
+<title>lj_tab_newkey (1 samples, 0.01%)</title><rect x="16.4" y="485" width="0.1" height="15.0" fill="rgb(214,79,39)" rx="2" ry="2" />
+<text  x="19.38" y="495.5" ></text>
+</g>
+<g >
+<title>tmalloc_large (7 samples, 0.07%)</title><rect x="398.4" y="149" width="0.8" height="15.0" fill="rgb(215,17,26)" rx="2" ry="2" />
+<text  x="401.37" y="159.5" ></text>
+</g>
+<g >
+<title>lj_lib_checktab (1 samples, 0.01%)</title><rect x="53.0" y="229" width="0.1" height="15.0" fill="rgb(212,147,34)" rx="2" ry="2" />
+<text  x="55.99" y="239.5" ></text>
+</g>
+<g >
+<title>lj_str_new (2 samples, 0.02%)</title><rect x="41.2" y="197" width="0.2" height="15.0" fill="rgb(213,228,5)" rx="2" ry="2" />
+<text  x="44.18" y="207.5" ></text>
+</g>
+<g >
+<title>0x7fee3efd8f5a (1 samples, 0.01%)</title><rect x="13.3" y="581" width="0.1" height="15.0" fill="rgb(235,220,36)" rx="2" ry="2" />
+<text  x="16.31" y="591.5" ></text>
+</g>
+<g >
+<title>lj_cconv_ct_ct (1 samples, 0.01%)</title><rect x="49.3" y="197" width="0.2" height="15.0" fill="rgb(215,202,27)" rx="2" ry="2" />
+<text  x="52.33" y="207.5" ></text>
+</g>
+<g >
+<title>lj_alloc_malloc (3 samples, 0.03%)</title><rect x="36.2" y="133" width="0.4" height="15.0" fill="rgb(242,142,0)" rx="2" ry="2" />
+<text  x="39.22" y="143.5" ></text>
+</g>
+<g >
+<title>cp_push (1 samples, 0.01%)</title><rect x="44.7" y="117" width="0.1" height="15.0" fill="rgb(240,212,24)" rx="2" ry="2" />
+<text  x="47.73" y="127.5" ></text>
+</g>
+<g >
+<title>0x7fee3efdbf17 (2 samples, 0.02%)</title><rect x="15.2" y="581" width="0.2" height="15.0" fill="rgb(254,167,11)" rx="2" ry="2" />
+<text  x="18.20" y="591.5" ></text>
+</g>
+<g >
+<title>main (9,838 samples, 98.48%)</title><rect x="27.4" y="549" width="1162.0" height="15.0" fill="rgb(209,106,0)" rx="2" ry="2" />
+<text  x="30.36" y="559.5" >main</text>
+</g>
+<g >
+<title>stack_init (6 samples, 0.06%)</title><rect x="94.0" y="181" width="0.7" height="15.0" fill="rgb(248,89,42)" rx="2" ry="2" />
+<text  x="96.98" y="191.5" ></text>
+</g>
+<g >
+<title>lua_type (1 samples, 0.01%)</title><rect x="64.7" y="213" width="0.1" height="15.0" fill="rgb(207,148,6)" rx="2" ry="2" />
+<text  x="67.69" y="223.5" ></text>
+</g>
+<g >
+<title>lj_BC_VARG (1 samples, 0.01%)</title><rect x="395.1" y="261" width="0.1" height="15.0" fill="rgb(230,26,15)" rx="2" ry="2" />
+<text  x="398.07" y="271.5" ></text>
+</g>
+<g >
+<title>lj_cf_ffi_meta___call (13 samples, 0.13%)</title><rect x="41.8" y="245" width="1.5" height="15.0" fill="rgb(224,103,53)" rx="2" ry="2" />
+<text  x="44.77" y="255.5" ></text>
+</g>
+<g >
+<title>lj_str_new (5 samples, 0.05%)</title><rect x="52.1" y="229" width="0.5" height="15.0" fill="rgb(223,52,43)" rx="2" ry="2" />
+<text  x="55.05" y="239.5" ></text>
+</g>
+<g >
+<title>lj_mem_realloc (4 samples, 0.04%)</title><rect x="94.2" y="165" width="0.5" height="15.0" fill="rgb(212,202,20)" rx="2" ry="2" />
+<text  x="97.22" y="175.5" ></text>
+</g>
+<g >
+<title>lj_tab_get (1 samples, 0.01%)</title><rect x="1176.8" y="197" width="0.1" height="15.0" fill="rgb(212,32,31)" rx="2" ry="2" />
+<text  x="1179.77" y="207.5" ></text>
+</g>
+<g >
+<title>lua_resume (3,183 samples, 31.86%)</title><rect x="28.5" y="277" width="376.0" height="15.0" fill="rgb(205,122,35)" rx="2" ry="2" />
+<text  x="31.54" y="287.5" >lua_resume</text>
+</g>
+<g >
+<title>__memcpy_ssse3_back (6 samples, 0.06%)</title><rect x="68.2" y="181" width="0.7" height="15.0" fill="rgb(250,13,33)" rx="2" ry="2" />
+<text  x="71.23" y="191.5" ></text>
+</g>
+<g >
+<title>lj_func_newL_gc (20 samples, 0.20%)</title><rect x="32.3" y="245" width="2.4" height="15.0" fill="rgb(248,153,33)" rx="2" ry="2" />
+<text  x="35.32" y="255.5" ></text>
+</g>
+<g >
+<title>0x7fee3efd7a62 (1 samples, 0.01%)</title><rect x="11.8" y="581" width="0.1" height="15.0" fill="rgb(228,90,6)" rx="2" ry="2" />
+<text  x="14.77" y="591.5" ></text>
+</g>
+<g >
+<title>gc_sweep (10 samples, 0.10%)</title><rect x="60.7" y="165" width="1.2" height="15.0" fill="rgb(221,48,30)" rx="2" ry="2" />
+<text  x="63.67" y="175.5" ></text>
+</g>
+<g >
+<title>0x7fee3efd8d79 (1 samples, 0.01%)</title><rect x="13.0" y="581" width="0.1" height="15.0" fill="rgb(222,199,0)" rx="2" ry="2" />
+<text  x="15.95" y="591.5" ></text>
+</g>
+<g >
+<title>lj_vmeta_tgetv (1 samples, 0.01%)</title><rect x="1181.4" y="277" width="0.1" height="15.0" fill="rgb(253,154,4)" rx="2" ry="2" />
+<text  x="1184.38" y="287.5" ></text>
+</g>
+<g >
+<title>lj_tab_newkey (2 samples, 0.02%)</title><rect x="25.7" y="565" width="0.2" height="15.0" fill="rgb(221,146,20)" rx="2" ry="2" />
+<text  x="28.71" y="575.5" ></text>
+</g>
+<g >
+<title>ngx_stream_lua_post_zombie_thread (66 samples, 0.66%)</title><rect x="1181.5" y="293" width="7.8" height="15.0" fill="rgb(221,168,44)" rx="2" ry="2" />
+<text  x="1184.50" y="303.5" ></text>
+</g>
+<g >
+<title>lj_tab_getinth (1 samples, 0.01%)</title><rect x="402.7" y="213" width="0.2" height="15.0" fill="rgb(228,92,22)" rx="2" ry="2" />
+<text  x="405.74" y="223.5" ></text>
+</g>
+<g >
+<title>0x7fee3efdf278 (1 samples, 0.01%)</title><rect x="25.6" y="581" width="0.1" height="15.0" fill="rgb(216,148,12)" rx="2" ry="2" />
+<text  x="28.59" y="591.5" ></text>
+</g>
+<g >
+<title>ngx_stream_lua_socket_tcp_receive_retval_handler (1 samples, 0.01%)</title><rect x="1177.4" y="245" width="0.1" height="15.0" fill="rgb(208,148,40)" rx="2" ry="2" />
+<text  x="1180.36" y="255.5" ></text>
+</g>
+<g >
+<title>lj_str_find (5 samples, 0.05%)</title><rect x="22.4" y="565" width="0.6" height="15.0" fill="rgb(241,198,51)" rx="2" ry="2" />
+<text  x="25.40" y="575.5" ></text>
+</g>
+<g >
+<title>tmalloc_small (1 samples, 0.01%)</title><rect x="397.4" y="149" width="0.1" height="15.0" fill="rgb(216,21,42)" rx="2" ry="2" />
+<text  x="400.43" y="159.5" ></text>
+</g>
+<g >
+<title>lj_alloc_malloc (2 samples, 0.02%)</title><rect x="48.9" y="181" width="0.2" height="15.0" fill="rgb(234,136,33)" rx="2" ry="2" />
+<text  x="51.86" y="191.5" ></text>
+</g>
+<g >
+<title>copy_slot (2 samples, 0.02%)</title><rect x="93.0" y="213" width="0.3" height="15.0" fill="rgb(219,204,40)" rx="2" ry="2" />
+<text  x="96.04" y="223.5" ></text>
+</g>
+<g >
+<title>lj_meta_tset (1 samples, 0.01%)</title><rect x="41.1" y="197" width="0.1" height="15.0" fill="rgb(238,4,15)" rx="2" ry="2" />
+<text  x="44.07" y="207.5" ></text>
+</g>
+<g >
+<title>lj_tab_resize (9 samples, 0.09%)</title><rect x="403.5" y="197" width="1.0" height="15.0" fill="rgb(230,218,52)" rx="2" ry="2" />
+<text  x="406.45" y="207.5" ></text>
+</g>
+<g >
+<title>lj_alloc_malloc (1 samples, 0.01%)</title><rect x="13.9" y="501" width="0.1" height="15.0" fill="rgb(229,24,11)" rx="2" ry="2" />
+<text  x="16.90" y="511.5" ></text>
+</g>
+<g >
+<title>lj_alloc_f (2 samples, 0.02%)</title><rect x="44.0" y="181" width="0.3" height="15.0" fill="rgb(237,197,51)" rx="2" ry="2" />
+<text  x="47.02" y="191.5" ></text>
+</g>
+<g >
+<title>lj_tab_resize (4 samples, 0.04%)</title><rect x="16.0" y="533" width="0.5" height="15.0" fill="rgb(235,195,7)" rx="2" ry="2" />
+<text  x="19.02" y="543.5" ></text>
+</g>
+<g >
+<title>lj_str_new (5 samples, 0.05%)</title><rect x="49.7" y="229" width="0.6" height="15.0" fill="rgb(251,25,12)" rx="2" ry="2" />
+<text  x="52.69" y="239.5" ></text>
+</g>
+<g >
+<title>luaL_pushresult (1 samples, 0.01%)</title><rect x="1177.4" y="213" width="0.1" height="15.0" fill="rgb(220,180,24)" rx="2" ry="2" />
+<text  x="1180.36" y="223.5" ></text>
+</g>
+<g >
+<title>lj_mem_realloc (1 samples, 0.01%)</title><rect x="50.2" y="213" width="0.1" height="15.0" fill="rgb(241,43,43)" rx="2" ry="2" />
+<text  x="53.16" y="223.5" ></text>
+</g>
+<g >
+<title>lua_setfield (1 samples, 0.01%)</title><rect x="1176.8" y="229" width="0.1" height="15.0" fill="rgb(224,36,17)" rx="2" ry="2" />
+<text  x="1179.77" y="239.5" ></text>
+</g>
+<g >
+<title>lj_alloc_f (1 samples, 0.01%)</title><rect x="76.9" y="117" width="0.1" height="15.0" fill="rgb(248,70,8)" rx="2" ry="2" />
+<text  x="79.85" y="127.5" ></text>
+</g>
+<g >
+<title>mb_read_byte (1 samples, 0.01%)</title><rect x="58.7" y="181" width="0.1" height="15.0" fill="rgb(208,208,50)" rx="2" ry="2" />
+<text  x="61.66" y="191.5" ></text>
+</g>
+<g >
+<title>ngx_stream_lua_get_co_ctx (30 samples, 0.30%)</title><rect x="1177.6" y="229" width="3.5" height="15.0" fill="rgb(217,54,31)" rx="2" ry="2" />
+<text  x="1180.60" y="239.5" ></text>
+</g>
+<g >
+<title>gc_onestep (1 samples, 0.01%)</title><rect x="26.1" y="533" width="0.1" height="15.0" fill="rgb(252,140,4)" rx="2" ry="2" />
+<text  x="29.06" y="543.5" ></text>
+</g>
+<g >
+<title>cp_opt (1 samples, 0.01%)</title><rect x="45.3" y="117" width="0.1" height="15.0" fill="rgb(253,165,4)" rx="2" ry="2" />
+<text  x="48.32" y="127.5" ></text>
+</g>
+<g >
+<title>lj_alloc_f (1 samples, 0.01%)</title><rect x="93.9" y="165" width="0.1" height="15.0" fill="rgb(236,34,45)" rx="2" ry="2" />
+<text  x="96.86" y="175.5" ></text>
+</g>
+<g >
+<title>propagatemark (35 samples, 0.35%)</title><rect x="69.2" y="85" width="4.1" height="15.0" fill="rgb(209,220,47)" rx="2" ry="2" />
+<text  x="72.18" y="95.5" ></text>
+</g>
+<g >
+<title>0x7fee3efd73eb (1 samples, 0.01%)</title><rect x="11.4" y="581" width="0.1" height="15.0" fill="rgb(244,147,6)" rx="2" ry="2" />
+<text  x="14.42" y="591.5" ></text>
+</g>
+<g >
+<title>gc_traverse_thread (25 samples, 0.25%)</title><rect x="70.4" y="69" width="2.9" height="15.0" fill="rgb(251,156,47)" rx="2" ry="2" />
+<text  x="73.36" y="79.5" ></text>
+</g>
+<g >
+<title>lj_str_new (6 samples, 0.06%)</title><rect x="24.8" y="549" width="0.7" height="15.0" fill="rgb(213,39,9)" rx="2" ry="2" />
+<text  x="27.76" y="559.5" ></text>
+</g>
+<g >
+<title>tmalloc_small (1 samples, 0.01%)</title><rect x="93.9" y="133" width="0.1" height="15.0" fill="rgb(222,22,18)" rx="2" ry="2" />
+<text  x="96.86" y="143.5" ></text>
+</g>
+<g >
+<title>lj_tab_new (9 samples, 0.09%)</title><rect x="54.4" y="197" width="1.1" height="15.0" fill="rgb(215,22,7)" rx="2" ry="2" />
+<text  x="57.41" y="207.5" ></text>
+</g>
+<g >
+<title>_read_map (19 samples, 0.19%)</title><rect x="56.5" y="213" width="2.3" height="15.0" fill="rgb(221,90,36)" rx="2" ry="2" />
+<text  x="59.54" y="223.5" ></text>
+</g>
+<g >
+<title>0x7fee3efd8c69 (1 samples, 0.01%)</title><rect x="12.7" y="581" width="0.1" height="15.0" fill="rgb(252,74,36)" rx="2" ry="2" />
+<text  x="15.72" y="591.5" ></text>
+</g>
+<g >
+<title>lj_alloc_f (10 samples, 0.10%)</title><rect x="33.2" y="197" width="1.1" height="15.0" fill="rgb(215,17,42)" rx="2" ry="2" />
+<text  x="36.15" y="207.5" ></text>
+</g>
+<g >
+<title>lj_alloc_f (3 samples, 0.03%)</title><rect x="36.2" y="149" width="0.4" height="15.0" fill="rgb(243,222,35)" rx="2" ry="2" />
+<text  x="39.22" y="159.5" ></text>
+</g>
+<g >
+<title>cp_cleanup (2 samples, 0.02%)</title><rect x="44.0" y="197" width="0.3" height="15.0" fill="rgb(226,21,16)" rx="2" ry="2" />
+<text  x="47.02" y="207.5" ></text>
+</g>
+<g >
+<title>ngx_master_process_cycle (9,838 samples, 98.48%)</title><rect x="27.4" y="533" width="1162.0" height="15.0" fill="rgb(221,184,25)" rx="2" ry="2" />
+<text  x="30.36" y="543.5" >ngx_master_process_cycle</text>
+</g>
+<g >
+<title>lj_buf_more2 (2 samples, 0.02%)</title><rect x="46.6" y="101" width="0.3" height="15.0" fill="rgb(218,211,53)" rx="2" ry="2" />
+<text  x="49.62" y="111.5" ></text>
+</g>
+<g >
+<title>settabss (19 samples, 0.19%)</title><rect x="38.7" y="229" width="2.2" height="15.0" fill="rgb(237,3,32)" rx="2" ry="2" />
+<text  x="41.70" y="239.5" ></text>
+</g>
+<g >
+<title>__memcpy_ssse3_back (1 samples, 0.01%)</title><rect x="18.6" y="549" width="0.1" height="15.0" fill="rgb(245,151,21)" rx="2" ry="2" />
+<text  x="21.62" y="559.5" ></text>
+</g>
+<g >
+<title>tmalloc_large (4 samples, 0.04%)</title><rect x="94.2" y="117" width="0.5" height="15.0" fill="rgb(253,123,8)" rx="2" ry="2" />
+<text  x="97.22" y="127.5" ></text>
+</g>
+<g >
+<title>emptybuffer (1 samples, 0.01%)</title><rect x="1177.4" y="197" width="0.1" height="15.0" fill="rgb(227,126,43)" rx="2" ry="2" />
+<text  x="1180.36" y="207.5" ></text>
+</g>
+<g >
+<title>lua_rawset (4 samples, 0.04%)</title><rect x="56.7" y="197" width="0.4" height="15.0" fill="rgb(220,14,48)" rx="2" ry="2" />
+<text  x="59.66" y="207.5" ></text>
+</g>
+<g >
+<title>cp_next (13 samples, 0.13%)</title><rect x="45.9" y="149" width="1.5" height="15.0" fill="rgb(242,7,20)" rx="2" ry="2" />
+<text  x="48.91" y="159.5" ></text>
+</g>
+<g >
+<title>lj_mem_realloc (1 samples, 0.01%)</title><rect x="23.5" y="517" width="0.1" height="15.0" fill="rgb(245,153,1)" rx="2" ry="2" />
+<text  x="26.47" y="527.5" ></text>
+</g>
+<g >
+<title>lj_alloc_free (4 samples, 0.04%)</title><rect x="51.2" y="149" width="0.5" height="15.0" fill="rgb(247,38,3)" rx="2" ry="2" />
+<text  x="54.22" y="159.5" ></text>
+</g>
+<g >
+<title>0x7fee3efd551f (1 samples, 0.01%)</title><rect x="10.4" y="581" width="0.1" height="15.0" fill="rgb(208,112,5)" rx="2" ry="2" />
+<text  x="13.35" y="591.5" ></text>
+</g>
+<g >
+<title>lj_tab_newkey (14 samples, 0.14%)</title><rect x="402.9" y="229" width="1.6" height="15.0" fill="rgb(209,67,35)" rx="2" ry="2" />
+<text  x="405.86" y="239.5" ></text>
+</g>
+<g >
+<title>0x7fee3efd7fae (1 samples, 0.01%)</title><rect x="12.0" y="581" width="0.1" height="15.0" fill="rgb(236,87,52)" rx="2" ry="2" />
+<text  x="15.01" y="591.5" ></text>
+</g>
+<g >
+<title>lj_cf_ffi_string (9 samples, 0.09%)</title><rect x="49.2" y="245" width="1.1" height="15.0" fill="rgb(233,156,27)" rx="2" ry="2" />
+<text  x="52.22" y="255.5" ></text>
+</g>
+<g >
+<title>lj_alloc_f (1 samples, 0.01%)</title><rect x="57.0" y="85" width="0.1" height="15.0" fill="rgb(226,40,28)" rx="2" ry="2" />
+<text  x="60.01" y="95.5" ></text>
+</g>
+<g >
+<title>tmalloc_large (7 samples, 0.07%)</title><rect x="54.6" y="117" width="0.9" height="15.0" fill="rgb(253,160,48)" rx="2" ry="2" />
+<text  x="57.65" y="127.5" ></text>
+</g>
+<g >
+<title>0x7fee3efdbe37 (1 samples, 0.01%)</title><rect x="15.1" y="581" width="0.1" height="15.0" fill="rgb(238,179,6)" rx="2" ry="2" />
+<text  x="18.08" y="591.5" ></text>
+</g>
+<g >
+<title>lua_rawseti (2 samples, 0.02%)</title><rect x="56.3" y="229" width="0.2" height="15.0" fill="rgb(246,107,3)" rx="2" ry="2" />
+<text  x="59.30" y="239.5" ></text>
+</g>
+<g >
+<title>index2adr (1 samples, 0.01%)</title><rect x="64.7" y="197" width="0.1" height="15.0" fill="rgb(235,222,54)" rx="2" ry="2" />
+<text  x="67.69" y="207.5" ></text>
+</g>
+<g >
+<title>lj_mem_realloc (1 samples, 0.01%)</title><rect x="57.0" y="101" width="0.1" height="15.0" fill="rgb(227,205,24)" rx="2" ry="2" />
+<text  x="60.01" y="111.5" ></text>
+</g>
+<g >
+<title>lj_alloc_malloc (3 samples, 0.03%)</title><rect x="386.1" y="181" width="0.3" height="15.0" fill="rgb(230,180,8)" rx="2" ry="2" />
+<text  x="389.09" y="191.5" ></text>
+</g>
+<g >
+<title>cp_expr_unary (1 samples, 0.01%)</title><rect x="45.2" y="69" width="0.1" height="15.0" fill="rgb(237,98,46)" rx="2" ry="2" />
+<text  x="48.20" y="79.5" ></text>
+</g>
+<g >
+<title>lj_BC_RET (6 samples, 0.06%)</title><rect x="378.8" y="261" width="0.7" height="15.0" fill="rgb(211,146,54)" rx="2" ry="2" />
+<text  x="381.76" y="271.5" ></text>
+</g>
+<g >
+<title>_init (1 samples, 0.01%)</title><rect x="64.6" y="229" width="0.1" height="15.0" fill="rgb(239,42,49)" rx="2" ry="2" />
+<text  x="67.57" y="239.5" ></text>
+</g>
+<g >
+<title>ngx_stream_lua_socket_send (119 samples, 1.19%)</title><rect x="77.9" y="229" width="14.1" height="15.0" fill="rgb(226,178,13)" rx="2" ry="2" />
+<text  x="80.92" y="239.5" ></text>
+</g>
+<g >
+<title>0x7fee3efdefbe (1 samples, 0.01%)</title><rect x="24.4" y="581" width="0.1" height="15.0" fill="rgb(206,86,5)" rx="2" ry="2" />
+<text  x="27.41" y="591.5" ></text>
+</g>
+<g >
+<title>lj_alloc_f (2 samples, 0.02%)</title><rect x="55.6" y="149" width="0.2" height="15.0" fill="rgb(245,136,41)" rx="2" ry="2" />
+<text  x="58.59" y="159.5" ></text>
+</g>
+<g >
+<title>luaL_checktype (2 samples, 0.02%)</title><rect x="77.2" y="229" width="0.2" height="15.0" fill="rgb(243,151,1)" rx="2" ry="2" />
+<text  x="80.21" y="239.5" ></text>
+</g>
+<g >
+<title>lj_mem_realloc (1 samples, 0.01%)</title><rect x="46.7" y="69" width="0.2" height="15.0" fill="rgb(208,78,11)" rx="2" ry="2" />
+<text  x="49.73" y="79.5" ></text>
+</g>
+<g >
+<title>lj_strscan_scan (3 samples, 0.03%)</title><rect x="45.4" y="69" width="0.4" height="15.0" fill="rgb(237,154,19)" rx="2" ry="2" />
+<text  x="48.44" y="79.5" ></text>
+</g>
+<g >
+<title>ngx_stream_lua_run_thread (108 samples, 1.08%)</title><rect x="1176.5" y="309" width="12.8" height="15.0" fill="rgb(246,164,25)" rx="2" ry="2" />
+<text  x="1179.53" y="319.5" ></text>
+</g>
+<g >
+<title>lj_BC_CAT (15 samples, 0.15%)</title><rect x="30.4" y="261" width="1.8" height="15.0" fill="rgb(227,76,16)" rx="2" ry="2" />
+<text  x="33.43" y="271.5" ></text>
+</g>
+<g >
+<title>lj_ffh_tonumber (8 samples, 0.08%)</title><rect x="396.1" y="245" width="1.0" height="15.0" fill="rgb(208,145,45)" rx="2" ry="2" />
+<text  x="399.13" y="255.5" ></text>
+</g>
+<g >
+<title>strtoull (1 samples, 0.01%)</title><rect x="397.0" y="229" width="0.1" height="15.0" fill="rgb(219,115,16)" rx="2" ry="2" />
+<text  x="399.95" y="239.5" ></text>
+</g>
+<g >
+<title>lj_BC_UGET (4 samples, 0.04%)</title><rect x="394.6" y="261" width="0.5" height="15.0" fill="rgb(212,148,31)" rx="2" ry="2" />
+<text  x="397.59" y="271.5" ></text>
+</g>
+<g >
+<title>0x7fee3efd8931 (1 samples, 0.01%)</title><rect x="12.5" y="581" width="0.1" height="15.0" fill="rgb(244,60,28)" rx="2" ry="2" />
+<text  x="15.48" y="591.5" ></text>
+</g>
+<g >
+<title>gc_onestep (1 samples, 0.01%)</title><rect x="49.6" y="213" width="0.1" height="15.0" fill="rgb(222,33,21)" rx="2" ry="2" />
+<text  x="52.57" y="223.5" ></text>
+</g>
+<g >
+<title>lj_vm_ffi_call (5 samples, 0.05%)</title><rect x="42.7" y="213" width="0.6" height="15.0" fill="rgb(234,64,6)" rx="2" ry="2" />
+<text  x="45.72" y="223.5" ></text>
+</g>
+<g >
+<title>lj_alloc_malloc (2 samples, 0.02%)</title><rect x="55.6" y="133" width="0.2" height="15.0" fill="rgb(245,30,53)" rx="2" ry="2" />
+<text  x="58.59" y="143.5" ></text>
+</g>
+<g >
+<title>cp_next_ (1 samples, 0.01%)</title><rect x="44.4" y="101" width="0.1" height="15.0" fill="rgb(245,2,30)" rx="2" ry="2" />
+<text  x="47.37" y="111.5" ></text>
+</g>
+<g >
+<title>lj_gc_step (3 samples, 0.03%)</title><rect x="34.3" y="213" width="0.4" height="15.0" fill="rgb(228,95,42)" rx="2" ry="2" />
+<text  x="37.33" y="223.5" ></text>
+</g>
+<g >
+<title>lj_buf_tostr (3 samples, 0.03%)</title><rect x="18.2" y="565" width="0.3" height="15.0" fill="rgb(205,161,34)" rx="2" ry="2" />
+<text  x="21.15" y="575.5" ></text>
+</g>
+<g >
+<title>systrim.isra.2 (1 samples, 0.01%)</title><rect x="59.0" y="197" width="0.1" height="15.0" fill="rgb(206,27,45)" rx="2" ry="2" />
+<text  x="62.02" y="207.5" ></text>
+</g>
+<g >
+<title>lj_alloc_free (1 samples, 0.01%)</title><rect x="51.1" y="149" width="0.1" height="15.0" fill="rgb(227,192,51)" rx="2" ry="2" />
+<text  x="54.11" y="159.5" ></text>
+</g>
+<g >
+<title>lj_str_new (1 samples, 0.01%)</title><rect x="23.0" y="565" width="0.1" height="15.0" fill="rgb(235,186,52)" rx="2" ry="2" />
+<text  x="25.99" y="575.5" ></text>
+</g>
+<g >
+<title>cp_next_ (13 samples, 0.13%)</title><rect x="45.9" y="133" width="1.5" height="15.0" fill="rgb(241,30,47)" rx="2" ry="2" />
+<text  x="48.91" y="143.5" ></text>
+</g>
+<g >
+<title>lj_alloc_free (2 samples, 0.02%)</title><rect x="398.1" y="165" width="0.3" height="15.0" fill="rgb(248,151,50)" rx="2" ry="2" />
+<text  x="401.14" y="175.5" ></text>
+</g>
+<g >
+<title>gc_sweep (14 samples, 0.14%)</title><rect x="19.3" y="517" width="1.7" height="15.0" fill="rgb(213,29,41)" rx="2" ry="2" />
+<text  x="22.33" y="527.5" ></text>
+</g>
+<g >
+<title>tmalloc_large (2 samples, 0.02%)</title><rect x="36.3" y="117" width="0.3" height="15.0" fill="rgb(213,37,22)" rx="2" ry="2" />
+<text  x="39.34" y="127.5" ></text>
+</g>
+<g >
+<title>0x7fee3efdf8b9 (4 samples, 0.04%)</title><rect x="26.4" y="581" width="0.5" height="15.0" fill="rgb(219,12,17)" rx="2" ry="2" />
+<text  x="29.42" y="591.5" ></text>
+</g>
+<g >
+<title>newtab (1 samples, 0.01%)</title><rect x="24.3" y="549" width="0.1" height="15.0" fill="rgb(213,55,50)" rx="2" ry="2" />
+<text  x="27.29" y="559.5" ></text>
+</g>
+<g >
+<title>0x7fee3efdf654 (1 samples, 0.01%)</title><rect x="25.9" y="581" width="0.2" height="15.0" fill="rgb(218,15,28)" rx="2" ry="2" />
+<text  x="28.95" y="591.5" ></text>
+</g>
+<g >
+<title>_write_string (2 samples, 0.02%)</title><rect x="59.5" y="213" width="0.2" height="15.0" fill="rgb(243,26,25)" rx="2" ry="2" />
+<text  x="62.49" y="223.5" ></text>
+</g>
+<g >
+<title>lj_tab_get (2 samples, 0.02%)</title><rect x="402.6" y="229" width="0.3" height="15.0" fill="rgb(254,207,2)" rx="2" ry="2" />
+<text  x="405.62" y="239.5" ></text>
+</g>
+<g >
+<title>lua_setfield (3 samples, 0.03%)</title><rect x="41.1" y="213" width="0.3" height="15.0" fill="rgb(250,184,24)" rx="2" ry="2" />
+<text  x="44.07" y="223.5" ></text>
+</g>
+<g >
+<title>bestasize (1 samples, 0.01%)</title><rect x="23.3" y="533" width="0.2" height="15.0" fill="rgb(207,89,15)" rx="2" ry="2" />
+<text  x="26.35" y="543.5" ></text>
+</g>
+<g >
+<title>lj_str_new (1 samples, 0.01%)</title><rect x="44.4" y="69" width="0.1" height="15.0" fill="rgb(223,106,10)" rx="2" ry="2" />
+<text  x="47.37" y="79.5" ></text>
+</g>
+<g >
+<title>0x7fee3efdd681 (1 samples, 0.01%)</title><rect x="17.1" y="581" width="0.1" height="15.0" fill="rgb(248,203,4)" rx="2" ry="2" />
+<text  x="20.09" y="591.5" ></text>
+</g>
+<g >
+<title>lj_vmeta_tsetv (20 samples, 0.20%)</title><rect x="402.2" y="261" width="2.3" height="15.0" fill="rgb(242,53,38)" rx="2" ry="2" />
+<text  x="405.15" y="271.5" ></text>
+</g>
+<g >
+<title>__memcpy_ssse3_back (1 samples, 0.01%)</title><rect x="403.7" y="133" width="0.1" height="15.0" fill="rgb(234,131,34)" rx="2" ry="2" />
+<text  x="406.69" y="143.5" ></text>
+</g>
+<g >
+<title>lj_cconv_compatptr (4 samples, 0.04%)</title><rect x="42.2" y="165" width="0.5" height="15.0" fill="rgb(215,165,40)" rx="2" ry="2" />
+<text  x="45.25" y="175.5" ></text>
+</g>
+<g >
+<title>lj_tab_new1 (1 samples, 0.01%)</title><rect x="14.3" y="565" width="0.1" height="15.0" fill="rgb(224,48,5)" rx="2" ry="2" />
+<text  x="17.25" y="575.5" ></text>
+</g>
+<g >
+<title>__memcpy_ssse3_back (1 samples, 0.01%)</title><rect x="17.2" y="549" width="0.1" height="15.0" fill="rgb(231,158,3)" rx="2" ry="2" />
+<text  x="20.21" y="559.5" ></text>
+</g>
+<g >
+<title>lua_concat (1 samples, 0.01%)</title><rect x="77.0" y="181" width="0.1" height="15.0" fill="rgb(206,100,25)" rx="2" ry="2" />
+<text  x="79.97" y="191.5" ></text>
+</g>
+<g >
+<title>0x7fee3efda618 (1 samples, 0.01%)</title><rect x="13.7" y="581" width="0.1" height="15.0" fill="rgb(235,80,45)" rx="2" ry="2" />
+<text  x="16.66" y="591.5" ></text>
+</g>
+<g >
+<title>lj_vm_growstack_f (10 samples, 0.10%)</title><rect x="398.0" y="261" width="1.2" height="15.0" fill="rgb(242,57,41)" rx="2" ry="2" />
+<text  x="401.02" y="271.5" ></text>
+</g>
+<g >
+<title>ngx_stream_lua_ngx_now (1 samples, 0.01%)</title><rect x="63.7" y="245" width="0.2" height="15.0" fill="rgb(225,147,46)" rx="2" ry="2" />
+<text  x="66.74" y="255.5" ></text>
+</g>
+<g >
+<title>luaL_checktype (1 samples, 0.01%)</title><rect x="64.7" y="229" width="0.1" height="15.0" fill="rgb(232,133,22)" rx="2" ry="2" />
+<text  x="67.69" y="239.5" ></text>
+</g>
+<g >
+<title>lj_str_new (1 samples, 0.01%)</title><rect x="17.3" y="549" width="0.1" height="15.0" fill="rgb(237,23,37)" rx="2" ry="2" />
+<text  x="20.32" y="559.5" ></text>
+</g>
+<g >
+<title>rehashtab (6 samples, 0.06%)</title><rect x="15.8" y="549" width="0.7" height="15.0" fill="rgb(254,180,32)" rx="2" ry="2" />
+<text  x="18.79" y="559.5" ></text>
+</g>
+<g >
+<title>ffi_checkctype (1 samples, 0.01%)</title><rect x="1176.9" y="245" width="0.1" height="15.0" fill="rgb(218,223,26)" rx="2" ry="2" />
+<text  x="1179.89" y="255.5" ></text>
+</g>
+<g >
+<title>lj_vm_exit_interp (2 samples, 0.02%)</title><rect x="397.8" y="261" width="0.2" height="15.0" fill="rgb(207,157,6)" rx="2" ry="2" />
+<text  x="400.78" y="271.5" ></text>
+</g>
+<g >
+<title>lj_cdata_free (1 samples, 0.01%)</title><rect x="73.9" y="101" width="0.1" height="15.0" fill="rgb(246,53,25)" rx="2" ry="2" />
+<text  x="76.90" y="111.5" ></text>
+</g>
+<g >
+<title>ngx_unix_send (1 samples, 0.01%)</title><rect x="1177.5" y="229" width="0.1" height="15.0" fill="rgb(213,118,41)" rx="2" ry="2" />
+<text  x="1180.48" y="239.5" ></text>
+</g>
+<g >
+<title>lj_cparse (1 samples, 0.01%)</title><rect x="1176.9" y="229" width="0.1" height="15.0" fill="rgb(211,47,47)" rx="2" ry="2" />
+<text  x="1179.89" y="239.5" ></text>
+</g>
+<g >
+<title>cp_decl_attributes (1 samples, 0.01%)</title><rect x="44.4" y="133" width="0.1" height="15.0" fill="rgb(228,220,22)" rx="2" ry="2" />
+<text  x="47.37" y="143.5" ></text>
+</g>
+<g >
+<title>lua_rawget (2 samples, 0.02%)</title><rect x="62.6" y="213" width="0.2" height="15.0" fill="rgb(222,108,15)" rx="2" ry="2" />
+<text  x="65.56" y="223.5" ></text>
+</g>
+<g >
+<title>_read_byte_array (11 samples, 0.11%)</title><rect x="57.2" y="181" width="1.3" height="15.0" fill="rgb(239,92,30)" rx="2" ry="2" />
+<text  x="60.25" y="191.5" ></text>
+</g>
+<g >
+<title>lj_gc_step (56 samples, 0.56%)</title><rect x="69.1" y="149" width="6.6" height="15.0" fill="rgb(231,201,47)" rx="2" ry="2" />
+<text  x="72.06" y="159.5" ></text>
+</g>
+<g >
+<title>hashkey (1 samples, 0.01%)</title><rect x="401.2" y="213" width="0.1" height="15.0" fill="rgb(210,130,24)" rx="2" ry="2" />
+<text  x="404.21" y="223.5" ></text>
+</g>
+<g >
+<title>ngx_stream_lua_socket_tcp_read (23 samples, 0.23%)</title><rect x="64.8" y="229" width="2.7" height="15.0" fill="rgb(228,99,48)" rx="2" ry="2" />
+<text  x="67.81" y="239.5" ></text>
+</g>
+<g >
+<title>lj_tab_setinth (10 samples, 0.10%)</title><rect x="53.1" y="229" width="1.2" height="15.0" fill="rgb(210,43,33)" rx="2" ry="2" />
+<text  x="56.11" y="239.5" ></text>
+</g>
+<g >
+<title>lj_tab_new (3 samples, 0.03%)</title><rect x="55.5" y="197" width="0.3" height="15.0" fill="rgb(230,99,7)" rx="2" ry="2" />
+<text  x="58.48" y="207.5" ></text>
+</g>
+<g >
+<title>ngx_stream_lua_get_lua_vm (1 samples, 0.01%)</title><rect x="373.8" y="213" width="0.1" height="15.0" fill="rgb(222,143,53)" rx="2" ry="2" />
+<text  x="376.80" y="223.5" ></text>
+</g>
+<g >
+<title>ngx_stream_lua_socket_tcp_read_resume (9,837 samples, 98.47%)</title><rect x="27.4" y="341" width="1161.9" height="15.0" fill="rgb(252,139,52)" rx="2" ry="2" />
+<text  x="30.36" y="351.5" >ngx_stream_lua_socket_tcp_read_resume</text>
+</g>
+<g >
+<title>lj_alloc_realloc (1 samples, 0.01%)</title><rect x="1181.3" y="197" width="0.1" height="15.0" fill="rgb(223,1,46)" rx="2" ry="2" />
+<text  x="1184.26" y="207.5" ></text>
+</g>
+<g >
+<title>ngx_stream_lua_post_zombie_thread (6,536 samples, 65.43%)</title><rect x="404.5" y="277" width="772.0" height="15.0" fill="rgb(224,100,52)" rx="2" ry="2" />
+<text  x="407.51" y="287.5" >ngx_stream_lua_post_zombie_thread</text>
+</g>
+<g >
+<title>lua_yield (1 samples, 0.01%)</title><rect x="93.4" y="229" width="0.1" height="15.0" fill="rgb(229,169,54)" rx="2" ry="2" />
+<text  x="96.39" y="239.5" ></text>
+</g>
+<g >
+<title>lj_strfmt_char (10 samples, 0.10%)</title><rect x="21.2" y="565" width="1.2" height="15.0" fill="rgb(236,129,39)" rx="2" ry="2" />
+<text  x="24.22" y="575.5" ></text>
+</g>
+<g >
+<title>0x7fee3efdef69 (4 samples, 0.04%)</title><rect x="23.9" y="581" width="0.5" height="15.0" fill="rgb(244,171,2)" rx="2" ry="2" />
+<text  x="26.94" y="591.5" ></text>
+</g>
+<g >
+<title>lj_str_hash (2 samples, 0.02%)</title><rect x="25.2" y="533" width="0.3" height="15.0" fill="rgb(239,207,0)" rx="2" ry="2" />
+<text  x="28.24" y="543.5" ></text>
+</g>
+<g >
+<title>cp_next (3 samples, 0.03%)</title><rect x="45.4" y="117" width="0.4" height="15.0" fill="rgb(245,30,41)" rx="2" ry="2" />
+<text  x="48.44" y="127.5" ></text>
+</g>
+<g >
+<title>ngx_stream_lua_socket_tcp_receive_retval_handler (81 samples, 0.81%)</title><rect x="67.5" y="229" width="9.6" height="15.0" fill="rgb(244,52,1)" rx="2" ry="2" />
+<text  x="70.52" y="239.5" ></text>
+</g>
+<g >
+<title>0x7fee3efd816a (1 samples, 0.01%)</title><rect x="12.1" y="581" width="0.1" height="15.0" fill="rgb(243,220,32)" rx="2" ry="2" />
+<text  x="15.13" y="591.5" ></text>
+</g>
+<g >
+<title>lj_str_new (11 samples, 0.11%)</title><rect x="75.7" y="149" width="1.3" height="15.0" fill="rgb(225,88,5)" rx="2" ry="2" />
+<text  x="78.67" y="159.5" ></text>
+</g>
+<g >
+<title>_init (1 samples, 0.01%)</title><rect x="92.3" y="229" width="0.1" height="15.0" fill="rgb(234,211,2)" rx="2" ry="2" />
+<text  x="95.33" y="239.5" ></text>
+</g>
+<g >
+<title>ngx_stream_lua_uthread_spawn (30 samples, 0.30%)</title><rect x="1177.6" y="261" width="3.5" height="15.0" fill="rgb(214,122,34)" rx="2" ry="2" />
+<text  x="1180.60" y="271.5" ></text>
+</g>
+<g >
+<title>lj_BC_TGETV (1 samples, 0.01%)</title><rect x="391.9" y="261" width="0.1" height="15.0" fill="rgb(228,55,42)" rx="2" ry="2" />
+<text  x="394.88" y="271.5" ></text>
+</g>
+<g >
+<title>send (1 samples, 0.01%)</title><rect x="1177.5" y="213" width="0.1" height="15.0" fill="rgb(212,171,44)" rx="2" ry="2" />
+<text  x="1180.48" y="223.5" ></text>
+</g>
+<g >
+<title>lj_str_find (1 samples, 0.01%)</title><rect x="15.1" y="565" width="0.1" height="15.0" fill="rgb(240,76,54)" rx="2" ry="2" />
+<text  x="18.08" y="575.5" ></text>
+</g>
+<g >
+<title>lj_str_new (3 samples, 0.03%)</title><rect x="37.3" y="197" width="0.3" height="15.0" fill="rgb(208,27,32)" rx="2" ry="2" />
+<text  x="40.29" y="207.5" ></text>
+</g>
+<g >
+<title>lua_pushboolean (3 samples, 0.03%)</title><rect x="28.2" y="277" width="0.3" height="15.0" fill="rgb(254,73,32)" rx="2" ry="2" />
+<text  x="31.19" y="287.5" ></text>
+</g>
+<g >
+<title>lj_BC_FUNCC (38 samples, 0.38%)</title><rect x="1176.7" y="277" width="4.4" height="15.0" fill="rgb(237,85,39)" rx="2" ry="2" />
+<text  x="1179.65" y="287.5" ></text>
+</g>
+<g >
+<title>lj_alloc_free (1 samples, 0.01%)</title><rect x="383.5" y="149" width="0.1" height="15.0" fill="rgb(210,218,3)" rx="2" ry="2" />
+<text  x="386.49" y="159.5" ></text>
+</g>
+<g >
+<title>rehashtab (1 samples, 0.01%)</title><rect x="56.4" y="181" width="0.1" height="15.0" fill="rgb(244,100,11)" rx="2" ry="2" />
+<text  x="59.42" y="191.5" ></text>
+</g>
+<g >
+<title>ffi_checkctype (32 samples, 0.32%)</title><rect x="43.7" y="229" width="3.7" height="15.0" fill="rgb(217,116,37)" rx="2" ry="2" />
+<text  x="46.66" y="239.5" ></text>
+</g>
+<g >
+<title>cp_decl_spec (4 samples, 0.04%)</title><rect x="44.4" y="149" width="0.4" height="15.0" fill="rgb(213,157,14)" rx="2" ry="2" />
+<text  x="47.37" y="159.5" ></text>
+</g>
+<g >
+<title>0x7fee3efddb24 (1 samples, 0.01%)</title><rect x="18.5" y="581" width="0.1" height="15.0" fill="rgb(254,125,45)" rx="2" ry="2" />
+<text  x="21.50" y="591.5" ></text>
+</g>
+<g >
+<title>lj_alloc_free (7 samples, 0.07%)</title><rect x="74.7" y="69" width="0.9" height="15.0" fill="rgb(206,133,45)" rx="2" ry="2" />
+<text  x="77.73" y="79.5" ></text>
+</g>
+<g >
+<title>0x7fee3efd93f2 (1 samples, 0.01%)</title><rect x="13.4" y="581" width="0.1" height="15.0" fill="rgb(246,23,14)" rx="2" ry="2" />
+<text  x="16.43" y="591.5" ></text>
+</g>
+<g >
+<title>lj_str_new (2 samples, 0.02%)</title><rect x="396.6" y="181" width="0.2" height="15.0" fill="rgb(239,171,43)" rx="2" ry="2" />
+<text  x="399.60" y="191.5" ></text>
+</g>
+<g >
+<title>0x7fee3efdb5c9 (1 samples, 0.01%)</title><rect x="14.6" y="581" width="0.1" height="15.0" fill="rgb(206,164,36)" rx="2" ry="2" />
+<text  x="17.61" y="591.5" ></text>
+</g>
+<g >
+<title>lj_tab_new_ah (9 samples, 0.09%)</title><rect x="54.4" y="213" width="1.1" height="15.0" fill="rgb(217,158,17)" rx="2" ry="2" />
+<text  x="57.41" y="223.5" ></text>
+</g>
+<g >
+<title>0x7fee3efdda15 (2 samples, 0.02%)</title><rect x="17.9" y="581" width="0.3" height="15.0" fill="rgb(245,46,54)" rx="2" ry="2" />
+<text  x="20.91" y="591.5" ></text>
+</g>
+<g >
+<title>ngx_stream_lua_content_wev_handler (9,837 samples, 98.47%)</title><rect x="27.4" y="357" width="1161.9" height="15.0" fill="rgb(224,167,41)" rx="2" ry="2" />
+<text  x="30.36" y="367.5" >ngx_stream_lua_content_wev_handler</text>
+</g>
+<g >
+<title>lj_tab_len (1 samples, 0.01%)</title><rect x="92.4" y="197" width="0.2" height="15.0" fill="rgb(236,175,26)" rx="2" ry="2" />
+<text  x="95.45" y="207.5" ></text>
+</g>
+<g >
+<title>lj_tab_getstr (1 samples, 0.01%)</title><rect x="1176.8" y="181" width="0.1" height="15.0" fill="rgb(231,59,41)" rx="2" ry="2" />
+<text  x="1179.77" y="191.5" ></text>
+</g>
+<g >
+<title>lj_BC_FUNCC (2,877 samples, 28.80%)</title><rect x="34.7" y="261" width="339.8" height="15.0" fill="rgb(241,215,22)" rx="2" ry="2" />
+<text  x="37.69" y="271.5" >lj_BC_FUNCC</text>
+</g>
+<g >
+<title>func_finduv (6 samples, 0.06%)</title><rect x="32.4" y="229" width="0.8" height="15.0" fill="rgb(252,112,18)" rx="2" ry="2" />
+<text  x="35.44" y="239.5" ></text>
+</g>
+<g >
+<title>lua_replace (2 samples, 0.02%)</title><rect x="93.0" y="229" width="0.3" height="15.0" fill="rgb(239,63,33)" rx="2" ry="2" />
+<text  x="96.04" y="239.5" ></text>
+</g>
+<g >
+<title>lj_tab_setstr (4 samples, 0.04%)</title><rect x="56.7" y="165" width="0.4" height="15.0" fill="rgb(225,226,46)" rx="2" ry="2" />
+<text  x="59.66" y="175.5" ></text>
+</g>
+<g >
+<title>lj_func_free (1 samples, 0.01%)</title><rect x="51.1" y="181" width="0.1" height="15.0" fill="rgb(226,82,38)" rx="2" ry="2" />
+<text  x="54.11" y="191.5" ></text>
+</g>
+<g >
+<title>lj_mem_newgco (10 samples, 0.10%)</title><rect x="33.2" y="213" width="1.1" height="15.0" fill="rgb(212,163,1)" rx="2" ry="2" />
+<text  x="36.15" y="223.5" ></text>
+</g>
+<g >
+<title>lj_vm_cpcall (27 samples, 0.27%)</title><rect x="44.3" y="197" width="3.1" height="15.0" fill="rgb(223,11,6)" rx="2" ry="2" />
+<text  x="47.25" y="207.5" ></text>
+</g>
+<g >
+<title>__memcmp_sse4_1 (1 samples, 0.01%)</title><rect x="22.5" y="549" width="0.1" height="15.0" fill="rgb(247,61,49)" rx="2" ry="2" />
+<text  x="25.52" y="559.5" ></text>
+</g>
+<g >
+<title>lj_alloc_f (1 samples, 0.01%)</title><rect x="51.1" y="165" width="0.1" height="15.0" fill="rgb(235,211,53)" rx="2" ry="2" />
+<text  x="54.11" y="175.5" ></text>
+</g>
+<g >
+<title>lj_alloc_f (3 samples, 0.03%)</title><rect x="383.1" y="165" width="0.4" height="15.0" fill="rgb(214,165,54)" rx="2" ry="2" />
+<text  x="386.14" y="175.5" ></text>
+</g>
+<g >
+<title>lj_tab_newkey (2 samples, 0.02%)</title><rect x="56.3" y="197" width="0.2" height="15.0" fill="rgb(212,181,18)" rx="2" ry="2" />
+<text  x="59.30" y="207.5" ></text>
+</g>
+<g >
+<title>lj_BC_RET1 (4 samples, 0.04%)</title><rect x="379.5" y="261" width="0.4" height="15.0" fill="rgb(210,107,30)" rx="2" ry="2" />
+<text  x="382.47" y="271.5" ></text>
+</g>
+<g >
+<title>rehashtab (3 samples, 0.03%)</title><rect x="23.2" y="549" width="0.4" height="15.0" fill="rgb(241,35,31)" rx="2" ry="2" />
+<text  x="26.23" y="559.5" ></text>
+</g>
+<g >
+<title>lj_buf_tostr (6 samples, 0.06%)</title><rect x="24.8" y="565" width="0.7" height="15.0" fill="rgb(234,162,5)" rx="2" ry="2" />
+<text  x="27.76" y="575.5" ></text>
+</g>
+<g >
+<title>lj_alloc_f (1 samples, 0.01%)</title><rect x="74.5" y="85" width="0.1" height="15.0" fill="rgb(219,6,46)" rx="2" ry="2" />
+<text  x="77.49" y="95.5" ></text>
+</g>
+<g >
+<title>get_request_id (4 samples, 0.04%)</title><rect x="42.8" y="197" width="0.5" height="15.0" fill="rgb(210,174,15)" rx="2" ry="2" />
+<text  x="45.84" y="207.5" ></text>
+</g>
+<g >
+<title>lj_meta_tset (1 samples, 0.01%)</title><rect x="1176.8" y="213" width="0.1" height="15.0" fill="rgb(222,89,12)" rx="2" ry="2" />
+<text  x="1179.77" y="223.5" ></text>
+</g>
+<g >
+<title>lj_str_hash_128_above (1 samples, 0.01%)</title><rect x="58.4" y="101" width="0.1" height="15.0" fill="rgb(211,151,10)" rx="2" ry="2" />
+<text  x="61.43" y="111.5" ></text>
+</g>
+<g >
+<title>lj_mem_realloc (1 samples, 0.01%)</title><rect x="394.1" y="197" width="0.1" height="15.0" fill="rgb(208,54,23)" rx="2" ry="2" />
+<text  x="397.12" y="207.5" ></text>
+</g>
+<g >
+<title>0x7fee3efde4f0 (1 samples, 0.01%)</title><rect x="21.0" y="581" width="0.1" height="15.0" fill="rgb(243,69,31)" rx="2" ry="2" />
+<text  x="23.98" y="591.5" ></text>
+</g>
+<g >
+<title>motan_new_bytes_buffer (1 samples, 0.01%)</title><rect x="1177.1" y="245" width="0.1" height="15.0" fill="rgb(231,68,12)" rx="2" ry="2" />
+<text  x="1180.13" y="255.5" ></text>
+</g>
+<g >
+<title>motan_simple_serialize_data (2 samples, 0.02%)</title><rect x="59.5" y="229" width="0.2" height="15.0" fill="rgb(224,176,8)" rx="2" ry="2" />
+<text  x="62.49" y="239.5" ></text>
+</g>
+<g >
+<title>lj_tab_set (1 samples, 0.01%)</title><rect x="394.0" y="229" width="0.1" height="15.0" fill="rgb(225,33,4)" rx="2" ry="2" />
+<text  x="397.00" y="239.5" ></text>
+</g>
+<g >
+<title>lj_ccall_func (13 samples, 0.13%)</title><rect x="41.8" y="229" width="1.5" height="15.0" fill="rgb(231,156,35)" rx="2" ry="2" />
+<text  x="44.77" y="239.5" ></text>
+</g>
+<g >
+<title>lj_str_new (10 samples, 0.10%)</title><rect x="30.9" y="229" width="1.2" height="15.0" fill="rgb(225,46,9)" rx="2" ry="2" />
+<text  x="33.91" y="239.5" ></text>
+</g>
+<g >
+<title>ngx_stream_lua_socket_tcp_send (126 samples, 1.26%)</title><rect x="77.1" y="245" width="14.9" height="15.0" fill="rgb(228,227,50)" rx="2" ry="2" />
+<text  x="80.09" y="255.5" ></text>
+</g>
+<g >
+<title>lj_lib_checktab (1 samples, 0.01%)</title><rect x="51.9" y="229" width="0.2" height="15.0" fill="rgb(207,43,0)" rx="2" ry="2" />
+<text  x="54.93" y="239.5" ></text>
+</g>
+<g >
+<title>lj_tab_len (1 samples, 0.01%)</title><rect x="27.2" y="565" width="0.2" height="15.0" fill="rgb(244,122,50)" rx="2" ry="2" />
+<text  x="30.25" y="575.5" ></text>
+</g>
+<g >
+<title>lj_tab_resize (3 samples, 0.03%)</title><rect x="53.9" y="181" width="0.4" height="15.0" fill="rgb(254,216,15)" rx="2" ry="2" />
+<text  x="56.94" y="191.5" ></text>
+</g>
+<g >
+<title>lj_mem_realloc (9 samples, 0.09%)</title><rect x="54.4" y="165" width="1.1" height="15.0" fill="rgb(208,65,24)" rx="2" ry="2" />
+<text  x="57.41" y="175.5" ></text>
+</g>
+<g >
+<title>ngx_stream_lua_socket_tcp_receive (2 samples, 0.02%)</title><rect x="1177.2" y="261" width="0.3" height="15.0" fill="rgb(220,11,21)" rx="2" ry="2" />
+<text  x="1180.24" y="271.5" ></text>
+</g>
+<g >
+<title>emptybuffer (67 samples, 0.67%)</title><rect x="69.1" y="181" width="7.9" height="15.0" fill="rgb(215,67,39)" rx="2" ry="2" />
+<text  x="72.06" y="191.5" ></text>
+</g>
+<g >
+<title>lj_mem_realloc (3 samples, 0.03%)</title><rect x="36.2" y="165" width="0.4" height="15.0" fill="rgb(237,93,23)" rx="2" ry="2" />
+<text  x="39.22" y="175.5" ></text>
+</g>
+<g >
+<title>lj_alloc_malloc (1 samples, 0.01%)</title><rect x="76.9" y="101" width="0.1" height="15.0" fill="rgb(215,59,16)" rx="2" ry="2" />
+<text  x="79.85" y="111.5" ></text>
+</g>
+<g >
+<title>lj_mem_newgco (1 samples, 0.01%)</title><rect x="93.9" y="181" width="0.1" height="15.0" fill="rgb(223,76,46)" rx="2" ry="2" />
+<text  x="96.86" y="191.5" ></text>
+</g>
+<g >
+<title>ffi_clib_index (2 samples, 0.02%)</title><rect x="41.5" y="229" width="0.3" height="15.0" fill="rgb(210,94,38)" rx="2" ry="2" />
+<text  x="44.54" y="239.5" ></text>
+</g>
+<g >
+<title>lj_debug_getinfo (3 samples, 0.03%)</title><rect x="35.4" y="229" width="0.3" height="15.0" fill="rgb(235,53,0)" rx="2" ry="2" />
+<text  x="38.40" y="239.5" ></text>
+</g>
+<g >
+<title>lj_alloc_malloc (7 samples, 0.07%)</title><rect x="398.4" y="165" width="0.8" height="15.0" fill="rgb(233,12,44)" rx="2" ry="2" />
+<text  x="401.37" y="175.5" ></text>
+</g>
+<g >
+<title>ngx_stream_lua_ngx_get_ctx (26 samples, 0.26%)</title><rect x="60.4" y="229" width="3.1" height="15.0" fill="rgb(233,7,38)" rx="2" ry="2" />
+<text  x="63.44" y="239.5" ></text>
+</g>
+<g >
+<title>lj_func_closeuv (3 samples, 0.03%)</title><rect x="394.2" y="245" width="0.4" height="15.0" fill="rgb(223,76,18)" rx="2" ry="2" />
+<text  x="397.24" y="255.5" ></text>
+</g>
+<g >
+<title>ngx_stream_lua_socket_tcp_read (9,838 samples, 98.48%)</title><rect x="27.4" y="389" width="1162.0" height="15.0" fill="rgb(222,136,13)" rx="2" ry="2" />
+<text  x="30.36" y="399.5" >ngx_stream_lua_socket_tcp_read</text>
+</g>
+<g >
+<title>lj_cconv_ct_ct (1 samples, 0.01%)</title><rect x="41.9" y="181" width="0.1" height="15.0" fill="rgb(214,21,8)" rx="2" ry="2" />
+<text  x="44.89" y="191.5" ></text>
+</g>
+<g >
+<title>lj_clib_index (1 samples, 0.01%)</title><rect x="41.7" y="213" width="0.1" height="15.0" fill="rgb(209,112,47)" rx="2" ry="2" />
+<text  x="44.66" y="223.5" ></text>
+</g>
+<g >
+<title>lj_alloc_realloc (1 samples, 0.01%)</title><rect x="54.2" y="133" width="0.1" height="15.0" fill="rgb(206,182,31)" rx="2" ry="2" />
+<text  x="57.18" y="143.5" ></text>
+</g>
+<g >
+<title>countint (1 samples, 0.01%)</title><rect x="403.3" y="197" width="0.2" height="15.0" fill="rgb(205,123,22)" rx="2" ry="2" />
+<text  x="406.33" y="207.5" ></text>
+</g>
+<g >
+<title>lj_BC_TDUP (63 samples, 0.63%)</title><rect x="379.9" y="261" width="7.5" height="15.0" fill="rgb(205,0,6)" rx="2" ry="2" />
+<text  x="382.95" y="271.5" ></text>
+</g>
+<g >
+<title>lj_alloc_f (3 samples, 0.03%)</title><rect x="386.1" y="197" width="0.3" height="15.0" fill="rgb(213,41,7)" rx="2" ry="2" />
+<text  x="389.09" y="207.5" ></text>
+</g>
+<g >
+<title>0x7fee3efd5801 (1 samples, 0.01%)</title><rect x="10.5" y="581" width="0.1" height="15.0" fill="rgb(226,80,42)" rx="2" ry="2" />
+<text  x="13.47" y="591.5" ></text>
+</g>
+<g >
+<title>rehashtab (1 samples, 0.01%)</title><rect x="18.5" y="549" width="0.1" height="15.0" fill="rgb(238,182,52)" rx="2" ry="2" />
+<text  x="21.50" y="559.5" ></text>
+</g>
+<g >
+<title>mmap (1 samples, 0.01%)</title><rect x="18.9" y="453" width="0.1" height="15.0" fill="rgb(223,215,32)" rx="2" ry="2" />
+<text  x="21.86" y="463.5" ></text>
+</g>
+<g >
+<title>lua_xmove (1 samples, 0.01%)</title><rect x="94.8" y="213" width="0.1" height="15.0" fill="rgb(245,78,35)" rx="2" ry="2" />
+<text  x="97.81" y="223.5" ></text>
+</g>
+<g >
+<title>lj_alloc_malloc (1 samples, 0.01%)</title><rect x="50.2" y="181" width="0.1" height="15.0" fill="rgb(231,71,45)" rx="2" ry="2" />
+<text  x="53.16" y="191.5" ></text>
+</g>
+<g >
+<title>lj_alloc_malloc (1 samples, 0.01%)</title><rect x="93.9" y="149" width="0.1" height="15.0" fill="rgb(254,206,25)" rx="2" ry="2" />
+<text  x="96.86" y="159.5" ></text>
+</g>
+<g >
+<title>lj_fff_fallback (16 samples, 0.16%)</title><rect x="395.9" y="261" width="1.9" height="15.0" fill="rgb(234,145,48)" rx="2" ry="2" />
+<text  x="398.89" y="271.5" ></text>
+</g>
+<g >
+<title>lua_pushboolean (1 samples, 0.01%)</title><rect x="37.6" y="213" width="0.2" height="15.0" fill="rgb(222,96,34)" rx="2" ry="2" />
+<text  x="40.64" y="223.5" ></text>
+</g>
+<g >
+<title>lj_meta_tset (1 samples, 0.01%)</title><rect x="1176.7" y="213" width="0.1" height="15.0" fill="rgb(248,113,7)" rx="2" ry="2" />
+<text  x="1179.65" y="223.5" ></text>
+</g>
+<g >
+<title>lj_str_find (2 samples, 0.02%)</title><rect x="26.2" y="565" width="0.2" height="15.0" fill="rgb(238,182,11)" rx="2" ry="2" />
+<text  x="29.18" y="575.5" ></text>
+</g>
+<g >
+<title>lj_BC_TSETS (11 samples, 0.11%)</title><rect x="392.9" y="261" width="1.3" height="15.0" fill="rgb(240,101,51)" rx="2" ry="2" />
+<text  x="395.94" y="271.5" ></text>
+</g>
+<g >
+<title>cpcparser (27 samples, 0.27%)</title><rect x="44.3" y="181" width="3.1" height="15.0" fill="rgb(220,16,49)" rx="2" ry="2" />
+<text  x="47.25" y="191.5" ></text>
+</g>
+<g >
+<title>ffi_checkint (1 samples, 0.01%)</title><rect x="49.3" y="229" width="0.2" height="15.0" fill="rgb(214,2,19)" rx="2" ry="2" />
+<text  x="52.33" y="239.5" ></text>
+</g>
+<g >
+<title>lua_settop (1 samples, 0.01%)</title><rect x="77.6" y="229" width="0.1" height="15.0" fill="rgb(221,189,50)" rx="2" ry="2" />
+<text  x="80.56" y="239.5" ></text>
+</g>
+<g >
+<title>lj_vmeta_arith_vv (4 samples, 0.04%)</title><rect x="399.4" y="261" width="0.5" height="15.0" fill="rgb(216,61,38)" rx="2" ry="2" />
+<text  x="402.44" y="271.5" ></text>
+</g>
+<g >
+<title>cp_expr_infix (3 samples, 0.03%)</title><rect x="44.8" y="69" width="0.4" height="15.0" fill="rgb(231,48,47)" rx="2" ry="2" />
+<text  x="47.84" y="79.5" ></text>
+</g>
+<g >
+<title>lj_tab_dup (1 samples, 0.01%)</title><rect x="12.2" y="565" width="0.2" height="15.0" fill="rgb(229,135,52)" rx="2" ry="2" />
+<text  x="15.24" y="575.5" ></text>
+</g>
+<g >
+<title>0x7fee3efd77f6 (1 samples, 0.01%)</title><rect x="11.7" y="581" width="0.1" height="15.0" fill="rgb(221,152,4)" rx="2" ry="2" />
+<text  x="14.65" y="591.5" ></text>
+</g>
+<g >
+<title>__sbrk (1 samples, 0.01%)</title><rect x="59.0" y="165" width="0.1" height="15.0" fill="rgb(206,132,42)" rx="2" ry="2" />
+<text  x="62.02" y="175.5" ></text>
+</g>
+<g >
+<title>lj_mem_realloc (9 samples, 0.09%)</title><rect x="398.1" y="213" width="1.1" height="15.0" fill="rgb(246,102,17)" rx="2" ry="2" />
+<text  x="401.14" y="223.5" ></text>
+</g>
+<g >
+<title>lj_alloc_malloc (1 samples, 0.01%)</title><rect x="56.5" y="101" width="0.2" height="15.0" fill="rgb(240,222,0)" rx="2" ry="2" />
+<text  x="59.54" y="111.5" ></text>
+</g>
+<g >
+<title>lj_tab_set (4 samples, 0.04%)</title><rect x="56.7" y="181" width="0.4" height="15.0" fill="rgb(233,89,34)" rx="2" ry="2" />
+<text  x="59.66" y="191.5" ></text>
+</g>
+<g >
+<title>lj_buf_puttab (2 samples, 0.02%)</title><rect x="24.5" y="565" width="0.3" height="15.0" fill="rgb(252,85,54)" rx="2" ry="2" />
+<text  x="27.53" y="575.5" ></text>
+</g>
+<g >
+<title>lj_mem_realloc (8 samples, 0.08%)</title><rect x="386.4" y="213" width="1.0" height="15.0" fill="rgb(240,45,12)" rx="2" ry="2" />
+<text  x="389.44" y="223.5" ></text>
+</g>
+<g >
+<title>0x7fee3efde871 (4 samples, 0.04%)</title><rect x="23.1" y="581" width="0.5" height="15.0" fill="rgb(225,155,10)" rx="2" ry="2" />
+<text  x="26.11" y="591.5" ></text>
+</g>
+<g >
+<title>0x7fee3efddb86 (2 samples, 0.02%)</title><rect x="18.7" y="581" width="0.3" height="15.0" fill="rgb(250,161,52)" rx="2" ry="2" />
+<text  x="21.74" y="591.5" ></text>
+</g>
+<g >
+<title>lj_vm_growstack_f (1 samples, 0.01%)</title><rect x="1181.3" y="277" width="0.1" height="15.0" fill="rgb(210,65,8)" rx="2" ry="2" />
+<text  x="1184.26" y="287.5" ></text>
+</g>
+<g >
+<title>lj_tab_resize (1 samples, 0.01%)</title><rect x="56.4" y="165" width="0.1" height="15.0" fill="rgb(236,200,31)" rx="2" ry="2" />
+<text  x="59.42" y="175.5" ></text>
+</g>
+<g >
+<title>lua_pushfstring (9 samples, 0.09%)</title><rect x="36.6" y="229" width="1.0" height="15.0" fill="rgb(216,11,8)" rx="2" ry="2" />
+<text  x="39.58" y="239.5" ></text>
+</g>
+<g >
+<title>lj_tab_set (2 samples, 0.02%)</title><rect x="53.3" y="197" width="0.3" height="15.0" fill="rgb(213,114,10)" rx="2" ry="2" />
+<text  x="56.35" y="207.5" ></text>
+</g>
+<g >
+<title>lj_alloc_free (3 samples, 0.03%)</title><rect x="392.1" y="149" width="0.4" height="15.0" fill="rgb(216,144,48)" rx="2" ry="2" />
+<text  x="395.11" y="159.5" ></text>
+</g>
+<g >
+<title>lj_tab_resize (1 samples, 0.01%)</title><rect x="23.5" y="533" width="0.1" height="15.0" fill="rgb(234,131,19)" rx="2" ry="2" />
+<text  x="26.47" y="543.5" ></text>
+</g>
+<g >
+<title>cp_opt (1 samples, 0.01%)</title><rect x="45.1" y="53" width="0.1" height="15.0" fill="rgb(244,88,28)" rx="2" ry="2" />
+<text  x="48.08" y="63.5" ></text>
+</g>
+<g >
+<title>lj_mem_newgco (2 samples, 0.02%)</title><rect x="55.6" y="165" width="0.2" height="15.0" fill="rgb(236,122,27)" rx="2" ry="2" />
+<text  x="58.59" y="175.5" ></text>
+</g>
+<g >
+<title>lj_alloc_f (3 samples, 0.03%)</title><rect x="61.5" y="133" width="0.4" height="15.0" fill="rgb(235,137,29)" rx="2" ry="2" />
+<text  x="64.50" y="143.5" ></text>
+</g>
+<g >
+<title>lj_alloc_free (2 samples, 0.02%)</title><rect x="383.6" y="149" width="0.2" height="15.0" fill="rgb(235,55,25)" rx="2" ry="2" />
+<text  x="386.61" y="159.5" ></text>
+</g>
+<g >
+<title>lj_str_hash (2 samples, 0.02%)</title><rect x="52.4" y="213" width="0.2" height="15.0" fill="rgb(225,142,22)" rx="2" ry="2" />
+<text  x="55.40" y="223.5" ></text>
+</g>
+<g >
+<title>lj_str_new (1 samples, 0.01%)</title><rect x="1177.4" y="165" width="0.1" height="15.0" fill="rgb(226,161,13)" rx="2" ry="2" />
+<text  x="1180.36" y="175.5" ></text>
+</g>
+<g >
+<title>lj_alloc_f (4 samples, 0.04%)</title><rect x="94.2" y="149" width="0.5" height="15.0" fill="rgb(235,145,20)" rx="2" ry="2" />
+<text  x="97.22" y="159.5" ></text>
+</g>
+<g >
+<title>lj_cf_table_concat (22 samples, 0.22%)</title><rect x="50.3" y="245" width="2.6" height="15.0" fill="rgb(208,95,28)" rx="2" ry="2" />
+<text  x="53.28" y="255.5" ></text>
+</g>
+<g >
+<title>tmalloc_small (1 samples, 0.01%)</title><rect x="55.7" y="117" width="0.1" height="15.0" fill="rgb(227,165,7)" rx="2" ry="2" />
+<text  x="58.71" y="127.5" ></text>
+</g>
+<g >
+<title>send (3 samples, 0.03%)</title><rect x="1189.6" y="565" width="0.4" height="15.0" fill="rgb(226,158,49)" rx="2" ry="2" />
+<text  x="1192.65" y="575.5" ></text>
+</g>
+<g >
+<title>lj_str_hash_4_16 (1 samples, 0.01%)</title><rect x="38.6" y="165" width="0.1" height="15.0" fill="rgb(248,219,17)" rx="2" ry="2" />
+<text  x="41.58" y="175.5" ></text>
+</g>
+<g >
+<title>lj_ctype_getname (2 samples, 0.02%)</title><rect x="46.9" y="101" width="0.2" height="15.0" fill="rgb(235,50,20)" rx="2" ry="2" />
+<text  x="49.85" y="111.5" ></text>
+</g>
+<g >
+<title>0x7fee3efddd38 (1 samples, 0.01%)</title><rect x="19.0" y="581" width="0.1" height="15.0" fill="rgb(217,23,10)" rx="2" ry="2" />
+<text  x="21.98" y="591.5" ></text>
+</g>
+<g >
+<title>gc_sweep (1 samples, 0.01%)</title><rect x="26.1" y="517" width="0.1" height="15.0" fill="rgb(208,19,42)" rx="2" ry="2" />
+<text  x="29.06" y="527.5" ></text>
+</g>
+<g >
+<title>lj_tab_getstr (1 samples, 0.01%)</title><rect x="400.9" y="213" width="0.1" height="15.0" fill="rgb(220,170,5)" rx="2" ry="2" />
+<text  x="403.85" y="223.5" ></text>
+</g>
+<g >
+<title>lj_tab_set (1 samples, 0.01%)</title><rect x="1177.0" y="213" width="0.1" height="15.0" fill="rgb(242,165,47)" rx="2" ry="2" />
+<text  x="1180.01" y="223.5" ></text>
+</g>
+<g >
+<title>lj_alloc_f (2 samples, 0.02%)</title><rect x="48.9" y="197" width="0.2" height="15.0" fill="rgb(227,109,22)" rx="2" ry="2" />
+<text  x="51.86" y="207.5" ></text>
+</g>
+<g >
+<title>lj_tab_newkey (9 samples, 0.09%)</title><rect x="53.2" y="213" width="1.1" height="15.0" fill="rgb(239,36,7)" rx="2" ry="2" />
+<text  x="56.23" y="223.5" ></text>
+</g>
+<g >
+<title>lj_meta_tget (1 samples, 0.01%)</title><rect x="1181.4" y="261" width="0.1" height="15.0" fill="rgb(249,224,39)" rx="2" ry="2" />
+<text  x="1184.38" y="271.5" ></text>
+</g>
+<g >
+<title>lj_tab_resize (2 samples, 0.02%)</title><rect x="25.7" y="533" width="0.2" height="15.0" fill="rgb(241,216,33)" rx="2" ry="2" />
+<text  x="28.71" y="543.5" ></text>
+</g>
+<g >
+<title>lj_alloc_f (1 samples, 0.01%)</title><rect x="383.5" y="165" width="0.1" height="15.0" fill="rgb(214,196,25)" rx="2" ry="2" />
+<text  x="386.49" y="175.5" ></text>
+</g>
+<g >
+<title>lj_alloc_f (1 samples, 0.01%)</title><rect x="46.7" y="53" width="0.2" height="15.0" fill="rgb(239,185,48)" rx="2" ry="2" />
+<text  x="49.73" y="63.5" ></text>
+</g>
+<g >
+<title>__libc_start_main (9,838 samples, 98.48%)</title><rect x="27.4" y="565" width="1162.0" height="15.0" fill="rgb(231,21,19)" rx="2" ry="2" />
+<text  x="30.36" y="575.5" >__libc_start_main</text>
+</g>
+<g >
+<title>0x7fee3efd5c49 (1 samples, 0.01%)</title><rect x="10.6" y="581" width="0.1" height="15.0" fill="rgb(219,34,5)" rx="2" ry="2" />
+<text  x="13.59" y="591.5" ></text>
+</g>
+<g >
+<title>lj_alloc_free (15 samples, 0.15%)</title><rect x="383.8" y="149" width="1.8" height="15.0" fill="rgb(237,136,43)" rx="2" ry="2" />
+<text  x="386.84" y="159.5" ></text>
+</g>
+<g >
+<title>lj_tab_free (4 samples, 0.04%)</title><rect x="51.2" y="181" width="0.5" height="15.0" fill="rgb(246,104,29)" rx="2" ry="2" />
+<text  x="54.22" y="191.5" ></text>
+</g>
+<g >
+<title>cast_uint64p (1 samples, 0.01%)</title><rect x="52.5" y="181" width="0.1" height="15.0" fill="rgb(227,176,50)" rx="2" ry="2" />
+<text  x="55.52" y="191.5" ></text>
+</g>
+<g >
+<title>func_newL (10 samples, 0.10%)</title><rect x="33.2" y="229" width="1.1" height="15.0" fill="rgb(221,185,26)" rx="2" ry="2" />
+<text  x="36.15" y="239.5" ></text>
+</g>
+<g >
+<title>counthash (1 samples, 0.01%)</title><rect x="15.9" y="533" width="0.1" height="15.0" fill="rgb(236,123,51)" rx="2" ry="2" />
+<text  x="18.91" y="543.5" ></text>
+</g>
+<g >
+<title>lj_BC_UCLO (3 samples, 0.03%)</title><rect x="394.2" y="261" width="0.4" height="15.0" fill="rgb(205,84,2)" rx="2" ry="2" />
+<text  x="397.24" y="271.5" ></text>
+</g>
+<g >
+<title>treatstackoption (4 samples, 0.04%)</title><rect x="40.9" y="229" width="0.5" height="15.0" fill="rgb(235,103,31)" rx="2" ry="2" />
+<text  x="43.95" y="239.5" ></text>
+</g>
+<g >
+<title>lj_state_new (7 samples, 0.07%)</title><rect x="93.9" y="197" width="0.8" height="15.0" fill="rgb(225,4,47)" rx="2" ry="2" />
+<text  x="96.86" y="207.5" ></text>
+</g>
+<g >
+<title>_read_string (11 samples, 0.11%)</title><rect x="57.2" y="165" width="1.3" height="15.0" fill="rgb(241,228,42)" rx="2" ry="2" />
+<text  x="60.25" y="175.5" ></text>
+</g>
+<g >
+<title>0x7fee3efd8d9a (1 samples, 0.01%)</title><rect x="13.1" y="581" width="0.1" height="15.0" fill="rgb(215,20,5)" rx="2" ry="2" />
+<text  x="16.07" y="591.5" ></text>
+</g>
+<g >
+<title>cp_expr_sub (4 samples, 0.04%)</title><rect x="44.8" y="85" width="0.5" height="15.0" fill="rgb(245,122,18)" rx="2" ry="2" />
+<text  x="47.84" y="95.5" ></text>
+</g>
+<g >
+<title>lj_tab_get (10 samples, 0.10%)</title><rect x="401.0" y="229" width="1.2" height="15.0" fill="rgb(205,89,20)" rx="2" ry="2" />
+<text  x="403.97" y="239.5" ></text>
+</g>
+<g >
+<title>lj_vmeta_call (2 samples, 0.02%)</title><rect x="399.9" y="261" width="0.2" height="15.0" fill="rgb(223,54,13)" rx="2" ry="2" />
+<text  x="402.91" y="271.5" ></text>
+</g>
+<g >
+<title>lj_strfmt_number (2 samples, 0.02%)</title><rect x="396.6" y="213" width="0.2" height="15.0" fill="rgb(228,62,51)" rx="2" ry="2" />
+<text  x="399.60" y="223.5" ></text>
+</g>
+<g >
+<title>cp_ident (1 samples, 0.01%)</title><rect x="44.4" y="85" width="0.1" height="15.0" fill="rgb(236,81,50)" rx="2" ry="2" />
+<text  x="47.37" y="95.5" ></text>
+</g>
+<g >
+<title>api_call_base (1 samples, 0.01%)</title><rect x="28.8" y="261" width="0.1" height="15.0" fill="rgb(228,63,22)" rx="2" ry="2" />
+<text  x="31.78" y="271.5" ></text>
+</g>
+<g >
+<title>lj_alloc_f (1 samples, 0.01%)</title><rect x="1176.9" y="197" width="0.1" height="15.0" fill="rgb(216,51,44)" rx="2" ry="2" />
+<text  x="1179.89" y="207.5" ></text>
+</g>
+<g >
+<title>ngx_stream_lua_socket_read_handler (9,838 samples, 98.48%)</title><rect x="27.4" y="405" width="1162.0" height="15.0" fill="rgb(241,36,9)" rx="2" ry="2" />
+<text  x="30.36" y="415.5" >ngx_stream_lua_socket_read_handler</text>
+</g>
+<g >
+<title>gc_sweep (19 samples, 0.19%)</title><rect x="73.3" y="117" width="2.3" height="15.0" fill="rgb(234,101,29)" rx="2" ry="2" />
+<text  x="76.31" y="127.5" ></text>
+</g>
+<g >
+<title>lj_alloc_f (1 samples, 0.01%)</title><rect x="397.4" y="181" width="0.1" height="15.0" fill="rgb(238,226,54)" rx="2" ry="2" />
+<text  x="400.43" y="191.5" ></text>
+</g>
+<g >
+<title>lj_cf_ffi_new (50 samples, 0.50%)</title><rect x="43.3" y="245" width="5.9" height="15.0" fill="rgb(240,73,49)" rx="2" ry="2" />
+<text  x="46.31" y="255.5" ></text>
+</g>
+<g >
+<title>0x7fee3efdd366 (1 samples, 0.01%)</title><rect x="16.9" y="581" width="0.1" height="15.0" fill="rgb(228,152,45)" rx="2" ry="2" />
+<text  x="19.85" y="591.5" ></text>
+</g>
+<g >
+<title>lj_tab_setstr (1 samples, 0.01%)</title><rect x="16.4" y="501" width="0.1" height="15.0" fill="rgb(230,205,51)" rx="2" ry="2" />
+<text  x="19.38" y="511.5" ></text>
+</g>
+<g >
+<title>0x7fee3efd8eb7 (1 samples, 0.01%)</title><rect x="13.2" y="581" width="0.1" height="15.0" fill="rgb(230,144,33)" rx="2" ry="2" />
+<text  x="16.19" y="591.5" ></text>
+</g>
+<g >
+<title>lj_tab_newkey (4 samples, 0.04%)</title><rect x="56.7" y="149" width="0.4" height="15.0" fill="rgb(243,52,51)" rx="2" ry="2" />
+<text  x="59.66" y="159.5" ></text>
+</g>
+<g >
+<title>0x7fee0bae8380 (1 samples, 0.01%)</title><rect x="10.0" y="581" width="0.1" height="15.0" fill="rgb(237,73,2)" rx="2" ry="2" />
+<text  x="13.00" y="591.5" ></text>
+</g>
+<g >
+<title>treatstackoption (1 samples, 0.01%)</title><rect x="1176.8" y="245" width="0.1" height="15.0" fill="rgb(220,90,50)" rx="2" ry="2" />
+<text  x="1179.77" y="255.5" ></text>
+</g>
+<g >
+<title>lj_buf_tostr (1 samples, 0.01%)</title><rect x="12.4" y="565" width="0.1" height="15.0" fill="rgb(237,173,46)" rx="2" ry="2" />
+<text  x="15.36" y="575.5" ></text>
+</g>
+<g >
+<title>lj_tab_set (1 samples, 0.01%)</title><rect x="16.4" y="517" width="0.1" height="15.0" fill="rgb(236,110,41)" rx="2" ry="2" />
+<text  x="19.38" y="527.5" ></text>
+</g>
+<g >
+<title>newtab (1 samples, 0.01%)</title><rect x="56.5" y="149" width="0.2" height="15.0" fill="rgb(251,94,38)" rx="2" ry="2" />
+<text  x="59.54" y="159.5" ></text>
+</g>
+<g >
+<title>lj_tab_setinth (1 samples, 0.01%)</title><rect x="1177.0" y="245" width="0.1" height="15.0" fill="rgb(207,64,47)" rx="2" ry="2" />
+<text  x="1180.01" y="255.5" ></text>
+</g>
+<g >
+<title>lj_BC_IFUNCF (4 samples, 0.04%)</title><rect x="374.6" y="261" width="0.5" height="15.0" fill="rgb(232,39,49)" rx="2" ry="2" />
+<text  x="377.63" y="271.5" ></text>
+</g>
+<g >
+<title>lj_alloc_f (4 samples, 0.04%)</title><rect x="51.2" y="165" width="0.5" height="15.0" fill="rgb(239,208,4)" rx="2" ry="2" />
+<text  x="54.22" y="175.5" ></text>
+</g>
+<g >
+<title>lj_tab_resize (1 samples, 0.01%)</title><rect x="394.1" y="213" width="0.1" height="15.0" fill="rgb(221,166,51)" rx="2" ry="2" />
+<text  x="397.12" y="223.5" ></text>
+</g>
+<g >
+<title>cp_expr_ksize (4 samples, 0.04%)</title><rect x="44.8" y="117" width="0.5" height="15.0" fill="rgb(224,197,53)" rx="2" ry="2" />
+<text  x="47.84" y="127.5" ></text>
+</g>
+<g >
+<title>lj_alloc_malloc (1 samples, 0.01%)</title><rect x="46.7" y="37" width="0.2" height="15.0" fill="rgb(213,189,14)" rx="2" ry="2" />
+<text  x="49.73" y="47.5" ></text>
+</g>
+<g >
+<title>index2adr (1 samples, 0.01%)</title><rect x="60.3" y="213" width="0.1" height="15.0" fill="rgb(230,4,49)" rx="2" ry="2" />
+<text  x="63.32" y="223.5" ></text>
+</g>
+<g >
+<title>lj_alloc_malloc (1 samples, 0.01%)</title><rect x="54.1" y="133" width="0.1" height="15.0" fill="rgb(230,166,17)" rx="2" ry="2" />
+<text  x="57.06" y="143.5" ></text>
+</g>
+<g >
+<title>lj_tab_newkey (1 samples, 0.01%)</title><rect x="1177.0" y="229" width="0.1" height="15.0" fill="rgb(251,142,12)" rx="2" ry="2" />
+<text  x="1180.01" y="239.5" ></text>
+</g>
+<g >
+<title>lj_tab_newkey (4 samples, 0.04%)</title><rect x="23.1" y="565" width="0.5" height="15.0" fill="rgb(215,39,27)" rx="2" ry="2" />
+<text  x="26.11" y="575.5" ></text>
+</g>
+<g >
+<title>lj_str_new (6 samples, 0.06%)</title><rect x="38.7" y="197" width="0.7" height="15.0" fill="rgb(228,210,19)" rx="2" ry="2" />
+<text  x="41.70" y="207.5" ></text>
+</g>
+<g >
+<title>tmalloc_large (2 samples, 0.02%)</title><rect x="404.2" y="117" width="0.2" height="15.0" fill="rgb(236,128,11)" rx="2" ry="2" />
+<text  x="407.16" y="127.5" ></text>
+</g>
+<g >
+<title>lj_cconv_ct_tv (4 samples, 0.04%)</title><rect x="42.2" y="197" width="0.5" height="15.0" fill="rgb(232,157,28)" rx="2" ry="2" />
+<text  x="45.25" y="207.5" ></text>
+</g>
+<g >
+<title>cp_push (1 samples, 0.01%)</title><rect x="44.6" y="133" width="0.1" height="15.0" fill="rgb(254,211,39)" rx="2" ry="2" />
+<text  x="47.61" y="143.5" ></text>
+</g>
+<g >
+<title>gc_sweep (1 samples, 0.01%)</title><rect x="49.6" y="197" width="0.1" height="15.0" fill="rgb(229,105,10)" rx="2" ry="2" />
+<text  x="52.57" y="207.5" ></text>
+</g>
+<g >
+<title>lj_alloc_f (4 samples, 0.04%)</title><rect x="74.0" y="85" width="0.5" height="15.0" fill="rgb(223,98,54)" rx="2" ry="2" />
+<text  x="77.02" y="95.5" ></text>
+</g>
+<g >
+<title>lj_str_new (3 samples, 0.03%)</title><rect x="14.7" y="565" width="0.4" height="15.0" fill="rgb(246,46,15)" rx="2" ry="2" />
+<text  x="17.72" y="575.5" ></text>
+</g>
+<g >
+<title>release_unused_segments (1 samples, 0.01%)</title><rect x="74.5" y="53" width="0.1" height="15.0" fill="rgb(251,194,4)" rx="2" ry="2" />
+<text  x="77.49" y="63.5" ></text>
+</g>
+<g >
+<title>lj_tab_new_ah (1 samples, 0.01%)</title><rect x="56.5" y="181" width="0.2" height="15.0" fill="rgb(230,37,47)" rx="2" ry="2" />
+<text  x="59.54" y="191.5" ></text>
+</g>
+<g >
+<title>lj_buf_puttab (1 samples, 0.01%)</title><rect x="17.2" y="565" width="0.1" height="15.0" fill="rgb(248,114,31)" rx="2" ry="2" />
+<text  x="20.21" y="575.5" ></text>
+</g>
+<g >
+<title>lj_str_hash (1 samples, 0.01%)</title><rect x="22.3" y="533" width="0.1" height="15.0" fill="rgb(209,129,2)" rx="2" ry="2" />
+<text  x="25.28" y="543.5" ></text>
+</g>
+<g >
+<title>cp_opt (3 samples, 0.03%)</title><rect x="45.4" y="133" width="0.4" height="15.0" fill="rgb(253,161,23)" rx="2" ry="2" />
+<text  x="48.44" y="143.5" ></text>
+</g>
+<g >
+<title>lua_pushstring (6 samples, 0.06%)</title><rect x="38.7" y="213" width="0.7" height="15.0" fill="rgb(206,213,53)" rx="2" ry="2" />
+<text  x="41.70" y="223.5" ></text>
+</g>
+<g >
+<title>lj_mem_realloc (1 samples, 0.01%)</title><rect x="13.9" y="533" width="0.1" height="15.0" fill="rgb(236,64,47)" rx="2" ry="2" />
+<text  x="16.90" y="543.5" ></text>
+</g>
+<g >
+<title>lj_str_new (2 samples, 0.02%)</title><rect x="18.7" y="549" width="0.3" height="15.0" fill="rgb(208,3,3)" rx="2" ry="2" />
+<text  x="21.74" y="559.5" ></text>
+</g>
+<g >
+<title>cp_push_type (1 samples, 0.01%)</title><rect x="44.7" y="133" width="0.1" height="15.0" fill="rgb(248,47,40)" rx="2" ry="2" />
+<text  x="47.73" y="143.5" ></text>
+</g>
+<g >
+<title>lj_str_new (3 samples, 0.03%)</title><rect x="397.2" y="213" width="0.3" height="15.0" fill="rgb(243,210,29)" rx="2" ry="2" />
+<text  x="400.19" y="223.5" ></text>
+</g>
+<g >
+<title>ngx_unix_send (118 samples, 1.18%)</title><rect x="78.0" y="213" width="14.0" height="15.0" fill="rgb(239,211,6)" rx="2" ry="2" />
+<text  x="81.04" y="223.5" ></text>
+</g>
+<g >
+<title>ngx_epoll_process_events (9,838 samples, 98.48%)</title><rect x="27.4" y="453" width="1162.0" height="15.0" fill="rgb(232,198,7)" rx="2" ry="2" />
+<text  x="30.36" y="463.5" >ngx_epoll_process_events</text>
+</g>
+<g >
+<title>gc_traverse_thread (1 samples, 0.01%)</title><rect x="51.8" y="181" width="0.1" height="15.0" fill="rgb(247,221,19)" rx="2" ry="2" />
+<text  x="54.81" y="191.5" ></text>
+</g>
+<g >
+<title>lj_cf_table_insert (1 samples, 0.01%)</title><rect x="1177.0" y="261" width="0.1" height="15.0" fill="rgb(230,123,24)" rx="2" ry="2" />
+<text  x="1180.01" y="271.5" ></text>
+</g>
+<g >
+<title>lj_cparse (32 samples, 0.32%)</title><rect x="43.7" y="213" width="3.7" height="15.0" fill="rgb(231,30,6)" rx="2" ry="2" />
+<text  x="46.66" y="223.5" ></text>
+</g>
+<g >
+<title>lj_lib_optint (1 samples, 0.01%)</title><rect x="396.8" y="229" width="0.2" height="15.0" fill="rgb(218,103,32)" rx="2" ry="2" />
+<text  x="399.84" y="239.5" ></text>
+</g>
+<g >
+<title>tmalloc_small (1 samples, 0.01%)</title><rect x="50.2" y="165" width="0.1" height="15.0" fill="rgb(234,22,17)" rx="2" ry="2" />
+<text  x="53.16" y="175.5" ></text>
+</g>
+<g >
+<title>0x7fee3efddb75 (1 samples, 0.01%)</title><rect x="18.6" y="581" width="0.1" height="15.0" fill="rgb(236,20,29)" rx="2" ry="2" />
+<text  x="21.62" y="591.5" ></text>
+</g>
+<g >
+<title>gc_onestep (14 samples, 0.14%)</title><rect x="19.3" y="533" width="1.7" height="15.0" fill="rgb(222,178,46)" rx="2" ry="2" />
+<text  x="22.33" y="543.5" ></text>
+</g>
+<g >
+<title>lj_tab_new (1 samples, 0.01%)</title><rect x="56.5" y="165" width="0.2" height="15.0" fill="rgb(220,69,48)" rx="2" ry="2" />
+<text  x="59.54" y="175.5" ></text>
+</g>
+<g >
+<title>lj_alloc_f (3 samples, 0.03%)</title><rect x="392.1" y="165" width="0.4" height="15.0" fill="rgb(250,80,9)" rx="2" ry="2" />
+<text  x="395.11" y="175.5" ></text>
+</g>
+<g >
+<title>lua_newthread (9 samples, 0.09%)</title><rect x="93.6" y="213" width="1.1" height="15.0" fill="rgb(251,186,23)" rx="2" ry="2" />
+<text  x="96.63" y="223.5" ></text>
+</g>
+<g >
+<title>gc_onestep (56 samples, 0.56%)</title><rect x="69.1" y="133" width="6.6" height="15.0" fill="rgb(214,90,23)" rx="2" ry="2" />
+<text  x="72.06" y="143.5" ></text>
+</g>
+<g >
+<title>tmalloc_large (1 samples, 0.01%)</title><rect x="1181.3" y="165" width="0.1" height="15.0" fill="rgb(246,132,20)" rx="2" ry="2" />
+<text  x="1184.26" y="175.5" ></text>
+</g>
+<g >
+<title>brk (1 samples, 0.01%)</title><rect x="59.0" y="149" width="0.1" height="15.0" fill="rgb(207,188,51)" rx="2" ry="2" />
+<text  x="62.02" y="159.5" ></text>
+</g>
+<g >
+<title>lj_meta_call (2 samples, 0.02%)</title><rect x="399.9" y="245" width="0.2" height="15.0" fill="rgb(228,125,11)" rx="2" ry="2" />
+<text  x="402.91" y="255.5" ></text>
+</g>
+<g >
+<title>lj_tab_next (1 samples, 0.01%)</title><rect x="395.8" y="245" width="0.1" height="15.0" fill="rgb(224,32,21)" rx="2" ry="2" />
+<text  x="398.77" y="255.5" ></text>
+</g>
+<g >
+<title>lj_str_new (2 samples, 0.02%)</title><rect x="15.2" y="565" width="0.2" height="15.0" fill="rgb(207,60,34)" rx="2" ry="2" />
+<text  x="18.20" y="575.5" ></text>
+</g>
+<g >
+<title>gc_sweep (2 samples, 0.02%)</title><rect x="34.5" y="181" width="0.2" height="15.0" fill="rgb(209,77,12)" rx="2" ry="2" />
+<text  x="37.45" y="191.5" ></text>
+</g>
+<g >
+<title>lj_alloc_free (4 samples, 0.04%)</title><rect x="74.0" y="69" width="0.5" height="15.0" fill="rgb(220,227,21)" rx="2" ry="2" />
+<text  x="77.02" y="79.5" ></text>
+</g>
+<g >
+<title>lj_tab_getinth (2 samples, 0.02%)</title><rect x="63.3" y="197" width="0.2" height="15.0" fill="rgb(237,27,45)" rx="2" ry="2" />
+<text  x="66.27" y="207.5" ></text>
+</g>
+<g >
+<title>lua_rawseti (1 samples, 0.01%)</title><rect x="92.8" y="213" width="0.1" height="15.0" fill="rgb(251,196,14)" rx="2" ry="2" />
+<text  x="95.80" y="223.5" ></text>
+</g>
+<g >
+<title>lj_tab_newkey (1 samples, 0.01%)</title><rect x="38.3" y="181" width="0.2" height="15.0" fill="rgb(234,148,0)" rx="2" ry="2" />
+<text  x="41.35" y="191.5" ></text>
+</g>
+<g >
+<title>0x7fee3efddf67 (1 samples, 0.01%)</title><rect x="19.1" y="581" width="0.1" height="15.0" fill="rgb(242,114,17)" rx="2" ry="2" />
+<text  x="22.10" y="591.5" ></text>
+</g>
+<g >
+<title>ngx_worker_process_cycle (9,838 samples, 98.48%)</title><rect x="27.4" y="485" width="1162.0" height="15.0" fill="rgb(237,174,30)" rx="2" ry="2" />
+<text  x="30.36" y="495.5" >ngx_worker_process_cycle</text>
+</g>
+<g >
+<title>lj_str_hash_4_16 (1 samples, 0.01%)</title><rect x="18.4" y="517" width="0.1" height="15.0" fill="rgb(217,122,4)" rx="2" ry="2" />
+<text  x="21.39" y="527.5" ></text>
+</g>
+<g >
+<title>__strlen_sse2_pminub (2 samples, 0.02%)</title><rect x="37.0" y="197" width="0.3" height="15.0" fill="rgb(224,128,11)" rx="2" ry="2" />
+<text  x="40.05" y="207.5" ></text>
+</g>
+<g >
+<title>lj_cf_table_new (10 samples, 0.10%)</title><rect x="54.3" y="245" width="1.2" height="15.0" fill="rgb(242,56,36)" rx="2" ry="2" />
+<text  x="57.29" y="255.5" ></text>
+</g>
+<g >
+<title>0x7fee3efda2bd (1 samples, 0.01%)</title><rect x="13.5" y="581" width="0.2" height="15.0" fill="rgb(223,50,47)" rx="2" ry="2" />
+<text  x="16.54" y="591.5" ></text>
+</g>
+<g >
+<title>lj_strfmt_putint (1 samples, 0.01%)</title><rect x="32.1" y="229" width="0.1" height="15.0" fill="rgb(209,197,53)" rx="2" ry="2" />
+<text  x="35.09" y="239.5" ></text>
+</g>
+<g >
+<title>lj_cconv_ct_tv (6 samples, 0.06%)</title><rect x="48.0" y="213" width="0.7" height="15.0" fill="rgb(221,183,54)" rx="2" ry="2" />
+<text  x="51.03" y="223.5" ></text>
+</g>
+<g >
+<title>lj_str_free (2 samples, 0.02%)</title><rect x="383.6" y="181" width="0.2" height="15.0" fill="rgb(246,227,9)" rx="2" ry="2" />
+<text  x="386.61" y="191.5" ></text>
+</g>
+<g >
+<title>lj_alloc_free (5 samples, 0.05%)</title><rect x="20.4" y="469" width="0.6" height="15.0" fill="rgb(217,131,3)" rx="2" ry="2" />
+<text  x="23.39" y="479.5" ></text>
+</g>
+<g >
+<title>gc_onestep (48 samples, 0.48%)</title><rect x="380.1" y="213" width="5.6" height="15.0" fill="rgb(217,162,12)" rx="2" ry="2" />
+<text  x="383.06" y="223.5" ></text>
+</g>
+<g >
+<title>lj_tab_free (3 samples, 0.03%)</title><rect x="61.5" y="149" width="0.4" height="15.0" fill="rgb(243,114,43)" rx="2" ry="2" />
+<text  x="64.50" y="159.5" ></text>
+</g>
+<g >
+<title>0x7fee3efde4fb (1 samples, 0.01%)</title><rect x="21.1" y="581" width="0.1" height="15.0" fill="rgb(225,125,31)" rx="2" ry="2" />
+<text  x="24.10" y="591.5" ></text>
+</g>
+<g >
+<title>ngx_start_worker_processes (9,838 samples, 98.48%)</title><rect x="27.4" y="517" width="1162.0" height="15.0" fill="rgb(244,115,48)" rx="2" ry="2" />
+<text  x="30.36" y="527.5" >ngx_start_worker_processes</text>
+</g>
+<g >
+<title>ngx_stream_lua_ngx_get (32 samples, 0.32%)</title><rect x="59.7" y="245" width="3.8" height="15.0" fill="rgb(245,24,49)" rx="2" ry="2" />
+<text  x="62.73" y="255.5" ></text>
+</g>
+<g >
+<title>0x7fee3efd6bef (1 samples, 0.01%)</title><rect x="11.1" y="581" width="0.1" height="15.0" fill="rgb(238,70,35)" rx="2" ry="2" />
+<text  x="14.06" y="591.5" ></text>
+</g>
+<g >
+<title>lua_pushlstring (1 samples, 0.01%)</title><rect x="58.5" y="165" width="0.2" height="15.0" fill="rgb(233,122,41)" rx="2" ry="2" />
+<text  x="61.55" y="175.5" ></text>
+</g>
+<g >
+<title>lua_tolstring (2 samples, 0.02%)</title><rect x="59.5" y="197" width="0.2" height="15.0" fill="rgb(238,223,20)" rx="2" ry="2" />
+<text  x="62.49" y="207.5" ></text>
+</g>
+<g >
+<title>gc_sweep (46 samples, 0.46%)</title><rect x="380.2" y="197" width="5.4" height="15.0" fill="rgb(243,156,27)" rx="2" ry="2" />
+<text  x="383.18" y="207.5" ></text>
+</g>
+<g >
+<title>ccall_set_args (6 samples, 0.06%)</title><rect x="42.0" y="213" width="0.7" height="15.0" fill="rgb(249,13,5)" rx="2" ry="2" />
+<text  x="45.01" y="223.5" ></text>
+</g>
+<g >
+<title>_start (9,838 samples, 98.48%)</title><rect x="27.4" y="581" width="1162.0" height="15.0" fill="rgb(210,155,35)" rx="2" ry="2" />
+<text  x="30.36" y="591.5" >_start</text>
+</g>
+<g >
+<title>lj_alloc_f (9 samples, 0.09%)</title><rect x="398.1" y="197" width="1.1" height="15.0" fill="rgb(218,194,9)" rx="2" ry="2" />
+<text  x="401.14" y="207.5" ></text>
+</g>
+<g >
+<title>_int_malloc (1 samples, 0.01%)</title><rect x="374.4" y="149" width="0.1" height="15.0" fill="rgb(217,19,37)" rx="2" ry="2" />
+<text  x="377.39" y="159.5" ></text>
+</g>
+<g >
+<title>lua_type (1 samples, 0.01%)</title><rect x="1177.2" y="229" width="0.2" height="15.0" fill="rgb(216,53,51)" rx="2" ry="2" />
+<text  x="1180.24" y="239.5" ></text>
+</g>
+<g >
+<title>ngx_stream_lua_set_req (1 samples, 0.01%)</title><rect x="373.9" y="213" width="0.1" height="15.0" fill="rgb(210,109,20)" rx="2" ry="2" />
+<text  x="376.92" y="223.5" ></text>
+</g>
+<g >
+<title>lj_gc_step (14 samples, 0.14%)</title><rect x="19.3" y="549" width="1.7" height="15.0" fill="rgb(207,122,38)" rx="2" ry="2" />
+<text  x="22.33" y="559.5" ></text>
+</g>
+<g >
+<title>0x7fee3efde81f (1 samples, 0.01%)</title><rect x="23.0" y="581" width="0.1" height="15.0" fill="rgb(242,66,24)" rx="2" ry="2" />
+<text  x="25.99" y="591.5" ></text>
+</g>
+<g >
+<title>motan_simple_deserialize_data (14 samples, 0.14%)</title><rect x="57.1" y="197" width="1.7" height="15.0" fill="rgb(215,41,11)" rx="2" ry="2" />
+<text  x="60.13" y="207.5" ></text>
+</g>
+<g >
+<title>lj_alloc_f (1 samples, 0.01%)</title><rect x="56.5" y="117" width="0.2" height="15.0" fill="rgb(232,67,42)" rx="2" ry="2" />
+<text  x="59.54" y="127.5" ></text>
+</g>
+<g >
+<title>__strncmp_sse42 (2 samples, 0.02%)</title><rect x="60.0" y="229" width="0.2" height="15.0" fill="rgb(235,141,20)" rx="2" ry="2" />
+<text  x="62.96" y="239.5" ></text>
+</g>
+<g >
+<title>lj_mem_realloc (1 samples, 0.01%)</title><rect x="18.9" y="533" width="0.1" height="15.0" fill="rgb(207,51,25)" rx="2" ry="2" />
+<text  x="21.86" y="543.5" ></text>
+</g>
+<g >
+<title>lua_gettop (4 samples, 0.04%)</title><rect x="55.8" y="229" width="0.5" height="15.0" fill="rgb(234,174,21)" rx="2" ry="2" />
+<text  x="58.83" y="239.5" ></text>
+</g>
+<g >
+<title>lj_str_new (13 samples, 0.13%)</title><rect x="39.4" y="197" width="1.5" height="15.0" fill="rgb(254,95,28)" rx="2" ry="2" />
+<text  x="42.41" y="207.5" ></text>
+</g>
+<g >
+<title>lj_alloc_malloc (3 samples, 0.03%)</title><rect x="392.6" y="181" width="0.3" height="15.0" fill="rgb(208,62,7)" rx="2" ry="2" />
+<text  x="395.58" y="191.5" ></text>
+</g>
+<g >
+<title>lj_BC_CALL (9 samples, 0.09%)</title><rect x="28.9" y="261" width="1.1" height="15.0" fill="rgb(241,124,12)" rx="2" ry="2" />
+<text  x="31.90" y="271.5" ></text>
+</g>
+<g >
+<title>lj_cconv_ct_ct (6 samples, 0.06%)</title><rect x="48.0" y="197" width="0.7" height="15.0" fill="rgb(209,57,16)" rx="2" ry="2" />
+<text  x="51.03" y="207.5" ></text>
+</g>
+<g >
+<title>recv (1 samples, 0.01%)</title><rect x="10.0" y="565" width="0.1" height="15.0" fill="rgb(218,120,1)" rx="2" ry="2" />
+<text  x="13.00" y="575.5" ></text>
+</g>
+<g >
+<title>lj_meta_lookup (1 samples, 0.01%)</title><rect x="400.0" y="229" width="0.1" height="15.0" fill="rgb(229,55,32)" rx="2" ry="2" />
+<text  x="403.03" y="239.5" ></text>
+</g>
+<g >
+<title>lj_vm_cpcall (1 samples, 0.01%)</title><rect x="10.1" y="565" width="0.1" height="15.0" fill="rgb(253,178,2)" rx="2" ry="2" />
+<text  x="13.12" y="575.5" ></text>
+</g>
+<g >
+<title>cp_number (3 samples, 0.03%)</title><rect x="45.4" y="85" width="0.4" height="15.0" fill="rgb(222,115,42)" rx="2" ry="2" />
+<text  x="48.44" y="95.5" ></text>
+</g>
+<g >
+<title>lua_rawget (1 samples, 0.01%)</title><rect x="92.9" y="229" width="0.1" height="15.0" fill="rgb(251,43,34)" rx="2" ry="2" />
+<text  x="95.92" y="239.5" ></text>
+</g>
+<g >
+<title>lj_alloc_free (3 samples, 0.03%)</title><rect x="383.1" y="149" width="0.4" height="15.0" fill="rgb(236,195,8)" rx="2" ry="2" />
+<text  x="386.14" y="159.5" ></text>
+</g>
+<g >
+<title>lj_obj_equal (2 samples, 0.02%)</title><rect x="401.3" y="213" width="0.3" height="15.0" fill="rgb(231,167,34)" rx="2" ry="2" />
+<text  x="404.33" y="223.5" ></text>
+</g>
+<g >
+<title>lj_str_hash (1 samples, 0.01%)</title><rect x="38.6" y="181" width="0.1" height="15.0" fill="rgb(244,134,23)" rx="2" ry="2" />
+<text  x="41.58" y="191.5" ></text>
+</g>
+<g >
+<title>lj_alloc_f (1 samples, 0.01%)</title><rect x="26.1" y="485" width="0.1" height="15.0" fill="rgb(211,97,3)" rx="2" ry="2" />
+<text  x="29.06" y="495.5" ></text>
+</g>
+<g >
+<title>lj_alloc_malloc (4 samples, 0.04%)</title><rect x="94.2" y="133" width="0.5" height="15.0" fill="rgb(247,65,28)" rx="2" ry="2" />
+<text  x="97.22" y="143.5" ></text>
+</g>
+<g >
+<title>resizestack (10 samples, 0.10%)</title><rect x="398.0" y="229" width="1.2" height="15.0" fill="rgb(225,102,32)" rx="2" ry="2" />
+<text  x="401.02" y="239.5" ></text>
+</g>
+<g >
+<title>lua_setexdata (1 samples, 0.01%)</title><rect x="373.9" y="197" width="0.1" height="15.0" fill="rgb(217,82,39)" rx="2" ry="2" />
+<text  x="376.92" y="207.5" ></text>
+</g>
+<g >
+<title>lj_cont_dispatch (2 samples, 0.02%)</title><rect x="395.2" y="261" width="0.2" height="15.0" fill="rgb(221,122,47)" rx="2" ry="2" />
+<text  x="398.18" y="271.5" ></text>
+</g>
+<g >
+<title>gc_traverse_thread (1 samples, 0.01%)</title><rect x="61.9" y="149" width="0.1" height="15.0" fill="rgb(207,211,6)" rx="2" ry="2" />
+<text  x="64.85" y="159.5" ></text>
+</g>
+<g >
+<title>cconv_childqual (3 samples, 0.03%)</title><rect x="42.4" y="149" width="0.3" height="15.0" fill="rgb(253,50,28)" rx="2" ry="2" />
+<text  x="45.36" y="159.5" ></text>
+</g>
+<g >
+<title>lj_cf_ffi_clib___index (3 samples, 0.03%)</title><rect x="41.4" y="245" width="0.4" height="15.0" fill="rgb(254,173,46)" rx="2" ry="2" />
+<text  x="44.42" y="255.5" ></text>
+</g>
+<g >
+<title>lj_meta_tset (3 samples, 0.03%)</title><rect x="38.1" y="197" width="0.4" height="15.0" fill="rgb(215,19,42)" rx="2" ry="2" />
+<text  x="41.11" y="207.5" ></text>
+</g>
+<g >
+<title>ngx_palloc (4 samples, 0.04%)</title><rect x="374.0" y="213" width="0.5" height="15.0" fill="rgb(207,124,51)" rx="2" ry="2" />
+<text  x="377.04" y="223.5" ></text>
+</g>
+<g >
+<title>lua_gettop (1 samples, 0.01%)</title><rect x="28.1" y="277" width="0.1" height="15.0" fill="rgb(212,200,29)" rx="2" ry="2" />
+<text  x="31.07" y="287.5" ></text>
+</g>
+<g >
+<title>ngx_stream_lua_ngx_log (2 samples, 0.02%)</title><rect x="63.5" y="245" width="0.2" height="15.0" fill="rgb(236,0,27)" rx="2" ry="2" />
+<text  x="66.51" y="255.5" ></text>
+</g>
+<g >
+<title>lj_alloc_f (2 samples, 0.02%)</title><rect x="54.1" y="149" width="0.2" height="15.0" fill="rgb(217,24,31)" rx="2" ry="2" />
+<text  x="57.06" y="159.5" ></text>
+</g>
+<g >
+<title>lj_mem_realloc (2 samples, 0.02%)</title><rect x="54.1" y="165" width="0.2" height="15.0" fill="rgb(206,141,20)" rx="2" ry="2" />
+<text  x="57.06" y="175.5" ></text>
+</g>
+<g >
+<title>tmalloc_small (3 samples, 0.03%)</title><rect x="32.8" y="165" width="0.4" height="15.0" fill="rgb(217,190,36)" rx="2" ry="2" />
+<text  x="35.80" y="175.5" ></text>
+</g>
+<g >
+<title>lj_BC_LEN (4 samples, 0.04%)</title><rect x="378.1" y="261" width="0.4" height="15.0" fill="rgb(216,21,16)" rx="2" ry="2" />
+<text  x="381.06" y="271.5" ></text>
+</g>
+<g >
+<title>rehashtab (2 samples, 0.02%)</title><rect x="25.7" y="549" width="0.2" height="15.0" fill="rgb(241,159,27)" rx="2" ry="2" />
+<text  x="28.71" y="559.5" ></text>
+</g>
+<g >
+<title>lj_tab_new_ah (6 samples, 0.06%)</title><rect x="35.9" y="213" width="0.7" height="15.0" fill="rgb(236,115,4)" rx="2" ry="2" />
+<text  x="38.87" y="223.5" ></text>
+</g>
+<g >
+<title>lua_pushvalue (1 samples, 0.01%)</title><rect x="40.9" y="213" width="0.2" height="15.0" fill="rgb(224,71,33)" rx="2" ry="2" />
+<text  x="43.95" y="223.5" ></text>
+</g>
+<g >
+<title>lj_tab_free (1 samples, 0.01%)</title><rect x="26.1" y="501" width="0.1" height="15.0" fill="rgb(242,26,4)" rx="2" ry="2" />
+<text  x="29.06" y="511.5" ></text>
+</g>
+<g >
+<title>lj_ctype_info (1 samples, 0.01%)</title><rect x="49.1" y="229" width="0.1" height="15.0" fill="rgb(223,37,50)" rx="2" ry="2" />
+<text  x="52.10" y="239.5" ></text>
+</g>
+<g >
+<title>lj_tab_new_ah (3 samples, 0.03%)</title><rect x="55.5" y="213" width="0.3" height="15.0" fill="rgb(249,83,35)" rx="2" ry="2" />
+<text  x="58.48" y="223.5" ></text>
+</g>
+<g >
+<title>newtab (4 samples, 0.04%)</title><rect x="392.5" y="229" width="0.4" height="15.0" fill="rgb(228,76,47)" rx="2" ry="2" />
+<text  x="395.47" y="239.5" ></text>
+</g>
+<g >
+<title>ngx_stream_lua_uthread_spawn (2,392 samples, 23.94%)</title><rect x="92.0" y="245" width="282.5" height="15.0" fill="rgb(228,2,36)" rx="2" ry="2" />
+<text  x="94.97" y="255.5" >ngx_stream_lua_uthread_spawn</text>
+</g>
+<g >
+<title>0x7fee3efdf5e3 (2 samples, 0.02%)</title><rect x="25.7" y="581" width="0.2" height="15.0" fill="rgb(208,220,20)" rx="2" ry="2" />
+<text  x="28.71" y="591.5" ></text>
+</g>
+<g >
+<title>lj_alloc_f (2 samples, 0.02%)</title><rect x="383.6" y="165" width="0.2" height="15.0" fill="rgb(207,45,42)" rx="2" ry="2" />
+<text  x="386.61" y="175.5" ></text>
+</g>
+<g >
+<title>newtab (9 samples, 0.09%)</title><rect x="54.4" y="181" width="1.1" height="15.0" fill="rgb(206,45,10)" rx="2" ry="2" />
+<text  x="57.41" y="191.5" ></text>
+</g>
+<g >
+<title>lj_state_growstack (1 samples, 0.01%)</title><rect x="1181.3" y="261" width="0.1" height="15.0" fill="rgb(221,16,51)" rx="2" ry="2" />
+<text  x="1184.26" y="271.5" ></text>
+</g>
+<g >
+<title>settabsi (8 samples, 0.08%)</title><rect x="37.8" y="229" width="0.9" height="15.0" fill="rgb(222,48,53)" rx="2" ry="2" />
+<text  x="40.76" y="239.5" ></text>
+</g>
+<g >
+<title>lj_str_new (2 samples, 0.02%)</title><rect x="11.2" y="549" width="0.2" height="15.0" fill="rgb(238,112,1)" rx="2" ry="2" />
+<text  x="14.18" y="559.5" ></text>
+</g>
+<g >
+<title>0x7fee3efdc13c (1 samples, 0.01%)</title><rect x="15.4" y="581" width="0.2" height="15.0" fill="rgb(252,216,44)" rx="2" ry="2" />
+<text  x="18.43" y="591.5" ></text>
+</g>
+<g >
+<title>lj_alloc_free (1 samples, 0.01%)</title><rect x="20.2" y="469" width="0.1" height="15.0" fill="rgb(240,85,0)" rx="2" ry="2" />
+<text  x="23.16" y="479.5" ></text>
+</g>
+<g >
+<title>lj_alloc_f (1 samples, 0.01%)</title><rect x="18.9" y="517" width="0.1" height="15.0" fill="rgb(212,104,44)" rx="2" ry="2" />
+<text  x="21.86" y="527.5" ></text>
+</g>
+<g >
+<title>lj_str_new (3 samples, 0.03%)</title><rect x="18.2" y="549" width="0.3" height="15.0" fill="rgb(238,162,22)" rx="2" ry="2" />
+<text  x="21.15" y="559.5" ></text>
+</g>
+<g >
+<title>ngx_alloc (3 samples, 0.03%)</title><rect x="374.2" y="181" width="0.3" height="15.0" fill="rgb(229,175,18)" rx="2" ry="2" />
+<text  x="377.16" y="191.5" ></text>
+</g>
+<g >
+<title>0x7fee3efdf1ce (6 samples, 0.06%)</title><rect x="24.8" y="581" width="0.7" height="15.0" fill="rgb(209,181,24)" rx="2" ry="2" />
+<text  x="27.76" y="591.5" ></text>
+</g>
+<g >
+<title>lj_gc_step_fixtop (3 samples, 0.03%)</title><rect x="34.3" y="229" width="0.4" height="15.0" fill="rgb(254,79,24)" rx="2" ry="2" />
+<text  x="37.33" y="239.5" ></text>
+</g>
+<g >
+<title>ngx_stream_lua_coroutine_create_helper (30 samples, 0.30%)</title><rect x="1177.6" y="245" width="3.5" height="15.0" fill="rgb(220,156,47)" rx="2" ry="2" />
+<text  x="1180.60" y="255.5" ></text>
+</g>
+<g >
+<title>lj_BC_GGET (1 samples, 0.01%)</title><rect x="374.5" y="261" width="0.1" height="15.0" fill="rgb(249,116,41)" rx="2" ry="2" />
+<text  x="377.51" y="271.5" ></text>
+</g>
+<g >
+<title>lj_alloc_malloc (9 samples, 0.09%)</title><rect x="54.4" y="133" width="1.1" height="15.0" fill="rgb(219,86,32)" rx="2" ry="2" />
+<text  x="57.41" y="143.5" ></text>
+</g>
+<g >
+<title>ngx_stream_lua_socket_push_input_data (80 samples, 0.80%)</title><rect x="67.6" y="213" width="9.5" height="15.0" fill="rgb(222,75,48)" rx="2" ry="2" />
+<text  x="70.64" y="223.5" ></text>
+</g>
+<g >
+<title>lj_alloc_malloc (1 samples, 0.01%)</title><rect x="397.4" y="165" width="0.1" height="15.0" fill="rgb(248,157,14)" rx="2" ry="2" />
+<text  x="400.43" y="175.5" ></text>
+</g>
+<g >
+<title>lj_mem_newgco (4 samples, 0.04%)</title><rect x="392.5" y="213" width="0.4" height="15.0" fill="rgb(229,68,40)" rx="2" ry="2" />
+<text  x="395.47" y="223.5" ></text>
+</g>
+<g >
+<title>0x7fee3efdf9e8 (3 samples, 0.03%)</title><rect x="26.9" y="581" width="0.3" height="15.0" fill="rgb(211,213,48)" rx="2" ry="2" />
+<text  x="29.89" y="591.5" ></text>
+</g>
+<g >
+<title>cp_add (1 samples, 0.01%)</title><rect x="44.6" y="117" width="0.1" height="15.0" fill="rgb(244,176,22)" rx="2" ry="2" />
+<text  x="47.61" y="127.5" ></text>
+</g>
+<g >
+<title>luaL_checklstring (2 samples, 0.02%)</title><rect x="60.2" y="229" width="0.2" height="15.0" fill="rgb(209,18,40)" rx="2" ry="2" />
+<text  x="63.20" y="239.5" ></text>
+</g>
+<g >
+<title>cp_next_ (3 samples, 0.03%)</title><rect x="45.4" y="101" width="0.4" height="15.0" fill="rgb(244,124,5)" rx="2" ry="2" />
+<text  x="48.44" y="111.5" ></text>
+</g>
+<g >
+<title>propagatemark (1 samples, 0.01%)</title><rect x="75.6" y="117" width="0.1" height="15.0" fill="rgb(213,206,41)" rx="2" ry="2" />
+<text  x="78.56" y="127.5" ></text>
+</g>
+<g >
+<title>gc_onestep (4 samples, 0.04%)</title><rect x="392.0" y="213" width="0.5" height="15.0" fill="rgb(210,152,23)" rx="2" ry="2" />
+<text  x="394.99" y="223.5" ></text>
+</g>
+<g >
+<title>lj_BC_JFUNCF (1 samples, 0.01%)</title><rect x="375.7" y="261" width="0.1" height="15.0" fill="rgb(215,221,31)" rx="2" ry="2" />
+<text  x="378.69" y="271.5" ></text>
+</g>
+<g >
+<title>lj_debug_shortname (3 samples, 0.03%)</title><rect x="35.4" y="213" width="0.3" height="15.0" fill="rgb(219,118,2)" rx="2" ry="2" />
+<text  x="38.40" y="223.5" ></text>
+</g>
+<g >
+<title>lj_str_new (3 samples, 0.03%)</title><rect x="26.9" y="565" width="0.3" height="15.0" fill="rgb(205,152,16)" rx="2" ry="2" />
+<text  x="29.89" y="575.5" ></text>
+</g>
+<g >
+<title>lj_cf_table_insert (12 samples, 0.12%)</title><rect x="52.9" y="245" width="1.4" height="15.0" fill="rgb(211,188,53)" rx="2" ry="2" />
+<text  x="55.88" y="255.5" ></text>
+</g>
+<g >
+<title>lj_tab_setstr (1 samples, 0.01%)</title><rect x="41.7" y="197" width="0.1" height="15.0" fill="rgb(252,198,42)" rx="2" ry="2" />
+<text  x="44.66" y="207.5" ></text>
+</g>
+<g >
+<title>cp_cleanup (1 samples, 0.01%)</title><rect x="1176.9" y="213" width="0.1" height="15.0" fill="rgb(227,86,14)" rx="2" ry="2" />
+<text  x="1179.89" y="223.5" ></text>
+</g>
+<g >
+<title>newtab (2 samples, 0.02%)</title><rect x="13.8" y="549" width="0.2" height="15.0" fill="rgb(221,103,39)" rx="2" ry="2" />
+<text  x="16.78" y="559.5" ></text>
+</g>
+<g >
+<title>lj_cconv_tv_ct (1 samples, 0.01%)</title><rect x="41.9" y="197" width="0.1" height="15.0" fill="rgb(239,64,1)" rx="2" ry="2" />
+<text  x="44.89" y="207.5" ></text>
+</g>
+<g >
+<title>lj_tab_get (2 samples, 0.02%)</title><rect x="62.6" y="197" width="0.2" height="15.0" fill="rgb(209,189,29)" rx="2" ry="2" />
+<text  x="65.56" y="207.5" ></text>
+</g>
+<g >
+<title>0x7fee3efde8c3 (1 samples, 0.01%)</title><rect x="23.6" y="581" width="0.1" height="15.0" fill="rgb(248,207,32)" rx="2" ry="2" />
+<text  x="26.58" y="591.5" ></text>
+</g>
+<g >
+<title>cast_uint64p (1 samples, 0.01%)</title><rect x="25.4" y="501" width="0.1" height="15.0" fill="rgb(223,145,37)" rx="2" ry="2" />
+<text  x="28.36" y="511.5" ></text>
+</g>
+<g >
+<title>0x7fee3efdada7 (1 samples, 0.01%)</title><rect x="14.4" y="581" width="0.1" height="15.0" fill="rgb(233,151,6)" rx="2" ry="2" />
+<text  x="17.37" y="591.5" ></text>
+</g>
+<g >
+<title>newtab (3 samples, 0.03%)</title><rect x="36.2" y="181" width="0.4" height="15.0" fill="rgb(254,56,4)" rx="2" ry="2" />
+<text  x="39.22" y="191.5" ></text>
+</g>
+<g >
+<title>lua_rawgeti (6 samples, 0.06%)</title><rect x="62.8" y="213" width="0.7" height="15.0" fill="rgb(249,58,13)" rx="2" ry="2" />
+<text  x="65.80" y="223.5" ></text>
+</g>
+<g >
+<title>0x7fee3efd89ce (1 samples, 0.01%)</title><rect x="12.6" y="581" width="0.1" height="15.0" fill="rgb(228,70,36)" rx="2" ry="2" />
+<text  x="15.60" y="591.5" ></text>
+</g>
+<g >
+<title>lj_tab_free (15 samples, 0.15%)</title><rect x="383.8" y="181" width="1.8" height="15.0" fill="rgb(232,64,40)" rx="2" ry="2" />
+<text  x="386.84" y="191.5" ></text>
+</g>
+<g >
+<title>lj_str_new (10 samples, 0.10%)</title><rect x="57.4" y="133" width="1.1" height="15.0" fill="rgb(252,159,25)" rx="2" ry="2" />
+<text  x="60.37" y="143.5" ></text>
+</g>
+<g >
+<title>0x7fee3efdf1bd (2 samples, 0.02%)</title><rect x="24.5" y="581" width="0.3" height="15.0" fill="rgb(207,9,2)" rx="2" ry="2" />
+<text  x="27.53" y="591.5" ></text>
+</g>
+<g >
+<title>ngx_stream_lua_post_zombie_thread (2 samples, 0.02%)</title><rect x="1189.4" y="581" width="0.2" height="15.0" fill="rgb(212,124,38)" rx="2" ry="2" />
+<text  x="1192.41" y="591.5" ></text>
+</g>
+<g >
+<title>gc_sweep (4 samples, 0.04%)</title><rect x="392.0" y="197" width="0.5" height="15.0" fill="rgb(248,0,17)" rx="2" ry="2" />
+<text  x="394.99" y="207.5" ></text>
+</g>
+<g >
+<title>lj_BC_FNEW (21 samples, 0.21%)</title><rect x="32.2" y="261" width="2.5" height="15.0" fill="rgb(232,92,29)" rx="2" ry="2" />
+<text  x="35.21" y="271.5" ></text>
+</g>
+<g >
+<title>__memcpy_ssse3_back (1 samples, 0.01%)</title><rect x="25.8" y="469" width="0.1" height="15.0" fill="rgb(248,123,53)" rx="2" ry="2" />
+<text  x="28.83" y="479.5" ></text>
+</g>
+<g >
+<title>lj_BC_IST (3 samples, 0.03%)</title><rect x="375.3" y="261" width="0.4" height="15.0" fill="rgb(239,130,29)" rx="2" ry="2" />
+<text  x="378.34" y="271.5" ></text>
+</g>
+<g >
+<title>lj_alloc_f (6 samples, 0.06%)</title><rect x="386.7" y="197" width="0.7" height="15.0" fill="rgb(245,223,22)" rx="2" ry="2" />
+<text  x="389.68" y="207.5" ></text>
+</g>
+<g >
+<title>ngx_stream_lua_post_thread (4 samples, 0.04%)</title><rect x="374.0" y="229" width="0.5" height="15.0" fill="rgb(227,208,23)" rx="2" ry="2" />
+<text  x="377.04" y="239.5" ></text>
+</g>
+<g >
+<title>cp_next (1 samples, 0.01%)</title><rect x="44.4" y="117" width="0.1" height="15.0" fill="rgb(227,141,49)" rx="2" ry="2" />
+<text  x="47.37" y="127.5" ></text>
+</g>
+<g >
+<title>_int_malloc (3 samples, 0.03%)</title><rect x="59.1" y="197" width="0.4" height="15.0" fill="rgb(229,88,28)" rx="2" ry="2" />
+<text  x="62.14" y="207.5" ></text>
+</g>
+<g >
+<title>ngx_stream_lua_ngx_worker_exiting (2 samples, 0.02%)</title><rect x="63.9" y="245" width="0.2" height="15.0" fill="rgb(252,204,12)" rx="2" ry="2" />
+<text  x="66.86" y="255.5" ></text>
+</g>
+<g >
+<title>hashkey (1 samples, 0.01%)</title><rect x="393.9" y="229" width="0.1" height="15.0" fill="rgb(209,82,40)" rx="2" ry="2" />
+<text  x="396.88" y="239.5" ></text>
+</g>
+<g >
+<title>lj_alloc_f (1 samples, 0.01%)</title><rect x="50.2" y="197" width="0.1" height="15.0" fill="rgb(246,215,0)" rx="2" ry="2" />
+<text  x="53.16" y="207.5" ></text>
+</g>
+<g >
+<title>lj_mem_newgco (3 samples, 0.03%)</title><rect x="386.1" y="213" width="0.3" height="15.0" fill="rgb(223,26,16)" rx="2" ry="2" />
+<text  x="389.09" y="223.5" ></text>
+</g>
+<g >
+<title>ngx_spawn_process (9,838 samples, 98.48%)</title><rect x="27.4" y="501" width="1162.0" height="15.0" fill="rgb(235,197,32)" rx="2" ry="2" />
+<text  x="30.36" y="511.5" >ngx_spawn_process</text>
+</g>
+<g >
+<title>lj_func_freeuv (1 samples, 0.01%)</title><rect x="20.3" y="501" width="0.1" height="15.0" fill="rgb(213,197,33)" rx="2" ry="2" />
+<text  x="23.28" y="511.5" ></text>
+</g>
+<g >
+<title>lj_vmeta_arith_vno (2 samples, 0.02%)</title><rect x="399.2" y="261" width="0.2" height="15.0" fill="rgb(214,206,44)" rx="2" ry="2" />
+<text  x="402.20" y="271.5" ></text>
+</g>
+<g >
+<title>release_unused_segments (1 samples, 0.01%)</title><rect x="75.4" y="53" width="0.2" height="15.0" fill="rgb(233,214,3)" rx="2" ry="2" />
+<text  x="78.44" y="63.5" ></text>
+</g>
+<g >
+<title>0x7fee3efd6c00 (2 samples, 0.02%)</title><rect x="11.2" y="581" width="0.2" height="15.0" fill="rgb(239,100,46)" rx="2" ry="2" />
+<text  x="14.18" y="591.5" ></text>
+</g>
+<g >
+<title>lj_vm_foldarith (1 samples, 0.01%)</title><rect x="399.7" y="229" width="0.1" height="15.0" fill="rgb(223,183,45)" rx="2" ry="2" />
+<text  x="402.67" y="239.5" ></text>
+</g>
+<g >
+<title>lj_BC_CALL (1 samples, 0.01%)</title><rect x="1176.5" y="277" width="0.2" height="15.0" fill="rgb(242,50,39)" rx="2" ry="2" />
+<text  x="1179.53" y="287.5" ></text>
+</g>
+<g >
+<title>lj_BC_KSTR (1 samples, 0.01%)</title><rect x="377.9" y="261" width="0.2" height="15.0" fill="rgb(251,166,46)" rx="2" ry="2" />
+<text  x="380.94" y="271.5" ></text>
+</g>
+<g >
+<title>lj_alloc_f (1 samples, 0.01%)</title><rect x="13.8" y="517" width="0.1" height="15.0" fill="rgb(248,100,42)" rx="2" ry="2" />
+<text  x="16.78" y="527.5" ></text>
+</g>
+<g >
+<title>0x7fee3efdf1e7 (1 samples, 0.01%)</title><rect x="25.5" y="581" width="0.1" height="15.0" fill="rgb(219,41,22)" rx="2" ry="2" />
+<text  x="28.47" y="591.5" ></text>
+</g>
+<g >
+<title>_read_string (1 samples, 0.01%)</title><rect x="58.5" y="181" width="0.2" height="15.0" fill="rgb(254,139,39)" rx="2" ry="2" />
+<text  x="61.55" y="191.5" ></text>
+</g>
+<g >
+<title>memchr (2 samples, 0.02%)</title><rect x="26.2" y="549" width="0.2" height="15.0" fill="rgb(212,142,36)" rx="2" ry="2" />
+<text  x="29.18" y="559.5" ></text>
+</g>
+<g >
+<title>propagatemark (1 samples, 0.01%)</title><rect x="385.6" y="197" width="0.1" height="15.0" fill="rgb(226,186,51)" rx="2" ry="2" />
+<text  x="388.62" y="207.5" ></text>
+</g>
+<g >
+<title>lj_cconv_ct_ct (4 samples, 0.04%)</title><rect x="42.2" y="181" width="0.5" height="15.0" fill="rgb(249,189,22)" rx="2" ry="2" />
+<text  x="45.25" y="191.5" ></text>
+</g>
+<g >
+<title>lj_str_hash (1 samples, 0.01%)</title><rect x="62.4" y="181" width="0.2" height="15.0" fill="rgb(246,160,3)" rx="2" ry="2" />
+<text  x="65.44" y="191.5" ></text>
+</g>
+<g >
+<title>lj_gc_step (13 samples, 0.13%)</title><rect x="50.4" y="229" width="1.5" height="15.0" fill="rgb(234,153,15)" rx="2" ry="2" />
+<text  x="53.40" y="239.5" ></text>
+</g>
+<g >
+<title>lj_str_hash_16_128 (1 samples, 0.01%)</title><rect x="62.4" y="165" width="0.2" height="15.0" fill="rgb(214,81,18)" rx="2" ry="2" />
+<text  x="65.44" y="175.5" ></text>
+</g>
+<g >
+<title>settabsb (1 samples, 0.01%)</title><rect x="37.6" y="229" width="0.2" height="15.0" fill="rgb(217,150,48)" rx="2" ry="2" />
+<text  x="40.64" y="239.5" ></text>
+</g>
+<g >
+<title>lj_tab_newkey (1 samples, 0.01%)</title><rect x="41.1" y="181" width="0.1" height="15.0" fill="rgb(252,59,31)" rx="2" ry="2" />
+<text  x="44.07" y="191.5" ></text>
+</g>
+<g >
+<title>lj_tab_getstr (2 samples, 0.02%)</title><rect x="62.6" y="181" width="0.2" height="15.0" fill="rgb(232,124,51)" rx="2" ry="2" />
+<text  x="65.56" y="191.5" ></text>
+</g>
+<g >
+<title>__default_morecore (1 samples, 0.01%)</title><rect x="59.0" y="181" width="0.1" height="15.0" fill="rgb(211,46,0)" rx="2" ry="2" />
+<text  x="62.02" y="191.5" ></text>
+</g>
+<g >
+<title>lj_mem_realloc (1 samples, 0.01%)</title><rect x="397.4" y="197" width="0.1" height="15.0" fill="rgb(218,227,48)" rx="2" ry="2" />
+<text  x="400.43" y="207.5" ></text>
+</g>
+<g >
+<title>lj_BC_TNEW (8 samples, 0.08%)</title><rect x="392.0" y="261" width="0.9" height="15.0" fill="rgb(239,152,9)" rx="2" ry="2" />
+<text  x="394.99" y="271.5" ></text>
+</g>
+<g >
+<title>lj_tab_getstr (1 samples, 0.01%)</title><rect x="1181.4" y="229" width="0.1" height="15.0" fill="rgb(221,74,38)" rx="2" ry="2" />
+<text  x="1184.38" y="239.5" ></text>
+</g>
+<g >
+<title>0x7fee3efdd9b7 (1 samples, 0.01%)</title><rect x="17.7" y="581" width="0.1" height="15.0" fill="rgb(234,37,10)" rx="2" ry="2" />
+<text  x="20.68" y="591.5" ></text>
+</g>
+<g >
+<title>alloc_sys (1 samples, 0.01%)</title><rect x="18.9" y="485" width="0.1" height="15.0" fill="rgb(241,85,19)" rx="2" ry="2" />
+<text  x="21.86" y="495.5" ></text>
+</g>
+<g >
+<title>lj_str_new (1 samples, 0.01%)</title><rect x="58.8" y="213" width="0.1" height="15.0" fill="rgb(238,68,18)" rx="2" ry="2" />
+<text  x="61.78" y="223.5" ></text>
+</g>
+<g >
+<title>motan_simple_serialize (1 samples, 0.01%)</title><rect x="1177.1" y="261" width="0.1" height="15.0" fill="rgb(223,172,43)" rx="2" ry="2" />
+<text  x="1180.13" y="271.5" ></text>
+</g>
+<g >
+<title>cp_init (14 samples, 0.14%)</title><rect x="45.8" y="165" width="1.6" height="15.0" fill="rgb(252,160,17)" rx="2" ry="2" />
+<text  x="48.79" y="175.5" ></text>
+</g>
+<g >
+<title>lj_str_hash_128_above (2 samples, 0.02%)</title><rect x="52.4" y="197" width="0.2" height="15.0" fill="rgb(212,103,25)" rx="2" ry="2" />
+<text  x="55.40" y="207.5" ></text>
+</g>
+<g >
+<title>luaL_buffinit (1 samples, 0.01%)</title><rect x="68.9" y="197" width="0.2" height="15.0" fill="rgb(226,208,13)" rx="2" ry="2" />
+<text  x="71.94" y="207.5" ></text>
+</g>
+<g >
+<title>ccall_get_results (1 samples, 0.01%)</title><rect x="41.9" y="213" width="0.1" height="15.0" fill="rgb(212,95,33)" rx="2" ry="2" />
+<text  x="44.89" y="223.5" ></text>
+</g>
+<g >
+<title>tmalloc_small (5 samples, 0.05%)</title><rect x="386.8" y="165" width="0.6" height="15.0" fill="rgb(205,83,44)" rx="2" ry="2" />
+<text  x="389.80" y="175.5" ></text>
+</g>
+<g >
+<title>newtab (11 samples, 0.11%)</title><rect x="386.1" y="229" width="1.3" height="15.0" fill="rgb(213,30,48)" rx="2" ry="2" />
+<text  x="389.09" y="239.5" ></text>
+</g>
+<g >
+<title>str2num (1 samples, 0.01%)</title><rect x="399.8" y="229" width="0.1" height="15.0" fill="rgb(245,201,44)" rx="2" ry="2" />
+<text  x="402.79" y="239.5" ></text>
+</g>
+<g >
+<title>lj_gc_closeuv (2 samples, 0.02%)</title><rect x="394.4" y="229" width="0.2" height="15.0" fill="rgb(240,114,11)" rx="2" ry="2" />
+<text  x="397.36" y="239.5" ></text>
+</g>
+<g >
+<title>lj_BC_CALLT (4 samples, 0.04%)</title><rect x="30.0" y="261" width="0.4" height="15.0" fill="rgb(224,28,13)" rx="2" ry="2" />
+<text  x="32.96" y="271.5" ></text>
+</g>
+<g >
+<title>lj_alloc_realloc (8 samples, 0.08%)</title><rect x="403.6" y="149" width="0.9" height="15.0" fill="rgb(220,195,12)" rx="2" ry="2" />
+<text  x="406.57" y="159.5" ></text>
+</g>
+<g >
+<title>lj_tab_set (1 samples, 0.01%)</title><rect x="23.1" y="549" width="0.1" height="15.0" fill="rgb(250,91,9)" rx="2" ry="2" />
+<text  x="26.11" y="559.5" ></text>
+</g>
+<g >
+<title>cp_decl_array (5 samples, 0.05%)</title><rect x="44.8" y="133" width="0.6" height="15.0" fill="rgb(227,125,36)" rx="2" ry="2" />
+<text  x="47.84" y="143.5" ></text>
+</g>
+<g >
+<title>0x7fee3efdf79d (2 samples, 0.02%)</title><rect x="26.2" y="581" width="0.2" height="15.0" fill="rgb(233,207,10)" rx="2" ry="2" />
+<text  x="29.18" y="591.5" ></text>
+</g>
+<g >
+<title>lj_tab_len (1 samples, 0.01%)</title><rect x="17.1" y="565" width="0.1" height="15.0" fill="rgb(206,71,28)" rx="2" ry="2" />
+<text  x="20.09" y="575.5" ></text>
+</g>
+<g >
+<title>lj_alloc_realloc (1 samples, 0.01%)</title><rect x="25.8" y="485" width="0.1" height="15.0" fill="rgb(213,95,32)" rx="2" ry="2" />
+<text  x="28.83" y="495.5" ></text>
+</g>
+<g >
+<title>lj_mem_realloc (1 samples, 0.01%)</title><rect x="76.9" y="133" width="0.1" height="15.0" fill="rgb(250,121,52)" rx="2" ry="2" />
+<text  x="79.85" y="143.5" ></text>
+</g>
+<g >
+<title>lj_cf_ffi_new (1 samples, 0.01%)</title><rect x="1176.9" y="261" width="0.1" height="15.0" fill="rgb(225,147,27)" rx="2" ry="2" />
+<text  x="1179.89" y="271.5" ></text>
+</g>
+<g >
+<title>lj_alloc_malloc (6 samples, 0.06%)</title><rect x="403.8" y="133" width="0.7" height="15.0" fill="rgb(249,101,22)" rx="2" ry="2" />
+<text  x="406.81" y="143.5" ></text>
+</g>
+<g >
+<title>lua_pushlstring (67 samples, 0.67%)</title><rect x="69.1" y="165" width="7.9" height="15.0" fill="rgb(211,143,22)" rx="2" ry="2" />
+<text  x="72.06" y="175.5" ></text>
+</g>
+<g >
+<title>lj_cf_coroutine_running (1 samples, 0.01%)</title><rect x="34.9" y="245" width="0.1" height="15.0" fill="rgb(253,189,9)" rx="2" ry="2" />
+<text  x="37.92" y="255.5" ></text>
+</g>
+<g >
+<title>lj_alloc_free (1 samples, 0.01%)</title><rect x="1176.9" y="181" width="0.1" height="15.0" fill="rgb(222,83,14)" rx="2" ry="2" />
+<text  x="1179.89" y="191.5" ></text>
+</g>
+<g >
+<title>motan_free_bytes_buffer (1 samples, 0.01%)</title><rect x="59.0" y="229" width="0.1" height="15.0" fill="rgb(215,84,13)" rx="2" ry="2" />
+<text  x="62.02" y="239.5" ></text>
+</g>
+<g >
+<title>ngx_stream_lua_socket_send (1 samples, 0.01%)</title><rect x="1177.5" y="245" width="0.1" height="15.0" fill="rgb(231,193,9)" rx="2" ry="2" />
+<text  x="1180.48" y="255.5" ></text>
+</g>
+<g >
+<title>luaL_ref (4 samples, 0.04%)</title><rect x="92.4" y="229" width="0.5" height="15.0" fill="rgb(222,212,0)" rx="2" ry="2" />
+<text  x="95.45" y="239.5" ></text>
+</g>
+<g >
+<title>lj_tab_getstr (1 samples, 0.01%)</title><rect x="400.0" y="213" width="0.1" height="15.0" fill="rgb(246,210,49)" rx="2" ry="2" />
+<text  x="403.03" y="223.5" ></text>
+</g>
+<g >
+<title>recv (19 samples, 0.19%)</title><rect x="65.3" y="197" width="2.2" height="15.0" fill="rgb(239,48,21)" rx="2" ry="2" />
+<text  x="68.28" y="207.5" ></text>
+</g>
+<g >
+<title>propagatemark (1 samples, 0.01%)</title><rect x="61.9" y="165" width="0.1" height="15.0" fill="rgb(222,214,23)" rx="2" ry="2" />
+<text  x="64.85" y="175.5" ></text>
+</g>
+<g >
+<title>lua_resume (42 samples, 0.42%)</title><rect x="1176.5" y="293" width="5.0" height="15.0" fill="rgb(251,53,4)" rx="2" ry="2" />
+<text  x="1179.53" y="303.5" ></text>
+</g>
+<g >
+<title>lj_str_new (1 samples, 0.01%)</title><rect x="12.4" y="549" width="0.1" height="15.0" fill="rgb(211,60,20)" rx="2" ry="2" />
+<text  x="15.36" y="559.5" ></text>
+</g>
+<g >
+<title>ngx_stream_lua_socket_tcp_resume_helper (9,837 samples, 98.47%)</title><rect x="27.4" y="325" width="1161.9" height="15.0" fill="rgb(213,192,26)" rx="2" ry="2" />
+<text  x="30.36" y="335.5" >ngx_stream_lua_socket_tcp_resume_helper</text>
+</g>
+<g >
+<title>lj_str_new (4 samples, 0.04%)</title><rect x="26.4" y="565" width="0.5" height="15.0" fill="rgb(210,208,17)" rx="2" ry="2" />
+<text  x="29.42" y="575.5" ></text>
+</g>
+<g >
+<title>lj_BC_ISNEXT (1 samples, 0.01%)</title><rect x="375.2" y="261" width="0.1" height="15.0" fill="rgb(246,77,36)" rx="2" ry="2" />
+<text  x="378.22" y="271.5" ></text>
+</g>
+<g >
+<title>lj_mem_newgco (1 samples, 0.01%)</title><rect x="56.5" y="133" width="0.2" height="15.0" fill="rgb(207,222,53)" rx="2" ry="2" />
+<text  x="59.54" y="143.5" ></text>
+</g>
+<g >
+<title>tmalloc_small (1 samples, 0.01%)</title><rect x="404.4" y="117" width="0.1" height="15.0" fill="rgb(213,21,24)" rx="2" ry="2" />
+<text  x="407.40" y="127.5" ></text>
+</g>
+<g >
+<title>lj_alloc_f (5 samples, 0.05%)</title><rect x="20.4" y="485" width="0.6" height="15.0" fill="rgb(239,228,27)" rx="2" ry="2" />
+<text  x="23.39" y="495.5" ></text>
+</g>
+<g >
+<title>lj_meta_tset (20 samples, 0.20%)</title><rect x="402.2" y="245" width="2.3" height="15.0" fill="rgb(225,129,14)" rx="2" ry="2" />
+<text  x="405.15" y="255.5" ></text>
+</g>
+<g >
+<title>lj_cconv_ct_tv (1 samples, 0.01%)</title><rect x="49.5" y="229" width="0.1" height="15.0" fill="rgb(209,151,3)" rx="2" ry="2" />
+<text  x="52.45" y="239.5" ></text>
+</g>
+<g >
+<title>atomic (35 samples, 0.35%)</title><rect x="69.2" y="117" width="4.1" height="15.0" fill="rgb(236,0,6)" rx="2" ry="2" />
+<text  x="72.18" y="127.5" ></text>
+</g>
+<g >
+<title>tmalloc_small (3 samples, 0.03%)</title><rect x="34.0" y="165" width="0.3" height="15.0" fill="rgb(218,195,32)" rx="2" ry="2" />
+<text  x="36.98" y="175.5" ></text>
+</g>
+<g >
+<title>lj_gc_step_jit (14 samples, 0.14%)</title><rect x="19.3" y="565" width="1.7" height="15.0" fill="rgb(215,192,32)" rx="2" ry="2" />
+<text  x="22.33" y="575.5" ></text>
+</g>
+<g >
+<title>lj_str_hash_4_16 (1 samples, 0.01%)</title><rect x="47.3" y="69" width="0.1" height="15.0" fill="rgb(214,115,53)" rx="2" ry="2" />
+<text  x="50.33" y="79.5" ></text>
+</g>
+<g >
+<title>lj_str_new (3 samples, 0.03%)</title><rect x="47.1" y="101" width="0.3" height="15.0" fill="rgb(239,11,6)" rx="2" ry="2" />
+<text  x="50.09" y="111.5" ></text>
+</g>
+<g >
+<title>lj_str_new (2 samples, 0.02%)</title><rect x="38.5" y="197" width="0.2" height="15.0" fill="rgb(230,127,52)" rx="2" ry="2" />
+<text  x="41.47" y="207.5" ></text>
+</g>
+<g >
+<title>lj_ffh_string_byte (1 samples, 0.01%)</title><rect x="396.0" y="245" width="0.1" height="15.0" fill="rgb(221,122,23)" rx="2" ry="2" />
+<text  x="399.01" y="255.5" ></text>
+</g>
+<g >
+<title>lj_tab_resize (1 samples, 0.01%)</title><rect x="57.0" y="117" width="0.1" height="15.0" fill="rgb(208,9,54)" rx="2" ry="2" />
+<text  x="60.01" y="127.5" ></text>
+</g>
+<g >
+<title>gc_traverse_frames (2 samples, 0.02%)</title><rect x="73.1" y="53" width="0.2" height="15.0" fill="rgb(233,125,25)" rx="2" ry="2" />
+<text  x="76.08" y="63.5" ></text>
+</g>
+<g >
+<title>lj_strfmt_wptr (2 samples, 0.02%)</title><rect x="397.5" y="213" width="0.3" height="15.0" fill="rgb(250,117,18)" rx="2" ry="2" />
+<text  x="400.55" y="223.5" ></text>
+</g>
+<g >
+<title>lj_tab_dup (4 samples, 0.04%)</title><rect x="23.9" y="565" width="0.5" height="15.0" fill="rgb(230,210,31)" rx="2" ry="2" />
+<text  x="26.94" y="575.5" ></text>
+</g>
+<g >
+<title>lj_alloc_malloc (1 samples, 0.01%)</title><rect x="18.9" y="501" width="0.1" height="15.0" fill="rgb(209,144,43)" rx="2" ry="2" />
+<text  x="21.86" y="511.5" ></text>
+</g>
+<g >
+<title>lj_tab_setinth (2 samples, 0.02%)</title><rect x="56.3" y="213" width="0.2" height="15.0" fill="rgb(254,116,52)" rx="2" ry="2" />
+<text  x="59.30" y="223.5" ></text>
+</g>
+<g >
+<title>lj_tab_get (1 samples, 0.01%)</title><rect x="38.2" y="181" width="0.1" height="15.0" fill="rgb(233,104,27)" rx="2" ry="2" />
+<text  x="41.23" y="191.5" ></text>
+</g>
+<g >
+<title>ngx_stream_lua_socket_push_input_data (1 samples, 0.01%)</title><rect x="1177.4" y="229" width="0.1" height="15.0" fill="rgb(213,167,1)" rx="2" ry="2" />
+<text  x="1180.36" y="239.5" ></text>
+</g>
+<g >
+<title>0x7fee3efd75aa (1 samples, 0.01%)</title><rect x="11.5" y="581" width="0.2" height="15.0" fill="rgb(240,25,25)" rx="2" ry="2" />
+<text  x="14.54" y="591.5" ></text>
+</g>
+<g >
+<title>0x7fee15a02db8 (1 samples, 0.01%)</title><rect x="10.1" y="581" width="0.1" height="15.0" fill="rgb(236,81,49)" rx="2" ry="2" />
+<text  x="13.12" y="591.5" ></text>
+</g>
+<g >
+<title>lj_alloc_malloc (1 samples, 0.01%)</title><rect x="24.3" y="501" width="0.1" height="15.0" fill="rgb(234,196,32)" rx="2" ry="2" />
+<text  x="27.29" y="511.5" ></text>
+</g>
+<g >
+<title>0x7fee3efdd999 (1 samples, 0.01%)</title><rect x="17.6" y="581" width="0.1" height="15.0" fill="rgb(221,91,47)" rx="2" ry="2" />
+<text  x="20.56" y="591.5" ></text>
+</g>
+<g >
+<title>propagatemark (2 samples, 0.02%)</title><rect x="51.7" y="197" width="0.2" height="15.0" fill="rgb(247,30,53)" rx="2" ry="2" />
+<text  x="54.70" y="207.5" ></text>
+</g>
+<g >
+<title>lua_pushlstring (18 samples, 0.18%)</title><rect x="60.4" y="213" width="2.2" height="15.0" fill="rgb(241,195,45)" rx="2" ry="2" />
+<text  x="63.44" y="223.5" ></text>
+</g>
+<g >
+<title>lj_tab_dup (2 samples, 0.02%)</title><rect x="13.8" y="565" width="0.2" height="15.0" fill="rgb(212,64,22)" rx="2" ry="2" />
+<text  x="16.78" y="575.5" ></text>
+</g>
+<g >
+<title>gc_sweep (11 samples, 0.11%)</title><rect x="50.4" y="197" width="1.3" height="15.0" fill="rgb(247,182,36)" rx="2" ry="2" />
+<text  x="53.40" y="207.5" ></text>
+</g>
+<g >
+<title>rehashtab (6 samples, 0.06%)</title><rect x="53.6" y="197" width="0.7" height="15.0" fill="rgb(222,84,37)" rx="2" ry="2" />
+<text  x="56.59" y="207.5" ></text>
+</g>
+<g >
+<title>lj_tab_getstr (5 samples, 0.05%)</title><rect x="401.6" y="213" width="0.6" height="15.0" fill="rgb(230,18,51)" rx="2" ry="2" />
+<text  x="404.56" y="223.5" ></text>
+</g>
+<g >
+<title>0x7fee3efdd012 (1 samples, 0.01%)</title><rect x="16.6" y="581" width="0.1" height="15.0" fill="rgb(237,12,46)" rx="2" ry="2" />
+<text  x="19.61" y="591.5" ></text>
+</g>
+<g >
+<title>lj_func_free (3 samples, 0.03%)</title><rect x="383.1" y="181" width="0.4" height="15.0" fill="rgb(254,75,18)" rx="2" ry="2" />
+<text  x="386.14" y="191.5" ></text>
+</g>
+<g >
+<title>ngx_stream_lua_coroutine_create_helper (2,375 samples, 23.77%)</title><rect x="93.5" y="229" width="280.5" height="15.0" fill="rgb(205,61,52)" rx="2" ry="2" />
+<text  x="96.51" y="239.5" >ngx_stream_lua_coroutine_create_helper</text>
+</g>
+<g >
+<title>0x7fee3efd5dcc (1 samples, 0.01%)</title><rect x="10.7" y="581" width="0.1" height="15.0" fill="rgb(250,189,42)" rx="2" ry="2" />
+<text  x="13.71" y="591.5" ></text>
+</g>
+<g >
+<title>lua_pushinteger (1 samples, 0.01%)</title><rect x="77.4" y="229" width="0.2" height="15.0" fill="rgb(251,218,12)" rx="2" ry="2" />
+<text  x="80.45" y="239.5" ></text>
+</g>
+<g >
+<title>lj_lib_checkstr (4 samples, 0.04%)</title><rect x="396.4" y="229" width="0.4" height="15.0" fill="rgb(242,68,17)" rx="2" ry="2" />
+<text  x="399.36" y="239.5" ></text>
+</g>
+<g >
+<title>0x7fee3efd7f92 (1 samples, 0.01%)</title><rect x="11.9" y="581" width="0.1" height="15.0" fill="rgb(210,189,11)" rx="2" ry="2" />
+<text  x="14.89" y="591.5" ></text>
+</g>
+<g >
+<title>ngx_stream_lua_socket_handle_read_success (9,837 samples, 98.47%)</title><rect x="27.4" y="373" width="1161.9" height="15.0" fill="rgb(252,96,44)" rx="2" ry="2" />
+<text  x="30.36" y="383.5" >ngx_stream_lua_socket_handle_read_success</text>
+</g>
+<g >
+<title>lj_str_hash (1 samples, 0.01%)</title><rect x="18.4" y="533" width="0.1" height="15.0" fill="rgb(234,68,18)" rx="2" ry="2" />
+<text  x="21.39" y="543.5" ></text>
+</g>
+<g >
+<title>lj_alloc_f (8 samples, 0.08%)</title><rect x="74.6" y="85" width="1.0" height="15.0" fill="rgb(232,18,24)" rx="2" ry="2" />
+<text  x="77.61" y="95.5" ></text>
+</g>
+<g >
+<title>rehashtab (2 samples, 0.02%)</title><rect x="56.9" y="133" width="0.2" height="15.0" fill="rgb(253,27,41)" rx="2" ry="2" />
+<text  x="59.89" y="143.5" ></text>
+</g>
+<g >
+<title>lj_func_free (4 samples, 0.04%)</title><rect x="74.0" y="101" width="0.5" height="15.0" fill="rgb(233,49,20)" rx="2" ry="2" />
+<text  x="77.02" y="111.5" ></text>
+</g>
+<g >
+<title>__libc_malloc (3 samples, 0.03%)</title><rect x="59.1" y="213" width="0.4" height="15.0" fill="rgb(209,25,5)" rx="2" ry="2" />
+<text  x="62.14" y="223.5" ></text>
+</g>
+<g >
+<title>__memcpy_ssse3_back (1 samples, 0.01%)</title><rect x="397.1" y="213" width="0.1" height="15.0" fill="rgb(246,83,12)" rx="2" ry="2" />
+<text  x="400.07" y="223.5" ></text>
+</g>
+<g >
+<title>lj_alloc_free (3 samples, 0.03%)</title><rect x="61.5" y="117" width="0.4" height="15.0" fill="rgb(253,25,9)" rx="2" ry="2" />
+<text  x="64.50" y="127.5" ></text>
+</g>
+<g >
+<title>0x7fee3efd86e3 (1 samples, 0.01%)</title><rect x="12.4" y="581" width="0.1" height="15.0" fill="rgb(231,226,19)" rx="2" ry="2" />
+<text  x="15.36" y="591.5" ></text>
+</g>
+<g >
+<title>lj_mem_realloc (1 samples, 0.01%)</title><rect x="25.8" y="517" width="0.1" height="15.0" fill="rgb(243,168,47)" rx="2" ry="2" />
+<text  x="28.83" y="527.5" ></text>
+</g>
+</g>
+</svg>

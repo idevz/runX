@@ -1,7 +1,565 @@
 <?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg version="1.1" width="1200" height="60" onload="init(evt)" viewBox="0 0 1200 60" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg version="1.1" width="1200" height="534" onload="init(evt)" viewBox="0 0 1200 534" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <!-- Flame graph stack visualization. See https://github.com/brendangregg/FlameGraph for latest version, and http://www.brendangregg.com/flamegraphs.html for examples. -->
 <!-- NOTES:  -->
-<text  x="600.00" y="24" >ERROR: No valid input provided to flamegraph.pl.</text>
+<defs>
+	<linearGradient id="background" y1="0" y2="1" x1="0" x2="0" >
+		<stop stop-color="#eeeeee" offset="5%" />
+		<stop stop-color="#eeeeb0" offset="95%" />
+	</linearGradient>
+</defs>
+<style type="text/css">
+	text { font-family:Verdana; font-size:12px; fill:rgb(0,0,0); }
+	#search { opacity:0.1; cursor:pointer; }
+	#search:hover, #search.show { opacity:1; }
+	#subtitle { text-anchor:middle; font-color:rgb(160,160,160); }
+	#title { text-anchor:middle; font-size:17px}
+	#unzoom { cursor:pointer; }
+	#frames > *:hover { stroke:black; stroke-width:0.5; cursor:pointer; }
+	.hide { display:none; }
+	.parent { opacity:0.5; }
+</style>
+<script type="text/ecmascript">
+<![CDATA[
+	"use strict";
+	var details, searchbtn, unzoombtn, matchedtxt, svg, searching;
+	function init(evt) {
+		details = document.getElementById("details").firstChild;
+		searchbtn = document.getElementById("search");
+		unzoombtn = document.getElementById("unzoom");
+		matchedtxt = document.getElementById("matched");
+		svg = document.getElementsByTagName("svg")[0];
+		searching = 0;
+	}
+
+	window.addEventListener("click", function(e) {
+		var target = find_group(e.target);
+		if (target) {
+			if (target.nodeName == "a") {
+				if (e.ctrlKey === false) return;
+				e.preventDefault();
+			}
+			if (target.classList.contains("parent")) unzoom();
+			zoom(target);
+		}
+		else if (e.target.id == "unzoom") unzoom();
+		else if (e.target.id == "search") search_prompt();
+	}, false)
+
+	// mouse-over for info
+	// show
+	window.addEventListener("mouseover", function(e) {
+		var target = find_group(e.target);
+		if (target) details.nodeValue = "Function: " + g_to_text(target);
+	}, false)
+
+	// clear
+	window.addEventListener("mouseout", function(e) {
+		var target = find_group(e.target);
+		if (target) details.nodeValue = ' ';
+	}, false)
+
+	// ctrl-F for search
+	window.addEventListener("keydown",function (e) {
+		if (e.keyCode === 114 || (e.ctrlKey && e.keyCode === 70)) {
+			e.preventDefault();
+			search_prompt();
+		}
+	}, false)
+
+	// functions
+	function find_child(node, selector) {
+		var children = node.querySelectorAll(selector);
+		if (children.length) return children[0];
+		return;
+	}
+	function find_group(node) {
+		var parent = node.parentElement;
+		if (!parent) return;
+		if (parent.id == "frames") return node;
+		return find_group(parent);
+	}
+	function orig_save(e, attr, val) {
+		if (e.attributes["_orig_" + attr] != undefined) return;
+		if (e.attributes[attr] == undefined) return;
+		if (val == undefined) val = e.attributes[attr].value;
+		e.setAttribute("_orig_" + attr, val);
+	}
+	function orig_load(e, attr) {
+		if (e.attributes["_orig_"+attr] == undefined) return;
+		e.attributes[attr].value = e.attributes["_orig_" + attr].value;
+		e.removeAttribute("_orig_"+attr);
+	}
+	function g_to_text(e) {
+		var text = find_child(e, "title").firstChild.nodeValue;
+		return (text)
+	}
+	function g_to_func(e) {
+		var func = g_to_text(e);
+		// if there's any manipulation we want to do to the function
+		// name before it's searched, do it here before returning.
+		return (func);
+	}
+	function update_text(e) {
+		var r = find_child(e, "rect");
+		var t = find_child(e, "text");
+		var w = parseFloat(r.attributes.width.value) -3;
+		var txt = find_child(e, "title").textContent.replace(/\([^(]*\)$/,"");
+		t.attributes.x.value = parseFloat(r.attributes.x.value) + 3;
+
+		// Smaller than this size won't fit anything
+		if (w < 2 * 12 * 0.59) {
+			t.textContent = "";
+			return;
+		}
+
+		t.textContent = txt;
+		// Fit in full text width
+		if (/^ *$/.test(txt) || t.getSubStringLength(0, txt.length) < w)
+			return;
+
+		for (var x = txt.length - 2; x > 0; x--) {
+			if (t.getSubStringLength(0, x + 2) <= w) {
+				t.textContent = txt.substring(0, x) + "..";
+				return;
+			}
+		}
+		t.textContent = "";
+	}
+
+	// zoom
+	function zoom_reset(e) {
+		if (e.attributes != undefined) {
+			orig_load(e, "x");
+			orig_load(e, "width");
+		}
+		if (e.childNodes == undefined) return;
+		for (var i = 0, c = e.childNodes; i < c.length; i++) {
+			zoom_reset(c[i]);
+		}
+	}
+	function zoom_child(e, x, ratio) {
+		if (e.attributes != undefined) {
+			if (e.attributes.x != undefined) {
+				orig_save(e, "x");
+				e.attributes.x.value = (parseFloat(e.attributes.x.value) - x - 10) * ratio + 10;
+				if (e.tagName == "text")
+					e.attributes.x.value = find_child(e.parentNode, "rect[x]").attributes.x.value + 3;
+			}
+			if (e.attributes.width != undefined) {
+				orig_save(e, "width");
+				e.attributes.width.value = parseFloat(e.attributes.width.value) * ratio;
+			}
+		}
+
+		if (e.childNodes == undefined) return;
+		for (var i = 0, c = e.childNodes; i < c.length; i++) {
+			zoom_child(c[i], x - 10, ratio);
+		}
+	}
+	function zoom_parent(e) {
+		if (e.attributes) {
+			if (e.attributes.x != undefined) {
+				orig_save(e, "x");
+				e.attributes.x.value = 10;
+			}
+			if (e.attributes.width != undefined) {
+				orig_save(e, "width");
+				e.attributes.width.value = parseInt(svg.width.baseVal.value) - (10 * 2);
+			}
+		}
+		if (e.childNodes == undefined) return;
+		for (var i = 0, c = e.childNodes; i < c.length; i++) {
+			zoom_parent(c[i]);
+		}
+	}
+	function zoom(node) {
+		var attr = find_child(node, "rect").attributes;
+		var width = parseFloat(attr.width.value);
+		var xmin = parseFloat(attr.x.value);
+		var xmax = parseFloat(xmin + width);
+		var ymin = parseFloat(attr.y.value);
+		var ratio = (svg.width.baseVal.value - 2 * 10) / width;
+
+		// XXX: Workaround for JavaScript float issues (fix me)
+		var fudge = 0.0001;
+
+		unzoombtn.classList.remove("hide");
+
+		var el = document.getElementById("frames").children;
+		for (var i = 0; i < el.length; i++) {
+			var e = el[i];
+			var a = find_child(e, "rect").attributes;
+			var ex = parseFloat(a.x.value);
+			var ew = parseFloat(a.width.value);
+			var upstack;
+			// Is it an ancestor
+			if (0 == 0) {
+				upstack = parseFloat(a.y.value) > ymin;
+			} else {
+				upstack = parseFloat(a.y.value) < ymin;
+			}
+			if (upstack) {
+				// Direct ancestor
+				if (ex <= xmin && (ex+ew+fudge) >= xmax) {
+					e.classList.add("parent");
+					zoom_parent(e);
+					update_text(e);
+				}
+				// not in current path
+				else
+					e.classList.add("hide");
+			}
+			// Children maybe
+			else {
+				// no common path
+				if (ex < xmin || ex + fudge >= xmax) {
+					e.classList.add("hide");
+				}
+				else {
+					zoom_child(e, xmin, ratio);
+					update_text(e);
+				}
+			}
+		}
+	}
+	function unzoom() {
+		unzoombtn.classList.add("hide");
+		var el = document.getElementById("frames").children;
+		for(var i = 0; i < el.length; i++) {
+			el[i].classList.remove("parent");
+			el[i].classList.remove("hide");
+			zoom_reset(el[i]);
+			update_text(el[i]);
+		}
+	}
+
+	// search
+	function reset_search() {
+		var el = document.querySelectorAll("#frames rect");
+		for (var i = 0; i < el.length; i++) {
+			orig_load(el[i], "fill")
+		}
+	}
+	function search_prompt() {
+		if (!searching) {
+			var term = prompt("Enter a search term (regexp " +
+			    "allowed, eg: ^ext4_)", "");
+			if (term != null) {
+				search(term)
+			}
+		} else {
+			reset_search();
+			searching = 0;
+			searchbtn.classList.remove("show");
+			searchbtn.firstChild.nodeValue = "Search"
+			matchedtxt.classList.add("hide");
+			matchedtxt.firstChild.nodeValue = ""
+		}
+	}
+	function search(term) {
+		var re = new RegExp(term);
+		var el = document.getElementById("frames").children;
+		var matches = new Object();
+		var maxwidth = 0;
+		for (var i = 0; i < el.length; i++) {
+			var e = el[i];
+			var func = g_to_func(e);
+			var rect = find_child(e, "rect");
+			if (func == null || rect == null)
+				continue;
+
+			// Save max width. Only works as we have a root frame
+			var w = parseFloat(rect.attributes.width.value);
+			if (w > maxwidth)
+				maxwidth = w;
+
+			if (func.match(re)) {
+				// highlight
+				var x = parseFloat(rect.attributes.x.value);
+				orig_save(rect, "fill");
+				rect.attributes.fill.value = "rgb(230,0,230)";
+
+				// remember matches
+				if (matches[x] == undefined) {
+					matches[x] = w;
+				} else {
+					if (w > matches[x]) {
+						// overwrite with parent
+						matches[x] = w;
+					}
+				}
+				searching = 1;
+			}
+		}
+		if (!searching)
+			return;
+
+		searchbtn.classList.add("show");
+		searchbtn.firstChild.nodeValue = "Reset Search";
+
+		// calculate percent matched, excluding vertical overlap
+		var count = 0;
+		var lastx = -1;
+		var lastw = 0;
+		var keys = Array();
+		for (k in matches) {
+			if (matches.hasOwnProperty(k))
+				keys.push(k);
+		}
+		// sort the matched frames by their x location
+		// ascending, then width descending
+		keys.sort(function(a, b){
+			return a - b;
+		});
+		// Step through frames saving only the biggest bottom-up frames
+		// thanks to the sort order. This relies on the tree property
+		// where children are always smaller than their parents.
+		var fudge = 0.0001;	// JavaScript floating point
+		for (var k in keys) {
+			var x = parseFloat(keys[k]);
+			var w = matches[keys[k]];
+			if (x >= lastx + lastw - fudge) {
+				count += w;
+				lastx = x;
+				lastw = w;
+			}
+		}
+		// display matched percent
+		matchedtxt.classList.remove("hide");
+		var pct = 100 * count / maxwidth;
+		if (pct != 100) pct = pct.toFixed(1)
+		matchedtxt.firstChild.nodeValue = "Matched: " + pct + "%";
+	}
+]]>
+</script>
+<rect x="0.0" y="0" width="1200.0" height="534.0" fill="url(#background)"  />
+<text id="title" x="600.00" y="24" >Memery usage flamegraph</text>
+<text id="details" x="10.00" y="517" > </text>
+<text id="unzoom" x="10.00" y="24" class="hide">Reset Zoom</text>
+<text id="search" x="1090.00" y="24" >Search</text>
+<text id="matched" x="1090.00" y="517" > </text>
+<g id="frames">
+<g >
+<title>main (3,985,072 samples, 100.00%)</title><rect x="10.0" y="437" width="1180.0" height="15.0" fill="rgb(216,113,33)" rx="2" ry="2" />
+<text  x="13.00" y="447.5" >main</text>
+</g>
+<g >
+<title>ngx_malloc (783,104 samples, 19.65%)</title><rect x="948.5" y="133" width="231.9" height="15.0" fill="rgb(216,186,23)" rx="2" ry="2" />
+<text  x="951.53" y="143.5" >ngx_malloc</text>
+</g>
+<g >
+<title>ngx_palloc (2,386,496 samples, 59.89%)</title><rect x="10.0" y="69" width="706.7" height="15.0" fill="rgb(244,34,54)" rx="2" ry="2" />
+<text  x="13.00" y="79.5" >ngx_palloc</text>
+</g>
+<g >
+<title>ngx_stream_lua_content_wev_handler (3,985,072 samples, 100.00%)</title><rect x="10.0" y="245" width="1180.0" height="15.0" fill="rgb(222,87,11)" rx="2" ry="2" />
+<text  x="13.00" y="255.5" >ngx_stream_lua_content_wev_handler</text>
+</g>
+<g >
+<title>lj_BC_FUNCC (28,336 samples, 0.71%)</title><rect x="1180.4" y="165" width="8.4" height="15.0" fill="rgb(216,223,38)" rx="2" ry="2" />
+<text  x="1183.42" y="175.5" ></text>
+</g>
+<g >
+<title>ngx_malloc (4,032 samples, 0.10%)</title><rect x="1188.8" y="149" width="1.2" height="15.0" fill="rgb(226,116,38)" rx="2" ry="2" />
+<text  x="1191.81" y="159.5" ></text>
+</g>
+<g >
+<title>_start (3,985,072 samples, 100.00%)</title><rect x="10.0" y="469" width="1180.0" height="15.0" fill="rgb(236,42,49)" rx="2" ry="2" />
+<text  x="13.00" y="479.5" >_start</text>
+</g>
+<g >
+<title>ngx_stream_lua_uthread_spawn (3,169,600 samples, 79.54%)</title><rect x="10.0" y="133" width="938.5" height="15.0" fill="rgb(245,209,25)" rx="2" ry="2" />
+<text  x="13.00" y="143.5" >ngx_stream_lua_uthread_spawn</text>
+</g>
+<g >
+<title>ngx_epoll_process_events (3,985,072 samples, 100.00%)</title><rect x="10.0" y="341" width="1180.0" height="15.0" fill="rgb(208,89,54)" rx="2" ry="2" />
+<text  x="13.00" y="351.5" >ngx_epoll_process_events</text>
+</g>
+<g >
+<title>ngx_stream_lua_run_thread (3,952,704 samples, 99.19%)</title><rect x="10.0" y="181" width="1170.4" height="15.0" fill="rgb(244,193,21)" rx="2" ry="2" />
+<text  x="13.00" y="191.5" >ngx_stream_lua_run_thread</text>
+</g>
+<g >
+<title>ngx_master_process_cycle (3,985,072 samples, 100.00%)</title><rect x="10.0" y="421" width="1180.0" height="15.0" fill="rgb(229,52,3)" rx="2" ry="2" />
+<text  x="13.00" y="431.5" >ngx_master_process_cycle</text>
+</g>
+<g >
+<title>ngx_worker_process_cycle (3,985,072 samples, 100.00%)</title><rect x="10.0" y="373" width="1180.0" height="15.0" fill="rgb(253,209,44)" rx="2" ry="2" />
+<text  x="13.00" y="383.5" >ngx_worker_process_cycle</text>
+</g>
+<g >
+<title>ngx_stream_lua_req_socket_rev_handler (3,985,072 samples, 100.00%)</title><rect x="10.0" y="309" width="1180.0" height="15.0" fill="rgb(238,48,22)" rx="2" ry="2" />
+<text  x="13.00" y="319.5" >ngx_stream_lua_req_socket_rev_handler</text>
+</g>
+<g >
+<title>ngx_list_push (2,386,496 samples, 59.89%)</title><rect x="10.0" y="85" width="706.7" height="15.0" fill="rgb(241,67,41)" rx="2" ry="2" />
+<text  x="13.00" y="95.5" >ngx_list_push</text>
+</g>
+<g >
+<title>ngx_process_events_and_timers (3,985,072 samples, 100.00%)</title><rect x="10.0" y="357" width="1180.0" height="15.0" fill="rgb(225,8,28)" rx="2" ry="2" />
+<text  x="13.00" y="367.5" >ngx_process_events_and_timers</text>
+</g>
+<g >
+<title>lj_BC_FUNCC (3,169,600 samples, 79.54%)</title><rect x="10.0" y="149" width="938.5" height="15.0" fill="rgb(252,222,18)" rx="2" ry="2" />
+<text  x="13.00" y="159.5" >lj_BC_FUNCC</text>
+</g>
+<g >
+<title>ngx_stream_lua_create_co_ctx (2,386,496 samples, 59.89%)</title><rect x="10.0" y="101" width="706.7" height="15.0" fill="rgb(236,191,9)" rx="2" ry="2" />
+<text  x="13.00" y="111.5" >ngx_stream_lua_create_co_ctx</text>
+</g>
+<g >
+<title>ngx_start_worker_processes (3,985,072 samples, 100.00%)</title><rect x="10.0" y="405" width="1180.0" height="15.0" fill="rgb(241,135,24)" rx="2" ry="2" />
+<text  x="13.00" y="415.5" >ngx_start_worker_processes</text>
+</g>
+<g >
+<title>ngx_malloc (24,304 samples, 0.61%)</title><rect x="1180.4" y="69" width="7.2" height="15.0" fill="rgb(238,26,28)" rx="2" ry="2" />
+<text  x="1183.42" y="79.5" ></text>
+</g>
+<g >
+<title>ngx_alloc (24,304 samples, 0.61%)</title><rect x="1180.4" y="53" width="7.2" height="15.0" fill="rgb(250,209,5)" rx="2" ry="2" />
+<text  x="1183.42" y="63.5" ></text>
+</g>
+<g >
+<title>ngx_alloc (4,032 samples, 0.10%)</title><rect x="1187.6" y="85" width="1.2" height="15.0" fill="rgb(254,59,49)" rx="2" ry="2" />
+<text  x="1190.61" y="95.5" ></text>
+</g>
+<g >
+<title>ngx_stream_lua_run_posted_threads (3,952,704 samples, 99.19%)</title><rect x="10.0" y="197" width="1170.4" height="15.0" fill="rgb(224,17,20)" rx="2" ry="2" />
+<text  x="13.00" y="207.5" >ngx_stream_lua_run_posted_threads</text>
+</g>
+<g >
+<title>ngx_alloc (4,032 samples, 0.10%)</title><rect x="1188.8" y="133" width="1.2" height="15.0" fill="rgb(244,9,35)" rx="2" ry="2" />
+<text  x="1191.81" y="143.5" ></text>
+</g>
+<g >
+<title>ngx_stream_lua_create_co_ctx (24,304 samples, 0.61%)</title><rect x="1180.4" y="117" width="7.2" height="15.0" fill="rgb(245,229,1)" rx="2" ry="2" />
+<text  x="1183.42" y="127.5" ></text>
+</g>
+<g >
+<title>ngx_alloc (2,386,496 samples, 59.89%)</title><rect x="10.0" y="37" width="706.7" height="15.0" fill="rgb(233,36,17)" rx="2" ry="2" />
+<text  x="13.00" y="47.5" >ngx_alloc</text>
+</g>
+<g >
+<title>all (3,985,072 samples, 100%)</title><rect x="10.0" y="485" width="1180.0" height="15.0" fill="rgb(219,28,33)" rx="2" ry="2" />
+<text  x="13.00" y="495.5" ></text>
+</g>
+<g >
+<title>ngx_palloc (4,032 samples, 0.10%)</title><rect x="1188.8" y="165" width="1.2" height="15.0" fill="rgb(241,182,15)" rx="2" ry="2" />
+<text  x="1191.81" y="175.5" ></text>
+</g>
+<g >
+<title>__libc_start_main (3,985,072 samples, 100.00%)</title><rect x="10.0" y="453" width="1180.0" height="15.0" fill="rgb(212,21,23)" rx="2" ry="2" />
+<text  x="13.00" y="463.5" >__libc_start_main</text>
+</g>
+<g >
+<title>ngx_alloc (783,104 samples, 19.65%)</title><rect x="948.5" y="117" width="231.9" height="15.0" fill="rgb(237,34,37)" rx="2" ry="2" />
+<text  x="951.53" y="127.5" >ngx_alloc</text>
+</g>
+<g >
+<title>ngx_stream_lua_socket_tcp_read_resume (3,985,072 samples, 100.00%)</title><rect x="10.0" y="229" width="1180.0" height="15.0" fill="rgb(221,6,39)" rx="2" ry="2" />
+<text  x="13.00" y="239.5" >ngx_stream_lua_socket_tcp_read_resume</text>
+</g>
+<g >
+<title>ngx_stream_lua_coroutine_create_helper (2,386,496 samples, 59.89%)</title><rect x="10.0" y="117" width="706.7" height="15.0" fill="rgb(239,196,47)" rx="2" ry="2" />
+<text  x="13.00" y="127.5" >ngx_stream_lua_coroutine_create_helper</text>
+</g>
+<g >
+<title>ngx_stream_lua_socket_tcp_resume_helper (3,985,072 samples, 100.00%)</title><rect x="10.0" y="213" width="1180.0" height="15.0" fill="rgb(218,149,1)" rx="2" ry="2" />
+<text  x="13.00" y="223.5" >ngx_stream_lua_socket_tcp_resume_helper</text>
+</g>
+<g >
+<title>ngx_malloc (783,104 samples, 19.65%)</title><rect x="716.7" y="85" width="231.8" height="15.0" fill="rgb(220,117,24)" rx="2" ry="2" />
+<text  x="719.65" y="95.5" >ngx_malloc</text>
+</g>
+<g >
+<title>ngx_stream_lua_post_zombie_thread (783,104 samples, 19.65%)</title><rect x="948.5" y="165" width="231.9" height="15.0" fill="rgb(209,229,31)" rx="2" ry="2" />
+<text  x="951.53" y="175.5" >ngx_stream_lua_post_zombie_thr..</text>
+</g>
+<g >
+<title>ngx_palloc (4,032 samples, 0.10%)</title><rect x="1187.6" y="117" width="1.2" height="15.0" fill="rgb(229,150,14)" rx="2" ry="2" />
+<text  x="1190.61" y="127.5" ></text>
+</g>
+<g >
+<title>lua_resume (3,169,600 samples, 79.54%)</title><rect x="10.0" y="165" width="938.5" height="15.0" fill="rgb(242,116,54)" rx="2" ry="2" />
+<text  x="13.00" y="175.5" >lua_resume</text>
+</g>
+<g >
+<title>ngx_stream_lua_run_thread (32,368 samples, 0.81%)</title><rect x="1180.4" y="197" width="9.6" height="15.0" fill="rgb(250,80,51)" rx="2" ry="2" />
+<text  x="1183.42" y="207.5" ></text>
+</g>
+<g >
+<title>ngx_list_push (24,304 samples, 0.61%)</title><rect x="1180.4" y="101" width="7.2" height="15.0" fill="rgb(230,2,42)" rx="2" ry="2" />
+<text  x="1183.42" y="111.5" ></text>
+</g>
+<g >
+<title>lua_resume (28,336 samples, 0.71%)</title><rect x="1180.4" y="181" width="8.4" height="15.0" fill="rgb(241,193,15)" rx="2" ry="2" />
+<text  x="1183.42" y="191.5" ></text>
+</g>
+<g >
+<title>ngx_spawn_process (3,985,072 samples, 100.00%)</title><rect x="10.0" y="389" width="1180.0" height="15.0" fill="rgb(246,122,52)" rx="2" ry="2" />
+<text  x="13.00" y="399.5" >ngx_spawn_process</text>
+</g>
+<g >
+<title>ngx_stream_lua_socket_handle_read_success (3,985,072 samples, 100.00%)</title><rect x="10.0" y="261" width="1180.0" height="15.0" fill="rgb(254,222,50)" rx="2" ry="2" />
+<text  x="13.00" y="271.5" >ngx_stream_lua_socket_handle_read_success</text>
+</g>
+<g >
+<title>ngx_stream_lua_post_thread (783,104 samples, 19.65%)</title><rect x="716.7" y="117" width="231.8" height="15.0" fill="rgb(216,68,35)" rx="2" ry="2" />
+<text  x="719.65" y="127.5" >ngx_stream_lua_post_thread</text>
+</g>
+<g >
+<title>ngx_malloc (4,032 samples, 0.10%)</title><rect x="1187.6" y="101" width="1.2" height="15.0" fill="rgb(240,63,42)" rx="2" ry="2" />
+<text  x="1190.61" y="111.5" ></text>
+</g>
+<g >
+<title>ngx_alloc (783,104 samples, 19.65%)</title><rect x="716.7" y="69" width="231.8" height="15.0" fill="rgb(229,216,13)" rx="2" ry="2" />
+<text  x="719.65" y="79.5" >ngx_alloc</text>
+</g>
+<g >
+<title>ngx_palloc (783,104 samples, 19.65%)</title><rect x="948.5" y="149" width="231.9" height="15.0" fill="rgb(236,54,30)" rx="2" ry="2" />
+<text  x="951.53" y="159.5" >ngx_palloc</text>
+</g>
+<g >
+<title>ngx_stream_lua_coroutine_create_helper (24,304 samples, 0.61%)</title><rect x="1180.4" y="133" width="7.2" height="15.0" fill="rgb(242,122,37)" rx="2" ry="2" />
+<text  x="1183.42" y="143.5" ></text>
+</g>
+<g >
+<title>ngx_stream_lua_post_thread (4,032 samples, 0.10%)</title><rect x="1187.6" y="133" width="1.2" height="15.0" fill="rgb(249,50,19)" rx="2" ry="2" />
+<text  x="1190.61" y="143.5" ></text>
+</g>
+<g >
+<title>ngx_stream_lua_uthread_spawn (28,336 samples, 0.71%)</title><rect x="1180.4" y="149" width="8.4" height="15.0" fill="rgb(249,40,7)" rx="2" ry="2" />
+<text  x="1183.42" y="159.5" ></text>
+</g>
+<g >
+<title>ngx_stream_lua_socket_tcp_read (3,985,072 samples, 100.00%)</title><rect x="10.0" y="277" width="1180.0" height="15.0" fill="rgb(222,190,52)" rx="2" ry="2" />
+<text  x="13.00" y="287.5" >ngx_stream_lua_socket_tcp_read</text>
+</g>
+<g >
+<title>ngx_malloc (2,386,496 samples, 59.89%)</title><rect x="10.0" y="53" width="706.7" height="15.0" fill="rgb(211,178,10)" rx="2" ry="2" />
+<text  x="13.00" y="63.5" >ngx_malloc</text>
+</g>
+<g >
+<title>ngx_stream_lua_request_handler (3,985,072 samples, 100.00%)</title><rect x="10.0" y="325" width="1180.0" height="15.0" fill="rgb(239,92,46)" rx="2" ry="2" />
+<text  x="13.00" y="335.5" >ngx_stream_lua_request_handler</text>
+</g>
+<g >
+<title>ngx_palloc (24,304 samples, 0.61%)</title><rect x="1180.4" y="85" width="7.2" height="15.0" fill="rgb(242,212,31)" rx="2" ry="2" />
+<text  x="1183.42" y="95.5" ></text>
+</g>
+<g >
+<title>ngx_stream_lua_post_zombie_thread (4,032 samples, 0.10%)</title><rect x="1188.8" y="181" width="1.2" height="15.0" fill="rgb(216,77,44)" rx="2" ry="2" />
+<text  x="1191.81" y="191.5" ></text>
+</g>
+<g >
+<title>ngx_palloc (783,104 samples, 19.65%)</title><rect x="716.7" y="101" width="231.8" height="15.0" fill="rgb(213,190,7)" rx="2" ry="2" />
+<text  x="719.65" y="111.5" >ngx_palloc</text>
+</g>
+<g >
+<title>ngx_stream_lua_socket_read_handler (3,985,072 samples, 100.00%)</title><rect x="10.0" y="293" width="1180.0" height="15.0" fill="rgb(253,75,45)" rx="2" ry="2" />
+<text  x="13.00" y="303.5" >ngx_stream_lua_socket_read_handler</text>
+</g>
+</g>
 </svg>
