@@ -58,7 +58,8 @@ fire_lua() {
 fire_c_oncpu() {
 	local pid="$1"
 	local time="${2:-10}"
-	x /usr/local/tools/openresty-systemtap-toolkit/sample-bt -u -a '-DMAXACTION=100000' -p "$pid" -t "$time" >"$RUN_PATH/ss/ngx-oncpu.bt"
+	x /usr/local/tools/openresty-systemtap-toolkit/
+	-bt -u -a '-DMAXACTION=100000' -p "$pid" -t "$time" >"$RUN_PATH/ss/ngx-oncpu.bt"
 	x /usr/local/tools/FlameGraph/stackcollapse-stap.pl "$RUN_PATH/ss/ngx-oncpu.bt" >"$RUN_PATH/ss/ngx-oncpu.cbt"
 	x /usr/local/tools/FlameGraph/flamegraph.pl "$RUN_PATH/ss/ngx-oncpu.cbt" >"$RUN_PATH/ss/ngx-oncpu.svg"
 }
@@ -91,4 +92,12 @@ motan_init() {
 	sudo ln -sf $GIT/weibo-or/weibo-motan/lib/wmotan /usr/local/openresty-"$or_version"-debug/site/lualib/wmotan
 	sudo ln -sf $GIT/weibo-or/weibo-motan/t/resty /usr/local/openresty-"$or_version"-debug/site/lualib/resty
 	sudo ln -sf $GIT/weibo-or/motan-openresty/lib/motan/libs/libmotan_tools.so /lib64/libmotan_tools.so
+}
+
+motan_mac_init() {
+	sudo ln -sf $GIT/weibo-or/motan-openresty/lib/motan /usr/local/Cellar/openresty/1.13.6.2/site/lualib/motan
+	sudo ln -sf $GIT/weibo-or/v/lib/v /usr/local/Cellar/openresty/1.13.6.2/site/lualib/v
+	sudo ln -sf $GIT/weibo-or/weibo-motan/lib/wmotan /usr/local/Cellar/openresty/1.13.6.2/site/lualib/wmotan
+	sudo ln -sf $GIT/weibo-or/weibo-motan/t/resty /usr/local/Cellar/openresty/1.13.6.2/site/lualib/resty
+	sudo ln -sf $GIT/weibo-or/motan-openresty/lib/motan/libs/libmotan.dylib /usr/local/Cellar/openresty/1.13.6.2/site/lualib/cmotan.so
 }
