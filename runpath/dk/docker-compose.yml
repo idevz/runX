@@ -25,12 +25,18 @@ services:
   wm-go-b:
     extends: go-base
     container_name: wm-go-b
+    environment:
+      - CGO_ENABLED=1
+      - GOARCH=amd64
+      - GOOS=linux
+    volumes:
+      - /media/psf/code/z/idevz-go:/media/psf/code/z/idevz-go
     working_dir: /z/idevz-go/src/git.intra.weibo.com/openapi_rd/weibo-motan-go/main
     command:
       - bash
       - -c
       - |
-        go build -a -installsuffix cgo -o weibo-mesh
+        sh ../install_inner_libs && go build -a -installsuffix cgo -o weibo-mesh
   wm-go-r:
     extends: go-base
     container_name: wm-go-r
