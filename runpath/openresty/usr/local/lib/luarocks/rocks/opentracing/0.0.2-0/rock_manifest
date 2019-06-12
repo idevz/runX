@@ -1,0 +1,15 @@
+rock_manifest = {
+   doc = {
+      LICENSE = "bca35c9ef4d0a15f1b70b2195f4efd64",
+      ["README.md"] = "19198f9e0f6e06eabfe72ff1bcb8e555"
+   },
+   lua = {
+      opentracing = {
+         ["init.lua"] = "a5eebb3aa1f3de3532786e2603b6d45e",
+         ["span.lua"] = "776a16642af1ffdee425749c5890745f",
+         ["span_context.lua"] = "4845dfd5bd8c2ce938277fbf0ab68f6f",
+         ["tracer.lua"] = "e5538b5203166457c721d6843ac7cca2"
+      }
+   },
+   ["opentracing-0.0.2-0.rockspec"] = "f850a5adb58b08592555daf68c203cd5"
+}

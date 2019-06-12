@@ -1,0 +1,12 @@
+rock_manifest = {
+   doc = {
+      ["LICENSE.txt"] = "7db29dbd642057d5f699485c1a50e51e",
+      ["README.md"] = "cbe2e8fab035209a90f7134777a7438a"
+   },
+   lua = {
+      resty = {
+         ["iputils.lua"] = "4061a6fb0ea366c225f8c121f9f51f8f"
+      }
+   },
+   ["lua-resty-iputils-0.3.0-1.rockspec"] = "98fa6f7c9ff65a13e10187e086112601"
+}

@@ -1,0 +1,15 @@
+rock_manifest = {
+   doc = {
+      LICENSE = "7d888d59b212b55c16bbc052aa22823f",
+      ["README.md"] = "c8797801435a1aebee41cc2c37f0606b"
+   },
+   lua = {
+      resty = {
+         mediador = {
+            ["ip.lua"] = "0aacd3ef3e48f80e29d1c3be45d509cf",
+            ["proxy.lua"] = "2ad7700160b3970a345dc1afb2c3aebe"
+         }
+      }
+   },
+   ["lua-resty-mediador-0.1.2-1.rockspec"] = "bf98b928499b07dd32663053c1a936b6"
+}

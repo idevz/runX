@@ -1,0 +1,21 @@
+rock_manifest = {
+   doc = {
+      LICENSE = "bca35c9ef4d0a15f1b70b2195f4efd64",
+      ["README.md"] = "a73f15582be23403965fafaf5e0a5e62"
+   },
+   ["kong-plugin-zipkin-0.1.2-0.rockspec"] = "85ec01372ced7e3a60b91f6e9f8c6f12",
+   lua = {
+      kong = {
+         plugins = {
+            zipkin = {
+               ["codec.lua"] = "f73a31db06668b385b64df1fbf88679c",
+               ["handler.lua"] = "dba98f505285c7f5aee91f33cb618f18",
+               ["opentracing.lua"] = "1444a9ecd8f9d681d2e07a8669b6c50a",
+               ["random_sampler.lua"] = "4f7d47ab6851502ba11e10af98d2f660",
+               ["reporter.lua"] = "1393e036b46f26084e35bfc7892785b1",
+               ["schema.lua"] = "203e9c83dbc85c46dac72576ef4788f4"
+            }
+         }
+      }
+   }
+}

@@ -1,0 +1,20 @@
+rock_manifest = {
+   doc = {
+      LICENSE = "a6ed6084a649072e23848e6947446bbe",
+      ["README.md"] = "9965150ab290ff3cb887a3d46089347b"
+   },
+   ["kong-plugin-kubernetes-sidecar-injector-0.1.1-0.rockspec"] = "b4fb68e2e109d66131ffd6c048fe2f9d",
+   lua = {
+      kong = {
+         plugins = {
+            ["kubernetes-sidecar-injector"] = {
+               ["api.lua"] = "cf794d947516e36e7c58685e9b7656fc",
+               ["config.lua"] = "e9d2d3b112b9e2288b670a4d099e532b",
+               ["handler.lua"] = "d3d665db7c17dae68ecc488a37791e50",
+               ["schema.lua"] = "021dbf044ea1e185bbf67a655723a3d1",
+               ["typedefs.lua"] = "2f2b50c704190be5f8f840aeaa3f0421"
+            }
+         }
+      }
+   }
+}

@@ -1,0 +1,4205 @@
+commands = {
+   json2lua = {
+      "lua-cjson/2.1.0.6-1"
+   },
+   lapis = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   lua2json = {
+      "lua-cjson/2.1.0.6-1"
+   }
+}
+dependencies = {
+   ansicolors = {
+      ["1.0.2-3"] = {
+         {
+            constraints = {
+               {
+                  op = ">=",
+                  version = {
+                     5, 1, string = "5.1"
+                  }
+               }
+            },
+            name = "lua"
+         }
+      }
+   },
+   basexx = {
+      ["0.4.1-1"] = {
+         {
+            constraints = {
+               {
+                  op = ">=",
+                  version = {
+                     5, 1, string = "5.1"
+                  }
+               }
+            },
+            name = "lua"
+         }
+      }
+   },
+   binaryheap = {
+      ["0.4-1"] = {
+         {
+            constraints = {
+               {
+                  op = ">=",
+                  version = {
+                     5, 1, string = "5.1"
+                  }
+               }
+            },
+            name = "lua"
+         }
+      }
+   },
+   bit32 = {
+      ["5.3.0-1"] = {
+         {
+            constraints = {
+               {
+                  op = ">=",
+                  version = {
+                     5, 1, string = "5.1"
+                  }
+               },
+               {
+                  op = "<=",
+                  version = {
+                     5, 3, string = "5.3"
+                  }
+               }
+            },
+            name = "lua"
+         }
+      }
+   },
+   compat53 = {
+      ["0.7-1"] = {
+         {
+            constraints = {
+               {
+                  op = ">=",
+                  version = {
+                     5, 1, string = "5.1"
+                  }
+               },
+               {
+                  op = "<",
+                  version = {
+                     5, 4, string = "5.4"
+                  }
+               }
+            },
+            name = "lua"
+         }
+      }
+   },
+   cqueues = {
+      ["20171014.51-0"] = {
+         {
+            constraints = {
+               {
+                  op = "==",
+                  version = {
+                     5, 1, string = "5.1"
+                  }
+               }
+            },
+            name = "lua"
+         }
+      }
+   },
+   date = {
+      ["2.1.2-1"] = {
+         {
+            constraints = {
+               {
+                  op = ">=",
+                  version = {
+                     5, 0, string = "5.0"
+                  }
+               },
+               {
+                  op = "<",
+                  version = {
+                     5, 4, string = "5.4"
+                  }
+               }
+            },
+            name = "lua"
+         }
+      }
+   },
+   etlua = {
+      ["1.3.0-1"] = {
+         {
+            constraints = {
+               {
+                  op = ">=",
+                  version = {
+                     5, 1, string = "5.1"
+                  }
+               }
+            },
+            name = "lua"
+         }
+      }
+   },
+   fifo = {
+      ["0.2-0"] = {
+         {
+            constraints = {},
+            name = "lua"
+         }
+      }
+   },
+   http = {
+      ["0.3-0"] = {
+         {
+            constraints = {
+               {
+                  op = ">=",
+                  version = {
+                     5, 1, string = "5.1"
+                  }
+               }
+            },
+            name = "lua"
+         },
+         {
+            constraints = {
+               {
+                  op = ">=",
+                  version = {
+                     0, 3, string = "0.3"
+                  }
+               }
+            },
+            name = "compat53"
+         },
+         {
+            constraints = {},
+            name = "bit32"
+         },
+         {
+            constraints = {
+               {
+                  op = ">=",
+                  version = {
+                     20161214, string = "20161214"
+                  }
+               }
+            },
+            name = "cqueues"
+         },
+         {
+            constraints = {
+               {
+                  op = ">=",
+                  version = {
+                     20161208, string = "20161208"
+                  }
+               }
+            },
+            name = "luaossl"
+         },
+         {
+            constraints = {
+               {
+                  op = ">=",
+                  version = {
+                     0, 2, 0, string = "0.2.0"
+                  }
+               }
+            },
+            name = "basexx"
+         },
+         {
+            constraints = {},
+            name = "lpeg"
+         },
+         {
+            constraints = {
+               {
+                  op = ">=",
+                  version = {
+                     0, 5, string = "0.5"
+                  }
+               }
+            },
+            name = "lpeg_patterns"
+         },
+         {
+            constraints = {
+               {
+                  op = ">=",
+                  version = {
+                     0, 3, string = "0.3"
+                  }
+               }
+            },
+            name = "binaryheap"
+         },
+         {
+            constraints = {},
+            name = "fifo"
+         }
+      }
+   },
+   inspect = {
+      ["3.1.1-0"] = {
+         {
+            constraints = {
+               {
+                  op = ">=",
+                  version = {
+                     5, 1, string = "5.1"
+                  }
+               }
+            },
+            name = "lua"
+         }
+      }
+   },
+   kong = {
+      ["1.1.2-0"] = {
+         {
+            constraints = {
+               {
+                  op = "==",
+                  version = {
+                     3, 1, 1, string = "3.1.1"
+                  }
+               }
+            },
+            name = "inspect"
+         },
+         {
+            constraints = {
+               {
+                  op = "==",
+                  version = {
+                     0, 7, string = "0.7"
+                  }
+               }
+            },
+            name = "luasec"
+         },
+         {
+            constraints = {
+               {
+                  op = "==",
+                  version = {
+                     3, 0, -999.99999, string = "3.0-rc1"
+                  }
+               }
+            },
+            name = "luasocket"
+         },
+         {
+            constraints = {
+               {
+                  op = "==",
+                  version = {
+                     1, 5, 4, string = "1.5.4"
+                  }
+               }
+            },
+            name = "penlight"
+         },
+         {
+            constraints = {
+               {
+                  op = "==",
+                  version = {
+                     0, 13, string = "0.13"
+                  }
+               }
+            },
+            name = "lua-resty-http"
+         },
+         {
+            constraints = {
+               {
+                  op = "==",
+                  version = {
+                     0, 0, 7, string = "0.0.7"
+                  }
+               }
+            },
+            name = "lua-resty-jit-uuid"
+         },
+         {
+            constraints = {
+               {
+                  op = "==",
+                  version = {
+                     0, 5, 5, string = "0.5.5"
+                  }
+               }
+            },
+            name = "multipart"
+         },
+         {
+            constraints = {
+               {
+                  op = "==",
+                  version = {
+                     1, 0, 1, string = "1.0.1"
+                  }
+               }
+            },
+            name = "version"
+         },
+         {
+            constraints = {
+               {
+                  op = "==",
+                  version = {
+                     1, 6, 0, 1, string = "1.6.0.1"
+                  }
+               }
+            },
+            name = "kong-lapis"
+         },
+         {
+            constraints = {
+               {
+                  op = "==",
+                  version = {
+                     1, 3, 4, string = "1.3.4"
+                  }
+               }
+            },
+            name = "lua-cassandra"
+         },
+         {
+            constraints = {
+               {
+                  op = "==",
+                  version = {
+                     1, 9, 0, string = "1.9.0"
+                  }
+               }
+            },
+            name = "pgmoon"
+         },
+         {
+            constraints = {
+               {
+                  op = "==",
+                  version = {
+                     0, 3, string = "0.3"
+                  }
+               }
+            },
+            name = "luatz"
+         },
+         {
+            constraints = {
+               {
+                  op = "==",
+                  version = {
+                     0, 3, string = "0.3"
+                  }
+               }
+            },
+            name = "http"
+         },
+         {
+            constraints = {
+               {
+                  op = "==",
+                  version = {
+                     0, 1, 3, string = "0.1.3"
+                  }
+               }
+            },
+            name = "lua_system_constants"
+         },
+         {
+            constraints = {
+               {
+                  op = "==",
+                  version = {
+                     6, 2, 3, string = "6.2.3"
+                  }
+               }
+            },
+            name = "lyaml"
+         },
+         {
+            constraints = {
+               {
+                  op = "==",
+                  version = {
+                     0, 3, 0, string = "0.3.0"
+                  }
+               }
+            },
+            name = "lua-resty-iputils"
+         },
+         {
+            constraints = {
+               {
+                  op = "==",
+                  version = {
+                     20181207, string = "20181207"
+                  }
+               }
+            },
+            name = "luaossl"
+         },
+         {
+            constraints = {
+               {
+                  op = "==",
+                  version = {
+                     1, 0, 0, string = "1.0.0"
+                  }
+               }
+            },
+            name = "luasyslog"
+         },
+         {
+            constraints = {
+               {
+                  op = "==",
+                  version = {
+                     1, 0, 5, string = "1.0.5"
+                  }
+               }
+            },
+            name = "lua_pack"
+         },
+         {
+            constraints = {
+               {
+                  op = "==",
+                  version = {
+                     3, 0, 2, string = "3.0.2"
+                  }
+               }
+            },
+            name = "lua-resty-dns-client"
+         },
+         {
+            constraints = {
+               {
+                  op = "==",
+                  version = {
+                     0, 3, 3, string = "0.3.3"
+                  }
+               }
+            },
+            name = "lua-resty-worker-events"
+         },
+         {
+            constraints = {
+               {
+                  op = "==",
+                  version = {
+                     0, 1, 2, string = "0.1.2"
+                  }
+               }
+            },
+            name = "lua-resty-mediador"
+         },
+         {
+            constraints = {
+               {
+                  op = "==",
+                  version = {
+                     0, 6, 1, string = "0.6.1"
+                  }
+               }
+            },
+            name = "lua-resty-healthcheck"
+         },
+         {
+            constraints = {
+               {
+                  op = "==",
+                  version = {
+                     0, 1, 0, string = "0.1.0"
+                  }
+               }
+            },
+            name = "lua-resty-cookie"
+         },
+         {
+            constraints = {
+               {
+                  op = "==",
+                  version = {
+                     2, 3, 0, string = "2.3.0"
+                  }
+               }
+            },
+            name = "lua-resty-mlcache"
+         },
+         {
+            constraints = {
+               {
+                  op = "~>",
+                  version = {
+                     0, 3, string = "0.3"
+                  }
+               }
+            },
+            name = "kong-plugin-azure-functions"
+         },
+         {
+            constraints = {
+               {
+                  op = "~>",
+                  version = {
+                     0, 1, string = "0.1"
+                  }
+               }
+            },
+            name = "kong-plugin-kubernetes-sidecar-injector"
+         },
+         {
+            constraints = {
+               {
+                  op = "~>",
+                  version = {
+                     0, 1, string = "0.1"
+                  }
+               }
+            },
+            name = "kong-plugin-zipkin"
+         },
+         {
+            constraints = {
+               {
+                  op = "~>",
+                  version = {
+                     0, 2, string = "0.2"
+                  }
+               }
+            },
+            name = "kong-plugin-serverless-functions"
+         },
+         {
+            constraints = {
+               {
+                  op = "~>",
+                  version = {
+                     0, 3, string = "0.3"
+                  }
+               }
+            },
+            name = "kong-prometheus-plugin"
+         }
+      }
+   },
+   ["kong-lapis"] = {
+      ["1.6.0.1-1"] = {
+         {
+            constraints = {},
+            name = "ansicolors"
+         },
+         {
+            constraints = {},
+            name = "date"
+         },
+         {
+            constraints = {},
+            name = "etlua"
+         },
+         {
+            constraints = {},
+            name = "loadkit"
+         },
+         {
+            constraints = {},
+            name = "lpeg"
+         },
+         {
+            constraints = {},
+            name = "luafilesystem"
+         },
+         {
+            constraints = {},
+            name = "luasocket"
+         },
+         {
+            constraints = {},
+            name = "mimetypes"
+         },
+         {
+            constraints = {},
+            name = "pgmoon"
+         }
+      }
+   },
+   ["kong-plugin-azure-functions"] = {
+      ["0.3.0-1"] = {
+         {
+            constraints = {
+               {
+                  op = ">=",
+                  version = {
+                     5, 1, string = "5.1"
+                  }
+               }
+            },
+            name = "lua"
+         }
+      }
+   },
+   ["kong-plugin-kubernetes-sidecar-injector"] = {
+      ["0.1.1-0"] = {
+         {
+            constraints = {
+               {
+                  op = ">=",
+                  version = {
+                     5, 1, string = "5.1"
+                  }
+               }
+            },
+            name = "lua"
+         },
+         {
+            constraints = {},
+            name = "lua-cjson"
+         }
+      }
+   },
+   ["kong-plugin-serverless-functions"] = {
+      ["0.2.0-0"] = {
+         {
+            constraints = {
+               {
+                  op = ">=",
+                  version = {
+                     5, 1, string = "5.1"
+                  }
+               }
+            },
+            name = "lua"
+         }
+      }
+   },
+   ["kong-plugin-zipkin"] = {
+      ["0.1.2-0"] = {
+         {
+            constraints = {
+               {
+                  op = ">=",
+                  version = {
+                     5, 1, string = "5.1"
+                  }
+               }
+            },
+            name = "lua"
+         },
+         {
+            constraints = {},
+            name = "lua-cjson"
+         },
+         {
+            constraints = {
+               {
+                  op = ">=",
+                  version = {
+                     0, 11, string = "0.11"
+                  }
+               }
+            },
+            name = "lua-resty-http"
+         },
+         {
+            constraints = {
+               {
+                  op = "==",
+                  version = {
+                     0, 0, 2, string = "0.0.2"
+                  }
+               }
+            },
+            name = "opentracing"
+         }
+      }
+   },
+   ["kong-prometheus-plugin"] = {
+      ["0.3.4-2"] = {}
+   },
+   loadkit = {
+      ["1.1.0-1"] = {
+         {
+            constraints = {
+               {
+                  op = ">=",
+                  version = {
+                     5, 1, string = "5.1"
+                  }
+               }
+            },
+            name = "lua"
+         }
+      }
+   },
+   lpeg = {
+      ["1.0.2-1"] = {
+         {
+            constraints = {
+               {
+                  op = ">=",
+                  version = {
+                     5, 1, string = "5.1"
+                  }
+               }
+            },
+            name = "lua"
+         }
+      }
+   },
+   lpeg_patterns = {
+      ["0.5-0"] = {
+         {
+            constraints = {},
+            name = "lua"
+         },
+         {
+            constraints = {},
+            name = "lpeg"
+         }
+      }
+   },
+   lrandom = {
+      ["20180729-1"] = {
+         {
+            constraints = {
+               {
+                  op = ">=",
+                  version = {
+                     5, 1, string = "5.1"
+                  }
+               }
+            },
+            name = "lua"
+         }
+      }
+   },
+   ["lua-cassandra"] = {
+      ["1.3.4-0"] = {
+         {
+            constraints = {},
+            name = "luabitop"
+         }
+      }
+   },
+   ["lua-cjson"] = {
+      ["2.1.0.6-1"] = {
+         {
+            constraints = {
+               {
+                  op = ">=",
+                  version = {
+                     5, 1, string = "5.1"
+                  }
+               }
+            },
+            name = "lua"
+         }
+      }
+   },
+   ["lua-resty-cookie"] = {
+      ["0.1.0-1"] = {
+         {
+            constraints = {
+               {
+                  op = ">=",
+                  version = {
+                     5, 1, string = "5.1"
+                  }
+               }
+            },
+            name = "lua"
+         }
+      }
+   },
+   ["lua-resty-dns-client"] = {
+      ["3.0.2-1"] = {
+         {
+            constraints = {
+               {
+                  op = ">=",
+                  version = {
+                     5, 1, string = "5.1"
+                  }
+               },
+               {
+                  op = "<",
+                  version = {
+                     5, 4, string = "5.4"
+                  }
+               }
+            },
+            name = "lua"
+         },
+         {
+            constraints = {
+               {
+                  op = ">",
+                  version = {
+                     1, 1, string = "1.1"
+                  }
+               },
+               {
+                  op = "<",
+                  version = {
+                     2, 0, string = "2.0"
+                  }
+               }
+            },
+            name = "penlight"
+         },
+         {
+            constraints = {},
+            name = "lrandom"
+         },
+         {
+            constraints = {
+               {
+                  op = "<",
+                  version = {
+                     1, 0, string = "1.0"
+                  }
+               }
+            },
+            name = "lua-resty-timer"
+         },
+         {
+            constraints = {
+               {
+                  op = ">=",
+                  version = {
+                     0, 4, string = "0.4"
+                  }
+               }
+            },
+            name = "binaryheap"
+         }
+      }
+   },
+   ["lua-resty-healthcheck"] = {
+      ["0.6.1-1"] = {
+         {
+            constraints = {
+               {
+                  op = ">=",
+                  version = {
+                     0, 3, 2, string = "0.3.2"
+                  }
+               }
+            },
+            name = "lua-resty-worker-events"
+         }
+      }
+   },
+   ["lua-resty-http"] = {
+      ["0.13-0"] = {
+         {
+            constraints = {
+               {
+                  op = ">=",
+                  version = {
+                     5, 1, string = "5.1"
+                  }
+               }
+            },
+            name = "lua"
+         }
+      }
+   },
+   ["lua-resty-iputils"] = {
+      ["0.3.0-1"] = {
+         {
+            constraints = {
+               {
+                  op = ">=",
+                  version = {
+                     5, 1, string = "5.1"
+                  }
+               }
+            },
+            name = "lua"
+         }
+      }
+   },
+   ["lua-resty-jit-uuid"] = {
+      ["0.0.7-2"] = {}
+   },
+   ["lua-resty-mediador"] = {
+      ["0.1.2-1"] = {
+         {
+            constraints = {},
+            name = "luabitop"
+         }
+      }
+   },
+   ["lua-resty-mlcache"] = {
+      ["2.3.0-1"] = {}
+   },
+   ["lua-resty-timer"] = {
+      ["0.3.0-1"] = {}
+   },
+   ["lua-resty-worker-events"] = {
+      ["0.3.3-1"] = {}
+   },
+   lua_pack = {
+      ["1.0.5-0"] = {
+         {
+            constraints = {
+               {
+                  op = ">=",
+                  version = {
+                     5, 1, string = "5.1"
+                  }
+               },
+               {
+                  op = "<",
+                  version = {
+                     5, 3, string = "5.3"
+                  }
+               }
+            },
+            name = "lua"
+         }
+      }
+   },
+   lua_system_constants = {
+      ["0.1.3-0"] = {
+         {
+            constraints = {
+               {
+                  op = ">=",
+                  version = {
+                     5, 1, string = "5.1"
+                  }
+               }
+            },
+            name = "lua"
+         }
+      }
+   },
+   luafilesystem = {
+      ["1.7.0-2"] = {
+         {
+            constraints = {
+               {
+                  op = ">=",
+                  version = {
+                     5, 1, string = "5.1"
+                  }
+               }
+            },
+            name = "lua"
+         }
+      }
+   },
+   lualogging = {
+      ["1.3.0-1"] = {
+         {
+            constraints = {},
+            name = "luasocket"
+         }
+      }
+   },
+   luaossl = {
+      ["20181207-0"] = {
+         {
+            constraints = {},
+            name = "lua"
+         }
+      }
+   },
+   luasec = {
+      ["0.7-1"] = {
+         {
+            constraints = {
+               {
+                  op = ">=",
+                  version = {
+                     5, 1, string = "5.1"
+                  }
+               }
+            },
+            name = "lua"
+         },
+         {
+            constraints = {},
+            name = "luasocket"
+         }
+      }
+   },
+   luasocket = {
+      ["3.0rc1-2"] = {
+         {
+            constraints = {
+               {
+                  op = ">=",
+                  version = {
+                     5, 1, string = "5.1"
+                  }
+               }
+            },
+            name = "lua"
+         }
+      }
+   },
+   luasyslog = {
+      ["1.0.0-2"] = {
+         {
+            constraints = {
+               {
+                  op = ">=",
+                  version = {
+                     5, 1, string = "5.1"
+                  }
+               }
+            },
+            name = "lua"
+         },
+         {
+            constraints = {
+               {
+                  op = ">=",
+                  version = {
+                     1, 1, 4, string = "1.1.4"
+                  }
+               }
+            },
+            name = "lualogging"
+         }
+      }
+   },
+   luatz = {
+      ["0.3-1"] = {
+         {
+            constraints = {
+               {
+                  op = ">=",
+                  version = {
+                     5, 1, string = "5.1"
+                  }
+               }
+            },
+            name = "lua"
+         }
+      }
+   },
+   lyaml = {
+      ["6.2.3-1"] = {
+         {
+            constraints = {
+               {
+                  op = ">=",
+                  version = {
+                     5, 1, string = "5.1"
+                  }
+               },
+               {
+                  op = "<",
+                  version = {
+                     5, 5, string = "5.5"
+                  }
+               }
+            },
+            name = "lua"
+         }
+      }
+   },
+   mimetypes = {
+      ["1.0.0-2"] = {
+         {
+            constraints = {
+               {
+                  op = ">=",
+                  version = {
+                     5, 1, string = "5.1"
+                  }
+               }
+            },
+            name = "lua"
+         }
+      }
+   },
+   multipart = {
+      ["0.5.5-1"] = {
+         {
+            constraints = {
+               {
+                  op = ">=",
+                  version = {
+                     5, 1, string = "5.1"
+                  }
+               }
+            },
+            name = "lua"
+         }
+      }
+   },
+   opentracing = {
+      ["0.0.2-0"] = {
+         {
+            constraints = {
+               {
+                  op = ">=",
+                  version = {
+                     5, 1, string = "5.1"
+                  }
+               }
+            },
+            name = "lua"
+         },
+         {
+            constraints = {},
+            name = "luatz"
+         },
+         {
+            constraints = {},
+            name = "luaossl"
+         }
+      }
+   },
+   penlight = {
+      ["1.5.4-1"] = {
+         {
+            constraints = {},
+            name = "luafilesystem"
+         }
+      }
+   },
+   pgmoon = {
+      ["1.9.0-1"] = {
+         {
+            constraints = {
+               {
+                  op = ">=",
+                  version = {
+                     5, 1, string = "5.1"
+                  }
+               }
+            },
+            name = "lua"
+         },
+         {
+            constraints = {},
+            name = "luabitop"
+         },
+         {
+            constraints = {},
+            name = "lpeg"
+         }
+      }
+   },
+   version = {
+      ["1.0.1-2"] = {
+         {
+            constraints = {
+               {
+                  op = ">=",
+                  version = {
+                     5, 1, string = "5.1"
+                  }
+               }
+            },
+            name = "lua"
+         }
+      }
+   }
+}
+modules = {
+   _cqueues = {
+      "cqueues/20171014.51-0"
+   },
+   _openssl = {
+      "luaossl/20181207-0"
+   },
+   ansicolors = {
+      "ansicolors/1.0.2-3"
+   },
+   basexx = {
+      "basexx/0.4.1-1"
+   },
+   binaryheap = {
+      "binaryheap/0.4-1"
+   },
+   bit32 = {
+      "bit32/5.3.0-1"
+   },
+   cassandra = {
+      "lua-cassandra/1.3.4-0"
+   },
+   ["cassandra.auth"] = {
+      "lua-cassandra/1.3.4-0"
+   },
+   ["cassandra.cql"] = {
+      "lua-cassandra/1.3.4-0"
+   },
+   ["cassandra.socket"] = {
+      "lua-cassandra/1.3.4-0"
+   },
+   cjson = {
+      "lua-cjson/2.1.0.6-1"
+   },
+   ["cjson.util"] = {
+      "lua-cjson/2.1.0.6-1"
+   },
+   compat53 = {
+      "compat53/0.7-1"
+   },
+   ["compat53.module"] = {
+      "compat53/0.7-1"
+   },
+   ["compat53.string"] = {
+      "compat53/0.7-1"
+   },
+   ["compat53.table"] = {
+      "compat53/0.7-1"
+   },
+   ["compat53.utf8"] = {
+      "compat53/0.7-1"
+   },
+   cqueues = {
+      "cqueues/20171014.51-0"
+   },
+   ["cqueues.auxlib"] = {
+      "cqueues/20171014.51-0"
+   },
+   ["cqueues.condition"] = {
+      "cqueues/20171014.51-0"
+   },
+   ["cqueues.dns"] = {
+      "cqueues/20171014.51-0"
+   },
+   ["cqueues.dns.config"] = {
+      "cqueues/20171014.51-0"
+   },
+   ["cqueues.dns.hints"] = {
+      "cqueues/20171014.51-0"
+   },
+   ["cqueues.dns.hosts"] = {
+      "cqueues/20171014.51-0"
+   },
+   ["cqueues.dns.packet"] = {
+      "cqueues/20171014.51-0"
+   },
+   ["cqueues.dns.record"] = {
+      "cqueues/20171014.51-0"
+   },
+   ["cqueues.dns.resolver"] = {
+      "cqueues/20171014.51-0"
+   },
+   ["cqueues.dns.resolvers"] = {
+      "cqueues/20171014.51-0"
+   },
+   ["cqueues.errno"] = {
+      "cqueues/20171014.51-0"
+   },
+   ["cqueues.notify"] = {
+      "cqueues/20171014.51-0"
+   },
+   ["cqueues.promise"] = {
+      "cqueues/20171014.51-0"
+   },
+   ["cqueues.signal"] = {
+      "cqueues/20171014.51-0"
+   },
+   ["cqueues.socket"] = {
+      "cqueues/20171014.51-0"
+   },
+   ["cqueues.thread"] = {
+      "cqueues/20171014.51-0"
+   },
+   date = {
+      "date/2.1.2-1"
+   },
+   etlua = {
+      "etlua/1.3.0-1"
+   },
+   fifo = {
+      "fifo/0.2-0"
+   },
+   ["http.bit"] = {
+      "http/0.3-0"
+   },
+   ["http.client"] = {
+      "http/0.3-0"
+   },
+   ["http.compat.prosody"] = {
+      "http/0.3-0"
+   },
+   ["http.compat.socket"] = {
+      "http/0.3-0"
+   },
+   ["http.connection_common"] = {
+      "http/0.3-0"
+   },
+   ["http.cookie"] = {
+      "http/0.3-0"
+   },
+   ["http.h1_connection"] = {
+      "http/0.3-0"
+   },
+   ["http.h1_reason_phrases"] = {
+      "http/0.3-0"
+   },
+   ["http.h1_stream"] = {
+      "http/0.3-0"
+   },
+   ["http.h2_connection"] = {
+      "http/0.3-0"
+   },
+   ["http.h2_error"] = {
+      "http/0.3-0"
+   },
+   ["http.h2_stream"] = {
+      "http/0.3-0"
+   },
+   ["http.headers"] = {
+      "http/0.3-0"
+   },
+   ["http.hpack"] = {
+      "http/0.3-0"
+   },
+   ["http.hsts"] = {
+      "http/0.3-0"
+   },
+   ["http.proxies"] = {
+      "http/0.3-0"
+   },
+   ["http.request"] = {
+      "http/0.3-0"
+   },
+   ["http.server"] = {
+      "http/0.3-0"
+   },
+   ["http.socks"] = {
+      "http/0.3-0"
+   },
+   ["http.stream_common"] = {
+      "http/0.3-0"
+   },
+   ["http.tls"] = {
+      "http/0.3-0"
+   },
+   ["http.util"] = {
+      "http/0.3-0"
+   },
+   ["http.version"] = {
+      "http/0.3-0"
+   },
+   ["http.websocket"] = {
+      "http/0.3-0"
+   },
+   ["http.zlib"] = {
+      "http/0.3-0"
+   },
+   inspect = {
+      "inspect/3.1.1-0"
+   },
+   json2lua = {
+      "lua-cjson/2.1.0.6-1"
+   },
+   kong = {
+      "kong/1.1.2-0"
+   },
+   ["kong.api"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.api.api_helpers"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.api.arguments"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.api.endpoints"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.api.routes.cache"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.api.routes.certificates"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.api.routes.config"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.api.routes.consumers"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.api.routes.kong"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.api.routes.plugins"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.api.routes.routes"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.api.routes.services"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.api.routes.snis"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.api.routes.tags"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.api.routes.targets"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.api.routes.upstreams"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.cache"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.cluster_events"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.cluster_events.strategies.cassandra"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.cluster_events.strategies.off"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.cluster_events.strategies.postgres"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.cmd"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.cmd.check"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.cmd.config"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.cmd.health"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.cmd.migrations"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.cmd.prepare"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.cmd.quit"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.cmd.reload"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.cmd.restart"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.cmd.roar"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.cmd.start"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.cmd.stop"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.cmd.utils.env"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.cmd.utils.kill"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.cmd.utils.log"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.cmd.utils.migrations"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.cmd.utils.nginx_signals"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.cmd.utils.prefix_handler"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.cmd.utils.tty"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.cmd.version"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.concurrency"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.conf_loader"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.constants"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.db"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.db.dao"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.db.dao.certificates"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.db.dao.plugins"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.db.dao.snis"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.db.dao.tags"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.db.dao.targets"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.db.declarative"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.db.errors"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.db.iteration"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.db.migrations.core"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.db.migrations.core.000_base"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.db.migrations.core.001_14_to_15"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.db.migrations.core.002_15_to_1"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.db.migrations.core.003_100_to_110"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.db.migrations.helpers"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.db.migrations.state"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.db.schema"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.db.schema.entities.certificates"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.db.schema.entities.cluster_ca"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.db.schema.entities.consumers"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.db.schema.entities.plugins"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.db.schema.entities.routes"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.db.schema.entities.services"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.db.schema.entities.snis"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.db.schema.entities.tags"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.db.schema.entities.targets"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.db.schema.entities.upstreams"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.db.schema.entity"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.db.schema.metaschema"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.db.schema.others.declarative_config"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.db.schema.others.migrations"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.db.schema.plugin_loader"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.db.schema.topological_sort"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.db.schema.typedefs"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.db.strategies"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.db.strategies.cassandra"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.db.strategies.cassandra.connector"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.db.strategies.cassandra.plugins"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.db.strategies.cassandra.tags"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.db.strategies.connector"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.db.strategies.off"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.db.strategies.off.connector"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.db.strategies.off.tags"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.db.strategies.postgres"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.db.strategies.postgres.connector"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.db.strategies.postgres.plugins"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.db.strategies.postgres.tags"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.error_handlers"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.global"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.globalpatches"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.meta"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.pdk"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.pdk.client"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.pdk.ctx"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.pdk.ip"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.pdk.log"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.pdk.nginx"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.pdk.node"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.pdk.private.checks"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.pdk.private.phases"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.pdk.request"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.pdk.response"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.pdk.router"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.pdk.service"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.pdk.service.request"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.pdk.service.response"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.pdk.table"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.acl.acls"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.acl.api"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.acl.daos"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.acl.groups"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.acl.handler"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.acl.migrations"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.acl.migrations.000_base_acl"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.acl.migrations.001_14_to_15"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.acl.schema"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.aws-lambda.handler"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.aws-lambda.schema"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.aws-lambda.v4"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.azure-functions.handler"] = {
+      "kong-plugin-azure-functions/0.3.0-1"
+   },
+   ["kong.plugins.azure-functions.schema"] = {
+      "kong-plugin-azure-functions/0.3.0-1"
+   },
+   ["kong.plugins.base_plugin"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.basic-auth.access"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.basic-auth.api"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.basic-auth.basicauth_credentials"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.basic-auth.crypto"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.basic-auth.daos"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.basic-auth.handler"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.basic-auth.migrations"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.basic-auth.migrations.000_base_basic_auth"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.basic-auth.migrations.001_14_to_15"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.basic-auth.schema"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.bot-detection.handler"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.bot-detection.rules"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.bot-detection.schema"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.correlation-id.handler"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.correlation-id.schema"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.cors.handler"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.cors.schema"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.datadog.handler"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.datadog.schema"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.datadog.statsd_logger"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.file-log.handler"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.file-log.schema"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.hmac-auth.access"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.hmac-auth.api"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.hmac-auth.daos"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.hmac-auth.handler"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.hmac-auth.migrations"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.hmac-auth.migrations.000_base_hmac_auth"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.hmac-auth.migrations.001_14_to_15"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.hmac-auth.schema"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.http-log.handler"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.http-log.schema"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.ip-restriction.handler"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.ip-restriction.schema"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.jwt.api"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.jwt.asn_sequence"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.jwt.daos"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.jwt.handler"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.jwt.jwt_parser"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.jwt.migrations"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.jwt.migrations.000_base_jwt"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.jwt.migrations.001_14_to_15"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.jwt.schema"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.key-auth.api"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.key-auth.daos"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.key-auth.handler"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.key-auth.migrations"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.key-auth.migrations.000_base_key_auth"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.key-auth.migrations.001_14_to_15"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.key-auth.schema"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.kubernetes-sidecar-injector.api"] = {
+      "kong-plugin-kubernetes-sidecar-injector/0.1.1-0"
+   },
+   ["kong.plugins.kubernetes-sidecar-injector.config"] = {
+      "kong-plugin-kubernetes-sidecar-injector/0.1.1-0"
+   },
+   ["kong.plugins.kubernetes-sidecar-injector.handler"] = {
+      "kong-plugin-kubernetes-sidecar-injector/0.1.1-0"
+   },
+   ["kong.plugins.kubernetes-sidecar-injector.schema"] = {
+      "kong-plugin-kubernetes-sidecar-injector/0.1.1-0"
+   },
+   ["kong.plugins.kubernetes-sidecar-injector.typedefs"] = {
+      "kong-plugin-kubernetes-sidecar-injector/0.1.1-0"
+   },
+   ["kong.plugins.ldap-auth.access"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.ldap-auth.asn1"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.ldap-auth.handler"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.ldap-auth.ldap"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.ldap-auth.schema"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.log-serializers.basic"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.loggly.handler"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.loggly.schema"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.oauth2.access"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.oauth2.api"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.oauth2.daos"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.oauth2.handler"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.oauth2.migrations"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.oauth2.migrations.000_base_oauth2"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.oauth2.migrations.001_14_to_15"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.oauth2.migrations.002_15_to_10"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.oauth2.schema"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.post-function.handler"] = {
+      "kong-plugin-serverless-functions/0.2.0-0"
+   },
+   ["kong.plugins.post-function.schema"] = {
+      "kong-plugin-serverless-functions/0.2.0-0"
+   },
+   ["kong.plugins.pre-function.handler"] = {
+      "kong-plugin-serverless-functions/0.2.0-0"
+   },
+   ["kong.plugins.pre-function.schema"] = {
+      "kong-plugin-serverless-functions/0.2.0-0"
+   },
+   ["kong.plugins.prometheus.api"] = {
+      "kong-prometheus-plugin/0.3.4-2"
+   },
+   ["kong.plugins.prometheus.exporter"] = {
+      "kong-prometheus-plugin/0.3.4-2"
+   },
+   ["kong.plugins.prometheus.handler"] = {
+      "kong-prometheus-plugin/0.3.4-2"
+   },
+   ["kong.plugins.prometheus.prometheus"] = {
+      "kong-prometheus-plugin/0.3.4-2"
+   },
+   ["kong.plugins.prometheus.schema"] = {
+      "kong-prometheus-plugin/0.3.4-2"
+   },
+   ["kong.plugins.prometheus.serve"] = {
+      "kong-prometheus-plugin/0.3.4-2"
+   },
+   ["kong.plugins.rate-limiting.daos"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.rate-limiting.handler"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.rate-limiting.migrations"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.rate-limiting.migrations.000_base_rate_limiting"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.rate-limiting.migrations.001_14_to_15"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.rate-limiting.migrations.002_15_to_10"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.rate-limiting.migrations.003_10_to_112"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.rate-limiting.policies"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.rate-limiting.policies.cluster"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.rate-limiting.schema"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.request-size-limiting.handler"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.request-size-limiting.schema"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.request-termination.handler"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.request-termination.schema"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.request-transformer.access"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.request-transformer.handler"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.request-transformer.schema"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.response-ratelimiting.access"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.response-ratelimiting.daos"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.response-ratelimiting.handler"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.response-ratelimiting.header_filter"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.response-ratelimiting.log"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.response-ratelimiting.migrations"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.response-ratelimiting.migrations.000_base_response_rate_limiting"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.response-ratelimiting.migrations.001_14_to_15"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.response-ratelimiting.migrations.002_15_to_10"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.response-ratelimiting.policies"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.response-ratelimiting.policies.cluster"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.response-ratelimiting.schema"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.response-transformer.body_transformer"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.response-transformer.handler"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.response-transformer.header_transformer"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.response-transformer.schema"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.statsd.handler"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.statsd.schema"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.statsd.statsd_logger"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.syslog.handler"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.syslog.schema"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.tcp-log.handler"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.tcp-log.schema"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.udp-log.handler"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.udp-log.schema"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.plugins.zipkin.codec"] = {
+      "kong-plugin-zipkin/0.1.2-0"
+   },
+   ["kong.plugins.zipkin.handler"] = {
+      "kong-plugin-zipkin/0.1.2-0"
+   },
+   ["kong.plugins.zipkin.opentracing"] = {
+      "kong-plugin-zipkin/0.1.2-0"
+   },
+   ["kong.plugins.zipkin.random_sampler"] = {
+      "kong-plugin-zipkin/0.1.2-0"
+   },
+   ["kong.plugins.zipkin.reporter"] = {
+      "kong-plugin-zipkin/0.1.2-0"
+   },
+   ["kong.plugins.zipkin.schema"] = {
+      "kong-plugin-zipkin/0.1.2-0"
+   },
+   ["kong.reports"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.resty.config"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.resty.ctx"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.resty.getssl"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.router"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.runloop.balancer"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.runloop.certificate"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.runloop.handler"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.runloop.mesh"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.runloop.plugins_iterator"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.singletons"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.templates.kong_defaults"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.templates.kong_yml"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.templates.nginx"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.templates.nginx_kong"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.templates.nginx_kong_stream"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.tools.batch_queue"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.tools.cluster_ca"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.tools.dns"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.tools.printable"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.tools.timestamp"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.tools.utils"] = {
+      "kong/1.1.2-0"
+   },
+   ["kong.vendor.classic"] = {
+      "kong/1.1.2-0"
+   },
+   lapis = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.application"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.cache"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.cmd.actions"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.cmd.attached_server"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.cmd.cqueues"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.cmd.cqueues.actions"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.cmd.cqueues.attached_server"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.cmd.nginx"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.cmd.nginx.actions"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.cmd.nginx.attached_server"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.cmd.nginx.config"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.cmd.path"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.cmd.templates.app"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.cmd.templates.app_lua"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.cmd.templates.config"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.cmd.templates.config_etlua"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.cmd.templates.flow"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.cmd.templates.gitignore"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.cmd.templates.mime_types"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.cmd.templates.model"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.cmd.templates.models"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.cmd.templates.models_lua"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.cmd.templates.spec"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.cmd.templates.tup"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.cmd.util"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.config"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.cqueues"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.csrf"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.db"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.db.base"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.db.base_model"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.db.migrations"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.db.model"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.db.model.relations"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.db.mysql"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.db.mysql.model"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.db.mysql.schema"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.db.pagination"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.db.postgres"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.db.postgres.model"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.db.postgres.schema"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.db.schema"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.environment"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.etlua"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.features.etlua"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.flow"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.html"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.http"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.logging"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.lua"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.nginx"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.nginx.cache"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.nginx.context"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.nginx.http"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.nginx.postgres"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.request"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.router"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.server"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.session"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.spec"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.spec.db"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.spec.request"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.spec.server"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.spec.shared"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.spec.stack"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.time"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.util"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.util.encoding"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.util.functions"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.validate"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.version"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.views.error"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   ["lapis.views.layout"] = {
+      "kong-lapis/1.6.0.1-1"
+   },
+   lfs = {
+      "luafilesystem/1.7.0-2"
+   },
+   loadkit = {
+      "loadkit/1.1.0-1"
+   },
+   logging = {
+      "lualogging/1.3.0-1"
+   },
+   ["logging.console"] = {
+      "lualogging/1.3.0-1"
+   },
+   ["logging.email"] = {
+      "lualogging/1.3.0-1"
+   },
+   ["logging.file"] = {
+      "lualogging/1.3.0-1"
+   },
+   ["logging.rolling_file"] = {
+      "lualogging/1.3.0-1"
+   },
+   ["logging.socket"] = {
+      "lualogging/1.3.0-1"
+   },
+   ["logging.sql"] = {
+      "lualogging/1.3.0-1"
+   },
+   ["logging.syslog"] = {
+      "luasyslog/1.0.0-2"
+   },
+   lpeg = {
+      "lpeg/1.0.2-1"
+   },
+   ["lpeg_patterns.IPv4"] = {
+      "lpeg_patterns/0.5-0"
+   },
+   ["lpeg_patterns.IPv6"] = {
+      "lpeg_patterns/0.5-0"
+   },
+   ["lpeg_patterns.core"] = {
+      "lpeg_patterns/0.5-0"
+   },
+   ["lpeg_patterns.email"] = {
+      "lpeg_patterns/0.5-0"
+   },
+   ["lpeg_patterns.http"] = {
+      "lpeg_patterns/0.5-0"
+   },
+   ["lpeg_patterns.language"] = {
+      "lpeg_patterns/0.5-0"
+   },
+   ["lpeg_patterns.phone"] = {
+      "lpeg_patterns/0.5-0"
+   },
+   ["lpeg_patterns.uri"] = {
+      "lpeg_patterns/0.5-0"
+   },
+   ["lpeg_patterns.util"] = {
+      "lpeg_patterns/0.5-0"
+   },
+   lsyslog = {
+      "luasyslog/1.0.0-2"
+   },
+   ltn12 = {
+      "luasocket/3.0rc1-2"
+   },
+   lua2json = {
+      "lua-cjson/2.1.0.6-1"
+   },
+   lua_pack = {
+      "lua_pack/1.0.5-0"
+   },
+   lua_system_constants = {
+      "lua_system_constants/0.1.3-0"
+   },
+   luatz = {
+      "luatz/0.3-1"
+   },
+   ["luatz.gettime"] = {
+      "luatz/0.3-1"
+   },
+   ["luatz.parse"] = {
+      "luatz/0.3-1"
+   },
+   ["luatz.strftime"] = {
+      "luatz/0.3-1"
+   },
+   ["luatz.timetable"] = {
+      "luatz/0.3-1"
+   },
+   ["luatz.tzcache"] = {
+      "luatz/0.3-1"
+   },
+   ["luatz.tzfile"] = {
+      "luatz/0.3-1"
+   },
+   ["luatz.tzinfo"] = {
+      "luatz/0.3-1"
+   },
+   lyaml = {
+      "lyaml/6.2.3-1"
+   },
+   ["lyaml.explicit"] = {
+      "lyaml/6.2.3-1"
+   },
+   ["lyaml.functional"] = {
+      "lyaml/6.2.3-1"
+   },
+   ["lyaml.implicit"] = {
+      "lyaml/6.2.3-1"
+   },
+   mime = {
+      "luasocket/3.0rc1-2"
+   },
+   ["mime.core"] = {
+      "luasocket/3.0rc1-2"
+   },
+   mimetypes = {
+      "mimetypes/1.0.0-2"
+   },
+   multipart = {
+      "multipart/0.5.5-1"
+   },
+   openssl = {
+      "luaossl/20181207-0"
+   },
+   ["openssl.auxlib"] = {
+      "luaossl/20181207-0"
+   },
+   ["openssl.bignum"] = {
+      "luaossl/20181207-0"
+   },
+   ["openssl.cipher"] = {
+      "luaossl/20181207-0"
+   },
+   ["openssl.des"] = {
+      "luaossl/20181207-0"
+   },
+   ["openssl.digest"] = {
+      "luaossl/20181207-0"
+   },
+   ["openssl.hmac"] = {
+      "luaossl/20181207-0"
+   },
+   ["openssl.ocsp.basic"] = {
+      "luaossl/20181207-0"
+   },
+   ["openssl.ocsp.response"] = {
+      "luaossl/20181207-0"
+   },
+   ["openssl.pkcs12"] = {
+      "luaossl/20181207-0"
+   },
+   ["openssl.pkey"] = {
+      "luaossl/20181207-0"
+   },
+   ["openssl.pubkey"] = {
+      "luaossl/20181207-0"
+   },
+   ["openssl.rand"] = {
+      "luaossl/20181207-0"
+   },
+   ["openssl.ssl"] = {
+      "luaossl/20181207-0"
+   },
+   ["openssl.ssl.context"] = {
+      "luaossl/20181207-0"
+   },
+   ["openssl.x509"] = {
+      "luaossl/20181207-0"
+   },
+   ["openssl.x509.altname"] = {
+      "luaossl/20181207-0"
+   },
+   ["openssl.x509.chain"] = {
+      "luaossl/20181207-0"
+   },
+   ["openssl.x509.crl"] = {
+      "luaossl/20181207-0"
+   },
+   ["openssl.x509.csr"] = {
+      "luaossl/20181207-0"
+   },
+   ["openssl.x509.extension"] = {
+      "luaossl/20181207-0"
+   },
+   ["openssl.x509.name"] = {
+      "luaossl/20181207-0"
+   },
+   ["openssl.x509.store"] = {
+      "luaossl/20181207-0"
+   },
+   ["openssl.x509.verify_param"] = {
+      "luaossl/20181207-0"
+   },
+   opentracing = {
+      "opentracing/0.0.2-0"
+   },
+   ["opentracing.span"] = {
+      "opentracing/0.0.2-0"
+   },
+   ["opentracing.span_context"] = {
+      "opentracing/0.0.2-0"
+   },
+   ["opentracing.tracer"] = {
+      "opentracing/0.0.2-0"
+   },
+   pgmoon = {
+      "pgmoon/1.9.0-1"
+   },
+   ["pgmoon.arrays"] = {
+      "pgmoon/1.9.0-1"
+   },
+   ["pgmoon.cqueues"] = {
+      "pgmoon/1.9.0-1"
+   },
+   ["pgmoon.crypto"] = {
+      "pgmoon/1.9.0-1"
+   },
+   ["pgmoon.hstore"] = {
+      "pgmoon/1.9.0-1"
+   },
+   ["pgmoon.json"] = {
+      "pgmoon/1.9.0-1"
+   },
+   ["pgmoon.socket"] = {
+      "pgmoon/1.9.0-1"
+   },
+   ["pgmoon.util"] = {
+      "pgmoon/1.9.0-1"
+   },
+   pl = {
+      "penlight/1.5.4-1"
+   },
+   ["pl.Date"] = {
+      "penlight/1.5.4-1"
+   },
+   ["pl.List"] = {
+      "penlight/1.5.4-1"
+   },
+   ["pl.Map"] = {
+      "penlight/1.5.4-1"
+   },
+   ["pl.MultiMap"] = {
+      "penlight/1.5.4-1"
+   },
+   ["pl.OrderedMap"] = {
+      "penlight/1.5.4-1"
+   },
+   ["pl.Set"] = {
+      "penlight/1.5.4-1"
+   },
+   ["pl.app"] = {
+      "penlight/1.5.4-1"
+   },
+   ["pl.array2d"] = {
+      "penlight/1.5.4-1"
+   },
+   ["pl.class"] = {
+      "penlight/1.5.4-1"
+   },
+   ["pl.compat"] = {
+      "penlight/1.5.4-1"
+   },
+   ["pl.comprehension"] = {
+      "penlight/1.5.4-1"
+   },
+   ["pl.config"] = {
+      "penlight/1.5.4-1"
+   },
+   ["pl.data"] = {
+      "penlight/1.5.4-1"
+   },
+   ["pl.dir"] = {
+      "penlight/1.5.4-1"
+   },
+   ["pl.file"] = {
+      "penlight/1.5.4-1"
+   },
+   ["pl.func"] = {
+      "penlight/1.5.4-1"
+   },
+   ["pl.import_into"] = {
+      "penlight/1.5.4-1"
+   },
+   ["pl.input"] = {
+      "penlight/1.5.4-1"
+   },
+   ["pl.lapp"] = {
+      "penlight/1.5.4-1"
+   },
+   ["pl.lexer"] = {
+      "penlight/1.5.4-1"
+   },
+   ["pl.luabalanced"] = {
+      "penlight/1.5.4-1"
+   },
+   ["pl.operator"] = {
+      "penlight/1.5.4-1"
+   },
+   ["pl.path"] = {
+      "penlight/1.5.4-1"
+   },
+   ["pl.permute"] = {
+      "penlight/1.5.4-1"
+   },
+   ["pl.pretty"] = {
+      "penlight/1.5.4-1"
+   },
+   ["pl.seq"] = {
+      "penlight/1.5.4-1"
+   },
+   ["pl.sip"] = {
+      "penlight/1.5.4-1"
+   },
+   ["pl.strict"] = {
+      "penlight/1.5.4-1"
+   },
+   ["pl.stringio"] = {
+      "penlight/1.5.4-1"
+   },
+   ["pl.stringx"] = {
+      "penlight/1.5.4-1"
+   },
+   ["pl.tablex"] = {
+      "penlight/1.5.4-1"
+   },
+   ["pl.template"] = {
+      "penlight/1.5.4-1"
+   },
+   ["pl.test"] = {
+      "penlight/1.5.4-1"
+   },
+   ["pl.text"] = {
+      "penlight/1.5.4-1"
+   },
+   ["pl.types"] = {
+      "penlight/1.5.4-1"
+   },
+   ["pl.url"] = {
+      "penlight/1.5.4-1"
+   },
+   ["pl.utils"] = {
+      "penlight/1.5.4-1"
+   },
+   ["pl.xml"] = {
+      "penlight/1.5.4-1"
+   },
+   random = {
+      "lrandom/20180729-1"
+   },
+   re = {
+      "lpeg/1.0.2-1"
+   },
+   ["resty.cassandra.cluster"] = {
+      "lua-cassandra/1.3.4-0"
+   },
+   ["resty.cassandra.policies.lb"] = {
+      "lua-cassandra/1.3.4-0"
+   },
+   ["resty.cassandra.policies.lb.dc_rr"] = {
+      "lua-cassandra/1.3.4-0"
+   },
+   ["resty.cassandra.policies.lb.req_dc_rr"] = {
+      "lua-cassandra/1.3.4-0"
+   },
+   ["resty.cassandra.policies.lb.req_rr"] = {
+      "lua-cassandra/1.3.4-0"
+   },
+   ["resty.cassandra.policies.lb.rr"] = {
+      "lua-cassandra/1.3.4-0"
+   },
+   ["resty.cassandra.policies.reconnection"] = {
+      "lua-cassandra/1.3.4-0"
+   },
+   ["resty.cassandra.policies.reconnection.const"] = {
+      "lua-cassandra/1.3.4-0"
+   },
+   ["resty.cassandra.policies.reconnection.exp"] = {
+      "lua-cassandra/1.3.4-0"
+   },
+   ["resty.cassandra.policies.retry"] = {
+      "lua-cassandra/1.3.4-0"
+   },
+   ["resty.cassandra.policies.retry.simple"] = {
+      "lua-cassandra/1.3.4-0"
+   },
+   ["resty.cookie"] = {
+      "lua-resty-cookie/0.1.0-1"
+   },
+   ["resty.dns.balancer.base"] = {
+      "lua-resty-dns-client/3.0.2-1"
+   },
+   ["resty.dns.balancer.handle"] = {
+      "lua-resty-dns-client/3.0.2-1"
+   },
+   ["resty.dns.balancer.least_connections"] = {
+      "lua-resty-dns-client/3.0.2-1"
+   },
+   ["resty.dns.balancer.ring"] = {
+      "lua-resty-dns-client/3.0.2-1"
+   },
+   ["resty.dns.client"] = {
+      "lua-resty-dns-client/3.0.2-1"
+   },
+   ["resty.dns.utils"] = {
+      "lua-resty-dns-client/3.0.2-1"
+   },
+   ["resty.healthcheck"] = {
+      "lua-resty-healthcheck/0.6.1-1"
+   },
+   ["resty.healthcheck.utils"] = {
+      "lua-resty-healthcheck/0.6.1-1"
+   },
+   ["resty.http"] = {
+      "lua-resty-http/0.13-0"
+   },
+   ["resty.http_headers"] = {
+      "lua-resty-http/0.13-0"
+   },
+   ["resty.iputils"] = {
+      "lua-resty-iputils/0.3.0-1"
+   },
+   ["resty.jit-uuid"] = {
+      "lua-resty-jit-uuid/0.0.7-2"
+   },
+   ["resty.mediador.ip"] = {
+      "lua-resty-mediador/0.1.2-1"
+   },
+   ["resty.mediador.proxy"] = {
+      "lua-resty-mediador/0.1.2-1"
+   },
+   ["resty.mlcache"] = {
+      "lua-resty-mlcache/2.3.0-1"
+   },
+   ["resty.mlcache.ipc"] = {
+      "lua-resty-mlcache/2.3.0-1"
+   },
+   ["resty.timer"] = {
+      "lua-resty-timer/0.3.0-1"
+   },
+   ["resty.worker.events"] = {
+      "lua-resty-worker-events/0.3.3-1"
+   },
+   socket = {
+      "luasocket/3.0rc1-2"
+   },
+   ["socket.core"] = {
+      "luasocket/3.0rc1-2"
+   },
+   ["socket.ftp"] = {
+      "luasocket/3.0rc1-2"
+   },
+   ["socket.headers"] = {
+      "luasocket/3.0rc1-2"
+   },
+   ["socket.http"] = {
+      "luasocket/3.0rc1-2"
+   },
+   ["socket.serial"] = {
+      "luasocket/3.0rc1-2"
+   },
+   ["socket.smtp"] = {
+      "luasocket/3.0rc1-2"
+   },
+   ["socket.tp"] = {
+      "luasocket/3.0rc1-2"
+   },
+   ["socket.unix"] = {
+      "luasocket/3.0rc1-2"
+   },
+   ["socket.url"] = {
+      "luasocket/3.0rc1-2"
+   },
+   ssl = {
+      "luasec/0.7-1"
+   },
+   ["ssl.https"] = {
+      "luasec/0.7-1"
+   },
+   version = {
+      "version/1.0.1-2"
+   },
+   yaml = {
+      "lyaml/6.2.3-1"
+   }
+}
+repository = {
+   ansicolors = {
+      ["1.0.2-3"] = {
+         {
+            arch = "installed",
+            commands = {},
+            dependencies = {},
+            modules = {
+               ansicolors = "ansicolors.lua"
+            }
+         }
+      }
+   },
+   basexx = {
+      ["0.4.1-1"] = {
+         {
+            arch = "installed",
+            commands = {},
+            dependencies = {},
+            modules = {
+               basexx = "basexx.lua"
+            }
+         }
+      }
+   },
+   binaryheap = {
+      ["0.4-1"] = {
+         {
+            arch = "installed",
+            commands = {},
+            dependencies = {},
+            modules = {
+               binaryheap = "binaryheap.lua"
+            }
+         }
+      }
+   },
+   bit32 = {
+      ["5.3.0-1"] = {
+         {
+            arch = "installed",
+            commands = {},
+            dependencies = {},
+            modules = {
+               bit32 = "bit32.so"
+            }
+         }
+      }
+   },
+   compat53 = {
+      ["0.7-1"] = {
+         {
+            arch = "installed",
+            commands = {},
+            dependencies = {},
+            modules = {
+               compat53 = "compat53/init.lua",
+               ["compat53.module"] = "compat53/module.lua",
+               ["compat53.string"] = "compat53/string.so",
+               ["compat53.table"] = "compat53/table.so",
+               ["compat53.utf8"] = "compat53/utf8.so"
+            }
+         }
+      }
+   },
+   cqueues = {
+      ["20171014.51-0"] = {
+         {
+            arch = "installed",
+            commands = {},
+            dependencies = {},
+            modules = {
+               _cqueues = "_cqueues.so",
+               cqueues = "cqueues.lua",
+               ["cqueues.auxlib"] = "cqueues/auxlib.lua",
+               ["cqueues.condition"] = "cqueues/condition.lua",
+               ["cqueues.dns"] = "cqueues/dns.lua",
+               ["cqueues.dns.config"] = "cqueues/dns/config.lua",
+               ["cqueues.dns.hints"] = "cqueues/dns/hints.lua",
+               ["cqueues.dns.hosts"] = "cqueues/dns/hosts.lua",
+               ["cqueues.dns.packet"] = "cqueues/dns/packet.lua",
+               ["cqueues.dns.record"] = "cqueues/dns/record.lua",
+               ["cqueues.dns.resolver"] = "cqueues/dns/resolver.lua",
+               ["cqueues.dns.resolvers"] = "cqueues/dns/resolvers.lua",
+               ["cqueues.errno"] = "cqueues/errno.lua",
+               ["cqueues.notify"] = "cqueues/notify.lua",
+               ["cqueues.promise"] = "cqueues/promise.lua",
+               ["cqueues.signal"] = "cqueues/signal.lua",
+               ["cqueues.socket"] = "cqueues/socket.lua",
+               ["cqueues.thread"] = "cqueues/thread.lua"
+            }
+         }
+      }
+   },
+   date = {
+      ["2.1.2-1"] = {
+         {
+            arch = "installed",
+            commands = {},
+            dependencies = {},
+            modules = {
+               date = "date.lua"
+            }
+         }
+      }
+   },
+   etlua = {
+      ["1.3.0-1"] = {
+         {
+            arch = "installed",
+            commands = {},
+            dependencies = {},
+            modules = {
+               etlua = "etlua.lua"
+            }
+         }
+      }
+   },
+   fifo = {
+      ["0.2-0"] = {
+         {
+            arch = "installed",
+            commands = {},
+            dependencies = {},
+            modules = {
+               fifo = "fifo.lua"
+            }
+         }
+      }
+   },
+   http = {
+      ["0.3-0"] = {
+         {
+            arch = "installed",
+            commands = {},
+            dependencies = {
+               basexx = "0.4.1-1",
+               binaryheap = "0.4-1",
+               bit32 = "5.3.0-1",
+               compat53 = "0.7-1",
+               cqueues = "20171014.51-0",
+               fifo = "0.2-0",
+               lpeg = "1.0.2-1",
+               lpeg_patterns = "0.5-0",
+               luaossl = "20181207-0"
+            },
+            modules = {
+               ["http.bit"] = "http/bit.lua",
+               ["http.client"] = "http/client.lua",
+               ["http.compat.prosody"] = "http/compat/prosody.lua",
+               ["http.compat.socket"] = "http/compat/socket.lua",
+               ["http.connection_common"] = "http/connection_common.lua",
+               ["http.cookie"] = "http/cookie.lua",
+               ["http.h1_connection"] = "http/h1_connection.lua",
+               ["http.h1_reason_phrases"] = "http/h1_reason_phrases.lua",
+               ["http.h1_stream"] = "http/h1_stream.lua",
+               ["http.h2_connection"] = "http/h2_connection.lua",
+               ["http.h2_error"] = "http/h2_error.lua",
+               ["http.h2_stream"] = "http/h2_stream.lua",
+               ["http.headers"] = "http/headers.lua",
+               ["http.hpack"] = "http/hpack.lua",
+               ["http.hsts"] = "http/hsts.lua",
+               ["http.proxies"] = "http/proxies.lua",
+               ["http.request"] = "http/request.lua",
+               ["http.server"] = "http/server.lua",
+               ["http.socks"] = "http/socks.lua",
+               ["http.stream_common"] = "http/stream_common.lua",
+               ["http.tls"] = "http/tls.lua",
+               ["http.util"] = "http/util.lua",
+               ["http.version"] = "http/version.lua",
+               ["http.websocket"] = "http/websocket.lua",
+               ["http.zlib"] = "http/zlib.lua"
+            }
+         }
+      }
+   },
+   inspect = {
+      ["3.1.1-0"] = {
+         {
+            arch = "installed",
+            commands = {},
+            dependencies = {},
+            modules = {
+               inspect = "inspect.lua"
+            }
+         }
+      }
+   },
+   kong = {
+      ["1.1.2-0"] = {
+         {
+            arch = "installed",
+            commands = {},
+            dependencies = {
+               ansicolors = "1.0.2-3",
+               basexx = "0.4.1-1",
+               binaryheap = "0.4-1",
+               bit32 = "5.3.0-1",
+               compat53 = "0.7-1",
+               cqueues = "20171014.51-0",
+               date = "2.1.2-1",
+               etlua = "1.3.0-1",
+               fifo = "0.2-0",
+               http = "0.3-0",
+               inspect = "3.1.1-0",
+               ["kong-lapis"] = "1.6.0.1-1",
+               ["kong-plugin-azure-functions"] = "0.3.0-1",
+               ["kong-plugin-kubernetes-sidecar-injector"] = "0.1.1-0",
+               ["kong-plugin-serverless-functions"] = "0.2.0-0",
+               ["kong-plugin-zipkin"] = "0.1.2-0",
+               ["kong-prometheus-plugin"] = "0.3.4-2",
+               loadkit = "1.1.0-1",
+               lpeg = "1.0.2-1",
+               lpeg_patterns = "0.5-0",
+               lrandom = "20180729-1",
+               ["lua-cassandra"] = "1.3.4-0",
+               ["lua-cjson"] = "2.1.0.6-1",
+               ["lua-resty-cookie"] = "0.1.0-1",
+               ["lua-resty-dns-client"] = "3.0.2-1",
+               ["lua-resty-healthcheck"] = "0.6.1-1",
+               ["lua-resty-http"] = "0.13-0",
+               ["lua-resty-iputils"] = "0.3.0-1",
+               ["lua-resty-jit-uuid"] = "0.0.7-2",
+               ["lua-resty-mediador"] = "0.1.2-1",
+               ["lua-resty-mlcache"] = "2.3.0-1",
+               ["lua-resty-timer"] = "0.3.0-1",
+               ["lua-resty-worker-events"] = "0.3.3-1",
+               lua_pack = "1.0.5-0",
+               lua_system_constants = "0.1.3-0",
+               luafilesystem = "1.7.0-2",
+               lualogging = "1.3.0-1",
+               luaossl = "20181207-0",
+               luasec = "0.7-1",
+               luasocket = "3.0rc1-2",
+               luasyslog = "1.0.0-2",
+               luatz = "0.3-1",
+               lyaml = "6.2.3-1",
+               mimetypes = "1.0.0-2",
+               multipart = "0.5.5-1",
+               opentracing = "0.0.2-0",
+               penlight = "1.5.4-1",
+               pgmoon = "1.9.0-1",
+               version = "1.0.1-2"
+            },
+            modules = {
+               kong = "kong/init.lua",
+               ["kong.api"] = "kong/api/init.lua",
+               ["kong.api.api_helpers"] = "kong/api/api_helpers.lua",
+               ["kong.api.arguments"] = "kong/api/arguments.lua",
+               ["kong.api.endpoints"] = "kong/api/endpoints.lua",
+               ["kong.api.routes.cache"] = "kong/api/routes/cache.lua",
+               ["kong.api.routes.certificates"] = "kong/api/routes/certificates.lua",
+               ["kong.api.routes.config"] = "kong/api/routes/config.lua",
+               ["kong.api.routes.consumers"] = "kong/api/routes/consumers.lua",
+               ["kong.api.routes.kong"] = "kong/api/routes/kong.lua",
+               ["kong.api.routes.plugins"] = "kong/api/routes/plugins.lua",
+               ["kong.api.routes.routes"] = "kong/api/routes/routes.lua",
+               ["kong.api.routes.services"] = "kong/api/routes/services.lua",
+               ["kong.api.routes.snis"] = "kong/api/routes/snis.lua",
+               ["kong.api.routes.tags"] = "kong/api/routes/tags.lua",
+               ["kong.api.routes.targets"] = "kong/api/routes/targets.lua",
+               ["kong.api.routes.upstreams"] = "kong/api/routes/upstreams.lua",
+               ["kong.cache"] = "kong/cache.lua",
+               ["kong.cluster_events"] = "kong/cluster_events.lua",
+               ["kong.cluster_events.strategies.cassandra"] = "kong/cluster_events/strategies/cassandra.lua",
+               ["kong.cluster_events.strategies.off"] = "kong/cluster_events/strategies/off.lua",
+               ["kong.cluster_events.strategies.postgres"] = "kong/cluster_events/strategies/postgres.lua",
+               ["kong.cmd"] = "kong/cmd/init.lua",
+               ["kong.cmd.check"] = "kong/cmd/check.lua",
+               ["kong.cmd.config"] = "kong/cmd/config.lua",
+               ["kong.cmd.health"] = "kong/cmd/health.lua",
+               ["kong.cmd.migrations"] = "kong/cmd/migrations.lua",
+               ["kong.cmd.prepare"] = "kong/cmd/prepare.lua",
+               ["kong.cmd.quit"] = "kong/cmd/quit.lua",
+               ["kong.cmd.reload"] = "kong/cmd/reload.lua",
+               ["kong.cmd.restart"] = "kong/cmd/restart.lua",
+               ["kong.cmd.roar"] = "kong/cmd/roar.lua",
+               ["kong.cmd.start"] = "kong/cmd/start.lua",
+               ["kong.cmd.stop"] = "kong/cmd/stop.lua",
+               ["kong.cmd.utils.env"] = "kong/cmd/utils/env.lua",
+               ["kong.cmd.utils.kill"] = "kong/cmd/utils/kill.lua",
+               ["kong.cmd.utils.log"] = "kong/cmd/utils/log.lua",
+               ["kong.cmd.utils.migrations"] = "kong/cmd/utils/migrations.lua",
+               ["kong.cmd.utils.nginx_signals"] = "kong/cmd/utils/nginx_signals.lua",
+               ["kong.cmd.utils.prefix_handler"] = "kong/cmd/utils/prefix_handler.lua",
+               ["kong.cmd.utils.tty"] = "kong/cmd/utils/tty.lua",
+               ["kong.cmd.version"] = "kong/cmd/version.lua",
+               ["kong.concurrency"] = "kong/concurrency.lua",
+               ["kong.conf_loader"] = "kong/conf_loader.lua",
+               ["kong.constants"] = "kong/constants.lua",
+               ["kong.db"] = "kong/db/init.lua",
+               ["kong.db.dao"] = "kong/db/dao/init.lua",
+               ["kong.db.dao.certificates"] = "kong/db/dao/certificates.lua",
+               ["kong.db.dao.plugins"] = "kong/db/dao/plugins.lua",
+               ["kong.db.dao.snis"] = "kong/db/dao/snis.lua",
+               ["kong.db.dao.tags"] = "kong/db/dao/tags.lua",
+               ["kong.db.dao.targets"] = "kong/db/dao/targets.lua",
+               ["kong.db.declarative"] = "kong/db/declarative/init.lua",
+               ["kong.db.errors"] = "kong/db/errors.lua",
+               ["kong.db.iteration"] = "kong/db/iteration.lua",
+               ["kong.db.migrations.core"] = "kong/db/migrations/core/init.lua",
+               ["kong.db.migrations.core.000_base"] = "kong/db/migrations/core/000_base.lua",
+               ["kong.db.migrations.core.001_14_to_15"] = "kong/db/migrations/core/001_14_to_15.lua",
+               ["kong.db.migrations.core.002_15_to_1"] = "kong/db/migrations/core/002_15_to_1.lua",
+               ["kong.db.migrations.core.003_100_to_110"] = "kong/db/migrations/core/003_100_to_110.lua",
+               ["kong.db.migrations.helpers"] = "kong/db/migrations/helpers.lua",
+               ["kong.db.migrations.state"] = "kong/db/migrations/state.lua",
+               ["kong.db.schema"] = "kong/db/schema/init.lua",
+               ["kong.db.schema.entities.certificates"] = "kong/db/schema/entities/certificates.lua",
+               ["kong.db.schema.entities.cluster_ca"] = "kong/db/schema/entities/cluster_ca.lua",
+               ["kong.db.schema.entities.consumers"] = "kong/db/schema/entities/consumers.lua",
+               ["kong.db.schema.entities.plugins"] = "kong/db/schema/entities/plugins.lua",
+               ["kong.db.schema.entities.routes"] = "kong/db/schema/entities/routes.lua",
+               ["kong.db.schema.entities.services"] = "kong/db/schema/entities/services.lua",
+               ["kong.db.schema.entities.snis"] = "kong/db/schema/entities/snis.lua",
+               ["kong.db.schema.entities.tags"] = "kong/db/schema/entities/tags.lua",
+               ["kong.db.schema.entities.targets"] = "kong/db/schema/entities/targets.lua",
+               ["kong.db.schema.entities.upstreams"] = "kong/db/schema/entities/upstreams.lua",
+               ["kong.db.schema.entity"] = "kong/db/schema/entity.lua",
+               ["kong.db.schema.metaschema"] = "kong/db/schema/metaschema.lua",
+               ["kong.db.schema.others.declarative_config"] = "kong/db/schema/others/declarative_config.lua",
+               ["kong.db.schema.others.migrations"] = "kong/db/schema/others/migrations.lua",
+               ["kong.db.schema.plugin_loader"] = "kong/db/schema/plugin_loader.lua",
+               ["kong.db.schema.topological_sort"] = "kong/db/schema/topological_sort.lua",
+               ["kong.db.schema.typedefs"] = "kong/db/schema/typedefs.lua",
+               ["kong.db.strategies"] = "kong/db/strategies/init.lua",
+               ["kong.db.strategies.cassandra"] = "kong/db/strategies/cassandra/init.lua",
+               ["kong.db.strategies.cassandra.connector"] = "kong/db/strategies/cassandra/connector.lua",
+               ["kong.db.strategies.cassandra.plugins"] = "kong/db/strategies/cassandra/plugins.lua",
+               ["kong.db.strategies.cassandra.tags"] = "kong/db/strategies/cassandra/tags.lua",
+               ["kong.db.strategies.connector"] = "kong/db/strategies/connector.lua",
+               ["kong.db.strategies.off"] = "kong/db/strategies/off/init.lua",
+               ["kong.db.strategies.off.connector"] = "kong/db/strategies/off/connector.lua",
+               ["kong.db.strategies.off.tags"] = "kong/db/strategies/off/tags.lua",
+               ["kong.db.strategies.postgres"] = "kong/db/strategies/postgres/init.lua",
+               ["kong.db.strategies.postgres.connector"] = "kong/db/strategies/postgres/connector.lua",
+               ["kong.db.strategies.postgres.plugins"] = "kong/db/strategies/postgres/plugins.lua",
+               ["kong.db.strategies.postgres.tags"] = "kong/db/strategies/postgres/tags.lua",
+               ["kong.error_handlers"] = "kong/error_handlers.lua",
+               ["kong.global"] = "kong/global.lua",
+               ["kong.globalpatches"] = "kong/globalpatches.lua",
+               ["kong.meta"] = "kong/meta.lua",
+               ["kong.pdk"] = "kong/pdk/init.lua",
+               ["kong.pdk.client"] = "kong/pdk/client.lua",
+               ["kong.pdk.ctx"] = "kong/pdk/ctx.lua",
+               ["kong.pdk.ip"] = "kong/pdk/ip.lua",
+               ["kong.pdk.log"] = "kong/pdk/log.lua",
+               ["kong.pdk.nginx"] = "kong/pdk/nginx.lua",
+               ["kong.pdk.node"] = "kong/pdk/node.lua",
+               ["kong.pdk.private.checks"] = "kong/pdk/private/checks.lua",
+               ["kong.pdk.private.phases"] = "kong/pdk/private/phases.lua",
+               ["kong.pdk.request"] = "kong/pdk/request.lua",
+               ["kong.pdk.response"] = "kong/pdk/response.lua",
+               ["kong.pdk.router"] = "kong/pdk/router.lua",
+               ["kong.pdk.service"] = "kong/pdk/service.lua",
+               ["kong.pdk.service.request"] = "kong/pdk/service/request.lua",
+               ["kong.pdk.service.response"] = "kong/pdk/service/response.lua",
+               ["kong.pdk.table"] = "kong/pdk/table.lua",
+               ["kong.plugins.acl.acls"] = "kong/plugins/acl/acls.lua",
+               ["kong.plugins.acl.api"] = "kong/plugins/acl/api.lua",
+               ["kong.plugins.acl.daos"] = "kong/plugins/acl/daos.lua",
+               ["kong.plugins.acl.groups"] = "kong/plugins/acl/groups.lua",
+               ["kong.plugins.acl.handler"] = "kong/plugins/acl/handler.lua",
+               ["kong.plugins.acl.migrations"] = "kong/plugins/acl/migrations/init.lua",
+               ["kong.plugins.acl.migrations.000_base_acl"] = "kong/plugins/acl/migrations/000_base_acl.lua",
+               ["kong.plugins.acl.migrations.001_14_to_15"] = "kong/plugins/acl/migrations/001_14_to_15.lua",
+               ["kong.plugins.acl.schema"] = "kong/plugins/acl/schema.lua",
+               ["kong.plugins.aws-lambda.handler"] = "kong/plugins/aws-lambda/handler.lua",
+               ["kong.plugins.aws-lambda.schema"] = "kong/plugins/aws-lambda/schema.lua",
+               ["kong.plugins.aws-lambda.v4"] = "kong/plugins/aws-lambda/v4.lua",
+               ["kong.plugins.base_plugin"] = "kong/plugins/base_plugin.lua",
+               ["kong.plugins.basic-auth.access"] = "kong/plugins/basic-auth/access.lua",
+               ["kong.plugins.basic-auth.api"] = "kong/plugins/basic-auth/api.lua",
+               ["kong.plugins.basic-auth.basicauth_credentials"] = "kong/plugins/basic-auth/basicauth_credentials.lua",
+               ["kong.plugins.basic-auth.crypto"] = "kong/plugins/basic-auth/crypto.lua",
+               ["kong.plugins.basic-auth.daos"] = "kong/plugins/basic-auth/daos.lua",
+               ["kong.plugins.basic-auth.handler"] = "kong/plugins/basic-auth/handler.lua",
+               ["kong.plugins.basic-auth.migrations"] = "kong/plugins/basic-auth/migrations/init.lua",
+               ["kong.plugins.basic-auth.migrations.000_base_basic_auth"] = "kong/plugins/basic-auth/migrations/000_base_basic_auth.lua",
+               ["kong.plugins.basic-auth.migrations.001_14_to_15"] = "kong/plugins/basic-auth/migrations/001_14_to_15.lua",
+               ["kong.plugins.basic-auth.schema"] = "kong/plugins/basic-auth/schema.lua",
+               ["kong.plugins.bot-detection.handler"] = "kong/plugins/bot-detection/handler.lua",
+               ["kong.plugins.bot-detection.rules"] = "kong/plugins/bot-detection/rules.lua",
+               ["kong.plugins.bot-detection.schema"] = "kong/plugins/bot-detection/schema.lua",
+               ["kong.plugins.correlation-id.handler"] = "kong/plugins/correlation-id/handler.lua",
+               ["kong.plugins.correlation-id.schema"] = "kong/plugins/correlation-id/schema.lua",
+               ["kong.plugins.cors.handler"] = "kong/plugins/cors/handler.lua",
+               ["kong.plugins.cors.schema"] = "kong/plugins/cors/schema.lua",
+               ["kong.plugins.datadog.handler"] = "kong/plugins/datadog/handler.lua",
+               ["kong.plugins.datadog.schema"] = "kong/plugins/datadog/schema.lua",
+               ["kong.plugins.datadog.statsd_logger"] = "kong/plugins/datadog/statsd_logger.lua",
+               ["kong.plugins.file-log.handler"] = "kong/plugins/file-log/handler.lua",
+               ["kong.plugins.file-log.schema"] = "kong/plugins/file-log/schema.lua",
+               ["kong.plugins.hmac-auth.access"] = "kong/plugins/hmac-auth/access.lua",
+               ["kong.plugins.hmac-auth.api"] = "kong/plugins/hmac-auth/api.lua",
+               ["kong.plugins.hmac-auth.daos"] = "kong/plugins/hmac-auth/daos.lua",
+               ["kong.plugins.hmac-auth.handler"] = "kong/plugins/hmac-auth/handler.lua",
+               ["kong.plugins.hmac-auth.migrations"] = "kong/plugins/hmac-auth/migrations/init.lua",
+               ["kong.plugins.hmac-auth.migrations.000_base_hmac_auth"] = "kong/plugins/hmac-auth/migrations/000_base_hmac_auth.lua",
+               ["kong.plugins.hmac-auth.migrations.001_14_to_15"] = "kong/plugins/hmac-auth/migrations/001_14_to_15.lua",
+               ["kong.plugins.hmac-auth.schema"] = "kong/plugins/hmac-auth/schema.lua",
+               ["kong.plugins.http-log.handler"] = "kong/plugins/http-log/handler.lua",
+               ["kong.plugins.http-log.schema"] = "kong/plugins/http-log/schema.lua",
+               ["kong.plugins.ip-restriction.handler"] = "kong/plugins/ip-restriction/handler.lua",
+               ["kong.plugins.ip-restriction.schema"] = "kong/plugins/ip-restriction/schema.lua",
+               ["kong.plugins.jwt.api"] = "kong/plugins/jwt/api.lua",
+               ["kong.plugins.jwt.asn_sequence"] = "kong/plugins/jwt/asn_sequence.lua",
+               ["kong.plugins.jwt.daos"] = "kong/plugins/jwt/daos.lua",
+               ["kong.plugins.jwt.handler"] = "kong/plugins/jwt/handler.lua",
+               ["kong.plugins.jwt.jwt_parser"] = "kong/plugins/jwt/jwt_parser.lua",
+               ["kong.plugins.jwt.migrations"] = "kong/plugins/jwt/migrations/init.lua",
+               ["kong.plugins.jwt.migrations.000_base_jwt"] = "kong/plugins/jwt/migrations/000_base_jwt.lua",
+               ["kong.plugins.jwt.migrations.001_14_to_15"] = "kong/plugins/jwt/migrations/001_14_to_15.lua",
+               ["kong.plugins.jwt.schema"] = "kong/plugins/jwt/schema.lua",
+               ["kong.plugins.key-auth.api"] = "kong/plugins/key-auth/api.lua",
+               ["kong.plugins.key-auth.daos"] = "kong/plugins/key-auth/daos.lua",
+               ["kong.plugins.key-auth.handler"] = "kong/plugins/key-auth/handler.lua",
+               ["kong.plugins.key-auth.migrations"] = "kong/plugins/key-auth/migrations/init.lua",
+               ["kong.plugins.key-auth.migrations.000_base_key_auth"] = "kong/plugins/key-auth/migrations/000_base_key_auth.lua",
+               ["kong.plugins.key-auth.migrations.001_14_to_15"] = "kong/plugins/key-auth/migrations/001_14_to_15.lua",
+               ["kong.plugins.key-auth.schema"] = "kong/plugins/key-auth/schema.lua",
+               ["kong.plugins.ldap-auth.access"] = "kong/plugins/ldap-auth/access.lua",
+               ["kong.plugins.ldap-auth.asn1"] = "kong/plugins/ldap-auth/asn1.lua",
+               ["kong.plugins.ldap-auth.handler"] = "kong/plugins/ldap-auth/handler.lua",
+               ["kong.plugins.ldap-auth.ldap"] = "kong/plugins/ldap-auth/ldap.lua",
+               ["kong.plugins.ldap-auth.schema"] = "kong/plugins/ldap-auth/schema.lua",
+               ["kong.plugins.log-serializers.basic"] = "kong/plugins/log-serializers/basic.lua",
+               ["kong.plugins.loggly.handler"] = "kong/plugins/loggly/handler.lua",
+               ["kong.plugins.loggly.schema"] = "kong/plugins/loggly/schema.lua",
+               ["kong.plugins.oauth2.access"] = "kong/plugins/oauth2/access.lua",
+               ["kong.plugins.oauth2.api"] = "kong/plugins/oauth2/api.lua",
+               ["kong.plugins.oauth2.daos"] = "kong/plugins/oauth2/daos.lua",
+               ["kong.plugins.oauth2.handler"] = "kong/plugins/oauth2/handler.lua",
+               ["kong.plugins.oauth2.migrations"] = "kong/plugins/oauth2/migrations/init.lua",
+               ["kong.plugins.oauth2.migrations.000_base_oauth2"] = "kong/plugins/oauth2/migrations/000_base_oauth2.lua",
+               ["kong.plugins.oauth2.migrations.001_14_to_15"] = "kong/plugins/oauth2/migrations/001_14_to_15.lua",
+               ["kong.plugins.oauth2.migrations.002_15_to_10"] = "kong/plugins/oauth2/migrations/002_15_to_10.lua",
+               ["kong.plugins.oauth2.schema"] = "kong/plugins/oauth2/schema.lua",
+               ["kong.plugins.rate-limiting.daos"] = "kong/plugins/rate-limiting/daos.lua",
+               ["kong.plugins.rate-limiting.handler"] = "kong/plugins/rate-limiting/handler.lua",
+               ["kong.plugins.rate-limiting.migrations"] = "kong/plugins/rate-limiting/migrations/init.lua",
+               ["kong.plugins.rate-limiting.migrations.000_base_rate_limiting"] = "kong/plugins/rate-limiting/migrations/000_base_rate_limiting.lua",
+               ["kong.plugins.rate-limiting.migrations.001_14_to_15"] = "kong/plugins/rate-limiting/migrations/001_14_to_15.lua",
+               ["kong.plugins.rate-limiting.migrations.002_15_to_10"] = "kong/plugins/rate-limiting/migrations/002_15_to_10.lua",
+               ["kong.plugins.rate-limiting.migrations.003_10_to_112"] = "kong/plugins/rate-limiting/migrations/003_10_to_112.lua",
+               ["kong.plugins.rate-limiting.policies"] = "kong/plugins/rate-limiting/policies/init.lua",
+               ["kong.plugins.rate-limiting.policies.cluster"] = "kong/plugins/rate-limiting/policies/cluster.lua",
+               ["kong.plugins.rate-limiting.schema"] = "kong/plugins/rate-limiting/schema.lua",
+               ["kong.plugins.request-size-limiting.handler"] = "kong/plugins/request-size-limiting/handler.lua",
+               ["kong.plugins.request-size-limiting.schema"] = "kong/plugins/request-size-limiting/schema.lua",
+               ["kong.plugins.request-termination.handler"] = "kong/plugins/request-termination/handler.lua",
+               ["kong.plugins.request-termination.schema"] = "kong/plugins/request-termination/schema.lua",
+               ["kong.plugins.request-transformer.access"] = "kong/plugins/request-transformer/access.lua",
+               ["kong.plugins.request-transformer.handler"] = "kong/plugins/request-transformer/handler.lua",
+               ["kong.plugins.request-transformer.schema"] = "kong/plugins/request-transformer/schema.lua",
+               ["kong.plugins.response-ratelimiting.access"] = "kong/plugins/response-ratelimiting/access.lua",
+               ["kong.plugins.response-ratelimiting.daos"] = "kong/plugins/response-ratelimiting/daos.lua",
+               ["kong.plugins.response-ratelimiting.handler"] = "kong/plugins/response-ratelimiting/handler.lua",
+               ["kong.plugins.response-ratelimiting.header_filter"] = "kong/plugins/response-ratelimiting/header_filter.lua",
+               ["kong.plugins.response-ratelimiting.log"] = "kong/plugins/response-ratelimiting/log.lua",
+               ["kong.plugins.response-ratelimiting.migrations"] = "kong/plugins/response-ratelimiting/migrations/init.lua",
+               ["kong.plugins.response-ratelimiting.migrations.000_base_response_rate_limiting"] = "kong/plugins/response-ratelimiting/migrations/000_base_response_rate_limiting.lua",
+               ["kong.plugins.response-ratelimiting.migrations.001_14_to_15"] = "kong/plugins/response-ratelimiting/migrations/001_14_to_15.lua",
+               ["kong.plugins.response-ratelimiting.migrations.002_15_to_10"] = "kong/plugins/response-ratelimiting/migrations/002_15_to_10.lua",
+               ["kong.plugins.response-ratelimiting.policies"] = "kong/plugins/response-ratelimiting/policies/init.lua",
+               ["kong.plugins.response-ratelimiting.policies.cluster"] = "kong/plugins/response-ratelimiting/policies/cluster.lua",
+               ["kong.plugins.response-ratelimiting.schema"] = "kong/plugins/response-ratelimiting/schema.lua",
+               ["kong.plugins.response-transformer.body_transformer"] = "kong/plugins/response-transformer/body_transformer.lua",
+               ["kong.plugins.response-transformer.handler"] = "kong/plugins/response-transformer/handler.lua",
+               ["kong.plugins.response-transformer.header_transformer"] = "kong/plugins/response-transformer/header_transformer.lua",
+               ["kong.plugins.response-transformer.schema"] = "kong/plugins/response-transformer/schema.lua",
+               ["kong.plugins.statsd.handler"] = "kong/plugins/statsd/handler.lua",
+               ["kong.plugins.statsd.schema"] = "kong/plugins/statsd/schema.lua",
+               ["kong.plugins.statsd.statsd_logger"] = "kong/plugins/statsd/statsd_logger.lua",
+               ["kong.plugins.syslog.handler"] = "kong/plugins/syslog/handler.lua",
+               ["kong.plugins.syslog.schema"] = "kong/plugins/syslog/schema.lua",
+               ["kong.plugins.tcp-log.handler"] = "kong/plugins/tcp-log/handler.lua",
+               ["kong.plugins.tcp-log.schema"] = "kong/plugins/tcp-log/schema.lua",
+               ["kong.plugins.udp-log.handler"] = "kong/plugins/udp-log/handler.lua",
+               ["kong.plugins.udp-log.schema"] = "kong/plugins/udp-log/schema.lua",
+               ["kong.reports"] = "kong/reports.lua",
+               ["kong.resty.config"] = "kong/resty/config.lua",
+               ["kong.resty.ctx"] = "kong/resty/ctx.lua",
+               ["kong.resty.getssl"] = "kong/resty/getssl.lua",
+               ["kong.router"] = "kong/router.lua",
+               ["kong.runloop.balancer"] = "kong/runloop/balancer.lua",
+               ["kong.runloop.certificate"] = "kong/runloop/certificate.lua",
+               ["kong.runloop.handler"] = "kong/runloop/handler.lua",
+               ["kong.runloop.mesh"] = "kong/runloop/mesh.lua",
+               ["kong.runloop.plugins_iterator"] = "kong/runloop/plugins_iterator.lua",
+               ["kong.singletons"] = "kong/singletons.lua",
+               ["kong.templates.kong_defaults"] = "kong/templates/kong_defaults.lua",
+               ["kong.templates.kong_yml"] = "kong/templates/kong_yml.lua",
+               ["kong.templates.nginx"] = "kong/templates/nginx.lua",
+               ["kong.templates.nginx_kong"] = "kong/templates/nginx_kong.lua",
+               ["kong.templates.nginx_kong_stream"] = "kong/templates/nginx_kong_stream.lua",
+               ["kong.tools.batch_queue"] = "kong/tools/batch_queue.lua",
+               ["kong.tools.cluster_ca"] = "kong/tools/cluster_ca.lua",
+               ["kong.tools.dns"] = "kong/tools/dns.lua",
+               ["kong.tools.printable"] = "kong/tools/printable.lua",
+               ["kong.tools.timestamp"] = "kong/tools/timestamp.lua",
+               ["kong.tools.utils"] = "kong/tools/utils.lua",
+               ["kong.vendor.classic"] = "kong/vendor/classic.lua"
+            }
+         }
+      }
+   },
+   ["kong-lapis"] = {
+      ["1.6.0.1-1"] = {
+         {
+            arch = "installed",
+            commands = {
+               lapis = "lapis"
+            },
+            dependencies = {
+               ansicolors = "1.0.2-3",
+               date = "2.1.2-1",
+               etlua = "1.3.0-1",
+               loadkit = "1.1.0-1",
+               lpeg = "1.0.2-1",
+               luafilesystem = "1.7.0-2",
+               luasocket = "3.0rc1-2",
+               mimetypes = "1.0.0-2",
+               pgmoon = "1.9.0-1"
+            },
+            modules = {
+               lapis = "lapis/init.lua",
+               ["lapis.application"] = "lapis/application.lua",
+               ["lapis.cache"] = "lapis/cache.lua",
+               ["lapis.cmd.actions"] = "lapis/cmd/actions.lua",
+               ["lapis.cmd.attached_server"] = "lapis/cmd/attached_server.lua",
+               ["lapis.cmd.cqueues"] = "lapis/cmd/cqueues.lua",
+               ["lapis.cmd.cqueues.actions"] = "lapis/cmd/cqueues/actions.lua",
+               ["lapis.cmd.cqueues.attached_server"] = "lapis/cmd/cqueues/attached_server.lua",
+               ["lapis.cmd.nginx"] = "lapis/cmd/nginx.lua",
+               ["lapis.cmd.nginx.actions"] = "lapis/cmd/nginx/actions.lua",
+               ["lapis.cmd.nginx.attached_server"] = "lapis/cmd/nginx/attached_server.lua",
+               ["lapis.cmd.nginx.config"] = "lapis/cmd/nginx/config.lua",
+               ["lapis.cmd.path"] = "lapis/cmd/path.lua",
+               ["lapis.cmd.templates.app"] = "lapis/cmd/templates/app.lua",
+               ["lapis.cmd.templates.app_lua"] = "lapis/cmd/templates/app_lua.lua",
+               ["lapis.cmd.templates.config"] = "lapis/cmd/templates/config.lua",
+               ["lapis.cmd.templates.config_etlua"] = "lapis/cmd/templates/config_etlua.lua",
+               ["lapis.cmd.templates.flow"] = "lapis/cmd/templates/flow.lua",
+               ["lapis.cmd.templates.gitignore"] = "lapis/cmd/templates/gitignore.lua",
+               ["lapis.cmd.templates.mime_types"] = "lapis/cmd/templates/mime_types.lua",
+               ["lapis.cmd.templates.model"] = "lapis/cmd/templates/model.lua",
+               ["lapis.cmd.templates.models"] = "lapis/cmd/templates/models.lua",
+               ["lapis.cmd.templates.models_lua"] = "lapis/cmd/templates/models_lua.lua",
+               ["lapis.cmd.templates.spec"] = "lapis/cmd/templates/spec.lua",
+               ["lapis.cmd.templates.tup"] = "lapis/cmd/templates/tup.lua",
+               ["lapis.cmd.util"] = "lapis/cmd/util.lua",
+               ["lapis.config"] = "lapis/config.lua",
+               ["lapis.cqueues"] = "lapis/cqueues.lua",
+               ["lapis.csrf"] = "lapis/csrf.lua",
+               ["lapis.db"] = "lapis/db.lua",
+               ["lapis.db.base"] = "lapis/db/base.lua",
+               ["lapis.db.base_model"] = "lapis/db/base_model.lua",
+               ["lapis.db.migrations"] = "lapis/db/migrations.lua",
+               ["lapis.db.model"] = "lapis/db/model.lua",
+               ["lapis.db.model.relations"] = "lapis/db/model/relations.lua",
+               ["lapis.db.mysql"] = "lapis/db/mysql.lua",
+               ["lapis.db.mysql.model"] = "lapis/db/mysql/model.lua",
+               ["lapis.db.mysql.schema"] = "lapis/db/mysql/schema.lua",
+               ["lapis.db.pagination"] = "lapis/db/pagination.lua",
+               ["lapis.db.postgres"] = "lapis/db/postgres.lua",
+               ["lapis.db.postgres.model"] = "lapis/db/postgres/model.lua",
+               ["lapis.db.postgres.schema"] = "lapis/db/postgres/schema.lua",
+               ["lapis.db.schema"] = "lapis/db/schema.lua",
+               ["lapis.environment"] = "lapis/environment.lua",
+               ["lapis.etlua"] = "lapis/etlua.lua",
+               ["lapis.features.etlua"] = "lapis/features/etlua.lua",
+               ["lapis.flow"] = "lapis/flow.lua",
+               ["lapis.html"] = "lapis/html.lua",
+               ["lapis.http"] = "lapis/http.lua",
+               ["lapis.logging"] = "lapis/logging.lua",
+               ["lapis.lua"] = "lapis/lua.lua",
+               ["lapis.nginx"] = "lapis/nginx.lua",
+               ["lapis.nginx.cache"] = "lapis/nginx/cache.lua",
+               ["lapis.nginx.context"] = "lapis/nginx/context.lua",
+               ["lapis.nginx.http"] = "lapis/nginx/http.lua",
+               ["lapis.nginx.postgres"] = "lapis/nginx/postgres.lua",
+               ["lapis.request"] = "lapis/request.lua",
+               ["lapis.router"] = "lapis/router.lua",
+               ["lapis.server"] = "lapis/server.lua",
+               ["lapis.session"] = "lapis/session.lua",
+               ["lapis.spec"] = "lapis/spec.lua",
+               ["lapis.spec.db"] = "lapis/spec/db.lua",
+               ["lapis.spec.request"] = "lapis/spec/request.lua",
+               ["lapis.spec.server"] = "lapis/spec/server.lua",
+               ["lapis.spec.shared"] = "lapis/spec/shared.lua",
+               ["lapis.spec.stack"] = "lapis/spec/stack.lua",
+               ["lapis.time"] = "lapis/time.lua",
+               ["lapis.util"] = "lapis/util.lua",
+               ["lapis.util.encoding"] = "lapis/util/encoding.lua",
+               ["lapis.util.functions"] = "lapis/util/functions.lua",
+               ["lapis.validate"] = "lapis/validate.lua",
+               ["lapis.version"] = "lapis/version.lua",
+               ["lapis.views.error"] = "lapis/views/error.lua",
+               ["lapis.views.layout"] = "lapis/views/layout.lua"
+            }
+         }
+      }
+   },
+   ["kong-plugin-azure-functions"] = {
+      ["0.3.0-1"] = {
+         {
+            arch = "installed",
+            commands = {},
+            dependencies = {},
+            modules = {
+               ["kong.plugins.azure-functions.handler"] = "kong/plugins/azure-functions/handler.lua",
+               ["kong.plugins.azure-functions.schema"] = "kong/plugins/azure-functions/schema.lua"
+            }
+         }
+      }
+   },
+   ["kong-plugin-kubernetes-sidecar-injector"] = {
+      ["0.1.1-0"] = {
+         {
+            arch = "installed",
+            commands = {},
+            dependencies = {
+               ["lua-cjson"] = "2.1.0.6-1"
+            },
+            modules = {
+               ["kong.plugins.kubernetes-sidecar-injector.api"] = "kong/plugins/kubernetes-sidecar-injector/api.lua",
+               ["kong.plugins.kubernetes-sidecar-injector.config"] = "kong/plugins/kubernetes-sidecar-injector/config.lua",
+               ["kong.plugins.kubernetes-sidecar-injector.handler"] = "kong/plugins/kubernetes-sidecar-injector/handler.lua",
+               ["kong.plugins.kubernetes-sidecar-injector.schema"] = "kong/plugins/kubernetes-sidecar-injector/schema.lua",
+               ["kong.plugins.kubernetes-sidecar-injector.typedefs"] = "kong/plugins/kubernetes-sidecar-injector/typedefs.lua"
+            }
+         }
+      }
+   },
+   ["kong-plugin-serverless-functions"] = {
+      ["0.2.0-0"] = {
+         {
+            arch = "installed",
+            commands = {},
+            dependencies = {},
+            modules = {
+               ["kong.plugins.post-function.handler"] = "kong/plugins/post-function/handler.lua",
+               ["kong.plugins.post-function.schema"] = "kong/plugins/post-function/schema.lua",
+               ["kong.plugins.pre-function.handler"] = "kong/plugins/pre-function/handler.lua",
+               ["kong.plugins.pre-function.schema"] = "kong/plugins/pre-function/schema.lua"
+            }
+         }
+      }
+   },
+   ["kong-plugin-zipkin"] = {
+      ["0.1.2-0"] = {
+         {
+            arch = "installed",
+            commands = {},
+            dependencies = {
+               ["lua-cjson"] = "2.1.0.6-1",
+               ["lua-resty-http"] = "0.13-0",
+               luaossl = "20181207-0",
+               luatz = "0.3-1",
+               opentracing = "0.0.2-0"
+            },
+            modules = {
+               ["kong.plugins.zipkin.codec"] = "kong/plugins/zipkin/codec.lua",
+               ["kong.plugins.zipkin.handler"] = "kong/plugins/zipkin/handler.lua",
+               ["kong.plugins.zipkin.opentracing"] = "kong/plugins/zipkin/opentracing.lua",
+               ["kong.plugins.zipkin.random_sampler"] = "kong/plugins/zipkin/random_sampler.lua",
+               ["kong.plugins.zipkin.reporter"] = "kong/plugins/zipkin/reporter.lua",
+               ["kong.plugins.zipkin.schema"] = "kong/plugins/zipkin/schema.lua"
+            }
+         }
+      }
+   },
+   ["kong-prometheus-plugin"] = {
+      ["0.3.4-2"] = {
+         {
+            arch = "installed",
+            commands = {},
+            dependencies = {},
+            modules = {
+               ["kong.plugins.prometheus.api"] = "kong/plugins/prometheus/api.lua",
+               ["kong.plugins.prometheus.exporter"] = "kong/plugins/prometheus/exporter.lua",
+               ["kong.plugins.prometheus.handler"] = "kong/plugins/prometheus/handler.lua",
+               ["kong.plugins.prometheus.prometheus"] = "kong/plugins/prometheus/prometheus.lua",
+               ["kong.plugins.prometheus.schema"] = "kong/plugins/prometheus/schema.lua",
+               ["kong.plugins.prometheus.serve"] = "kong/plugins/prometheus/serve.lua"
+            }
+         }
+      }
+   },
+   loadkit = {
+      ["1.1.0-1"] = {
+         {
+            arch = "installed",
+            commands = {},
+            dependencies = {},
+            modules = {
+               loadkit = "loadkit.lua"
+            }
+         }
+      }
+   },
+   lpeg = {
+      ["1.0.2-1"] = {
+         {
+            arch = "installed",
+            commands = {},
+            dependencies = {},
+            modules = {
+               lpeg = "lpeg.so",
+               re = "re.lua"
+            }
+         }
+      }
+   },
+   lpeg_patterns = {
+      ["0.5-0"] = {
+         {
+            arch = "installed",
+            commands = {},
+            dependencies = {
+               lpeg = "1.0.2-1"
+            },
+            modules = {
+               ["lpeg_patterns.IPv4"] = "lpeg_patterns/IPv4.lua",
+               ["lpeg_patterns.IPv6"] = "lpeg_patterns/IPv6.lua",
+               ["lpeg_patterns.core"] = "lpeg_patterns/core.lua",
+               ["lpeg_patterns.email"] = "lpeg_patterns/email.lua",
+               ["lpeg_patterns.http"] = "lpeg_patterns/http.lua",
+               ["lpeg_patterns.language"] = "lpeg_patterns/language.lua",
+               ["lpeg_patterns.phone"] = "lpeg_patterns/phone.lua",
+               ["lpeg_patterns.uri"] = "lpeg_patterns/uri.lua",
+               ["lpeg_patterns.util"] = "lpeg_patterns/util.lua"
+            }
+         }
+      }
+   },
+   lrandom = {
+      ["20180729-1"] = {
+         {
+            arch = "installed",
+            commands = {},
+            dependencies = {},
+            modules = {
+               random = "random.so"
+            }
+         }
+      }
+   },
+   ["lua-cassandra"] = {
+      ["1.3.4-0"] = {
+         {
+            arch = "installed",
+            commands = {},
+            dependencies = {},
+            modules = {
+               cassandra = "cassandra/init.lua",
+               ["cassandra.auth"] = "cassandra/auth.lua",
+               ["cassandra.cql"] = "cassandra/cql.lua",
+               ["cassandra.socket"] = "cassandra/socket.lua",
+               ["resty.cassandra.cluster"] = "resty/cassandra/cluster.lua",
+               ["resty.cassandra.policies.lb"] = "resty/cassandra/policies/lb/init.lua",
+               ["resty.cassandra.policies.lb.dc_rr"] = "resty/cassandra/policies/lb/dc_rr.lua",
+               ["resty.cassandra.policies.lb.req_dc_rr"] = "resty/cassandra/policies/lb/req_dc_rr.lua",
+               ["resty.cassandra.policies.lb.req_rr"] = "resty/cassandra/policies/lb/req_rr.lua",
+               ["resty.cassandra.policies.lb.rr"] = "resty/cassandra/policies/lb/rr.lua",
+               ["resty.cassandra.policies.reconnection"] = "resty/cassandra/policies/reconnection/init.lua",
+               ["resty.cassandra.policies.reconnection.const"] = "resty/cassandra/policies/reconnection/const.lua",
+               ["resty.cassandra.policies.reconnection.exp"] = "resty/cassandra/policies/reconnection/exp.lua",
+               ["resty.cassandra.policies.retry"] = "resty/cassandra/policies/retry/init.lua",
+               ["resty.cassandra.policies.retry.simple"] = "resty/cassandra/policies/retry/simple.lua"
+            }
+         }
+      }
+   },
+   ["lua-cjson"] = {
+      ["2.1.0.6-1"] = {
+         {
+            arch = "installed",
+            commands = {
+               json2lua = "json2lua",
+               lua2json = "lua2json"
+            },
+            dependencies = {},
+            modules = {
+               cjson = "cjson.so",
+               ["cjson.util"] = "cjson/util.lua",
+               json2lua = "json2lua.lua",
+               lua2json = "lua2json.lua"
+            }
+         }
+      }
+   },
+   ["lua-resty-cookie"] = {
+      ["0.1.0-1"] = {
+         {
+            arch = "installed",
+            commands = {},
+            dependencies = {},
+            modules = {
+               ["resty.cookie"] = "resty/cookie.lua"
+            }
+         }
+      }
+   },
+   ["lua-resty-dns-client"] = {
+      ["3.0.2-1"] = {
+         {
+            arch = "installed",
+            commands = {},
+            dependencies = {
+               binaryheap = "0.4-1",
+               lrandom = "20180729-1",
+               ["lua-resty-timer"] = "0.3.0-1",
+               luafilesystem = "1.7.0-2",
+               penlight = "1.5.4-1"
+            },
+            modules = {
+               ["resty.dns.balancer.base"] = "resty/dns/balancer/base.lua",
+               ["resty.dns.balancer.handle"] = "resty/dns/balancer/handle.lua",
+               ["resty.dns.balancer.least_connections"] = "resty/dns/balancer/least_connections.lua",
+               ["resty.dns.balancer.ring"] = "resty/dns/balancer/ring.lua",
+               ["resty.dns.client"] = "resty/dns/client.lua",
+               ["resty.dns.utils"] = "resty/dns/utils.lua"
+            }
+         }
+      }
+   },
+   ["lua-resty-healthcheck"] = {
+      ["0.6.1-1"] = {
+         {
+            arch = "installed",
+            commands = {},
+            dependencies = {
+               ["lua-resty-worker-events"] = "0.3.3-1"
+            },
+            modules = {
+               ["resty.healthcheck"] = "resty/healthcheck.lua",
+               ["resty.healthcheck.utils"] = "resty/healthcheck/utils.lua"
+            }
+         }
+      }
+   },
+   ["lua-resty-http"] = {
+      ["0.13-0"] = {
+         {
+            arch = "installed",
+            commands = {},
+            dependencies = {},
+            modules = {
+               ["resty.http"] = "resty/http.lua",
+               ["resty.http_headers"] = "resty/http_headers.lua"
+            }
+         }
+      }
+   },
+   ["lua-resty-iputils"] = {
+      ["0.3.0-1"] = {
+         {
+            arch = "installed",
+            commands = {},
+            dependencies = {},
+            modules = {
+               ["resty.iputils"] = "resty/iputils.lua"
+            }
+         }
+      }
+   },
+   ["lua-resty-jit-uuid"] = {
+      ["0.0.7-2"] = {
+         {
+            arch = "installed",
+            commands = {},
+            dependencies = {},
+            modules = {
+               ["resty.jit-uuid"] = "resty/jit-uuid.lua"
+            }
+         }
+      }
+   },
+   ["lua-resty-mediador"] = {
+      ["0.1.2-1"] = {
+         {
+            arch = "installed",
+            commands = {},
+            dependencies = {},
+            modules = {
+               ["resty.mediador.ip"] = "resty/mediador/ip.lua",
+               ["resty.mediador.proxy"] = "resty/mediador/proxy.lua"
+            }
+         }
+      }
+   },
+   ["lua-resty-mlcache"] = {
+      ["2.3.0-1"] = {
+         {
+            arch = "installed",
+            commands = {},
+            dependencies = {},
+            modules = {
+               ["resty.mlcache"] = "resty/mlcache.lua",
+               ["resty.mlcache.ipc"] = "resty/mlcache/ipc.lua"
+            }
+         }
+      }
+   },
+   ["lua-resty-timer"] = {
+      ["0.3.0-1"] = {
+         {
+            arch = "installed",
+            commands = {},
+            dependencies = {},
+            modules = {
+               ["resty.timer"] = "resty/timer.lua"
+            }
+         }
+      }
+   },
+   ["lua-resty-worker-events"] = {
+      ["0.3.3-1"] = {
+         {
+            arch = "installed",
+            commands = {},
+            dependencies = {},
+            modules = {
+               ["resty.worker.events"] = "resty/worker/events.lua"
+            }
+         }
+      }
+   },
+   lua_pack = {
+      ["1.0.5-0"] = {
+         {
+            arch = "installed",
+            commands = {},
+            dependencies = {},
+            modules = {
+               lua_pack = "lua_pack.so"
+            }
+         }
+      }
+   },
+   lua_system_constants = {
+      ["0.1.3-0"] = {
+         {
+            arch = "installed",
+            commands = {},
+            dependencies = {},
+            modules = {
+               lua_system_constants = "lua_system_constants.so"
+            }
+         }
+      }
+   },
+   luafilesystem = {
+      ["1.7.0-2"] = {
+         {
+            arch = "installed",
+            commands = {},
+            dependencies = {},
+            modules = {
+               lfs = "lfs.so"
+            }
+         }
+      }
+   },
+   lualogging = {
+      ["1.3.0-1"] = {
+         {
+            arch = "installed",
+            commands = {},
+            dependencies = {
+               luasocket = "3.0rc1-2"
+            },
+            modules = {
+               logging = "logging.lua",
+               ["logging.console"] = "logging/console.lua",
+               ["logging.email"] = "logging/email.lua",
+               ["logging.file"] = "logging/file.lua",
+               ["logging.rolling_file"] = "logging/rolling_file.lua",
+               ["logging.socket"] = "logging/socket.lua",
+               ["logging.sql"] = "logging/sql.lua"
+            }
+         }
+      }
+   },
+   luaossl = {
+      ["20181207-0"] = {
+         {
+            arch = "installed",
+            commands = {},
+            dependencies = {},
+            modules = {
+               _openssl = "_openssl.so",
+               openssl = "openssl.lua",
+               ["openssl.auxlib"] = "openssl/auxlib.lua",
+               ["openssl.bignum"] = "openssl/bignum.lua",
+               ["openssl.cipher"] = "openssl/cipher.lua",
+               ["openssl.des"] = "openssl/des.lua",
+               ["openssl.digest"] = "openssl/digest.lua",
+               ["openssl.hmac"] = "openssl/hmac.lua",
+               ["openssl.ocsp.basic"] = "openssl/ocsp/basic.lua",
+               ["openssl.ocsp.response"] = "openssl/ocsp/response.lua",
+               ["openssl.pkcs12"] = "openssl/pkcs12.lua",
+               ["openssl.pkey"] = "openssl/pkey.lua",
+               ["openssl.pubkey"] = "openssl/pubkey.lua",
+               ["openssl.rand"] = "openssl/rand.lua",
+               ["openssl.ssl"] = "openssl/ssl.lua",
+               ["openssl.ssl.context"] = "openssl/ssl/context.lua",
+               ["openssl.x509"] = "openssl/x509.lua",
+               ["openssl.x509.altname"] = "openssl/x509/altname.lua",
+               ["openssl.x509.chain"] = "openssl/x509/chain.lua",
+               ["openssl.x509.crl"] = "openssl/x509/crl.lua",
+               ["openssl.x509.csr"] = "openssl/x509/csr.lua",
+               ["openssl.x509.extension"] = "openssl/x509/extension.lua",
+               ["openssl.x509.name"] = "openssl/x509/name.lua",
+               ["openssl.x509.store"] = "openssl/x509/store.lua",
+               ["openssl.x509.verify_param"] = "openssl/x509/verify_param.lua"
+            }
+         }
+      }
+   },
+   luasec = {
+      ["0.7-1"] = {
+         {
+            arch = "installed",
+            commands = {},
+            dependencies = {
+               luasocket = "3.0rc1-2"
+            },
+            modules = {
+               ssl = "ssl.lua",
+               ["ssl.https"] = "ssl/https.lua"
+            }
+         }
+      }
+   },
+   luasocket = {
+      ["3.0rc1-2"] = {
+         {
+            arch = "installed",
+            commands = {},
+            dependencies = {},
+            modules = {
+               ltn12 = "ltn12.lua",
+               mime = "mime.lua",
+               ["mime.core"] = "mime/core.so",
+               socket = "socket.lua",
+               ["socket.core"] = "socket/core.so",
+               ["socket.ftp"] = "socket/ftp.lua",
+               ["socket.headers"] = "socket/headers.lua",
+               ["socket.http"] = "socket/http.lua",
+               ["socket.serial"] = "socket/serial.so",
+               ["socket.smtp"] = "socket/smtp.lua",
+               ["socket.tp"] = "socket/tp.lua",
+               ["socket.unix"] = "socket/unix.so",
+               ["socket.url"] = "socket/url.lua"
+            }
+         }
+      }
+   },
+   luasyslog = {
+      ["1.0.0-2"] = {
+         {
+            arch = "installed",
+            commands = {},
+            dependencies = {
+               lualogging = "1.3.0-1",
+               luasocket = "3.0rc1-2"
+            },
+            modules = {
+               ["logging.syslog"] = "logging/syslog.lua",
+               lsyslog = "lsyslog.so"
+            }
+         }
+      }
+   },
+   luatz = {
+      ["0.3-1"] = {
+         {
+            arch = "installed",
+            commands = {},
+            dependencies = {},
+            modules = {
+               luatz = "luatz/init.lua",
+               ["luatz.gettime"] = "luatz/gettime.lua",
+               ["luatz.parse"] = "luatz/parse.lua",
+               ["luatz.strftime"] = "luatz/strftime.lua",
+               ["luatz.timetable"] = "luatz/timetable.lua",
+               ["luatz.tzcache"] = "luatz/tzcache.lua",
+               ["luatz.tzfile"] = "luatz/tzfile.lua",
+               ["luatz.tzinfo"] = "luatz/tzinfo.lua"
+            }
+         }
+      }
+   },
+   lyaml = {
+      ["6.2.3-1"] = {
+         {
+            arch = "installed",
+            commands = {},
+            dependencies = {},
+            modules = {
+               lyaml = "lyaml/init.lua",
+               ["lyaml.explicit"] = "lyaml/explicit.lua",
+               ["lyaml.functional"] = "lyaml/functional.lua",
+               ["lyaml.implicit"] = "lyaml/implicit.lua",
+               yaml = "yaml.so"
+            }
+         }
+      }
+   },
+   mimetypes = {
+      ["1.0.0-2"] = {
+         {
+            arch = "installed",
+            commands = {},
+            dependencies = {},
+            modules = {
+               mimetypes = "mimetypes.lua"
+            }
+         }
+      }
+   },
+   multipart = {
+      ["0.5.5-1"] = {
+         {
+            arch = "installed",
+            commands = {},
+            dependencies = {},
+            modules = {
+               multipart = "multipart.lua"
+            }
+         }
+      }
+   },
+   opentracing = {
+      ["0.0.2-0"] = {
+         {
+            arch = "installed",
+            commands = {},
+            dependencies = {
+               luaossl = "20181207-0",
+               luatz = "0.3-1"
+            },
+            modules = {
+               opentracing = "opentracing/init.lua",
+               ["opentracing.span"] = "opentracing/span.lua",
+               ["opentracing.span_context"] = "opentracing/span_context.lua",
+               ["opentracing.tracer"] = "opentracing/tracer.lua"
+            }
+         }
+      }
+   },
+   penlight = {
+      ["1.5.4-1"] = {
+         {
+            arch = "installed",
+            commands = {},
+            dependencies = {
+               luafilesystem = "1.7.0-2"
+            },
+            modules = {
+               pl = "pl/init.lua",
+               ["pl.Date"] = "pl/Date.lua",
+               ["pl.List"] = "pl/List.lua",
+               ["pl.Map"] = "pl/Map.lua",
+               ["pl.MultiMap"] = "pl/MultiMap.lua",
+               ["pl.OrderedMap"] = "pl/OrderedMap.lua",
+               ["pl.Set"] = "pl/Set.lua",
+               ["pl.app"] = "pl/app.lua",
+               ["pl.array2d"] = "pl/array2d.lua",
+               ["pl.class"] = "pl/class.lua",
+               ["pl.compat"] = "pl/compat.lua",
+               ["pl.comprehension"] = "pl/comprehension.lua",
+               ["pl.config"] = "pl/config.lua",
+               ["pl.data"] = "pl/data.lua",
+               ["pl.dir"] = "pl/dir.lua",
+               ["pl.file"] = "pl/file.lua",
+               ["pl.func"] = "pl/func.lua",
+               ["pl.import_into"] = "pl/import_into.lua",
+               ["pl.input"] = "pl/input.lua",
+               ["pl.lapp"] = "pl/lapp.lua",
+               ["pl.lexer"] = "pl/lexer.lua",
+               ["pl.luabalanced"] = "pl/luabalanced.lua",
+               ["pl.operator"] = "pl/operator.lua",
+               ["pl.path"] = "pl/path.lua",
+               ["pl.permute"] = "pl/permute.lua",
+               ["pl.pretty"] = "pl/pretty.lua",
+               ["pl.seq"] = "pl/seq.lua",
+               ["pl.sip"] = "pl/sip.lua",
+               ["pl.strict"] = "pl/strict.lua",
+               ["pl.stringio"] = "pl/stringio.lua",
+               ["pl.stringx"] = "pl/stringx.lua",
+               ["pl.tablex"] = "pl/tablex.lua",
+               ["pl.template"] = "pl/template.lua",
+               ["pl.test"] = "pl/test.lua",
+               ["pl.text"] = "pl/text.lua",
+               ["pl.types"] = "pl/types.lua",
+               ["pl.url"] = "pl/url.lua",
+               ["pl.utils"] = "pl/utils.lua",
+               ["pl.xml"] = "pl/xml.lua"
+            }
+         }
+      }
+   },
+   pgmoon = {
+      ["1.9.0-1"] = {
+         {
+            arch = "installed",
+            commands = {},
+            dependencies = {
+               lpeg = "1.0.2-1"
+            },
+            modules = {
+               pgmoon = "pgmoon/init.lua",
+               ["pgmoon.arrays"] = "pgmoon/arrays.lua",
+               ["pgmoon.cqueues"] = "pgmoon/cqueues.lua",
+               ["pgmoon.crypto"] = "pgmoon/crypto.lua",
+               ["pgmoon.hstore"] = "pgmoon/hstore.lua",
+               ["pgmoon.json"] = "pgmoon/json.lua",
+               ["pgmoon.socket"] = "pgmoon/socket.lua",
+               ["pgmoon.util"] = "pgmoon/util.lua"
+            }
+         }
+      }
+   },
+   version = {
+      ["1.0.1-2"] = {
+         {
+            arch = "installed",
+            commands = {},
+            dependencies = {},
+            modules = {
+               version = "version.lua"
+            }
+         }
+      }
+   }
+}

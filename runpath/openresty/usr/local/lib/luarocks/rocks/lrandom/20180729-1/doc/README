@@ -1,0 +1,27 @@
+This is a random-number library for Lua. It is based on the Mersenne Twister
+random number generator available at
+	http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/MT2002/emt19937ar.html
+
+To build the library and run a simple test, just do make.
+If Lua is not installed in /usr/local, tell make:
+	make LUA_TOPDIR=/var/tmp/lhf/lua-5.3.5/install
+
+To install the library where Lua can find it, use a variant of these:
+	make install
+	sudo make install
+	sudo make install LIBDIR=/usr/local/lib/lua/5.3
+
+For detailed installation instructions, see
+	http://www.tecgraf.puc-rio.br/~lhf/ftp/lua/install.html
+
+The library is simple and intuitive; see the summary below.
+Read test.lua to see the library in action.
+
+This code is hereby placed in the public domain and also under the MIT license.
+The code in random.c has its own license. See the MT page above and random.c.
+
+Please send comments, suggestions, and bug reports to lhf@tecgraf.puc-rio.br .
+
+random library:
+__call(c)	new([seed])	value(c,[a,b])
+clone(c)	seed(c,[seed])	version

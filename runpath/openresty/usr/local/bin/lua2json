@@ -1,0 +1,3 @@
+#!/bin/sh
+
+exec '/usr/local/openresty/luajit/bin/luajit' -e 'package.path="/tmp/build/usr/local/share/lua/5.1/?.lua;/tmp/build/usr/local/share/lua/5.1/?/init.lua;"..package.path; package.cpath="/tmp/build/usr/local/lib/lua/5.1/?.so;"..package.cpath' -e 'local k,l,_=pcall(require,"luarocks.loader") _=k and l.add_context("lua-cjson","2.1.0.6-1")' '/tmp/build/usr/local/lib/luarocks/rocks/lua-cjson/2.1.0.6-1/bin/lua2json' "$@"

@@ -1,0 +1,22 @@
+rock_manifest = {
+   doc = {
+      ['gettime.md'] = "5d7fb10d908e02627ef9b816878246b2",
+      ['index.md'] = "fde16475853733df080c6cb7f435fbe8",
+      ['parse.md'] = "76258f161f65730ef35bd554820d2701",
+      ['timetable.md'] = "5c60fce74aad8834cc3d8ee23425dda7",
+      ['tzinfo.md'] = "1a72b745ccf48fb6ca20c7ac2bc3dd92"
+   },
+   lua = {
+      luatz = {
+         ['gettime.lua'] = "c2b6cac2d85ceb53d060af2ad5205f1d",
+         ['init.lua'] = "9182feb073adb061e1a38b251c623097",
+         ['parse.lua'] = "652ec25030f6b2d92aa6fb5b72044a7d",
+         ['strftime.lua'] = "ffaa4463d1f27c28330a9016ae08c296",
+         ['timetable.lua'] = "bfd18e9c26e6fc71f55035d305880f80",
+         ['tzcache.lua'] = "7d92fbb656682fef56048655cf73d10b",
+         ['tzfile.lua'] = "ebd6046f4f9adfa4a3b6df13eebdc778",
+         ['tzinfo.lua'] = "5995bf3c164c0942c82056c664b9a2d8"
+      }
+   },
+   ['luatz-0.3-1.rockspec'] = "fccc3d10d83e0994fedf061776508881"
+}
