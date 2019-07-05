@@ -340,13 +340,23 @@ JOIN_SH
 	fi
 }
 
+yum_packages() {
+	sudo yum install -y strace dtrace weighttp \
+		nc tree git patch patchelf nmon perf ntpdate \
+		tcpdump psmisc zsh gcc gcc-c++ vim \
+		nmap-ncat.x86_64 net-tools telnet \
+		man man-pages \
+		bind-utils # for nslookup, host OR dig
+}
+
 init() {
 	sudo systemctl stop firewalld &&
 		sudo systemctl disable firewalld
-	init_out_going
-	update_docker
+	yum_packages
+	# init_out_going
+	# update_docker
 	# install_docker_compose
 	# preper_kubeadm
 	# init_kubeadm
 }
-init
+# init
