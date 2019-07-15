@@ -1,0 +1,2 @@
+NAME           IMAGE
+.metadata.name .spec.template.spec.containers[*].image
