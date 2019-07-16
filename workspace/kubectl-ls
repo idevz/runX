@@ -3,15 +3,14 @@
 ### BEGIN ###
 # Author: idevz
 # Since: 15:24:51 2019/07/15
-# Description:       For what?
-# kubectl-ls          simple usage.
+# Description:       For efficent kubectl
+# kubectl-ls          k ls deploy
 #
 # Environment variables that control this script:
 #
 ### END ###
 
-set -ex
-BASE_DIR=$(dirname $(cd $(dirname "$0") && pwd -P)/$(basename "$0"))
+set -e
 
 # see if we have custom-columns-file defined
 if [ ! -z "$1" ] && [ -f $PRLCTL_HOME/workspace/kube/columns/$1 ]; then
