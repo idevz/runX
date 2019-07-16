@@ -1,0 +1,6 @@
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: local-storage
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer #Local Persistent Volume 里一个非常重要的特性：延迟绑定

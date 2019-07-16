@@ -13,8 +13,8 @@
 set -e
 
 # see if we have custom-columns-file defined
-if [ ! -z "$1" ] && [ -f $PRLCTL_HOME/workspace/kube/columns/$1 ]; then
-    kubectl get -o=custom-columns-file=$PRLCTL_HOME/workspace/kube/columns/$1 $@
+if [ ! -z "$1" ] && [ -f $PRLCTL_HOME/workspace/k8s/kube/columns/$1 ]; then
+    kubectl get -o=custom-columns-file=$PRLCTL_HOME/workspace/k8s/kube/columns/$1 $@
 else
     kubectl get $@
 fi

@@ -1,0 +1,18 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: idevz-test-pv-pod
+spec:
+  volumes:
+    - name: idevz-test-pv-storage
+      persistentVolumeClaim:
+        claimName: idevz-test-local-claim
+  containers:
+    - name: idevz-test-pv-container
+      image: nginx
+      ports:
+        - containerPort: 80
+          name: "http-server"
+      volumeMounts:
+        - mountPath: "/usr/share/nginx/html"
+          name: idevz-test-pv-storage
