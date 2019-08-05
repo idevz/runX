@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+### BEGIN ###
+# Author: idevz
+# Since: 15:24:51 2019/07/15
+# Description:       For efficent kubectl
+# kubectl-ls          k ls deploy
+#
+# Environment variables that control this script:
+#
+### END ###
+
+set -e
+
+kubectl delete ${1} $(kubectl get "${1}" | grep -v NAME | awk '{print $1}')
