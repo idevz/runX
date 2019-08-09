@@ -13,12 +13,10 @@
 set -ex
 
 [ $HOME != '/home/z' ] && echo 'Are U Z ?' && exit 1
-H_PROXY_ADDR="http://127.0.0.1:8118"
-NO_PROXY="localhost,127.0.0.1,::1,10.211.55.0/16,10.96.0.0/12,10.244.0.0/16"
+HTTP_PROXY_ADDR="http://10.211.55.2:8118"
+NO_PROXY="localhost,127.0.0.1,::1"
 BASE_DIR=${BASE_DIR:-"$(readlink -f "$(dirname "$0")")"}
-OUT_GOING_ACCOUNT_FILE=${OGA:-"out-accounts-info.zj"}
-source "${BASE_DIR}/${OUT_GOING_ACCOUNT_FILE}"
-PRI_REGISTRY="${OUT_IP}:5000"
+PRI_REGISTRY="https://rok5leke.mirror.aliyuncs.com"
 NODES=(kube2 kube3)
 
 sudo_write() {
@@ -29,161 +27,7 @@ sudo_write() {
 	echo "${content}" | sudo tee ${if_add} "${file_name}" >/dev/null 2>&1
 }
 
-init_out_going() {
-	sudo yum -y install python-pip privoxy net-tools
-	sudo pip install --upgrade pip
-	sudo pip install shadowsocks
-	local shadowsocks_conf=
-	shadowsocks_conf=$(
-		cat <<SS_CONF
-{
-    "server":"${OUT_IP}",
-    "server_port":${OUT_PORT},
-    "local_address":"127.0.0.1",
-    "local_port":1080,
-    "password":"${OUT_PASWD}",
-    "timeout":300,
-    "method":"aes-256-cfb",
-    "fast_open":false
-}
-SS_CONF
-	)
-	sudo_write "${shadowsocks_conf}" "/etc/shadowsocks.json"
-
-	local whitelist_conf=
-	whitelist_conf=$(
-		cat <<WT_CONF
-{{alias}}
-# 代理(socks5)
-socks5 = +forward-override{forward-socks5 127.0.0.1:1080 .}
-# 直连
-direct = +forward-override{forward .}
-
-# 所有网站走代理
-{socks5}
-/
-
-# 以下网站走直连
-{direct}
-.ip.cn
-WT_CONF
-	)
-	sudo_write "${whitelist_conf}" "/etc/privoxy/whitelist.action"
-	sudo_write 'actionsfile whitelist.action' "/etc/privoxy/config" true
-
-	local out_profile=
-	out_profile=$(
-		cat <<OUT_PROFILE
-# alias unstart_out="unset ALL_PROXY HTTP_PROXY HTTPS_PROXY all_proxy http_proxy https_proxy"
-alias reload_out="sudo systemctl restart out_going.service && sudo systemctl restart privoxy.service"
-
-# proxy="${H_PROXY_ADDR}"
-# export ALL_PROXY=\${proxy}
-# export HTTP_PROXY=\${proxy}
-# export HTTPS_PROXY=\${proxy}
-# export all_proxy=\${proxy}
-# export http_proxy=\${proxy}
-# export https_proxy=\${proxy}
-# export NO_PROXY="${NO_PROXY}"
-OUT_PROFILE
-	)
-	sudo_write "${out_profile}" "/etc/profile" true
-	source /etc/profile
-
-	sudo_write "proxy=${H_PROXY_ADDR}" /etc/yum.conf true
-
-	local out_service_unit=
-	out_service_unit=$(
-		cat <<OUT_SERVICE
-[Unit]
-Description=Out Going Service
-After=network.target
-
-[Service]
-ExecStart=/bin/sslocal \
-	    -c /etc/shadowsocks.json \
-	    /dev/null 2>&1
-ExecReload=/bin/kill -s HUP $MAINPID
-Restart=on-failure
-KillMode=process
-
-[Install]
-WantedBy=multi-user.target
-OUT_SERVICE
-	)
-	sudo_write "${out_service_unit}" '/lib/systemd/system/out_going.service'
-	sudo systemctl enable out_going
-	sudo systemctl start out_going
-	sudo systemctl start privoxy.service
-	# systemctl -l status privoxy.service
-}
-
-init_docker() {
-	sudo yum install -y docker
-	local docker_service_unit=
-	docker_service_unit=$(
-		cat <<DOCKER_SERVICE
-[Unit]
-Description=Docker Application Container Engine
-Documentation=http://docs.docker.com
-After=network.target
-Wants=docker-storage-setup.service
-Requires=docker-cleanup.timer
-
-[Service]
-Type=notify
-NotifyAccess=all
-EnvironmentFile=-/run/containers/registries.conf
-EnvironmentFile=-/etc/sysconfig/docker
-EnvironmentFile=-/etc/sysconfig/docker-storage
-EnvironmentFile=-/etc/sysconfig/docker-network
-Environment=GOTRACEBACK=crash
-Environment=DOCKER_HTTP_HOST_COMPAT=1
-Environment=PATH=/usr/libexec/docker:/usr/bin:/usr/sbin
-Environment="HTTP_PROXY=${H_PROXY_ADDR}" "NO_PROXY=${NO_PROXY}"
-ExecStartPost=/usr/sbin/iptables -P FORWARD ACCEPT
-ExecStart=/usr/bin/dockerd-current \
-          --add-registry=${PRI_REGISTRY} \
-          --insecure-registry=${PRI_REGISTRY} \
-          --add-runtime docker-runc=/usr/libexec/docker/docker-runc-current \
-          --default-runtime=docker-runc \
-          --exec-opt native.cgroupdriver=systemd \
-          --userland-proxy-path=/usr/libexec/docker/docker-proxy-current \
-          $OPTIONS \
-          $DOCKER_STORAGE_OPTIONS \
-          $DOCKER_NETWORK_OPTIONS \
-          $ADD_REGISTRY \
-          $BLOCK_REGISTRY \
-          $INSECURE_REGISTRY	  $REGISTRIES
-ExecReload=/bin/kill -s HUP $MAINPID
-LimitNOFILE=1048576
-LimitNPROC=1048576
-LimitCORE=infinity
-TimeoutStartSec=0
-Restart=on-abnormal
-MountFlags=slave
-KillMode=process
-
-[Install]
-WantedBy=multi-user.target
-DOCKER_SERVICE
-	)
-	sudo_write "${docker_service_unit}" "/lib/systemd/system/docker.service"
-	local docker_daemon_json=
-	docker_daemon_json=$(
-		cat <<DDJ
-		{ "insecure-registries":["${PRI_REGISTRY}"] }
-DDJ
-	)
-	sudo_write "${docker_daemon_json}" "/etc/docker/daemon.json"
-	[ ! -f "/usr/libexec/docker/docker-runc" ] &&
-		sudo ln -s "/usr/libexec/docker/docker-runc-current" "/usr/libexec/docker/docker-runc"
-	sudo systemctl enable docker &&
-		sudo systemctl start docker
-}
-
-update_docker() {
-	# sudo yum remove -y 'docker*'
+install_docker() {
 	sudo yum install -y yum-utils \
 		device-mapper-persistent-data \
 		lvm2
@@ -193,7 +37,7 @@ update_docker() {
 	sudo yum-config-manager --enable docker-ce-edge
 	sudo yum-config-manager --enable docker-ce-test
 	# sudo yum-config-manager --disable docker-ce-edge
-	sudo yum install -y docker-ce-18.06.1.ce
+	sudo yum install -y docker-ce docker-ce-cli containerd.io
 	local docker_service_unit=
 	docker_service_unit=$(
 		cat <<DOCKER_SERVICE
@@ -210,10 +54,9 @@ Type=notify
 # for containers run by docker
 ExecStart=/usr/bin/dockerd \
           --ipv6  --fixed-cidr-v6=2001:470:19:fea::/64 \
-          --insecure-registry=${PRI_REGISTRY} \
-		  --registry-mirror=http://${PRI_REGISTRY}
+		  --registry-mirror=${PRI_REGISTRY}
 ExecReload=/bin/kill -s HUP $MAINPID
-Environment="HTTP_PROXY=${H_PROXY_ADDR}" "HTTPS_PROXY=${H_PROXY_ADDR}" "NO_PROXY=${NO_PROXY}"
+Environment="HTTP_PROXY=${HTTP_PROXY_ADDR}" "HTTPS_PROXY=${HTTP_PROXY_ADDR}" "NO_PROXY=${NO_PROXY}"
 # Having non-zero Limit*s causes performance problems due to accounting overhead
 # in the kernel. We recommend using cgroups to do container-local accounting.
 LimitNOFILE=infinity
@@ -340,6 +183,10 @@ JOIN_SH
 	fi
 }
 
+yum_http_proxy() {
+	echo "proxy=${HTTP_PROXY_ADDR}" | sudo tee -a /etc/yum.conf
+}
+
 yum_packages() {
 	sudo yum install -y strace dtrace weighttp \
 		nc tree git patch patchelf nmon perf ntpdate \
@@ -352,10 +199,11 @@ yum_packages() {
 init() {
 	sudo systemctl stop firewalld &&
 		sudo systemctl disable firewalld
+	yum_http_proxy
 	yum_packages
 	# init_out_going
-	# update_docker
-	# install_docker_compose
+	install_docker
+	install_docker_compose
 	# preper_kubeadm
 	# init_kubeadm
 }
