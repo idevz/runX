@@ -6,6 +6,16 @@ PRLCTL_HOME=${PRLCTL_HOME:-"/media/psf/runX"}
 sudo swapoff -a
 [ $(hostname) = "kube1" ] && export PATH="$PATH:$PRLCTL_HOME/code/istio-1.0.5/bin:$PRLCTL_HOME/code/helm-v2.12.1"
 
+alias k='kubectl'
+alias ka='kubectl apply --recursive -f'
+alias kex='kubectl exec -i -t'
+alias klo='kubectl logs -f'
+alias kg='kubectl get'
+alias kd='kubectl describe'
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+if [ /usr/local/bin/kubectl ]; then source <(kubectl completion zsh); fi
+
 fetch_tar_pkg() {
 	[ -z ${1} -o -z ${2} ] && echo "need a src url and local full file name" && exit 1
 	local src_url=${1}
