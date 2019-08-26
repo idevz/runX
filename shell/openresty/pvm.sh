@@ -12,7 +12,7 @@ luajit_prove() {
 	# export TEST_NGINX_BENCHMARK='2000000 20'
 	prove "$@"
 }
-export PATH=/usr/local/openresty-1.15.8.1rc2-debug/bin:/usr/local/openresty-1.15.8.1rc2-debug/nginx/sbin:$PATH
+export PATH=/usr/local/openresty-1.15.8.1-debug/bin:/usr/local/openresty-1.15.8.1-debug/nginx/sbin:$PATH
 
 mst_debug() {
 	local gdb_server_port=111

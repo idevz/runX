@@ -24,7 +24,7 @@ set -ex
 BASE_DIR=${BASE_DIR:-$(dirname $(cd $(dirname "$0") && pwd -P)/$(basename "$0"))}
 BUILD_ENV="${BUILD_ENV}"
 OR_ENV=${OE:-"debug"}
-RUNX_BUILDING_VERSION=${RBV:-"1.15.8.1rc2"}
+RUNX_BUILDING_VERSION=${RBV:-"1.15.8.1"}
 
 PF_TOOLS_ROOT="/usr/local/tools"
 
