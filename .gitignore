@@ -66,6 +66,7 @@ srcs/
 *logs
 *log
 *_temp
+.zsh_history
 
 code/
 deploy/docker-build-run-path/*
