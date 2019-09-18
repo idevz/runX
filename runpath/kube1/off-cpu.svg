@@ -1,0 +1,1133 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" width="1200" height="566" onload="init(evt)" viewBox="0 0 1200 566" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<!-- Flame graph stack visualization. See https://github.com/brendangregg/FlameGraph for latest version, and http://www.brendangregg.com/flamegraphs.html for examples. -->
+<!-- NOTES:  -->
+<defs>
+	<linearGradient id="background" y1="0" y2="1" x1="0" x2="0" >
+		<stop stop-color="#eeeeee" offset="5%" />
+		<stop stop-color="#e0e0ff" offset="95%" />
+	</linearGradient>
+</defs>
+<style type="text/css">
+	text { font-family:Verdana; font-size:12px; fill:rgb(0,0,0); }
+	#search { opacity:0.1; cursor:pointer; }
+	#search:hover, #search.show { opacity:1; }
+	#subtitle { text-anchor:middle; font-color:rgb(160,160,160); }
+	#title { text-anchor:middle; font-size:17px}
+	#unzoom { cursor:pointer; }
+	#frames > *:hover { stroke:black; stroke-width:0.5; cursor:pointer; }
+	.hide { display:none; }
+	.parent { opacity:0.5; }
+</style>
+<script type="text/ecmascript">
+<![CDATA[
+	"use strict";
+	var details, searchbtn, unzoombtn, matchedtxt, svg, searching;
+	function init(evt) {
+		details = document.getElementById("details").firstChild;
+		searchbtn = document.getElementById("search");
+		unzoombtn = document.getElementById("unzoom");
+		matchedtxt = document.getElementById("matched");
+		svg = document.getElementsByTagName("svg")[0];
+		searching = 0;
+	}
+
+	window.addEventListener("click", function(e) {
+		var target = find_group(e.target);
+		if (target) {
+			if (target.nodeName == "a") {
+				if (e.ctrlKey === false) return;
+				e.preventDefault();
+			}
+			if (target.classList.contains("parent")) unzoom();
+			zoom(target);
+		}
+		else if (e.target.id == "unzoom") unzoom();
+		else if (e.target.id == "search") search_prompt();
+	}, false)
+
+	// mouse-over for info
+	// show
+	window.addEventListener("mouseover", function(e) {
+		var target = find_group(e.target);
+		if (target) details.nodeValue = "Function: " + g_to_text(target);
+	}, false)
+
+	// clear
+	window.addEventListener("mouseout", function(e) {
+		var target = find_group(e.target);
+		if (target) details.nodeValue = ' ';
+	}, false)
+
+	// ctrl-F for search
+	window.addEventListener("keydown",function (e) {
+		if (e.keyCode === 114 || (e.ctrlKey && e.keyCode === 70)) {
+			e.preventDefault();
+			search_prompt();
+		}
+	}, false)
+
+	// functions
+	function find_child(node, selector) {
+		var children = node.querySelectorAll(selector);
+		if (children.length) return children[0];
+		return;
+	}
+	function find_group(node) {
+		var parent = node.parentElement;
+		if (!parent) return;
+		if (parent.id == "frames") return node;
+		return find_group(parent);
+	}
+	function orig_save(e, attr, val) {
+		if (e.attributes["_orig_" + attr] != undefined) return;
+		if (e.attributes[attr] == undefined) return;
+		if (val == undefined) val = e.attributes[attr].value;
+		e.setAttribute("_orig_" + attr, val);
+	}
+	function orig_load(e, attr) {
+		if (e.attributes["_orig_"+attr] == undefined) return;
+		e.attributes[attr].value = e.attributes["_orig_" + attr].value;
+		e.removeAttribute("_orig_"+attr);
+	}
+	function g_to_text(e) {
+		var text = find_child(e, "title").firstChild.nodeValue;
+		return (text)
+	}
+	function g_to_func(e) {
+		var func = g_to_text(e);
+		// if there's any manipulation we want to do to the function
+		// name before it's searched, do it here before returning.
+		return (func);
+	}
+	function update_text(e) {
+		var r = find_child(e, "rect");
+		var t = find_child(e, "text");
+		var w = parseFloat(r.attributes.width.value) -3;
+		var txt = find_child(e, "title").textContent.replace(/\([^(]*\)$/,"");
+		t.attributes.x.value = parseFloat(r.attributes.x.value) + 3;
+
+		// Smaller than this size won't fit anything
+		if (w < 2 * 12 * 0.59) {
+			t.textContent = "";
+			return;
+		}
+
+		t.textContent = txt;
+		// Fit in full text width
+		if (/^ *$/.test(txt) || t.getSubStringLength(0, txt.length) < w)
+			return;
+
+		for (var x = txt.length - 2; x > 0; x--) {
+			if (t.getSubStringLength(0, x + 2) <= w) {
+				t.textContent = txt.substring(0, x) + "..";
+				return;
+			}
+		}
+		t.textContent = "";
+	}
+
+	// zoom
+	function zoom_reset(e) {
+		if (e.attributes != undefined) {
+			orig_load(e, "x");
+			orig_load(e, "width");
+		}
+		if (e.childNodes == undefined) return;
+		for (var i = 0, c = e.childNodes; i < c.length; i++) {
+			zoom_reset(c[i]);
+		}
+	}
+	function zoom_child(e, x, ratio) {
+		if (e.attributes != undefined) {
+			if (e.attributes.x != undefined) {
+				orig_save(e, "x");
+				e.attributes.x.value = (parseFloat(e.attributes.x.value) - x - 10) * ratio + 10;
+				if (e.tagName == "text")
+					e.attributes.x.value = find_child(e.parentNode, "rect[x]").attributes.x.value + 3;
+			}
+			if (e.attributes.width != undefined) {
+				orig_save(e, "width");
+				e.attributes.width.value = parseFloat(e.attributes.width.value) * ratio;
+			}
+		}
+
+		if (e.childNodes == undefined) return;
+		for (var i = 0, c = e.childNodes; i < c.length; i++) {
+			zoom_child(c[i], x - 10, ratio);
+		}
+	}
+	function zoom_parent(e) {
+		if (e.attributes) {
+			if (e.attributes.x != undefined) {
+				orig_save(e, "x");
+				e.attributes.x.value = 10;
+			}
+			if (e.attributes.width != undefined) {
+				orig_save(e, "width");
+				e.attributes.width.value = parseInt(svg.width.baseVal.value) - (10 * 2);
+			}
+		}
+		if (e.childNodes == undefined) return;
+		for (var i = 0, c = e.childNodes; i < c.length; i++) {
+			zoom_parent(c[i]);
+		}
+	}
+	function zoom(node) {
+		var attr = find_child(node, "rect").attributes;
+		var width = parseFloat(attr.width.value);
+		var xmin = parseFloat(attr.x.value);
+		var xmax = parseFloat(xmin + width);
+		var ymin = parseFloat(attr.y.value);
+		var ratio = (svg.width.baseVal.value - 2 * 10) / width;
+
+		// XXX: Workaround for JavaScript float issues (fix me)
+		var fudge = 0.0001;
+
+		unzoombtn.classList.remove("hide");
+
+		var el = document.getElementById("frames").children;
+		for (var i = 0; i < el.length; i++) {
+			var e = el[i];
+			var a = find_child(e, "rect").attributes;
+			var ex = parseFloat(a.x.value);
+			var ew = parseFloat(a.width.value);
+			var upstack;
+			// Is it an ancestor
+			if (0 == 0) {
+				upstack = parseFloat(a.y.value) > ymin;
+			} else {
+				upstack = parseFloat(a.y.value) < ymin;
+			}
+			if (upstack) {
+				// Direct ancestor
+				if (ex <= xmin && (ex+ew+fudge) >= xmax) {
+					e.classList.add("parent");
+					zoom_parent(e);
+					update_text(e);
+				}
+				// not in current path
+				else
+					e.classList.add("hide");
+			}
+			// Children maybe
+			else {
+				// no common path
+				if (ex < xmin || ex + fudge >= xmax) {
+					e.classList.add("hide");
+				}
+				else {
+					zoom_child(e, xmin, ratio);
+					update_text(e);
+				}
+			}
+		}
+	}
+	function unzoom() {
+		unzoombtn.classList.add("hide");
+		var el = document.getElementById("frames").children;
+		for(var i = 0; i < el.length; i++) {
+			el[i].classList.remove("parent");
+			el[i].classList.remove("hide");
+			zoom_reset(el[i]);
+			update_text(el[i]);
+		}
+	}
+
+	// search
+	function reset_search() {
+		var el = document.querySelectorAll("#frames rect");
+		for (var i = 0; i < el.length; i++) {
+			orig_load(el[i], "fill")
+		}
+	}
+	function search_prompt() {
+		if (!searching) {
+			var term = prompt("Enter a search term (regexp " +
+			    "allowed, eg: ^ext4_)", "");
+			if (term != null) {
+				search(term)
+			}
+		} else {
+			reset_search();
+			searching = 0;
+			searchbtn.classList.remove("show");
+			searchbtn.firstChild.nodeValue = "Search"
+			matchedtxt.classList.add("hide");
+			matchedtxt.firstChild.nodeValue = ""
+		}
+	}
+	function search(term) {
+		var re = new RegExp(term);
+		var el = document.getElementById("frames").children;
+		var matches = new Object();
+		var maxwidth = 0;
+		for (var i = 0; i < el.length; i++) {
+			var e = el[i];
+			var func = g_to_func(e);
+			var rect = find_child(e, "rect");
+			if (func == null || rect == null)
+				continue;
+
+			// Save max width. Only works as we have a root frame
+			var w = parseFloat(rect.attributes.width.value);
+			if (w > maxwidth)
+				maxwidth = w;
+
+			if (func.match(re)) {
+				// highlight
+				var x = parseFloat(rect.attributes.x.value);
+				orig_save(rect, "fill");
+				rect.attributes.fill.value = "rgb(230,0,230)";
+
+				// remember matches
+				if (matches[x] == undefined) {
+					matches[x] = w;
+				} else {
+					if (w > matches[x]) {
+						// overwrite with parent
+						matches[x] = w;
+					}
+				}
+				searching = 1;
+			}
+		}
+		if (!searching)
+			return;
+
+		searchbtn.classList.add("show");
+		searchbtn.firstChild.nodeValue = "Reset Search";
+
+		// calculate percent matched, excluding vertical overlap
+		var count = 0;
+		var lastx = -1;
+		var lastw = 0;
+		var keys = Array();
+		for (k in matches) {
+			if (matches.hasOwnProperty(k))
+				keys.push(k);
+		}
+		// sort the matched frames by their x location
+		// ascending, then width descending
+		keys.sort(function(a, b){
+			return a - b;
+		});
+		// Step through frames saving only the biggest bottom-up frames
+		// thanks to the sort order. This relies on the tree property
+		// where children are always smaller than their parents.
+		var fudge = 0.0001;	// JavaScript floating point
+		for (var k in keys) {
+			var x = parseFloat(keys[k]);
+			var w = matches[keys[k]];
+			if (x >= lastx + lastw - fudge) {
+				count += w;
+				lastx = x;
+				lastw = w;
+			}
+		}
+		// display matched percent
+		matchedtxt.classList.remove("hide");
+		var pct = 100 * count / maxwidth;
+		if (pct != 100) pct = pct.toFixed(1)
+		matchedtxt.firstChild.nodeValue = "Matched: " + pct + "%";
+	}
+]]>
+</script>
+<rect x="0.0" y="0" width="1200.0" height="566.0" fill="url(#background)"  />
+<text id="title" x="600.00" y="24" >Flame Graph</text>
+<text id="details" x="10.00" y="549" > </text>
+<text id="unzoom" x="10.00" y="24" class="hide">Reset Zoom</text>
+<text id="search" x="1090.00" y="24" >Search</text>
+<text id="matched" x="1090.00" y="549" > </text>
+<g id="frames">
+<g >
+<title>sys_epoll_pwait (2 us, 0.39%)</title><rect x="906.4" y="453" width="4.6" height="15.0" fill="rgb(130,130,199)" rx="2" ry="2" />
+<text  x="909.43" y="463.5" ></text>
+</g>
+<g >
+<title>schedule (36 us, 6.98%)</title><rect x="449.1" y="117" width="82.3" height="15.0" fill="rgb(88,88,235)" rx="2" ry="2" />
+<text  x="452.07" y="127.5" >schedule</text>
+</g>
+<g >
+<title>do_futex (36 us, 6.98%)</title><rect x="449.1" y="165" width="82.3" height="15.0" fill="rgb(131,131,239)" rx="2" ry="2" />
+<text  x="452.07" y="175.5" >do_futex</text>
+</g>
+<g >
+<title>net/http.(*Transport).RoundTrip (2 us, 0.39%)</title><rect x="444.5" y="181" width="4.6" height="15.0" fill="rgb(125,125,213)" rx="2" ry="2" />
+<text  x="447.50" y="191.5" ></text>
+</g>
+<g >
+<title>k8s.io/client-go/kubernetes/typed/core/v1.(*pods).List (8 us, 1.55%)</title><rect x="609.1" y="325" width="18.3" height="15.0" fill="rgb(139,139,244)" rx="2" ry="2" />
+<text  x="612.15" y="335.5" ></text>
+</g>
+<g >
+<title>__schedule (12 us, 2.33%)</title><rect x="1162.6" y="261" width="27.4" height="15.0" fill="rgb(89,89,214)" rx="2" ry="2" />
+<text  x="1165.56" y="271.5" >_..</text>
+</g>
+<g >
+<title>ep_poll (2 us, 0.39%)</title><rect x="609.1" y="197" width="4.6" height="15.0" fill="rgb(89,89,196)" rx="2" ry="2" />
+<text  x="612.15" y="207.5" ></text>
+</g>
+<g >
+<title>k8s.io/client-go/informers/apps/v1.NewFilteredDeploymentInformer.func1 (36 us, 6.98%)</title><rect x="449.1" y="341" width="82.3" height="15.0" fill="rgb(138,138,240)" rx="2" ry="2" />
+<text  x="452.07" y="351.5" >k8s.io/cl..</text>
+</g>
+<g >
+<title>runtime.futex (12 us, 2.33%)</title><rect x="1162.6" y="373" width="27.4" height="15.0" fill="rgb(103,103,202)" rx="2" ry="2" />
+<text  x="1165.56" y="383.5" >r..</text>
+</g>
+<g >
+<title>futex_wait_queue_me (2 us, 0.39%)</title><rect x="627.4" y="309" width="4.6" height="15.0" fill="rgb(103,103,212)" rx="2" ry="2" />
+<text  x="630.44" y="319.5" ></text>
+</g>
+<g >
+<title>__schedule (18 us, 3.49%)</title><rect x="540.5" y="101" width="41.2" height="15.0" fill="rgb(110,110,194)" rx="2" ry="2" />
+<text  x="543.54" y="111.5" >__s..</text>
+</g>
+<g >
+<title>ep_poll (8 us, 1.55%)</title><rect x="10.0" y="405" width="18.3" height="15.0" fill="rgb(130,130,204)" rx="2" ry="2" />
+<text  x="13.00" y="415.5" ></text>
+</g>
+<g >
+<title>net/http.send (2 us, 0.39%)</title><rect x="444.5" y="229" width="4.6" height="15.0" fill="rgb(130,130,234)" rx="2" ry="2" />
+<text  x="447.50" y="239.5" ></text>
+</g>
+<g >
+<title>k8s.io/client-go/transport.(*userAgentRoundTripper).RoundTrip (2 us, 0.39%)</title><rect x="531.4" y="213" width="4.6" height="15.0" fill="rgb(104,104,223)" rx="2" ry="2" />
+<text  x="534.40" y="223.5" ></text>
+</g>
+<g >
+<title>net/http.(*Client).send (2 us, 0.39%)</title><rect x="444.5" y="245" width="4.6" height="15.0" fill="rgb(93,93,238)" rx="2" ry="2" />
+<text  x="447.50" y="255.5" ></text>
+</g>
+<g >
+<title>k8s.io/client-go/rest.(*Request).Do (8 us, 1.55%)</title><rect x="609.1" y="309" width="18.3" height="15.0" fill="rgb(97,97,224)" rx="2" ry="2" />
+<text  x="612.15" y="319.5" ></text>
+</g>
+<g >
+<title>runtime.futexsleep (12 us, 2.33%)</title><rect x="1162.6" y="389" width="27.4" height="15.0" fill="rgb(126,126,206)" rx="2" ry="2" />
+<text  x="1165.56" y="399.5" >r..</text>
+</g>
+<g >
+<title>sys_futex (6 us, 1.16%)</title><rect x="613.7" y="229" width="13.7" height="15.0" fill="rgb(96,96,202)" rx="2" ry="2" />
+<text  x="616.72" y="239.5" ></text>
+</g>
+<g >
+<title>net/http.send (36 us, 6.98%)</title><rect x="449.1" y="229" width="82.3" height="15.0" fill="rgb(87,87,201)" rx="2" ry="2" />
+<text  x="452.07" y="239.5" >net/http...</text>
+</g>
+<g >
+<title>__schedule (2 us, 0.39%)</title><rect x="906.4" y="357" width="4.6" height="15.0" fill="rgb(128,128,234)" rx="2" ry="2" />
+<text  x="909.43" y="367.5" ></text>
+</g>
+<g >
+<title>do_futex (12 us, 2.33%)</title><rect x="581.7" y="213" width="27.4" height="15.0" fill="rgb(114,114,226)" rx="2" ry="2" />
+<text  x="584.71" y="223.5" >d..</text>
+</g>
+<g >
+<title>sys_epoll_wait (2 us, 0.39%)</title><rect x="536.0" y="165" width="4.5" height="15.0" fill="rgb(107,107,207)" rx="2" ry="2" />
+<text  x="538.97" y="175.5" ></text>
+</g>
+<g >
+<title>net/http.(*Request).requiresHTTP1 (2 us, 0.39%)</title><rect x="531.4" y="149" width="4.6" height="15.0" fill="rgb(113,113,232)" rx="2" ry="2" />
+<text  x="534.40" y="159.5" ></text>
+</g>
+<g >
+<title>futex_wait (182 us, 35.27%)</title><rect x="28.3" y="405" width="416.2" height="15.0" fill="rgb(108,108,231)" rx="2" ry="2" />
+<text  x="31.29" y="415.5" >futex_wait</text>
+</g>
+<g >
+<title>schedule_hrtimeout_range_clock (8 us, 1.55%)</title><rect x="10.0" y="373" width="18.3" height="15.0" fill="rgb(94,94,206)" rx="2" ry="2" />
+<text  x="13.00" y="383.5" ></text>
+</g>
+<g >
+<title>__schedule (182 us, 35.27%)</title><rect x="28.3" y="357" width="416.2" height="15.0" fill="rgb(101,101,210)" rx="2" ry="2" />
+<text  x="31.29" y="367.5" >__schedule</text>
+</g>
+<g >
+<title>schedule_hrtimeout_range_clock (2 us, 0.39%)</title><rect x="906.4" y="389" width="4.6" height="15.0" fill="rgb(83,83,242)" rx="2" ry="2" />
+<text  x="909.43" y="399.5" ></text>
+</g>
+<g >
+<title>all (516 us, 100%)</title><rect x="10.0" y="517" width="1180.0" height="15.0" fill="rgb(115,115,220)" rx="2" ry="2" />
+<text  x="13.00" y="527.5" ></text>
+</g>
+<g >
+<title>do_nanosleep (2 us, 0.39%)</title><rect x="444.5" y="69" width="4.6" height="15.0" fill="rgb(134,134,210)" rx="2" ry="2" />
+<text  x="447.50" y="79.5" ></text>
+</g>
+<g >
+<title>do_futex (12 us, 2.33%)</title><rect x="1162.6" y="325" width="27.4" height="15.0" fill="rgb(136,136,196)" rx="2" ry="2" />
+<text  x="1165.56" y="335.5" >d..</text>
+</g>
+<g >
+<title>hrtimer_nanosleep (16 us, 3.10%)</title><rect x="920.2" y="357" width="36.5" height="15.0" fill="rgb(86,86,203)" rx="2" ry="2" />
+<text  x="923.16" y="367.5" >hrt..</text>
+</g>
+<g >
+<title>schedule_hrtimeout_range (2 us, 0.39%)</title><rect x="609.1" y="181" width="4.6" height="15.0" fill="rgb(137,137,190)" rx="2" ry="2" />
+<text  x="612.15" y="191.5" ></text>
+</g>
+<g >
+<title>__schedule (2 us, 0.39%)</title><rect x="444.5" y="37" width="4.6" height="15.0" fill="rgb(90,90,239)" rx="2" ry="2" />
+<text  x="447.50" y="47.5" ></text>
+</g>
+<g >
+<title>sys_futex (12 us, 2.33%)</title><rect x="581.7" y="229" width="27.4" height="15.0" fill="rgb(81,81,195)" rx="2" ry="2" />
+<text  x="584.71" y="239.5" >s..</text>
+</g>
+<g >
+<title>futex_wait_queue_me (18 us, 3.49%)</title><rect x="540.5" y="133" width="41.2" height="15.0" fill="rgb(103,103,223)" rx="2" ry="2" />
+<text  x="543.54" y="143.5" >fut..</text>
+</g>
+<g >
+<title>k8s.io/client-go/rest.(*Request).Do (36 us, 6.98%)</title><rect x="449.1" y="309" width="82.3" height="15.0" fill="rgb(100,100,233)" rx="2" ry="2" />
+<text  x="452.07" y="319.5" >k8s.io/cl..</text>
+</g>
+<g >
+<title>runtime/cgo (118 us, 22.87%)</title><rect x="920.2" y="485" width="269.8" height="15.0" fill="rgb(121,121,197)" rx="2" ry="2" />
+<text  x="923.16" y="495.5" >runtime/cgo</text>
+</g>
+<g >
+<title>runtime.mstart1 (118 us, 22.87%)</title><rect x="920.2" y="453" width="269.8" height="15.0" fill="rgb(130,130,241)" rx="2" ry="2" />
+<text  x="923.16" y="463.5" >runtime.mstart1</text>
+</g>
+<g >
+<title>sys_nanosleep (2 us, 0.39%)</title><rect x="444.5" y="101" width="4.6" height="15.0" fill="rgb(106,106,227)" rx="2" ry="2" />
+<text  x="447.50" y="111.5" ></text>
+</g>
+<g >
+<title>hrtimer_nanosleep (2 us, 0.39%)</title><rect x="444.5" y="85" width="4.6" height="15.0" fill="rgb(116,116,231)" rx="2" ry="2" />
+<text  x="447.50" y="95.5" ></text>
+</g>
+<g >
+<title>schedule (120 us, 23.26%)</title><rect x="632.0" y="389" width="274.4" height="15.0" fill="rgb(137,137,212)" rx="2" ry="2" />
+<text  x="635.02" y="399.5" >schedule</text>
+</g>
+<g >
+<title>github.com/idevz/crd-start/pkg/client/clientset/versioned/typed/crdstart/v1alpha1.(*dcreaters).List (2 us, 0.39%)</title><rect x="444.5" y="325" width="4.6" height="15.0" fill="rgb(116,116,243)" rx="2" ry="2" />
+<text  x="447.50" y="335.5" ></text>
+</g>
+<g >
+<title>runtime.epollwait (8 us, 1.55%)</title><rect x="10.0" y="469" width="18.3" height="15.0" fill="rgb(108,108,213)" rx="2" ry="2" />
+<text  x="13.00" y="479.5" ></text>
+</g>
+<g >
+<title>schedule (12 us, 2.33%)</title><rect x="1162.6" y="277" width="27.4" height="15.0" fill="rgb(127,127,231)" rx="2" ry="2" />
+<text  x="1165.56" y="287.5" >s..</text>
+</g>
+<g >
+<title>runtime.futex (90 us, 17.44%)</title><rect x="956.7" y="421" width="205.9" height="15.0" fill="rgb(90,90,218)" rx="2" ry="2" />
+<text  x="959.74" y="431.5" >runtime.futex</text>
+</g>
+<g >
+<title>system_call_fastpath (6 us, 1.16%)</title><rect x="613.7" y="245" width="13.7" height="15.0" fill="rgb(90,90,229)" rx="2" ry="2" />
+<text  x="616.72" y="255.5" ></text>
+</g>
+<g >
+<title>hrtimer_nanosleep (2 us, 0.39%)</title><rect x="531.4" y="85" width="4.6" height="15.0" fill="rgb(115,115,235)" rx="2" ry="2" />
+<text  x="534.40" y="95.5" ></text>
+</g>
+<g >
+<title>runtime.usleep (120 us, 23.26%)</title><rect x="632.0" y="469" width="274.4" height="15.0" fill="rgb(98,98,229)" rx="2" ry="2" />
+<text  x="635.02" y="479.5" >runtime.usleep</text>
+</g>
+<g >
+<title>sys_futex (18 us, 3.49%)</title><rect x="540.5" y="181" width="41.2" height="15.0" fill="rgb(97,97,239)" rx="2" ry="2" />
+<text  x="543.54" y="191.5" >sys..</text>
+</g>
+<g >
+<title>[unknown] (16 us, 3.10%)</title><rect x="920.2" y="421" width="36.5" height="15.0" fill="rgb(121,121,228)" rx="2" ry="2" />
+<text  x="923.16" y="431.5" >[un..</text>
+</g>
+<g >
+<title>system_call_fastpath (4 us, 0.78%)</title><rect x="911.0" y="469" width="9.2" height="15.0" fill="rgb(113,113,194)" rx="2" ry="2" />
+<text  x="914.01" y="479.5" ></text>
+</g>
+<g >
+<title>schedule (4 us, 0.78%)</title><rect x="911.0" y="405" width="9.2" height="15.0" fill="rgb(116,116,232)" rx="2" ry="2" />
+<text  x="914.01" y="415.5" ></text>
+</g>
+<g >
+<title>do_futex (18 us, 3.49%)</title><rect x="540.5" y="165" width="41.2" height="15.0" fill="rgb(108,108,204)" rx="2" ry="2" />
+<text  x="543.54" y="175.5" >do_..</text>
+</g>
+<g >
+<title>futex_wait (6 us, 1.16%)</title><rect x="613.7" y="197" width="13.7" height="15.0" fill="rgb(132,132,204)" rx="2" ry="2" />
+<text  x="616.72" y="207.5" ></text>
+</g>
+<g >
+<title>sys_nanosleep (120 us, 23.26%)</title><rect x="632.0" y="437" width="274.4" height="15.0" fill="rgb(100,100,208)" rx="2" ry="2" />
+<text  x="635.02" y="447.5" >sys_nanosleep</text>
+</g>
+<g >
+<title>schedule (2 us, 0.39%)</title><rect x="444.5" y="53" width="4.6" height="15.0" fill="rgb(97,97,235)" rx="2" ry="2" />
+<text  x="447.50" y="63.5" ></text>
+</g>
+<g >
+<title>futex_wait_queue_me (182 us, 35.27%)</title><rect x="28.3" y="389" width="416.2" height="15.0" fill="rgb(115,115,191)" rx="2" ry="2" />
+<text  x="31.29" y="399.5" >futex_wait_queue_me</text>
+</g>
+<g >
+<title>schedule (16 us, 3.10%)</title><rect x="920.2" y="325" width="36.5" height="15.0" fill="rgb(110,110,228)" rx="2" ry="2" />
+<text  x="923.16" y="335.5" >sch..</text>
+</g>
+<g >
+<title>sys_futex (90 us, 17.44%)</title><rect x="956.7" y="389" width="205.9" height="15.0" fill="rgb(114,114,193)" rx="2" ry="2" />
+<text  x="959.74" y="399.5" >sys_futex</text>
+</g>
+<g >
+<title>do_futex (182 us, 35.27%)</title><rect x="28.3" y="421" width="416.2" height="15.0" fill="rgb(136,136,207)" rx="2" ry="2" />
+<text  x="31.29" y="431.5" >do_futex</text>
+</g>
+<g >
+<title>k8s.io/client-go/rest.(*Request).request (2 us, 0.39%)</title><rect x="444.5" y="293" width="4.6" height="15.0" fill="rgb(113,113,196)" rx="2" ry="2" />
+<text  x="447.50" y="303.5" ></text>
+</g>
+<g >
+<title>hrtimer_nanosleep (4 us, 0.78%)</title><rect x="911.0" y="437" width="9.2" height="15.0" fill="rgb(118,118,224)" rx="2" ry="2" />
+<text  x="914.01" y="447.5" ></text>
+</g>
+<g >
+<title>system_call_fastpath (182 us, 35.27%)</title><rect x="28.3" y="453" width="416.2" height="15.0" fill="rgb(109,109,192)" rx="2" ry="2" />
+<text  x="31.29" y="463.5" >system_call_fastpath</text>
+</g>
+<g >
+<title>github.com/idevz/crd-start/pkg/client/informers/externalversions/crdstart/v1alpha1.NewFilteredDcreaterInformer.func1 (2 us, 0.39%)</title><rect x="444.5" y="341" width="4.6" height="15.0" fill="rgb(139,139,222)" rx="2" ry="2" />
+<text  x="447.50" y="351.5" ></text>
+</g>
+<g >
+<title>futex_wait (36 us, 6.98%)</title><rect x="449.1" y="149" width="82.3" height="15.0" fill="rgb(132,132,212)" rx="2" ry="2" />
+<text  x="452.07" y="159.5" >futex_wait</text>
+</g>
+<g >
+<title>runtime.usleep (4 us, 0.78%)</title><rect x="911.0" y="485" width="9.2" height="15.0" fill="rgb(86,86,198)" rx="2" ry="2" />
+<text  x="914.01" y="495.5" ></text>
+</g>
+<g >
+<title>schedule (2 us, 0.39%)</title><rect x="609.1" y="149" width="4.6" height="15.0" fill="rgb(130,130,217)" rx="2" ry="2" />
+<text  x="612.15" y="159.5" ></text>
+</g>
+<g >
+<title>k8s.io/client-go/rest.(*Request).request (34 us, 6.59%)</title><rect x="531.4" y="293" width="77.7" height="15.0" fill="rgb(138,138,227)" rx="2" ry="2" />
+<text  x="534.40" y="303.5" >k8s.io/c..</text>
+</g>
+<g >
+<title>futex_wait_queue_me (12 us, 2.33%)</title><rect x="1162.6" y="293" width="27.4" height="15.0" fill="rgb(120,120,230)" rx="2" ry="2" />
+<text  x="1165.56" y="303.5" >f..</text>
+</g>
+<g >
+<title>schedule (6 us, 1.16%)</title><rect x="613.7" y="165" width="13.7" height="15.0" fill="rgb(96,96,193)" rx="2" ry="2" />
+<text  x="616.72" y="175.5" ></text>
+</g>
+<g >
+<title>net/http.(*Client).Do (36 us, 6.98%)</title><rect x="449.1" y="277" width="82.3" height="15.0" fill="rgb(137,137,190)" rx="2" ry="2" />
+<text  x="452.07" y="287.5" >net/http...</text>
+</g>
+<g >
+<title>runtime.epollwait (2 us, 0.39%)</title><rect x="906.4" y="485" width="4.6" height="15.0" fill="rgb(139,139,215)" rx="2" ry="2" />
+<text  x="909.43" y="495.5" ></text>
+</g>
+<g >
+<title>k8s.io/client-go/tools/cache.(*Reflector).ListAndWatch.func1.1.2 (80 us, 15.50%)</title><rect x="444.5" y="405" width="182.9" height="15.0" fill="rgb(117,117,203)" rx="2" ry="2" />
+<text  x="447.50" y="415.5" >k8s.io/client-go/tools/..</text>
+</g>
+<g >
+<title>futex_wait (12 us, 2.33%)</title><rect x="581.7" y="197" width="27.4" height="15.0" fill="rgb(132,132,223)" rx="2" ry="2" />
+<text  x="584.71" y="207.5" >f..</text>
+</g>
+<g >
+<title>k8s.io/client-go/tools/pager.(*ListPager).List (80 us, 15.50%)</title><rect x="444.5" y="373" width="182.9" height="15.0" fill="rgb(136,136,226)" rx="2" ry="2" />
+<text  x="447.50" y="383.5" >k8s.io/client-go/tools/..</text>
+</g>
+<g >
+<title>k8s.io/client-go/tools/pager.SimplePageFunc.func1 (80 us, 15.50%)</title><rect x="444.5" y="357" width="182.9" height="15.0" fill="rgb(138,138,191)" rx="2" ry="2" />
+<text  x="447.50" y="367.5" >k8s.io/client-go/tools/..</text>
+</g>
+<g >
+<title>runtime.usleep (2 us, 0.39%)</title><rect x="444.5" y="133" width="4.6" height="15.0" fill="rgb(86,86,239)" rx="2" ry="2" />
+<text  x="447.50" y="143.5" ></text>
+</g>
+<g >
+<title>net/http.(*Client).Do (8 us, 1.55%)</title><rect x="609.1" y="277" width="18.3" height="15.0" fill="rgb(109,109,205)" rx="2" ry="2" />
+<text  x="612.15" y="287.5" ></text>
+</g>
+<g >
+<title>runtime.epollwait (2 us, 0.39%)</title><rect x="609.1" y="261" width="4.6" height="15.0" fill="rgb(92,92,236)" rx="2" ry="2" />
+<text  x="612.15" y="271.5" ></text>
+</g>
+<g >
+<title>futex_wait_queue_me (90 us, 17.44%)</title><rect x="956.7" y="341" width="205.9" height="15.0" fill="rgb(110,110,213)" rx="2" ry="2" />
+<text  x="959.74" y="351.5" >futex_wait_queue_me</text>
+</g>
+<g >
+<title>__schedule (4 us, 0.78%)</title><rect x="911.0" y="389" width="9.2" height="15.0" fill="rgb(97,97,220)" rx="2" ry="2" />
+<text  x="914.01" y="399.5" ></text>
+</g>
+<g >
+<title>k8s.io/client-go/rest.(*Request).request (8 us, 1.55%)</title><rect x="609.1" y="293" width="18.3" height="15.0" fill="rgb(101,101,190)" rx="2" ry="2" />
+<text  x="612.15" y="303.5" ></text>
+</g>
+<g >
+<title>__schedule (2 us, 0.39%)</title><rect x="627.4" y="277" width="4.6" height="15.0" fill="rgb(138,138,221)" rx="2" ry="2" />
+<text  x="630.44" y="287.5" ></text>
+</g>
+<g >
+<title>k8s.io/client-go/informers/apps/v1.NewFilteredReplicaSetInformer.func1 (34 us, 6.59%)</title><rect x="531.4" y="341" width="77.7" height="15.0" fill="rgb(112,112,216)" rx="2" ry="2" />
+<text  x="534.40" y="351.5" >k8s.io/c..</text>
+</g>
+<g >
+<title>__schedule (2 us, 0.39%)</title><rect x="609.1" y="133" width="4.6" height="15.0" fill="rgb(137,137,205)" rx="2" ry="2" />
+<text  x="612.15" y="143.5" ></text>
+</g>
+<g >
+<title>k8s.io/client-go/transport.(*bearerAuthRoundTripper).RoundTrip (2 us, 0.39%)</title><rect x="531.4" y="197" width="4.6" height="15.0" fill="rgb(132,132,190)" rx="2" ry="2" />
+<text  x="534.40" y="207.5" ></text>
+</g>
+<g >
+<title>ep_poll (2 us, 0.39%)</title><rect x="906.4" y="421" width="4.6" height="15.0" fill="rgb(120,120,240)" rx="2" ry="2" />
+<text  x="909.43" y="431.5" ></text>
+</g>
+<g >
+<title>do_futex (90 us, 17.44%)</title><rect x="956.7" y="373" width="205.9" height="15.0" fill="rgb(115,115,209)" rx="2" ry="2" />
+<text  x="959.74" y="383.5" >do_futex</text>
+</g>
+<g >
+<title>__schedule (36 us, 6.98%)</title><rect x="449.1" y="101" width="82.3" height="15.0" fill="rgb(119,119,234)" rx="2" ry="2" />
+<text  x="452.07" y="111.5" >__schedule</text>
+</g>
+<g >
+<title>system_call_fastpath (2 us, 0.39%)</title><rect x="627.4" y="373" width="4.6" height="15.0" fill="rgb(135,135,231)" rx="2" ry="2" />
+<text  x="630.44" y="383.5" ></text>
+</g>
+<g >
+<title>k8s.io/client-go/tools/cache.(*Reflector).ListAndWatch.func1.1 (80 us, 15.50%)</title><rect x="444.5" y="453" width="182.9" height="15.0" fill="rgb(91,91,229)" rx="2" ry="2" />
+<text  x="447.50" y="463.5" >k8s.io/client-go/tools/..</text>
+</g>
+<g >
+<title>k8s.io/client-go/tools/pager.(*ListPager).List (80 us, 15.50%)</title><rect x="444.5" y="437" width="182.9" height="15.0" fill="rgb(89,89,199)" rx="2" ry="2" />
+<text  x="447.50" y="447.5" >k8s.io/client-go/tools/..</text>
+</g>
+<g >
+<title>runtime.notetsleep_internal (2 us, 0.39%)</title><rect x="627.4" y="421" width="4.6" height="15.0" fill="rgb(118,118,203)" rx="2" ry="2" />
+<text  x="630.44" y="431.5" ></text>
+</g>
+<g >
+<title>runtime.usleep (2 us, 0.39%)</title><rect x="531.4" y="133" width="4.6" height="15.0" fill="rgb(82,82,241)" rx="2" ry="2" />
+<text  x="534.40" y="143.5" ></text>
+</g>
+<g >
+<title>__schedule (8 us, 1.55%)</title><rect x="10.0" y="341" width="18.3" height="15.0" fill="rgb(119,119,230)" rx="2" ry="2" />
+<text  x="13.00" y="351.5" ></text>
+</g>
+<g >
+<title>sys_epoll_wait (2 us, 0.39%)</title><rect x="609.1" y="213" width="4.6" height="15.0" fill="rgb(94,94,230)" rx="2" ry="2" />
+<text  x="612.15" y="223.5" ></text>
+</g>
+<g >
+<title>system_call_fastpath (2 us, 0.39%)</title><rect x="609.1" y="245" width="4.6" height="15.0" fill="rgb(127,127,231)" rx="2" ry="2" />
+<text  x="612.15" y="255.5" ></text>
+</g>
+<g >
+<title>runtime.futex (6 us, 1.16%)</title><rect x="613.7" y="261" width="13.7" height="15.0" fill="rgb(124,124,191)" rx="2" ry="2" />
+<text  x="616.72" y="271.5" ></text>
+</g>
+<g >
+<title>runtime.usleep (16 us, 3.10%)</title><rect x="920.2" y="405" width="36.5" height="15.0" fill="rgb(111,111,238)" rx="2" ry="2" />
+<text  x="923.16" y="415.5" >run..</text>
+</g>
+<g >
+<title>do_nanosleep (120 us, 23.26%)</title><rect x="632.0" y="405" width="274.4" height="15.0" fill="rgb(133,133,199)" rx="2" ry="2" />
+<text  x="635.02" y="415.5" >do_nanosleep</text>
+</g>
+<g >
+<title>schedule (2 us, 0.39%)</title><rect x="627.4" y="293" width="4.6" height="15.0" fill="rgb(123,123,230)" rx="2" ry="2" />
+<text  x="630.44" y="303.5" ></text>
+</g>
+<g >
+<title>sys_epoll_wait (8 us, 1.55%)</title><rect x="10.0" y="421" width="18.3" height="15.0" fill="rgb(117,117,219)" rx="2" ry="2" />
+<text  x="13.00" y="431.5" ></text>
+</g>
+<g >
+<title>__schedule (12 us, 2.33%)</title><rect x="581.7" y="149" width="27.4" height="15.0" fill="rgb(136,136,196)" rx="2" ry="2" />
+<text  x="584.71" y="159.5" >_..</text>
+</g>
+<g >
+<title>net/http.(*Client).do (22 us, 4.26%)</title><rect x="531.4" y="261" width="50.3" height="15.0" fill="rgb(82,82,207)" rx="2" ry="2" />
+<text  x="534.40" y="271.5" >net/h..</text>
+</g>
+<g >
+<title>runtime.futex (12 us, 2.33%)</title><rect x="581.7" y="261" width="27.4" height="15.0" fill="rgb(106,106,238)" rx="2" ry="2" />
+<text  x="584.71" y="271.5" >r..</text>
+</g>
+<g >
+<title>__schedule (6 us, 1.16%)</title><rect x="613.7" y="149" width="13.7" height="15.0" fill="rgb(89,89,225)" rx="2" ry="2" />
+<text  x="616.72" y="159.5" ></text>
+</g>
+<g >
+<title>schedule (2 us, 0.39%)</title><rect x="906.4" y="373" width="4.6" height="15.0" fill="rgb(135,135,197)" rx="2" ry="2" />
+<text  x="909.43" y="383.5" ></text>
+</g>
+<g >
+<title>hrtimer_nanosleep (120 us, 23.26%)</title><rect x="632.0" y="421" width="274.4" height="15.0" fill="rgb(100,100,205)" rx="2" ry="2" />
+<text  x="635.02" y="431.5" >hrtimer_nanosleep</text>
+</g>
+<g >
+<title>net/http.(*Client).do (36 us, 6.98%)</title><rect x="449.1" y="261" width="82.3" height="15.0" fill="rgb(135,135,191)" rx="2" ry="2" />
+<text  x="452.07" y="271.5" >net/http...</text>
+</g>
+<g >
+<title>sys_epoll_pwait (2 us, 0.39%)</title><rect x="609.1" y="229" width="4.6" height="15.0" fill="rgb(80,80,213)" rx="2" ry="2" />
+<text  x="612.15" y="239.5" ></text>
+</g>
+<g >
+<title>schedule_hrtimeout_range_clock (2 us, 0.39%)</title><rect x="536.0" y="117" width="4.5" height="15.0" fill="rgb(108,108,230)" rx="2" ry="2" />
+<text  x="538.97" y="127.5" ></text>
+</g>
+<g >
+<title>system_call_fastpath (8 us, 1.55%)</title><rect x="10.0" y="453" width="18.3" height="15.0" fill="rgb(114,114,227)" rx="2" ry="2" />
+<text  x="13.00" y="463.5" ></text>
+</g>
+<g >
+<title>schedule_hrtimeout_range_clock (2 us, 0.39%)</title><rect x="609.1" y="165" width="4.6" height="15.0" fill="rgb(116,116,195)" rx="2" ry="2" />
+<text  x="612.15" y="175.5" ></text>
+</g>
+<g >
+<title>k8s.io/client-go/rest.(*Request).request (36 us, 6.98%)</title><rect x="449.1" y="293" width="82.3" height="15.0" fill="rgb(119,119,194)" rx="2" ry="2" />
+<text  x="452.07" y="303.5" >k8s.io/cl..</text>
+</g>
+<g >
+<title>runtime.futex (18 us, 3.49%)</title><rect x="540.5" y="213" width="41.2" height="15.0" fill="rgb(86,86,213)" rx="2" ry="2" />
+<text  x="543.54" y="223.5" >run..</text>
+</g>
+<g >
+<title>do_nanosleep (16 us, 3.10%)</title><rect x="920.2" y="341" width="36.5" height="15.0" fill="rgb(98,98,226)" rx="2" ry="2" />
+<text  x="923.16" y="351.5" >do_..</text>
+</g>
+<g >
+<title>system_call_fastpath (36 us, 6.98%)</title><rect x="449.1" y="197" width="82.3" height="15.0" fill="rgb(130,130,223)" rx="2" ry="2" />
+<text  x="452.07" y="207.5" >system_ca..</text>
+</g>
+<g >
+<title>sys_nanosleep (16 us, 3.10%)</title><rect x="920.2" y="373" width="36.5" height="15.0" fill="rgb(114,114,193)" rx="2" ry="2" />
+<text  x="923.16" y="383.5" >sys..</text>
+</g>
+<g >
+<title>k8s.io/client-go/rest.(*Request).Do (2 us, 0.39%)</title><rect x="444.5" y="309" width="4.6" height="15.0" fill="rgb(80,80,233)" rx="2" ry="2" />
+<text  x="447.50" y="319.5" ></text>
+</g>
+<g >
+<title>runtime.mstart (118 us, 22.87%)</title><rect x="920.2" y="469" width="269.8" height="15.0" fill="rgb(126,126,235)" rx="2" ry="2" />
+<text  x="923.16" y="479.5" >runtime.mstart</text>
+</g>
+<g >
+<title>system_call_fastpath (12 us, 2.33%)</title><rect x="581.7" y="245" width="27.4" height="15.0" fill="rgb(110,110,196)" rx="2" ry="2" />
+<text  x="584.71" y="255.5" >s..</text>
+</g>
+<g >
+<title>net/http.(*Request).requiresHTTP1 (2 us, 0.39%)</title><rect x="444.5" y="149" width="4.6" height="15.0" fill="rgb(120,120,193)" rx="2" ry="2" />
+<text  x="447.50" y="159.5" ></text>
+</g>
+<g >
+<title>system_call_fastpath (2 us, 0.39%)</title><rect x="444.5" y="117" width="4.6" height="15.0" fill="rgb(87,87,197)" rx="2" ry="2" />
+<text  x="447.50" y="127.5" ></text>
+</g>
+<g >
+<title>__schedule (16 us, 3.10%)</title><rect x="920.2" y="309" width="36.5" height="15.0" fill="rgb(112,112,237)" rx="2" ry="2" />
+<text  x="923.16" y="319.5" >__s..</text>
+</g>
+<g >
+<title>do_futex (2 us, 0.39%)</title><rect x="627.4" y="341" width="4.6" height="15.0" fill="rgb(122,122,240)" rx="2" ry="2" />
+<text  x="630.44" y="351.5" ></text>
+</g>
+<g >
+<title>schedule_hrtimeout_range (2 us, 0.39%)</title><rect x="536.0" y="133" width="4.5" height="15.0" fill="rgb(111,111,229)" rx="2" ry="2" />
+<text  x="538.97" y="143.5" ></text>
+</g>
+<g >
+<title>k8s.io/client-go/transport.(*userAgentRoundTripper).RoundTrip (2 us, 0.39%)</title><rect x="444.5" y="213" width="4.6" height="15.0" fill="rgb(110,110,222)" rx="2" ry="2" />
+<text  x="447.50" y="223.5" ></text>
+</g>
+<g >
+<title>system_call_fastpath (18 us, 3.49%)</title><rect x="540.5" y="197" width="41.2" height="15.0" fill="rgb(136,136,221)" rx="2" ry="2" />
+<text  x="543.54" y="207.5" >sys..</text>
+</g>
+<g >
+<title>futex_wait (90 us, 17.44%)</title><rect x="956.7" y="357" width="205.9" height="15.0" fill="rgb(126,126,211)" rx="2" ry="2" />
+<text  x="959.74" y="367.5" >futex_wait</text>
+</g>
+<g >
+<title>net/http.(*Client).send (22 us, 4.26%)</title><rect x="531.4" y="245" width="50.3" height="15.0" fill="rgb(94,94,244)" rx="2" ry="2" />
+<text  x="534.40" y="255.5" >net/h..</text>
+</g>
+<g >
+<title>schedule (2 us, 0.39%)</title><rect x="536.0" y="101" width="4.5" height="15.0" fill="rgb(111,111,202)" rx="2" ry="2" />
+<text  x="538.97" y="111.5" ></text>
+</g>
+<g >
+<title>k8s.io/client-go/kubernetes/typed/apps/v1.(*replicaSets).List (34 us, 6.59%)</title><rect x="531.4" y="325" width="77.7" height="15.0" fill="rgb(92,92,227)" rx="2" ry="2" />
+<text  x="534.40" y="335.5" >k8s.io/c..</text>
+</g>
+<g >
+<title>ep_poll (2 us, 0.39%)</title><rect x="536.0" y="149" width="4.5" height="15.0" fill="rgb(139,139,233)" rx="2" ry="2" />
+<text  x="538.97" y="159.5" ></text>
+</g>
+<g >
+<title>net/http.(*Client).Do (34 us, 6.59%)</title><rect x="531.4" y="277" width="77.7" height="15.0" fill="rgb(132,132,190)" rx="2" ry="2" />
+<text  x="534.40" y="287.5" >net/http..</text>
+</g>
+<g >
+<title>runtime.futex (182 us, 35.27%)</title><rect x="28.3" y="469" width="416.2" height="15.0" fill="rgb(129,129,219)" rx="2" ry="2" />
+<text  x="31.29" y="479.5" >runtime.futex</text>
+</g>
+<g >
+<title>crdstart (516 us, 100.00%)</title><rect x="10.0" y="501" width="1180.0" height="15.0" fill="rgb(134,134,240)" rx="2" ry="2" />
+<text  x="13.00" y="511.5" >crdstart</text>
+</g>
+<g >
+<title>sys_futex (36 us, 6.98%)</title><rect x="449.1" y="181" width="82.3" height="15.0" fill="rgb(86,86,195)" rx="2" ry="2" />
+<text  x="452.07" y="191.5" >sys_futex</text>
+</g>
+<g >
+<title>runtime.goexit (82 us, 15.89%)</title><rect x="444.5" y="469" width="187.5" height="15.0" fill="rgb(100,100,222)" rx="2" ry="2" />
+<text  x="447.50" y="479.5" >runtime.goexit</text>
+</g>
+<g >
+<title>net/http.(*Client).Do (2 us, 0.39%)</title><rect x="444.5" y="277" width="4.6" height="15.0" fill="rgb(90,90,244)" rx="2" ry="2" />
+<text  x="447.50" y="287.5" ></text>
+</g>
+<g >
+<title>schedule_hrtimeout_range (8 us, 1.55%)</title><rect x="10.0" y="389" width="18.3" height="15.0" fill="rgb(136,136,236)" rx="2" ry="2" />
+<text  x="13.00" y="399.5" ></text>
+</g>
+<g >
+<title>net/http.(*Transport).roundTrip (2 us, 0.39%)</title><rect x="531.4" y="165" width="4.6" height="15.0" fill="rgb(115,115,205)" rx="2" ry="2" />
+<text  x="534.40" y="175.5" ></text>
+</g>
+<g >
+<title>futex_wait (18 us, 3.49%)</title><rect x="540.5" y="149" width="41.2" height="15.0" fill="rgb(133,133,228)" rx="2" ry="2" />
+<text  x="543.54" y="159.5" >fut..</text>
+</g>
+<g >
+<title>runtime.timerproc (2 us, 0.39%)</title><rect x="627.4" y="453" width="4.6" height="15.0" fill="rgb(82,82,214)" rx="2" ry="2" />
+<text  x="630.44" y="463.5" ></text>
+</g>
+<g >
+<title>k8s.io/client-go/tools/pager.SimplePageFunc.func1 (80 us, 15.50%)</title><rect x="444.5" y="421" width="182.9" height="15.0" fill="rgb(106,106,231)" rx="2" ry="2" />
+<text  x="447.50" y="431.5" >k8s.io/client-go/tools/..</text>
+</g>
+<g >
+<title>__schedule (2 us, 0.39%)</title><rect x="531.4" y="37" width="4.6" height="15.0" fill="rgb(87,87,197)" rx="2" ry="2" />
+<text  x="534.40" y="47.5" ></text>
+</g>
+<g >
+<title>system_call_fastpath (16 us, 3.10%)</title><rect x="920.2" y="389" width="36.5" height="15.0" fill="rgb(98,98,205)" rx="2" ry="2" />
+<text  x="923.16" y="399.5" >sys..</text>
+</g>
+<g >
+<title>runtime.notetsleep (12 us, 2.33%)</title><rect x="1162.6" y="421" width="27.4" height="15.0" fill="rgb(81,81,196)" rx="2" ry="2" />
+<text  x="1165.56" y="431.5" >r..</text>
+</g>
+<g >
+<title>sys_futex (182 us, 35.27%)</title><rect x="28.3" y="437" width="416.2" height="15.0" fill="rgb(107,107,219)" rx="2" ry="2" />
+<text  x="31.29" y="447.5" >sys_futex</text>
+</g>
+<g >
+<title>k8s.io/client-go/informers/core/v1.NewFilteredPodInformer.func1 (8 us, 1.55%)</title><rect x="609.1" y="341" width="18.3" height="15.0" fill="rgb(139,139,231)" rx="2" ry="2" />
+<text  x="612.15" y="351.5" ></text>
+</g>
+<g >
+<title>runtime.futex (2 us, 0.39%)</title><rect x="627.4" y="389" width="4.6" height="15.0" fill="rgb(80,80,231)" rx="2" ry="2" />
+<text  x="630.44" y="399.5" ></text>
+</g>
+<g >
+<title>__schedule (90 us, 17.44%)</title><rect x="956.7" y="309" width="205.9" height="15.0" fill="rgb(82,82,230)" rx="2" ry="2" />
+<text  x="959.74" y="319.5" >__schedule</text>
+</g>
+<g >
+<title>runtime.notetsleep_internal (12 us, 2.33%)</title><rect x="1162.6" y="405" width="27.4" height="15.0" fill="rgb(89,89,210)" rx="2" ry="2" />
+<text  x="1165.56" y="415.5" >r..</text>
+</g>
+<g >
+<title>sys_futex (2 us, 0.39%)</title><rect x="627.4" y="357" width="4.6" height="15.0" fill="rgb(84,84,190)" rx="2" ry="2" />
+<text  x="630.44" y="367.5" ></text>
+</g>
+<g >
+<title>system_call_fastpath (2 us, 0.39%)</title><rect x="536.0" y="197" width="4.5" height="15.0" fill="rgb(139,139,232)" rx="2" ry="2" />
+<text  x="538.97" y="207.5" ></text>
+</g>
+<g >
+<title>k8s.io/client-go/kubernetes/typed/apps/v1.(*deployments).List (36 us, 6.98%)</title><rect x="449.1" y="325" width="82.3" height="15.0" fill="rgb(126,126,221)" rx="2" ry="2" />
+<text  x="452.07" y="335.5" >k8s.io/cl..</text>
+</g>
+<g >
+<title>futex_wait_queue_me (12 us, 2.33%)</title><rect x="581.7" y="181" width="27.4" height="15.0" fill="rgb(80,80,202)" rx="2" ry="2" />
+<text  x="584.71" y="191.5" >f..</text>
+</g>
+<g >
+<title>system_call_fastpath (2 us, 0.39%)</title><rect x="906.4" y="469" width="4.6" height="15.0" fill="rgb(124,124,228)" rx="2" ry="2" />
+<text  x="909.43" y="479.5" ></text>
+</g>
+<g >
+<title>runtime.futex (36 us, 6.98%)</title><rect x="449.1" y="213" width="82.3" height="15.0" fill="rgb(124,124,235)" rx="2" ry="2" />
+<text  x="452.07" y="223.5" >runtime.f..</text>
+</g>
+<g >
+<title>sys_epoll_pwait (2 us, 0.39%)</title><rect x="536.0" y="181" width="4.5" height="15.0" fill="rgb(104,104,228)" rx="2" ry="2" />
+<text  x="538.97" y="191.5" ></text>
+</g>
+<g >
+<title>schedule (90 us, 17.44%)</title><rect x="956.7" y="325" width="205.9" height="15.0" fill="rgb(90,90,199)" rx="2" ry="2" />
+<text  x="959.74" y="335.5" >schedule</text>
+</g>
+<g >
+<title>net/http.(*Transport).roundTrip (2 us, 0.39%)</title><rect x="444.5" y="165" width="4.6" height="15.0" fill="rgb(103,103,216)" rx="2" ry="2" />
+<text  x="447.50" y="175.5" ></text>
+</g>
+<g >
+<title>net/http.(*Transport).RoundTrip (2 us, 0.39%)</title><rect x="531.4" y="181" width="4.6" height="15.0" fill="rgb(127,127,212)" rx="2" ry="2" />
+<text  x="534.40" y="191.5" ></text>
+</g>
+<g >
+<title>system_call_fastpath (120 us, 23.26%)</title><rect x="632.0" y="453" width="274.4" height="15.0" fill="rgb(139,139,231)" rx="2" ry="2" />
+<text  x="635.02" y="463.5" >system_call_fastpath</text>
+</g>
+<g >
+<title>schedule (2 us, 0.39%)</title><rect x="531.4" y="53" width="4.6" height="15.0" fill="rgb(136,136,215)" rx="2" ry="2" />
+<text  x="534.40" y="63.5" ></text>
+</g>
+<g >
+<title>net/http.send (22 us, 4.26%)</title><rect x="531.4" y="229" width="50.3" height="15.0" fill="rgb(125,125,204)" rx="2" ry="2" />
+<text  x="534.40" y="239.5" >net/h..</text>
+</g>
+<g >
+<title>futex_wait_queue_me (6 us, 1.16%)</title><rect x="613.7" y="181" width="13.7" height="15.0" fill="rgb(133,133,226)" rx="2" ry="2" />
+<text  x="616.72" y="191.5" ></text>
+</g>
+<g >
+<title>sys_epoll_pwait (8 us, 1.55%)</title><rect x="10.0" y="437" width="18.3" height="15.0" fill="rgb(104,104,195)" rx="2" ry="2" />
+<text  x="13.00" y="447.5" ></text>
+</g>
+<g >
+<title>do_futex (6 us, 1.16%)</title><rect x="613.7" y="213" width="13.7" height="15.0" fill="rgb(108,108,224)" rx="2" ry="2" />
+<text  x="616.72" y="223.5" ></text>
+</g>
+<g >
+<title>net/http.(*Client).send (36 us, 6.98%)</title><rect x="449.1" y="245" width="82.3" height="15.0" fill="rgb(136,136,203)" rx="2" ry="2" />
+<text  x="452.07" y="255.5" >net/http...</text>
+</g>
+<g >
+<title>runtime.notetsleepg (2 us, 0.39%)</title><rect x="627.4" y="437" width="4.6" height="15.0" fill="rgb(101,101,230)" rx="2" ry="2" />
+<text  x="630.44" y="447.5" ></text>
+</g>
+<g >
+<title>k8s.io/client-go/rest.(*Request).Do (34 us, 6.59%)</title><rect x="531.4" y="309" width="77.7" height="15.0" fill="rgb(101,101,198)" rx="2" ry="2" />
+<text  x="534.40" y="319.5" >k8s.io/c..</text>
+</g>
+<g >
+<title>do_nanosleep (4 us, 0.78%)</title><rect x="911.0" y="421" width="9.2" height="15.0" fill="rgb(105,105,197)" rx="2" ry="2" />
+<text  x="914.01" y="431.5" ></text>
+</g>
+<g >
+<title>sys_nanosleep (2 us, 0.39%)</title><rect x="531.4" y="101" width="4.6" height="15.0" fill="rgb(85,85,234)" rx="2" ry="2" />
+<text  x="534.40" y="111.5" ></text>
+</g>
+<g >
+<title>schedule_hrtimeout_range (2 us, 0.39%)</title><rect x="906.4" y="405" width="4.6" height="15.0" fill="rgb(139,139,207)" rx="2" ry="2" />
+<text  x="909.43" y="415.5" ></text>
+</g>
+<g >
+<title>k8s.io/client-go/transport.(*bearerAuthRoundTripper).RoundTrip (2 us, 0.39%)</title><rect x="444.5" y="197" width="4.6" height="15.0" fill="rgb(139,139,226)" rx="2" ry="2" />
+<text  x="447.50" y="207.5" ></text>
+</g>
+<g >
+<title>runtime.epollwait (2 us, 0.39%)</title><rect x="536.0" y="213" width="4.5" height="15.0" fill="rgb(124,124,224)" rx="2" ry="2" />
+<text  x="538.97" y="223.5" ></text>
+</g>
+<g >
+<title>system_call_fastpath (12 us, 2.33%)</title><rect x="1162.6" y="357" width="27.4" height="15.0" fill="rgb(120,120,228)" rx="2" ry="2" />
+<text  x="1165.56" y="367.5" >s..</text>
+</g>
+<g >
+<title>futex_wait (12 us, 2.33%)</title><rect x="1162.6" y="309" width="27.4" height="15.0" fill="rgb(110,110,238)" rx="2" ry="2" />
+<text  x="1165.56" y="319.5" >f..</text>
+</g>
+<g >
+<title>schedule (18 us, 3.49%)</title><rect x="540.5" y="117" width="41.2" height="15.0" fill="rgb(83,83,203)" rx="2" ry="2" />
+<text  x="543.54" y="127.5" >sch..</text>
+</g>
+<g >
+<title>system_call_fastpath (90 us, 17.44%)</title><rect x="956.7" y="405" width="205.9" height="15.0" fill="rgb(114,114,240)" rx="2" ry="2" />
+<text  x="959.74" y="415.5" >system_call_fastpath</text>
+</g>
+<g >
+<title>net/http.(*Client).do (2 us, 0.39%)</title><rect x="444.5" y="261" width="4.6" height="15.0" fill="rgb(137,137,210)" rx="2" ry="2" />
+<text  x="447.50" y="271.5" ></text>
+</g>
+<g >
+<title>k8s.io/client-go/tools/cache.(*ListWatch).List (80 us, 15.50%)</title><rect x="444.5" y="389" width="182.9" height="15.0" fill="rgb(117,117,220)" rx="2" ry="2" />
+<text  x="447.50" y="399.5" >k8s.io/client-go/tools/..</text>
+</g>
+<g >
+<title>sys_epoll_wait (2 us, 0.39%)</title><rect x="906.4" y="437" width="4.6" height="15.0" fill="rgb(99,99,195)" rx="2" ry="2" />
+<text  x="909.43" y="447.5" ></text>
+</g>
+<g >
+<title>[unknown] (392 us, 75.97%)</title><rect x="10.0" y="485" width="896.4" height="15.0" fill="rgb(86,86,215)" rx="2" ry="2" />
+<text  x="13.00" y="495.5" >[unknown]</text>
+</g>
+<g >
+<title>schedule (12 us, 2.33%)</title><rect x="581.7" y="165" width="27.4" height="15.0" fill="rgb(96,96,209)" rx="2" ry="2" />
+<text  x="584.71" y="175.5" >s..</text>
+</g>
+<g >
+<title>__schedule (120 us, 23.26%)</title><rect x="632.0" y="373" width="274.4" height="15.0" fill="rgb(105,105,226)" rx="2" ry="2" />
+<text  x="635.02" y="383.5" >__schedule</text>
+</g>
+<g >
+<title>[unknown] (2 us, 0.39%)</title><rect x="627.4" y="405" width="4.6" height="15.0" fill="rgb(136,136,235)" rx="2" ry="2" />
+<text  x="630.44" y="415.5" ></text>
+</g>
+<g >
+<title>schedule (8 us, 1.55%)</title><rect x="10.0" y="357" width="18.3" height="15.0" fill="rgb(131,131,220)" rx="2" ry="2" />
+<text  x="13.00" y="367.5" ></text>
+</g>
+<g >
+<title>sys_futex (12 us, 2.33%)</title><rect x="1162.6" y="341" width="27.4" height="15.0" fill="rgb(87,87,229)" rx="2" ry="2" />
+<text  x="1165.56" y="351.5" >s..</text>
+</g>
+<g >
+<title>system_call_fastpath (2 us, 0.39%)</title><rect x="531.4" y="117" width="4.6" height="15.0" fill="rgb(129,129,195)" rx="2" ry="2" />
+<text  x="534.40" y="127.5" ></text>
+</g>
+<g >
+<title>runtime.sysmon (118 us, 22.87%)</title><rect x="920.2" y="437" width="269.8" height="15.0" fill="rgb(107,107,223)" rx="2" ry="2" />
+<text  x="923.16" y="447.5" >runtime.sysmon</text>
+</g>
+<g >
+<title>futex_wait (2 us, 0.39%)</title><rect x="627.4" y="325" width="4.6" height="15.0" fill="rgb(91,91,225)" rx="2" ry="2" />
+<text  x="630.44" y="335.5" ></text>
+</g>
+<g >
+<title>futex_wait_queue_me (36 us, 6.98%)</title><rect x="449.1" y="133" width="82.3" height="15.0" fill="rgb(127,127,195)" rx="2" ry="2" />
+<text  x="452.07" y="143.5" >futex_wai..</text>
+</g>
+<g >
+<title>sys_nanosleep (4 us, 0.78%)</title><rect x="911.0" y="453" width="9.2" height="15.0" fill="rgb(101,101,211)" rx="2" ry="2" />
+<text  x="914.01" y="463.5" ></text>
+</g>
+<g >
+<title>schedule (182 us, 35.27%)</title><rect x="28.3" y="373" width="416.2" height="15.0" fill="rgb(102,102,198)" rx="2" ry="2" />
+<text  x="31.29" y="383.5" >schedule</text>
+</g>
+<g >
+<title>do_nanosleep (2 us, 0.39%)</title><rect x="531.4" y="69" width="4.6" height="15.0" fill="rgb(118,118,195)" rx="2" ry="2" />
+<text  x="534.40" y="79.5" ></text>
+</g>
+<g >
+<title>__schedule (2 us, 0.39%)</title><rect x="536.0" y="85" width="4.5" height="15.0" fill="rgb(127,127,221)" rx="2" ry="2" />
+<text  x="538.97" y="95.5" ></text>
+</g>
+</g>
+</svg>
