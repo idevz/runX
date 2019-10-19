@@ -1,12 +1,13 @@
 #10.211.55.2  demo
 #10.211.55.5  golang
 #10.211.55.6 openresty #openresty
+10.211.55.60 8openresty #openresty C8
 #10.211.55.7  php      #php kube4
 #10.211.55.8  python #python  kube4
 #10.211.55.9  lua
 #10.211.55.100 dk #k8s kube4
-10.211.55.110 kube1 #k8s  centos7-kube-base-1708-1
-10.211.55.111 kube2 #k8s centos7-kube-base-1708-2
+#10.211.55.110 kube1 #k8s  centos7-kube-base-1708-1
+#10.211.55.111 kube2 #k8s centos7-kube-base-1708-2
 #10.211.55.112 kube3 #k8s centos7-kube-base-1708-3
 #10.211.55.180 eBPF #demo eBPF-base
 #10.211.55.181 X-eBPF #demo
