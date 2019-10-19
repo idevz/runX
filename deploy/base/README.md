@@ -45,6 +45,26 @@ pre_install_parallels_tools() {
 		ftp://ftp.riken.jp/Linux/cern/centos/7/updates/x86_64/Packages/kernel-devel-3.10.0-693.el7.x86_64.rpm
 }
 
+pre_install_parallels_tools_el8() {
+	sudo yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm \
+	rpm-build
+
+	curl -fSL https://linux.itecs.ncsu.edu/redhat/ncsu/rhel8-beta-needed/8/SRPMS/dkms-2.6.1-1.el8.src.rpm -o dkms-2.6.1-1.el8.src.rpm
+	rpmbuild --rebuild --clean dkms-2.6.1-1.el8.src.rpm
+	sudo yum install -y /home/z/rpmbuild/RPMS/noarch/dkms-2.6.1-1.el8.noarch.rpm
+}
+
+cat > /etc/sysconfig/network-scripts/ifcfg-eth0 <<EOF
+NAME=eth0
+DEVICE=eth0
+ONBOOT=yes
+BOOTPROTO=none
+TYPE=Ethernet
+IPADDR=10.211.55.180
+NETMASK=255.255.255.0
+GATEWAY=10.211.55.1
+EOF
+
 # install_parallels_tools manual install
 install_parallels_tools() {
 	pre_install_parallels_tools
