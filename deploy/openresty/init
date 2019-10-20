@@ -54,10 +54,14 @@ using_163_yum() {
 
 yum_base_preparing() {
 	sudo yum install --nogpgcheck -y \
-		systemtap-sdt-devel readline-devel libxslt-devel gd-devel geoip-devel \
+		systemtap-sdt-devel readline-devel libxslt-devel gd-devel \
 		unzip patch \
 		perl perl-ExtUtils-Embed \
-		which less strace cpanm
+		which less strace git
+	# geoip-devel cpanm
+	# sudo yum install -y http://www6.atomicorp.com/channels/atomic/centos/8/x86_64/RPMS/GeoIP-GeoLite-data-2018.06-3.el8.noarch.rpm
+	# sudo yum install -y https://forensics.cert.org/centos/cert/8/x86_64//GeoIP-1.6.12-4.el8.x86_64.rpm
+	# sudo yum install -y https://rpmfind.net/linux/remi/enterprise/8/remi/x86_64/GeoIP-devel-1.6.12-4.el8.remi.x86_64.rpm
 }
 
 local_pkg_preparing() {
@@ -187,14 +191,13 @@ or_for_debug() {
 			--with-stream_ssl_module \
 			--with-threads \
 			--user=root --group=root \
-			${RESTY_CONFIG_OPTIONS_MORE}
-	# 	 &&
-	# make -j${RESTY_J} &&
-	# sudo make -j${RESTY_J} install &&
-	# sudo mkdir -p ${OR_PREFIX}/nginx/sbin/lib &&
-	# for DEP_F in $(ldd ${OR_PREFIX}/nginx/sbin/nginsudo | grep -Eo '(\/.*) |(/lib64/.*) '); do
-	# 	sudo cp ${DEP_F} ${OR_PREFIX}/nginx/sbin/lib/$(basename ${DEP_F})
-	# done
+			${RESTY_CONFIG_OPTIONS_MORE} &&
+		gmake -j${RESTY_J} &&
+		sudo gmake -j${RESTY_J} install &&
+		sudo mkdir -p ${OR_PREFIX}/nginx/sbin/lib &&
+		for DEP_F in $(ldd ${OR_PREFIX}/nginx/sbin/nginx | grep -Eo '(\/.*) |(/lib64/.*) '); do
+			sudo cp ${DEP_F} ${OR_PREFIX}/nginx/sbin/lib/$(basename ${DEP_F})
+		done
 }
 
 install_default_luajit() {
@@ -301,7 +304,7 @@ or_for_prd() {
 		make -j${RESTY_J} &&
 		sudo make -j${RESTY_J} install &&
 		sudo mkdir -p ${OR_PREFIX}/nginx/sbin/lib &&
-		for DEP_F in $(ldd ${OR_PREFIX}/nginx/sbin/nginsudo | grep -Eo '(\/.*) |(/lib64/.*) '); do
+		for DEP_F in $(ldd ${OR_PREFIX}/nginx/sbin/nginx | grep -Eo '(\/.*) |(/lib64/.*) '); do
 			sudo cp ${DEP_F} ${OR_PREFIX}/nginx/sbin/lib/$(basename ${DEP_F})
 		done
 }
@@ -380,8 +383,10 @@ EOF
 )
 
 init() {
-	yum_base_preparing
-	install_openresty_from_src
+	# sudo nmcli c reload
+	# yum_base_preparing
+	# install_openresty_from_src
+	or_for_debug
 	install_or_tools
 	install_weighttp
 	install_test_nginx
@@ -392,4 +397,5 @@ init() {
 clean_srcs() {
 	sudo rm -rf "${SRC_ROOT}"
 }
+init
 # install_test_nginx
