@@ -201,7 +201,10 @@ or_for_debug() {
 		sudo gmake -j${RESTY_J} install &&
 		sudo mkdir -p ${OR_PREFIX}/nginx/sbin/lib &&
 		for DEP_F in $(ldd ${OR_PREFIX}/nginx/sbin/nginx | grep -Eo '(\/.*) |(/lib64/.*) '); do
-			sudo cp ${DEP_F} ${OR_PREFIX}/nginx/sbin/lib/$(basename ${DEP_F})
+			local to_file=${OR_PREFIX}/nginx/sbin/lib/$(basename ${DEP_F})
+			if [ ${DEP_F} != ${to_file} ]; then
+				sudo cp ${DEP_F} ${to_file}
+			fi
 		done
 }
 
@@ -257,8 +260,8 @@ or_for_valgrind() {
 			--with-stream_ssl_module \
 			--with-threads \
 			${RESTY_CONFIG_OPTIONS_MORE} &&
-		make -j${RESTY_J} &&
-		sudo make -j${RESTY_J} install
+		gmake -j${RESTY_J} &&
+		sudo gmake -j${RESTY_J} install
 }
 
 or_for_prd() {
@@ -306,11 +309,14 @@ or_for_prd() {
 			--with-threads \
 			--user=root --group=root \
 			${RESTY_CONFIG_OPTIONS_MORE} &&
-		make -j${RESTY_J} &&
-		sudo make -j${RESTY_J} install &&
+		gmake -j${RESTY_J} &&
+		sudo gmake -j${RESTY_J} install &&
 		sudo mkdir -p ${OR_PREFIX}/nginx/sbin/lib &&
 		for DEP_F in $(ldd ${OR_PREFIX}/nginx/sbin/nginx | grep -Eo '(\/.*) |(/lib64/.*) '); do
-			sudo cp ${DEP_F} ${OR_PREFIX}/nginx/sbin/lib/$(basename ${DEP_F})
+			local to_file=${OR_PREFIX}/nginx/sbin/lib/$(basename ${DEP_F})
+			if [ ${DEP_F} != ${to_file} ]; then
+				sudo cp ${DEP_F} ${to_file}
+			fi
 		done
 }
 
