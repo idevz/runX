@@ -231,3 +231,10 @@ init() {
 	# init_kubeadm
 	sudo usermod -aG docker z
 }
+
+
+	# install_docker
+	install_docker_compose
+	# preper_kubeadm
+	# init_kubeadm
+	sudo usermod -aG docker z

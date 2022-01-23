@@ -2,8 +2,8 @@
 #10.211.55.5  golang
 #10.211.55.6 openresty #openresty    c8-minimal-1
 #10.211.55.7  php      #php kube4
-#10.211.55.8  python #python  kube4
-#10.211.55.9  lua
+#10.211.55.8 python #python  php
+10.211.55.9  rust #rust c8-minimal-1
 #10.211.55.100 dk #k8s c8-minimal-1
 #10.211.55.110 kube1 #k8s  c8-minimal-1
 #10.211.55.111 kube2 #k8s  c8-minimal-2

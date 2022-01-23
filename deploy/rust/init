@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+
+### BEGIN ###
+# Author: idevz
+# Since: 2018/03/12
+# Description:       Set up rust development environment.
+# ./init.sh          Set up using $(pwd) as BASE_DIR, down which has rust source and binaries.
+#
+# Environment variables that control init:
+# LV: rust version which you want to install.
+### END ###
+
+set -ex
+
+[ $HOME != '/home/z' ] && echo 'Are U Z ?' && exit 1
+
+# BASE_DIR=$(dirname $(cd $(dirname "$0") && pwd -P)/$(basename "$0"))
+BASE_DIR=${BASE_DIR:-$(dirname $(cd $(dirname "$0") && pwd -P)/$(basename "$0"))}
+
+# debug install prepare
+dp() {
+	sudo yum -y install readline-devel
+	sudo debuginfo-install -y --skip-broken \
+	ncurses-libs-5.9-14.20130511.el7_4.x86_64 readline-6.2-10.el7.x86_64
+}
+
+install_rust() {
+	curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+}
+
+PROFILE=$(
+	cat <<EOF
+#!/usr/bin/env bash
+
+### BEGIN ###
+# Author: idevz
+# Since: 2018/03/12
+# Description:       Setting enviroment variables for rust pvm.
+### END ###
+
+export PATH="$HOME/.cargo/bin:$PATH"
+EOF
+)
+
+init() {
+	dp
+	install_rust
+	create_profile "${PROFILE}"
+}
