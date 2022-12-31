@@ -1,0 +1,805 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" width="1200" height="598" onload="init(evt)" viewBox="0 0 1200 598" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<!-- Flame graph stack visualization. See https://github.com/brendangregg/FlameGraph for latest version, and http://www.brendangregg.com/flamegraphs.html for examples. -->
+<!-- NOTES:  -->
+<defs>
+	<linearGradient id="background" y1="0" y2="1" x1="0" x2="0" >
+		<stop stop-color="#eeeeee" offset="5%" />
+		<stop stop-color="#eeeeb0" offset="95%" />
+	</linearGradient>
+</defs>
+<style type="text/css">
+	text { font-family:Verdana; font-size:12px; fill:rgb(0,0,0); }
+	#search { opacity:0.1; cursor:pointer; }
+	#search:hover, #search.show { opacity:1; }
+	#subtitle { text-anchor:middle; font-color:rgb(160,160,160); }
+	#title { text-anchor:middle; font-size:17px}
+	#unzoom { cursor:pointer; }
+	#frames > *:hover { stroke:black; stroke-width:0.5; cursor:pointer; }
+	.hide { display:none; }
+	.parent { opacity:0.5; }
+</style>
+<script type="text/ecmascript">
+<![CDATA[
+	"use strict";
+	var details, searchbtn, unzoombtn, matchedtxt, svg, searching;
+	function init(evt) {
+		details = document.getElementById("details").firstChild;
+		searchbtn = document.getElementById("search");
+		unzoombtn = document.getElementById("unzoom");
+		matchedtxt = document.getElementById("matched");
+		svg = document.getElementsByTagName("svg")[0];
+		searching = 0;
+	}
+
+	window.addEventListener("click", function(e) {
+		var target = find_group(e.target);
+		if (target) {
+			if (target.nodeName == "a") {
+				if (e.ctrlKey === false) return;
+				e.preventDefault();
+			}
+			if (target.classList.contains("parent")) unzoom();
+			zoom(target);
+		}
+		else if (e.target.id == "unzoom") unzoom();
+		else if (e.target.id == "search") search_prompt();
+	}, false)
+
+	// mouse-over for info
+	// show
+	window.addEventListener("mouseover", function(e) {
+		var target = find_group(e.target);
+		if (target) details.nodeValue = "Function: " + g_to_text(target);
+	}, false)
+
+	// clear
+	window.addEventListener("mouseout", function(e) {
+		var target = find_group(e.target);
+		if (target) details.nodeValue = ' ';
+	}, false)
+
+	// ctrl-F for search
+	window.addEventListener("keydown",function (e) {
+		if (e.keyCode === 114 || (e.ctrlKey && e.keyCode === 70)) {
+			e.preventDefault();
+			search_prompt();
+		}
+	}, false)
+
+	// functions
+	function find_child(node, selector) {
+		var children = node.querySelectorAll(selector);
+		if (children.length) return children[0];
+		return;
+	}
+	function find_group(node) {
+		var parent = node.parentElement;
+		if (!parent) return;
+		if (parent.id == "frames") return node;
+		return find_group(parent);
+	}
+	function orig_save(e, attr, val) {
+		if (e.attributes["_orig_" + attr] != undefined) return;
+		if (e.attributes[attr] == undefined) return;
+		if (val == undefined) val = e.attributes[attr].value;
+		e.setAttribute("_orig_" + attr, val);
+	}
+	function orig_load(e, attr) {
+		if (e.attributes["_orig_"+attr] == undefined) return;
+		e.attributes[attr].value = e.attributes["_orig_" + attr].value;
+		e.removeAttribute("_orig_"+attr);
+	}
+	function g_to_text(e) {
+		var text = find_child(e, "title").firstChild.nodeValue;
+		return (text)
+	}
+	function g_to_func(e) {
+		var func = g_to_text(e);
+		// if there's any manipulation we want to do to the function
+		// name before it's searched, do it here before returning.
+		return (func);
+	}
+	function update_text(e) {
+		var r = find_child(e, "rect");
+		var t = find_child(e, "text");
+		var w = parseFloat(r.attributes.width.value) -3;
+		var txt = find_child(e, "title").textContent.replace(/\([^(]*\)$/,"");
+		t.attributes.x.value = parseFloat(r.attributes.x.value) + 3;
+
+		// Smaller than this size won't fit anything
+		if (w < 2 * 12 * 0.59) {
+			t.textContent = "";
+			return;
+		}
+
+		t.textContent = txt;
+		// Fit in full text width
+		if (/^ *$/.test(txt) || t.getSubStringLength(0, txt.length) < w)
+			return;
+
+		for (var x = txt.length - 2; x > 0; x--) {
+			if (t.getSubStringLength(0, x + 2) <= w) {
+				t.textContent = txt.substring(0, x) + "..";
+				return;
+			}
+		}
+		t.textContent = "";
+	}
+
+	// zoom
+	function zoom_reset(e) {
+		if (e.attributes != undefined) {
+			orig_load(e, "x");
+			orig_load(e, "width");
+		}
+		if (e.childNodes == undefined) return;
+		for (var i = 0, c = e.childNodes; i < c.length; i++) {
+			zoom_reset(c[i]);
+		}
+	}
+	function zoom_child(e, x, ratio) {
+		if (e.attributes != undefined) {
+			if (e.attributes.x != undefined) {
+				orig_save(e, "x");
+				e.attributes.x.value = (parseFloat(e.attributes.x.value) - x - 10) * ratio + 10;
+				if (e.tagName == "text")
+					e.attributes.x.value = find_child(e.parentNode, "rect[x]").attributes.x.value + 3;
+			}
+			if (e.attributes.width != undefined) {
+				orig_save(e, "width");
+				e.attributes.width.value = parseFloat(e.attributes.width.value) * ratio;
+			}
+		}
+
+		if (e.childNodes == undefined) return;
+		for (var i = 0, c = e.childNodes; i < c.length; i++) {
+			zoom_child(c[i], x - 10, ratio);
+		}
+	}
+	function zoom_parent(e) {
+		if (e.attributes) {
+			if (e.attributes.x != undefined) {
+				orig_save(e, "x");
+				e.attributes.x.value = 10;
+			}
+			if (e.attributes.width != undefined) {
+				orig_save(e, "width");
+				e.attributes.width.value = parseInt(svg.width.baseVal.value) - (10 * 2);
+			}
+		}
+		if (e.childNodes == undefined) return;
+		for (var i = 0, c = e.childNodes; i < c.length; i++) {
+			zoom_parent(c[i]);
+		}
+	}
+	function zoom(node) {
+		var attr = find_child(node, "rect").attributes;
+		var width = parseFloat(attr.width.value);
+		var xmin = parseFloat(attr.x.value);
+		var xmax = parseFloat(xmin + width);
+		var ymin = parseFloat(attr.y.value);
+		var ratio = (svg.width.baseVal.value - 2 * 10) / width;
+
+		// XXX: Workaround for JavaScript float issues (fix me)
+		var fudge = 0.0001;
+
+		unzoombtn.classList.remove("hide");
+
+		var el = document.getElementById("frames").children;
+		for (var i = 0; i < el.length; i++) {
+			var e = el[i];
+			var a = find_child(e, "rect").attributes;
+			var ex = parseFloat(a.x.value);
+			var ew = parseFloat(a.width.value);
+			var upstack;
+			// Is it an ancestor
+			if (0 == 0) {
+				upstack = parseFloat(a.y.value) > ymin;
+			} else {
+				upstack = parseFloat(a.y.value) < ymin;
+			}
+			if (upstack) {
+				// Direct ancestor
+				if (ex <= xmin && (ex+ew+fudge) >= xmax) {
+					e.classList.add("parent");
+					zoom_parent(e);
+					update_text(e);
+				}
+				// not in current path
+				else
+					e.classList.add("hide");
+			}
+			// Children maybe
+			else {
+				// no common path
+				if (ex < xmin || ex + fudge >= xmax) {
+					e.classList.add("hide");
+				}
+				else {
+					zoom_child(e, xmin, ratio);
+					update_text(e);
+				}
+			}
+		}
+	}
+	function unzoom() {
+		unzoombtn.classList.add("hide");
+		var el = document.getElementById("frames").children;
+		for(var i = 0; i < el.length; i++) {
+			el[i].classList.remove("parent");
+			el[i].classList.remove("hide");
+			zoom_reset(el[i]);
+			update_text(el[i]);
+		}
+	}
+
+	// search
+	function reset_search() {
+		var el = document.querySelectorAll("#frames rect");
+		for (var i = 0; i < el.length; i++) {
+			orig_load(el[i], "fill")
+		}
+	}
+	function search_prompt() {
+		if (!searching) {
+			var term = prompt("Enter a search term (regexp " +
+			    "allowed, eg: ^ext4_)", "");
+			if (term != null) {
+				search(term)
+			}
+		} else {
+			reset_search();
+			searching = 0;
+			searchbtn.classList.remove("show");
+			searchbtn.firstChild.nodeValue = "Search"
+			matchedtxt.classList.add("hide");
+			matchedtxt.firstChild.nodeValue = ""
+		}
+	}
+	function search(term) {
+		var re = new RegExp(term);
+		var el = document.getElementById("frames").children;
+		var matches = new Object();
+		var maxwidth = 0;
+		for (var i = 0; i < el.length; i++) {
+			var e = el[i];
+			var func = g_to_func(e);
+			var rect = find_child(e, "rect");
+			if (func == null || rect == null)
+				continue;
+
+			// Save max width. Only works as we have a root frame
+			var w = parseFloat(rect.attributes.width.value);
+			if (w > maxwidth)
+				maxwidth = w;
+
+			if (func.match(re)) {
+				// highlight
+				var x = parseFloat(rect.attributes.x.value);
+				orig_save(rect, "fill");
+				rect.attributes.fill.value = "rgb(230,0,230)";
+
+				// remember matches
+				if (matches[x] == undefined) {
+					matches[x] = w;
+				} else {
+					if (w > matches[x]) {
+						// overwrite with parent
+						matches[x] = w;
+					}
+				}
+				searching = 1;
+			}
+		}
+		if (!searching)
+			return;
+
+		searchbtn.classList.add("show");
+		searchbtn.firstChild.nodeValue = "Reset Search";
+
+		// calculate percent matched, excluding vertical overlap
+		var count = 0;
+		var lastx = -1;
+		var lastw = 0;
+		var keys = Array();
+		for (k in matches) {
+			if (matches.hasOwnProperty(k))
+				keys.push(k);
+		}
+		// sort the matched frames by their x location
+		// ascending, then width descending
+		keys.sort(function(a, b){
+			return a - b;
+		});
+		// Step through frames saving only the biggest bottom-up frames
+		// thanks to the sort order. This relies on the tree property
+		// where children are always smaller than their parents.
+		var fudge = 0.0001;	// JavaScript floating point
+		for (var k in keys) {
+			var x = parseFloat(keys[k]);
+			var w = matches[keys[k]];
+			if (x >= lastx + lastw - fudge) {
+				count += w;
+				lastx = x;
+				lastw = w;
+			}
+		}
+		// display matched percent
+		matchedtxt.classList.remove("hide");
+		var pct = 100 * count / maxwidth;
+		if (pct != 100) pct = pct.toFixed(1)
+		matchedtxt.firstChild.nodeValue = "Matched: " + pct + "%";
+	}
+]]>
+</script>
+<rect x="0.0" y="0" width="1200.0" height="598.0" fill="url(#background)"  />
+<text id="title" x="600.00" y="24" >Flame Graph</text>
+<text id="details" x="10.00" y="581" > </text>
+<text id="unzoom" x="10.00" y="24" class="hide">Reset Zoom</text>
+<text id="search" x="1090.00" y="24" >Search</text>
+<text id="matched" x="1090.00" y="581" > </text>
+<g id="frames">
+<g >
+<title>runtime.lock (1 us, 9.09%)</title><rect x="1082.7" y="453" width="107.3" height="15.0" fill="rgb(243,90,48)" rx="2" ry="2" />
+<text  x="1085.73" y="463.5" >runtime.lock</text>
+</g>
+<g >
+<title>os.Getenv (1 us, 9.09%)</title><rect x="331.8" y="293" width="107.3" height="15.0" fill="rgb(241,226,0)" rx="2" ry="2" />
+<text  x="334.82" y="303.5" >os.Getenv</text>
+</g>
+<g >
+<title>ip_local_out_sk (1 us, 9.09%)</title><rect x="331.8" y="69" width="107.3" height="15.0" fill="rgb(225,17,12)" rx="2" ry="2" />
+<text  x="334.82" y="79.5" >ip_local_out_sk</text>
+</g>
+<g >
+<title>runtime.futex (1 us, 9.09%)</title><rect x="117.3" y="501" width="107.2" height="15.0" fill="rgb(234,163,8)" rx="2" ry="2" />
+<text  x="120.27" y="511.5" >runtime.futex</text>
+</g>
+<g >
+<title>tcp_push (1 us, 9.09%)</title><rect x="331.8" y="149" width="107.3" height="15.0" fill="rgb(206,157,2)" rx="2" ry="2" />
+<text  x="334.82" y="159.5" >tcp_push</text>
+</g>
+<g >
+<title>sys_futex (1 us, 9.09%)</title><rect x="224.5" y="421" width="107.3" height="15.0" fill="rgb(215,214,16)" rx="2" ry="2" />
+<text  x="227.55" y="431.5" >sys_futex</text>
+</g>
+<g >
+<title>system_call_fastpath (1 us, 9.09%)</title><rect x="10.0" y="485" width="107.3" height="15.0" fill="rgb(239,180,3)" rx="2" ry="2" />
+<text  x="13.00" y="495.5" >system_call_f..</text>
+</g>
+<g >
+<title>call_softirq (1 us, 9.09%)</title><rect x="439.1" y="325" width="107.3" height="15.0" fill="rgb(249,225,21)" rx="2" ry="2" />
+<text  x="442.09" y="335.5" >call_softirq</text>
+</g>
+<g >
+<title>system_call_fastpath (1 us, 9.09%)</title><rect x="117.3" y="485" width="107.2" height="15.0" fill="rgb(249,207,20)" rx="2" ry="2" />
+<text  x="120.27" y="495.5" >system_call_f..</text>
+</g>
+<g >
+<title>finish_task_switch (1 us, 9.09%)</title><rect x="117.3" y="373" width="107.2" height="15.0" fill="rgb(247,85,5)" rx="2" ry="2" />
+<text  x="120.27" y="383.5" >finish_task_s..</text>
+</g>
+<g >
+<title>irq_exit (1 us, 9.09%)</title><rect x="439.1" y="357" width="107.3" height="15.0" fill="rgb(232,182,12)" rx="2" ry="2" />
+<text  x="442.09" y="367.5" >irq_exit</text>
+</g>
+<g >
+<title>k8s.io/client-go/tools/cache.(*Reflector).ListAndWatch.func1.1.2 (1 us, 9.09%)</title><rect x="331.8" y="437" width="107.3" height="15.0" fill="rgb(240,202,34)" rx="2" ry="2" />
+<text  x="334.82" y="447.5" >k8s.io/client..</text>
+</g>
+<g >
+<title>sysret_audit (1 us, 9.09%)</title><rect x="975.5" y="501" width="107.2" height="15.0" fill="rgb(222,27,23)" rx="2" ry="2" />
+<text  x="978.45" y="511.5" >sysret_audit</text>
+</g>
+<g >
+<title>runtime.stopm (2 us, 18.18%)</title><rect x="653.6" y="453" width="214.6" height="15.0" fill="rgb(208,136,22)" rx="2" ry="2" />
+<text  x="656.64" y="463.5" >runtime.stopm</text>
+</g>
+<g >
+<title>apic_timer_interrupt (1 us, 9.09%)</title><rect x="439.1" y="389" width="107.3" height="15.0" fill="rgb(209,212,46)" rx="2" ry="2" />
+<text  x="442.09" y="399.5" >apic_timer_in..</text>
+</g>
+<g >
+<title>_raw_spin_unlock_irqrestore (1 us, 9.09%)</title><rect x="224.5" y="341" width="107.3" height="15.0" fill="rgb(216,183,27)" rx="2" ry="2" />
+<text  x="227.55" y="351.5" >_raw_spin_unl..</text>
+</g>
+<g >
+<title>_raw_spin_unlock_irqrestore (1 us, 9.09%)</title><rect x="439.1" y="245" width="107.3" height="15.0" fill="rgb(215,221,21)" rx="2" ry="2" />
+<text  x="442.09" y="255.5" >_raw_spin_unl..</text>
+</g>
+<g >
+<title>do_futex (1 us, 9.09%)</title><rect x="117.3" y="453" width="107.2" height="15.0" fill="rgb(219,222,1)" rx="2" ry="2" />
+<text  x="120.27" y="463.5" >do_futex</text>
+</g>
+<g >
+<title>k8s.io/client-go/tools/cache.WaitForCacheSync (1 us, 9.09%)</title><rect x="546.4" y="373" width="107.2" height="15.0" fill="rgb(210,35,51)" rx="2" ry="2" />
+<text  x="549.36" y="383.5" >k8s.io/client..</text>
+</g>
+<g >
+<title>futex_wake (1 us, 9.09%)</title><rect x="224.5" y="389" width="107.3" height="15.0" fill="rgb(252,22,1)" rx="2" ry="2" />
+<text  x="227.55" y="399.5" >futex_wake</text>
+</g>
+<g >
+<title>runtime.mstart1 (1 us, 9.09%)</title><rect x="1082.7" y="485" width="107.3" height="15.0" fill="rgb(236,141,8)" rx="2" ry="2" />
+<text  x="1085.73" y="495.5" >runtime.mstart1</text>
+</g>
+<g >
+<title>runtime.copystack (1 us, 9.09%)</title><rect x="868.2" y="485" width="107.3" height="15.0" fill="rgb(254,25,36)" rx="2" ry="2" />
+<text  x="871.18" y="495.5" >runtime.copys..</text>
+</g>
+<g >
+<title>smp_apic_timer_interrupt (1 us, 9.09%)</title><rect x="439.1" y="373" width="107.3" height="15.0" fill="rgb(226,142,32)" rx="2" ry="2" />
+<text  x="442.09" y="383.5" >smp_apic_time..</text>
+</g>
+<g >
+<title>runtime.morestack (1 us, 9.09%)</title><rect x="868.2" y="517" width="107.3" height="15.0" fill="rgb(240,23,44)" rx="2" ry="2" />
+<text  x="871.18" y="527.5" >runtime.mores..</text>
+</g>
+<g >
+<title>schedule_hrtimeout_range (1 us, 9.09%)</title><rect x="10.0" y="421" width="107.3" height="15.0" fill="rgb(236,12,50)" rx="2" ry="2" />
+<text  x="13.00" y="431.5" >schedule_hrti..</text>
+</g>
+<g >
+<title>crdstart (11 us, 100.00%)</title><rect x="10.0" y="533" width="1180.0" height="15.0" fill="rgb(227,166,10)" rx="2" ry="2" />
+<text  x="13.00" y="543.5" >crdstart</text>
+</g>
+<g >
+<title>__audit_syscall_exit (1 us, 9.09%)</title><rect x="975.5" y="485" width="107.2" height="15.0" fill="rgb(221,164,49)" rx="2" ry="2" />
+<text  x="978.45" y="495.5" >__audit_sysca..</text>
+</g>
+<g >
+<title>sys_futex (1 us, 9.09%)</title><rect x="117.3" y="469" width="107.2" height="15.0" fill="rgb(254,5,15)" rx="2" ry="2" />
+<text  x="120.27" y="479.5" >sys_futex</text>
+</g>
+<g >
+<title>runtime.park_m (2 us, 18.18%)</title><rect x="653.6" y="501" width="214.6" height="15.0" fill="rgb(209,194,2)" rx="2" ry="2" />
+<text  x="656.64" y="511.5" >runtime.park_m</text>
+</g>
+<g >
+<title>runtime.findrunnable (2 us, 18.18%)</title><rect x="653.6" y="469" width="214.6" height="15.0" fill="rgb(220,38,19)" rx="2" ry="2" />
+<text  x="656.64" y="479.5" >runtime.findrunnable</text>
+</g>
+<g >
+<title>wake_up_q (1 us, 9.09%)</title><rect x="224.5" y="373" width="107.3" height="15.0" fill="rgb(206,142,9)" rx="2" ry="2" />
+<text  x="227.55" y="383.5" >wake_up_q</text>
+</g>
+<g >
+<title>[unknown] (4 us, 36.36%)</title><rect x="10.0" y="517" width="429.1" height="15.0" fill="rgb(226,40,42)" rx="2" ry="2" />
+<text  x="13.00" y="527.5" >[unknown]</text>
+</g>
+<g >
+<title>sock_aio_write (1 us, 9.09%)</title><rect x="331.8" y="197" width="107.3" height="15.0" fill="rgb(213,53,8)" rx="2" ry="2" />
+<text  x="334.82" y="207.5" >sock_aio_write</text>
+</g>
+<g >
+<title>runtime.futex (1 us, 9.09%)</title><rect x="224.5" y="453" width="107.3" height="15.0" fill="rgb(219,202,5)" rx="2" ry="2" />
+<text  x="227.55" y="463.5" >runtime.futex</text>
+</g>
+<g >
+<title>runtime.newstack (1 us, 9.09%)</title><rect x="868.2" y="501" width="107.3" height="15.0" fill="rgb(221,33,45)" rx="2" ry="2" />
+<text  x="871.18" y="511.5" >runtime.newst..</text>
+</g>
+<g >
+<title>k8s.io/client-go/tools/pager.SimplePageFunc.func1 (1 us, 9.09%)</title><rect x="331.8" y="389" width="107.3" height="15.0" fill="rgb(244,224,47)" rx="2" ry="2" />
+<text  x="334.82" y="399.5" >k8s.io/client..</text>
+</g>
+<g >
+<title>finish_task_switch (1 us, 9.09%)</title><rect x="10.0" y="357" width="107.3" height="15.0" fill="rgb(237,223,31)" rx="2" ry="2" />
+<text  x="13.00" y="367.5" >finish_task_s..</text>
+</g>
+<g >
+<title>try_to_wake_up (1 us, 9.09%)</title><rect x="224.5" y="357" width="107.3" height="15.0" fill="rgb(237,191,35)" rx="2" ry="2" />
+<text  x="227.55" y="367.5" >try_to_wake_up</text>
+</g>
+<g >
+<title>futex_wait (1 us, 9.09%)</title><rect x="439.1" y="453" width="107.3" height="15.0" fill="rgb(239,31,36)" rx="2" ry="2" />
+<text  x="442.09" y="463.5" >futex_wait</text>
+</g>
+<g >
+<title>k8s.io/client-go/tools/cache.(*Reflector).ListAndWatch.func1.1 (2 us, 18.18%)</title><rect x="224.5" y="485" width="214.6" height="15.0" fill="rgb(221,56,6)" rx="2" ry="2" />
+<text  x="227.55" y="495.5" >k8s.io/client-go/tools/cache..</text>
+</g>
+<g >
+<title>__tcp_push_pending_frames (1 us, 9.09%)</title><rect x="331.8" y="133" width="107.3" height="15.0" fill="rgb(232,67,44)" rx="2" ry="2" />
+<text  x="334.82" y="143.5" >__tcp_push_pe..</text>
+</g>
+<g >
+<title>system_call_fastpath (1 us, 9.09%)</title><rect x="331.8" y="261" width="107.3" height="15.0" fill="rgb(212,80,12)" rx="2" ry="2" />
+<text  x="334.82" y="271.5" >system_call_f..</text>
+</g>
+<g >
+<title>ip_output (1 us, 9.09%)</title><rect x="331.8" y="53" width="107.3" height="15.0" fill="rgb(237,130,25)" rx="2" ry="2" />
+<text  x="334.82" y="63.5" >ip_output</text>
+</g>
+<g >
+<title>runtime.usleep (1 us, 9.09%)</title><rect x="975.5" y="517" width="107.2" height="15.0" fill="rgb(235,36,27)" rx="2" ry="2" />
+<text  x="978.45" y="527.5" >runtime.usleep</text>
+</g>
+<g >
+<title>system_call_fastpath (1 us, 9.09%)</title><rect x="224.5" y="437" width="107.3" height="15.0" fill="rgb(215,33,43)" rx="2" ry="2" />
+<text  x="227.55" y="447.5" >system_call_f..</text>
+</g>
+<g >
+<title>tcp_write_xmit (1 us, 9.09%)</title><rect x="331.8" y="117" width="107.3" height="15.0" fill="rgb(233,198,8)" rx="2" ry="2" />
+<text  x="334.82" y="127.5" >tcp_write_xmit</text>
+</g>
+<g >
+<title>github.com/idevz/crd-start/cmd.Execute (1 us, 9.09%)</title><rect x="546.4" y="469" width="107.2" height="15.0" fill="rgb(221,121,25)" rx="2" ry="2" />
+<text  x="549.36" y="479.5" >github.com/id..</text>
+</g>
+<g >
+<title>tcp_sendmsg (1 us, 9.09%)</title><rect x="331.8" y="165" width="107.3" height="15.0" fill="rgb(240,57,47)" rx="2" ry="2" />
+<text  x="334.82" y="175.5" >tcp_sendmsg</text>
+</g>
+<g >
+<title>all (11 us, 100%)</title><rect x="10.0" y="549" width="1180.0" height="15.0" fill="rgb(230,34,30)" rx="2" ry="2" />
+<text  x="13.00" y="559.5" ></text>
+</g>
+<g >
+<title>runtime.sysmon (1 us, 9.09%)</title><rect x="1082.7" y="469" width="107.3" height="15.0" fill="rgb(225,29,32)" rx="2" ry="2" />
+<text  x="1085.73" y="479.5" >runtime.sysmon</text>
+</g>
+<g >
+<title>do_sync_write (1 us, 9.09%)</title><rect x="331.8" y="213" width="107.3" height="15.0" fill="rgb(251,25,8)" rx="2" ry="2" />
+<text  x="334.82" y="223.5" >do_sync_write</text>
+</g>
+<g >
+<title>runtime.goexit (2 us, 18.18%)</title><rect x="224.5" y="501" width="214.6" height="15.0" fill="rgb(215,107,31)" rx="2" ry="2" />
+<text  x="227.55" y="511.5" >runtime.goexit</text>
+</g>
+<g >
+<title>__schedule (1 us, 9.09%)</title><rect x="10.0" y="373" width="107.3" height="15.0" fill="rgb(223,192,43)" rx="2" ry="2" />
+<text  x="13.00" y="383.5" >__schedule</text>
+</g>
+<g >
+<title>k8s.io/client-go/rest.(*RESTClient).Get (1 us, 9.09%)</title><rect x="331.8" y="341" width="107.3" height="15.0" fill="rgb(247,17,10)" rx="2" ry="2" />
+<text  x="334.82" y="351.5" >k8s.io/client..</text>
+</g>
+<g >
+<title>__schedule (1 us, 9.09%)</title><rect x="439.1" y="405" width="107.3" height="15.0" fill="rgb(230,36,33)" rx="2" ry="2" />
+<text  x="442.09" y="415.5" >__schedule</text>
+</g>
+<g >
+<title>github.com/spf13/cobra.(*Command).execute (1 us, 9.09%)</title><rect x="546.4" y="437" width="107.2" height="15.0" fill="rgb(210,229,29)" rx="2" ry="2" />
+<text  x="549.36" y="447.5" >github.com/sp..</text>
+</g>
+<g >
+<title>runtime.futexsleep (2 us, 18.18%)</title><rect x="653.6" y="421" width="214.6" height="15.0" fill="rgb(205,228,48)" rx="2" ry="2" />
+<text  x="656.64" y="431.5" >runtime.futexsleep</text>
+</g>
+<g >
+<title>runtime.notesleep (2 us, 18.18%)</title><rect x="653.6" y="437" width="214.6" height="15.0" fill="rgb(254,114,46)" rx="2" ry="2" />
+<text  x="656.64" y="447.5" >runtime.notesleep</text>
+</g>
+<g >
+<title>ip_queue_xmit (1 us, 9.09%)</title><rect x="331.8" y="85" width="107.3" height="15.0" fill="rgb(229,222,18)" rx="2" ry="2" />
+<text  x="334.82" y="95.5" >ip_queue_xmit</text>
+</g>
+<g >
+<title>schedule_hrtimeout_range_clock (1 us, 9.09%)</title><rect x="10.0" y="405" width="107.3" height="15.0" fill="rgb(245,70,26)" rx="2" ry="2" />
+<text  x="13.00" y="415.5" >schedule_hrti..</text>
+</g>
+<g >
+<title>ep_poll (1 us, 9.09%)</title><rect x="10.0" y="437" width="107.3" height="15.0" fill="rgb(230,109,49)" rx="2" ry="2" />
+<text  x="13.00" y="447.5" >ep_poll</text>
+</g>
+<g >
+<title>ip_finish_output (1 us, 9.09%)</title><rect x="331.8" y="37" width="107.3" height="15.0" fill="rgb(228,97,30)" rx="2" ry="2" />
+<text  x="334.82" y="47.5" >ip_finish_out..</text>
+</g>
+<g >
+<title>runtime.selectgo (1 us, 9.09%)</title><rect x="546.4" y="325" width="107.2" height="15.0" fill="rgb(208,9,9)" rx="2" ry="2" />
+<text  x="549.36" y="335.5" >runtime.selec..</text>
+</g>
+<g >
+<title>do_futex (1 us, 9.09%)</title><rect x="224.5" y="405" width="107.3" height="15.0" fill="rgb(238,160,22)" rx="2" ry="2" />
+<text  x="227.55" y="415.5" >do_futex</text>
+</g>
+<g >
+<title>k8s.io/client-go/tools/cache.(*ListWatch).List (1 us, 9.09%)</title><rect x="331.8" y="421" width="107.3" height="15.0" fill="rgb(226,171,5)" rx="2" ry="2" />
+<text  x="334.82" y="431.5" >k8s.io/client..</text>
+</g>
+<g >
+<title>github.com/idevz/crd-start/cmd.(*CrdController).Run (1 us, 9.09%)</title><rect x="546.4" y="389" width="107.2" height="15.0" fill="rgb(212,173,14)" rx="2" ry="2" />
+<text  x="549.36" y="399.5" >github.com/id..</text>
+</g>
+<g >
+<title>futex_wait_queue_me (1 us, 9.09%)</title><rect x="117.3" y="421" width="107.2" height="15.0" fill="rgb(239,116,48)" rx="2" ry="2" />
+<text  x="120.27" y="431.5" >futex_wait_qu..</text>
+</g>
+<g >
+<title>tcp_transmit_skb (1 us, 9.09%)</title><rect x="331.8" y="101" width="107.3" height="15.0" fill="rgb(254,27,0)" rx="2" ry="2" />
+<text  x="334.82" y="111.5" >tcp_transmit_..</text>
+</g>
+<g >
+<title>__do_softirq (1 us, 9.09%)</title><rect x="439.1" y="309" width="107.3" height="15.0" fill="rgb(220,72,37)" rx="2" ry="2" />
+<text  x="442.09" y="319.5" >__do_softirq</text>
+</g>
+<g >
+<title>runtime.mstart (1 us, 9.09%)</title><rect x="1082.7" y="501" width="107.3" height="15.0" fill="rgb(223,40,20)" rx="2" ry="2" />
+<text  x="1085.73" y="511.5" >runtime.mstart</text>
+</g>
+<g >
+<title>k8s.io/client-go/rest.(*RESTClient).Verb (1 us, 9.09%)</title><rect x="331.8" y="325" width="107.3" height="15.0" fill="rgb(243,7,25)" rx="2" ry="2" />
+<text  x="334.82" y="335.5" >k8s.io/client..</text>
+</g>
+<g >
+<title>github.com/idevz/crd-start/pkg/client/informers/externalversions/crdstart/v1alpha1.NewFilteredDcreaterInformer.func1 (1 us, 9.09%)</title><rect x="331.8" y="373" width="107.3" height="15.0" fill="rgb(216,70,37)" rx="2" ry="2" />
+<text  x="334.82" y="383.5" >github.com/id..</text>
+</g>
+<g >
+<title>runtime.sellock (1 us, 9.09%)</title><rect x="546.4" y="309" width="107.2" height="15.0" fill="rgb(216,39,35)" rx="2" ry="2" />
+<text  x="549.36" y="319.5" >runtime.sellock</text>
+</g>
+<g >
+<title>main.main (1 us, 9.09%)</title><rect x="546.4" y="485" width="107.2" height="15.0" fill="rgb(253,19,25)" rx="2" ry="2" />
+<text  x="549.36" y="495.5" >main.main</text>
+</g>
+<g >
+<title>github.com/spf13/cobra.(*Command).ExecuteC (1 us, 9.09%)</title><rect x="546.4" y="453" width="107.2" height="15.0" fill="rgb(238,1,10)" rx="2" ry="2" />
+<text  x="549.36" y="463.5" >github.com/sp..</text>
+</g>
+<g >
+<title>rebalance_domains (1 us, 9.09%)</title><rect x="439.1" y="277" width="107.3" height="15.0" fill="rgb(210,55,0)" rx="2" ry="2" />
+<text  x="442.09" y="287.5" >rebalance_dom..</text>
+</g>
+<g >
+<title>runtime.futex (2 us, 18.18%)</title><rect x="653.6" y="405" width="214.6" height="15.0" fill="rgb(236,87,2)" rx="2" ry="2" />
+<text  x="656.64" y="415.5" >runtime.futex</text>
+</g>
+<g >
+<title>schedule (1 us, 9.09%)</title><rect x="10.0" y="389" width="107.3" height="15.0" fill="rgb(215,122,18)" rx="2" ry="2" />
+<text  x="13.00" y="399.5" >schedule</text>
+</g>
+<g >
+<title>github.com/idevz/crd-start/cmd.Run (1 us, 9.09%)</title><rect x="546.4" y="405" width="107.2" height="15.0" fill="rgb(221,27,12)" rx="2" ry="2" />
+<text  x="549.36" y="415.5" >github.com/id..</text>
+</g>
+<g >
+<title>run_rebalance_domains (1 us, 9.09%)</title><rect x="439.1" y="293" width="107.3" height="15.0" fill="rgb(211,15,25)" rx="2" ry="2" />
+<text  x="442.09" y="303.5" >run_rebalance..</text>
+</g>
+<g >
+<title>github.com/idevz/crd-start/pkg/client/clientset/versioned/typed/crdstart/v1alpha1.(*dcreaters).List (1 us, 9.09%)</title><rect x="331.8" y="357" width="107.3" height="15.0" fill="rgb(229,107,22)" rx="2" ry="2" />
+<text  x="334.82" y="367.5" >github.com/id..</text>
+</g>
+<g >
+<title>runtime.lock (1 us, 9.09%)</title><rect x="546.4" y="293" width="107.2" height="15.0" fill="rgb(234,95,53)" rx="2" ry="2" />
+<text  x="549.36" y="303.5" >runtime.lock</text>
+</g>
+<g >
+<title>runtime.goexit (1 us, 9.09%)</title><rect x="546.4" y="517" width="107.2" height="15.0" fill="rgb(221,159,45)" rx="2" ry="2" />
+<text  x="549.36" y="527.5" >runtime.goexit</text>
+</g>
+<g >
+<title>k8s.io/client-go/tools/pager.SimplePageFunc.func1 (1 us, 9.09%)</title><rect x="331.8" y="453" width="107.3" height="15.0" fill="rgb(221,147,49)" rx="2" ry="2" />
+<text  x="334.82" y="463.5" >k8s.io/client..</text>
+</g>
+<g >
+<title>github.com/idevz/crd-start/cmd.glob..func1 (1 us, 9.09%)</title><rect x="546.4" y="421" width="107.2" height="15.0" fill="rgb(244,15,39)" rx="2" ry="2" />
+<text  x="549.36" y="431.5" >github.com/id..</text>
+</g>
+<g >
+<title>runtime/cgo (1 us, 9.09%)</title><rect x="1082.7" y="517" width="107.3" height="15.0" fill="rgb(220,220,36)" rx="2" ry="2" />
+<text  x="1085.73" y="527.5" >runtime/cgo</text>
+</g>
+<g >
+<title>do_softirq (1 us, 9.09%)</title><rect x="439.1" y="341" width="107.3" height="15.0" fill="rgb(234,103,16)" rx="2" ry="2" />
+<text  x="442.09" y="351.5" >do_softirq</text>
+</g>
+<g >
+<title>k8s.io/client-go/tools/pager.(*ListPager).List (1 us, 9.09%)</title><rect x="331.8" y="405" width="107.3" height="15.0" fill="rgb(214,153,23)" rx="2" ry="2" />
+<text  x="334.82" y="415.5" >k8s.io/client..</text>
+</g>
+<g >
+<title>runtime.main (1 us, 9.09%)</title><rect x="546.4" y="501" width="107.2" height="15.0" fill="rgb(251,85,28)" rx="2" ry="2" />
+<text  x="549.36" y="511.5" >runtime.main</text>
+</g>
+<g >
+<title>__schedule (1 us, 9.09%)</title><rect x="117.3" y="389" width="107.2" height="15.0" fill="rgb(225,215,42)" rx="2" ry="2" />
+<text  x="120.27" y="399.5" >__schedule</text>
+</g>
+<g >
+<title>runtime.gentraceback (1 us, 9.09%)</title><rect x="868.2" y="469" width="107.3" height="15.0" fill="rgb(234,182,24)" rx="2" ry="2" />
+<text  x="871.18" y="479.5" >runtime.gentr..</text>
+</g>
+<g >
+<title>k8s.io/apimachinery/pkg/util/wait.PollUntil (1 us, 9.09%)</title><rect x="546.4" y="357" width="107.2" height="15.0" fill="rgb(215,169,40)" rx="2" ry="2" />
+<text  x="549.36" y="367.5" >k8s.io/apimac..</text>
+</g>
+<g >
+<title>runtime.schedule (2 us, 18.18%)</title><rect x="653.6" y="485" width="214.6" height="15.0" fill="rgb(252,96,20)" rx="2" ry="2" />
+<text  x="656.64" y="495.5" >runtime.schedule</text>
+</g>
+<g >
+<title>k8s.io/client-go/tools/cache.(*Reflector).ListAndWatch.func1.1.1 (1 us, 9.09%)</title><rect x="224.5" y="469" width="107.3" height="15.0" fill="rgb(219,128,21)" rx="2" ry="2" />
+<text  x="227.55" y="479.5" >k8s.io/client..</text>
+</g>
+<g >
+<title>runtime.epollwait (1 us, 9.09%)</title><rect x="10.0" y="501" width="107.3" height="15.0" fill="rgb(240,126,23)" rx="2" ry="2" />
+<text  x="13.00" y="511.5" >runtime.epoll..</text>
+</g>
+<g >
+<title>do_futex (1 us, 9.09%)</title><rect x="439.1" y="469" width="107.3" height="15.0" fill="rgb(241,214,27)" rx="2" ry="2" />
+<text  x="442.09" y="479.5" >do_futex</text>
+</g>
+<g >
+<title>schedule (1 us, 9.09%)</title><rect x="117.3" y="405" width="107.2" height="15.0" fill="rgb(205,160,43)" rx="2" ry="2" />
+<text  x="120.27" y="415.5" >schedule</text>
+</g>
+<g >
+<title>system_call_fastpath (1 us, 9.09%)</title><rect x="439.1" y="501" width="107.3" height="15.0" fill="rgb(220,138,43)" rx="2" ry="2" />
+<text  x="442.09" y="511.5" >system_call_f..</text>
+</g>
+<g >
+<title>vfs_write (1 us, 9.09%)</title><rect x="331.8" y="229" width="107.3" height="15.0" fill="rgb(244,86,0)" rx="2" ry="2" />
+<text  x="334.82" y="239.5" >vfs_write</text>
+</g>
+<g >
+<title>futex_wait_queue_me (1 us, 9.09%)</title><rect x="439.1" y="437" width="107.3" height="15.0" fill="rgb(229,17,0)" rx="2" ry="2" />
+<text  x="442.09" y="447.5" >futex_wait_qu..</text>
+</g>
+<g >
+<title>update_blocked_averages (1 us, 9.09%)</title><rect x="439.1" y="261" width="107.3" height="15.0" fill="rgb(253,75,32)" rx="2" ry="2" />
+<text  x="442.09" y="271.5" >update_blocke..</text>
+</g>
+<g >
+<title>k8s.io/apimachinery/pkg/util/wait.WaitFor (1 us, 9.09%)</title><rect x="546.4" y="341" width="107.2" height="15.0" fill="rgb(219,10,11)" rx="2" ry="2" />
+<text  x="549.36" y="351.5" >k8s.io/apimac..</text>
+</g>
+<g >
+<title>sys_epoll_wait (1 us, 9.09%)</title><rect x="10.0" y="453" width="107.3" height="15.0" fill="rgb(206,18,20)" rx="2" ry="2" />
+<text  x="13.00" y="463.5" >sys_epoll_wait</text>
+</g>
+<g >
+<title>k8s.io/client-go/rest.readExpBackoffConfig (1 us, 9.09%)</title><rect x="331.8" y="309" width="107.3" height="15.0" fill="rgb(221,210,9)" rx="2" ry="2" />
+<text  x="334.82" y="319.5" >k8s.io/client..</text>
+</g>
+<g >
+<title>runtime.findfunc (1 us, 9.09%)</title><rect x="868.2" y="453" width="107.3" height="15.0" fill="rgb(243,222,44)" rx="2" ry="2" />
+<text  x="871.18" y="463.5" >runtime.findf..</text>
+</g>
+<g >
+<title>runtime.futex (1 us, 9.09%)</title><rect x="439.1" y="517" width="107.3" height="15.0" fill="rgb(254,197,33)" rx="2" ry="2" />
+<text  x="442.09" y="527.5" >runtime.futex</text>
+</g>
+<g >
+<title>futex_wait (1 us, 9.09%)</title><rect x="117.3" y="437" width="107.2" height="15.0" fill="rgb(244,141,23)" rx="2" ry="2" />
+<text  x="120.27" y="447.5" >futex_wait</text>
+</g>
+<g >
+<title>k8s.io/client-go/tools/pager.(*ListPager).List (1 us, 9.09%)</title><rect x="331.8" y="469" width="107.3" height="15.0" fill="rgb(228,15,9)" rx="2" ry="2" />
+<text  x="334.82" y="479.5" >k8s.io/client..</text>
+</g>
+<g >
+<title>syscall.Syscall (1 us, 9.09%)</title><rect x="331.8" y="277" width="107.3" height="15.0" fill="rgb(234,147,33)" rx="2" ry="2" />
+<text  x="334.82" y="287.5" >syscall.Syscall</text>
+</g>
+<g >
+<title>runtime.mcall (2 us, 18.18%)</title><rect x="653.6" y="517" width="214.6" height="15.0" fill="rgb(244,17,31)" rx="2" ry="2" />
+<text  x="656.64" y="527.5" >runtime.mcall</text>
+</g>
+<g >
+<title>schedule (1 us, 9.09%)</title><rect x="439.1" y="421" width="107.3" height="15.0" fill="rgb(248,80,26)" rx="2" ry="2" />
+<text  x="442.09" y="431.5" >schedule</text>
+</g>
+<g >
+<title>sys_futex (1 us, 9.09%)</title><rect x="439.1" y="485" width="107.3" height="15.0" fill="rgb(246,78,33)" rx="2" ry="2" />
+<text  x="442.09" y="495.5" >sys_futex</text>
+</g>
+<g >
+<title>sys_epoll_pwait (1 us, 9.09%)</title><rect x="10.0" y="469" width="107.3" height="15.0" fill="rgb(217,19,45)" rx="2" ry="2" />
+<text  x="13.00" y="479.5" >sys_epoll_pwait</text>
+</g>
+<g >
+<title>inet_sendmsg (1 us, 9.09%)</title><rect x="331.8" y="181" width="107.3" height="15.0" fill="rgb(223,160,10)" rx="2" ry="2" />
+<text  x="334.82" y="191.5" >inet_sendmsg</text>
+</g>
+<g >
+<title>sys_write (1 us, 9.09%)</title><rect x="331.8" y="245" width="107.3" height="15.0" fill="rgb(210,53,17)" rx="2" ry="2" />
+<text  x="334.82" y="255.5" >sys_write</text>
+</g>
+</g>
+</svg>

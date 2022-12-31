@@ -24,7 +24,7 @@ set -ex
 BASE_DIR=${BASE_DIR:-$(dirname $(cd $(dirname "$0") && pwd -P)/$(basename "$0"))}
 BUILD_ENV="${BUILD_ENV}"
 OR_ENV=${OE:-"debug"}
-RUNX_BUILDING_VERSION=${RBV:-"1.15.8.1"}
+RUNX_BUILDING_VERSION=${RBV:-"1.15.8.2"}
 
 PF_TOOLS_ROOT="/usr/local/tools"
 
@@ -54,10 +54,19 @@ using_163_yum() {
 
 yum_base_preparing() {
 	sudo yum install --nogpgcheck -y \
-		systemtap-sdt-devel readline-devel libxslt-devel gd-devel geoip-devel \
+		systemtap-sdt-devel readline-devel libxslt-devel gd-devel \
 		unzip patch \
 		perl perl-ExtUtils-Embed \
-		which less strace cpanm
+		which less strace git
+	if [ $(uname -a | grep -o el8) == 'el8' ]; then
+		sudo dnf install -y perl-CPAN python36
+		sudo alternatives --set python /usr/bin/python3
+		sudo yum install -y http://www6.atomicorp.com/channels/atomic/centos/8/x86_64/RPMS/GeoIP-GeoLite-data-2018.06-3.el8.noarch.rpm
+		sudo yum install -y http://rpms.remirepo.net/enterprise/8/remi/x86_64//GeoIP-1.6.12-4.el8.remi.x86_64.rpm
+		sudo yum install -y https://rpmfind.net/linux/remi/enterprise/8/remi/x86_64/GeoIP-devel-1.6.12-4.el8.remi.x86_64.rpm
+	else
+		sudo yum install --nogpgcheck -y geoip-devel cpanm
+	fi
 }
 
 local_pkg_preparing() {
@@ -187,14 +196,16 @@ or_for_debug() {
 			--with-stream_ssl_module \
 			--with-threads \
 			--user=root --group=root \
-			${RESTY_CONFIG_OPTIONS_MORE}
-	# 	 &&
-	# make -j${RESTY_J} &&
-	# sudo make -j${RESTY_J} install &&
-	# sudo mkdir -p ${OR_PREFIX}/nginx/sbin/lib &&
-	# for DEP_F in $(ldd ${OR_PREFIX}/nginx/sbin/nginsudo | grep -Eo '(\/.*) |(/lib64/.*) '); do
-	# 	sudo cp ${DEP_F} ${OR_PREFIX}/nginx/sbin/lib/$(basename ${DEP_F})
-	# done
+			${RESTY_CONFIG_OPTIONS_MORE} &&
+		gmake -j${RESTY_J} &&
+		sudo gmake -j${RESTY_J} install &&
+		sudo mkdir -p ${OR_PREFIX}/nginx/sbin/lib &&
+		for DEP_F in $(ldd ${OR_PREFIX}/nginx/sbin/nginx | grep -Eo '(\/.*) |(/lib64/.*) '); do
+			local to_file=${OR_PREFIX}/nginx/sbin/lib/$(basename ${DEP_F})
+			if [ ${DEP_F} != ${to_file} ]; then
+				sudo cp ${DEP_F} ${to_file}
+			fi
+		done
 }
 
 install_default_luajit() {
@@ -249,8 +260,8 @@ or_for_valgrind() {
 			--with-stream_ssl_module \
 			--with-threads \
 			${RESTY_CONFIG_OPTIONS_MORE} &&
-		make -j${RESTY_J} &&
-		sudo make -j${RESTY_J} install
+		gmake -j${RESTY_J} &&
+		sudo gmake -j${RESTY_J} install
 }
 
 or_for_prd() {
@@ -298,15 +309,22 @@ or_for_prd() {
 			--with-threads \
 			--user=root --group=root \
 			${RESTY_CONFIG_OPTIONS_MORE} &&
-		make -j${RESTY_J} &&
-		sudo make -j${RESTY_J} install &&
+		gmake -j${RESTY_J} &&
+		sudo gmake -j${RESTY_J} install &&
 		sudo mkdir -p ${OR_PREFIX}/nginx/sbin/lib &&
-		for DEP_F in $(ldd ${OR_PREFIX}/nginx/sbin/nginsudo | grep -Eo '(\/.*) |(/lib64/.*) '); do
-			sudo cp ${DEP_F} ${OR_PREFIX}/nginx/sbin/lib/$(basename ${DEP_F})
+		for DEP_F in $(ldd ${OR_PREFIX}/nginx/sbin/nginx | grep -Eo '(\/.*) |(/lib64/.*) '); do
+			local to_file=${OR_PREFIX}/nginx/sbin/lib/$(basename ${DEP_F})
+			if [ ${DEP_F} != ${to_file} ]; then
+				sudo cp ${DEP_F} ${to_file}
+			fi
 		done
 }
 
 install_weighttp() {
+	if [ $(uname -a | grep -o el8) == 'el8' ]; then
+		sudo dnf install -y httpd-tools
+		return 0
+	fi
 	sudo yum install --nogpgcheck -y gcc make libev-devel expect
 	cd ${SRC_ROOT} &&
 		curl -fSL http://cgit.lighttpd.net/weighttp.git/snapshot/weighttp-master.tar.gz -o weighttp-master.tar.gz &&
@@ -320,9 +338,9 @@ install_weighttp() {
 }
 
 install_test_nginx() {
-	# sudo curl -fSL http://xrl.us/cpanm -o /usr/bin/cpanm &&
-	# 	sudo chmod +sudo /usr/bin/cpanm
-	# curl -L http://cpanmin.us | perl - --sudo --force App::cpanminus
+	sudo curl -fSL http://xrl.us/cpanm -o /usr/bin/cpanm &&
+		sudo chmod +x /usr/bin/cpanm
+	curl -L http://cpanmin.us | perl - --sudo --force App::cpanminus
 	sudo yum -y install perl-App-cpanminus.noarch
 	sudo $(which cpanm) --force Test::Nginx
 	sudo $(which cpanm) --force Digest::SHA
@@ -380,8 +398,10 @@ EOF
 )
 
 init() {
+	sudo nmcli c reload
 	yum_base_preparing
 	install_openresty_from_src
+	or_for_debug
 	install_or_tools
 	install_weighttp
 	install_test_nginx
@@ -392,4 +412,3 @@ init() {
 clean_srcs() {
 	sudo rm -rf "${SRC_ROOT}"
 }
-install_test_nginx
