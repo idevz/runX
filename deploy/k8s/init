@@ -28,16 +28,22 @@ sudo_write() {
 }
 
 install_docker() {
-	sudo yum install -y yum-utils \
-		device-mapper-persistent-data \
-		lvm2
-	sudo yum-config-manager \
-		--add-repo \
-		https://download.docker.com/linux/centos/docker-ce.repo
-	sudo yum-config-manager --enable docker-ce-edge
-	sudo yum-config-manager --enable docker-ce-test
-	# sudo yum-config-manager --disable docker-ce-edge
-	sudo yum install -y docker-ce docker-ce-cli containerd.io
+	if [ $(uname -a | grep -o el8) == 'el8' ]; then
+		sudo dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
+		sudo dnf install -y https://download.docker.com/linux/centos/7/x86_64/stable/Packages/containerd.io-1.2.6-3.3.el7.x86_64.rpm \
+			docker-ce
+	else
+		sudo yum install -y yum-utils \
+			device-mapper-persistent-data \
+			lvm2
+		sudo yum-config-manager \
+			--add-repo \
+			https://download.docker.com/linux/centos/docker-ce.repo
+		sudo yum-config-manager --enable docker-ce-edge
+		sudo yum-config-manager --enable docker-ce-test
+		# sudo yum-config-manager --disable docker-ce-edge
+		sudo yum install -y docker-ce docker-ce-cli containerd.io
+	fi
 	local docker_service_unit=
 	docker_service_unit=$(
 		cat <<DOCKER_SERVICE
@@ -105,9 +111,12 @@ EOF
 }
 
 install_docker_compose() {
-	sudo yum install epel-release
-	sudo yum install -y python-pip
-	sudo pip install docker-compose
+	install_python
+	if [ $(uname -a | grep -o el8) == 'el8' ]; then
+		sudo pip3 install docker-compose
+	else
+		sudo pip install docker-compose
+	fi
 }
 
 preper_kubeadm() {
@@ -188,23 +197,44 @@ yum_http_proxy() {
 }
 
 yum_packages() {
-	sudo yum install -y strace dtrace weighttp \
-		nc tree git patch patchelf nmon perf ntpdate \
+	sudo yum install -y strace \
+		nc tree git patch patchelf perf \
 		tcpdump psmisc zsh gcc gcc-c++ vim \
 		nmap-ncat.x86_64 net-tools telnet \
 		man man-pages \
 		bind-utils # for nslookup, host OR dig
+
+	if [ $(uname -a | grep -o el8) != 'el8' ]; then
+		sudo yum install -y dtrace weighttp nmon ntpdate
+	fi
+}
+
+install_python() {
+	if [ $(uname -a | grep -o el8) == 'el8' ]; then
+		sudo dnf install -y python36 python3-pip
+		sudo alternatives --set python /usr/bin/python3
+	else
+		sudo yum install epel-release
+		sudo yum install -y python-pip
+	fi
 }
 
 init() {
 	sudo systemctl stop firewalld &&
 		sudo systemctl disable firewalld
-	yum_http_proxy
+	# yum_http_proxy
 	yum_packages
 	# init_out_going
 	install_docker
 	install_docker_compose
 	# preper_kubeadm
 	# init_kubeadm
+	sudo usermod -aG docker z
 }
-# init
+
+
+	# install_docker
+	install_docker_compose
+	# preper_kubeadm
+	# init_kubeadm
+	sudo usermod -aG docker z
