@@ -101,6 +101,16 @@ init_etc() {
 	sudo cp "${PRLCTL_HOME}/shell/runX.zshrc" ~/.zshrc
 }
 
+init_etc_new(){
+	sudo hostnamectl set-hostname ${HOST_NAME_SET}
+	cp "${PRLCTL_HOME}/shell/runX.zshrc" ~/.zshrc
+	sudo cp "${PRLCTL_HOME}/shell/runX.zshrc" ~/.zshrc
+}
+
+# using_zsh
+# setup_zh_man
+# init_etc
+
 install_gdb() {
 	[ ! -f "${BASE_DIR}/srcs/gdb-8.2.tar.gz" ] &&
 		curl -fSL ftp://ftp.gnu.org/gnu/gdb/gdb-8.2.tar.gz -o ${BASE_DIR}/srcs/gdb-8.2.tar.gz
@@ -270,6 +280,45 @@ back_to_iptables() {
 	sudo yum install -y iptables-services
 	sudo systemctl start iptables
 	sudo systemctl enable iptables
+}
+
+install() {
+	    1  yum list 'kernel*'
+    2  ll /idevz/
+    3  ls /idevz/
+    4  ls /idevz/yum-repos/
+    5  cd /etc/yum.repos.d/
+    6  ls
+    7  ls -all
+    8  rm -rf ./*
+    9  ls
+   10  cp /idevz/yum-repos/* ./
+   11  ls
+   12  yum clean all && yum makecache
+   13  ll
+   14  ls
+   15  rm -rf ./*
+   16  curl http://mirrors.aliyun.com/repo/Centos-8.repo -o CentOS-Base.repo
+   17  sed -i -e "s|mirrors.cloud.aliyuncs.com|mirrors.aliyun.com|g " /etc/yum.repos.d/CentOS-*
+   18  sed -i -e "s|releasever|releasever-stream|g" /etc/yum.repos.d/CentOS-*
+   19  yum clean all && yum makecache
+   20  yum list 'kernel'
+   21  yum list 'kernel*'
+   22  uname -r
+   23  cd /dev/
+   24  ls
+   25  cd /idevz/
+   26  ll
+   27  ls -all
+   28  rpm -ivh kernel-debuginfo-common-$(uname -r).rpm
+   29  rpm -ivh kernel-debuginfo-$(uname -r).rpm
+   30  rpm -ivh kernel-devel-$(uname -r).rpm
+   31  yum install -y perl-interpreter
+   32  rpm -ivh kernel-devel-$(uname -r).rpm
+   33  yum install -y systemtap
+   34  rpm -ivh kernel-devel-$(uname -r).rpm
+   35  stap -v -e 'probe vfs.read {printf("read performed\n"); exit()}'
+   36  history
 }
 
 # yum_packages
