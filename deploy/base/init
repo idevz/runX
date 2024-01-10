@@ -39,7 +39,7 @@ ETH0
 }
 
 pre_install_parallels_tools() {
-	sudo yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm dkms \
+	sudo	 yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm dkms \
 		ftp://ftp.pbone.net/mirror/ftp.scientificlinux.org/linux/scientific/7.2/x86_64/updates/security/kernel-devel-3.10.0-693.el7.x86_64.rpm
 	mkdir ~/.ssh/
 	chmod -R 700 ~/.ssh/

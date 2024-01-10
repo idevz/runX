@@ -5,7 +5,7 @@ PRLCTL_HOME=${PRLCTL_HOME:-"/media/psf/runX"}
 [ ! -d ${PRLCTL_HOME} ] && PRLCTL_HOME="/tmp"
 sudo swapoff -a
 [ $(hostname) = "kube1" ] && export PATH="$PATH:$PRLCTL_HOME/code/istio-1.0.5/bin:$PRLCTL_HOME/code/helm-v2.12.1"
-K8S_VERSION=${KV:-1.12}
+K8S_VERSION=${KV:-1.14}
 export PATH=/media/psf/runX-pkgs/k8s-start/build-images/bins/v${K8S_VERSION}:$PATH
 export HELM_HOME=$RUN_PATH/.helm
 alias k='kubectl'

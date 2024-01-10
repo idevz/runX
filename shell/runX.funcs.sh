@@ -57,42 +57,42 @@ clean_history() {
 }
 
 #-----------------------------------------  Golang funcs  -----------------------------------------#
-[ ! -z ${GOPATH} ] && g() {
-	while getopts "o:t:l" OPTS; do
-		case "${OPTS}" in
-		o)
-			code $(echo ${GOPATH} | cut -f ${OPTARG} -d ":")
-			;;
-		t)
-			cd $(echo ${GOPATH} | cut -f ${OPTARG} -d ":")
-			;;
-		l)
-			OLD_IFS=${IFS}
-			IFS=':' read -rA GOPATHES <<<"${GOPATH}"
-			for gopath in ${GOPATHES}; do
-				echo ${gopath}
-			done
-			IFS=${OLD_IFS}
-			;;
-		\?)
-			echo "
-g is a tool for golang programing.
+# [ ! -z ${GOPATH} ] && g() {
+# 	while getopts "o:t:l" OPTS; do
+# 		case "${OPTS}" in
+# 		o)
+# 			code $(echo ${GOPATH} | cut -f ${OPTARG} -d ":")
+# 			;;
+# 		t)
+# 			cd $(echo ${GOPATH} | cut -f ${OPTARG} -d ":")
+# 			;;
+# 		l)
+# 			OLD_IFS=${IFS}
+# 			IFS=':' read -rA GOPATHES <<<"${GOPATH}"
+# 			for gopath in ${GOPATHES}; do
+# 				echo ${gopath}
+# 			done
+# 			IFS=${OLD_IFS}
+# 			;;
+# 		\?)
+# 			echo "
+# g is a tool for golang programing.
 
-Usage:
+# Usage:
 
-	g options [arguments]
+# 	g options [arguments]
 
-The options are:
+# The options are:
 
-	-o       using code to open the gopath, eg. 'g -o 1' open the first gopath
-	-t       cd to the gopath, eg. 'g -t 1' cd to the first gopath
-	-l       show all the gopathes
-		"
-			;;
-		esac
-		return
-	done
-}
+# 	-o       using code to open the gopath, eg. 'g -o 1' open the first gopath
+# 	-t       cd to the gopath, eg. 'g -t 1' cd to the first gopath
+# 	-l       show all the gopathes
+# 		"
+# 			;;
+# 		esac
+# 		return
+# 	done
+# }
 
 [ ! -z ${GOPATH} ] && export_go_path() {
 	GOPATH_INDEX=1

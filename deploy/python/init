@@ -19,7 +19,7 @@ set -e
 # BASE_DIR=$(dirname $(cd $(dirname "$0") && pwd -P)/$(basename "$0"))
 BASE_DIR=${BASE_DIR:-$(dirname $(cd $(dirname "$0") && pwd -P)/$(basename "$0"))}
 
-VERSION=${VERSION:-"3.7.1"}
+VERSION=${VERSION:-"3.6.9"}
 PYTHON_VERSION=${PV:-"Python-${VERSION}"}
 PYTHON_ROOT=${PR:-"/usr/local/${PYTHON_VERSION}"}
 
@@ -97,7 +97,8 @@ install_or() {
 }
 
 init() {
-	install_or
+	# install_or
 	install_python_from_src
 	create_profile "${PROFILE}"
 }
+init
