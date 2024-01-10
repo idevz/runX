@@ -1,0 +1,90 @@
+# or-depoly.yaml
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: idevz-or
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: idevz-or
+    spec:
+      containers:
+      - name: idevz-or
+        securityContext:
+          privileged: true
+        image: openresty/openresty:1.15.8.2-6-centos
+        ports:
+        - containerPort: 80
+---
+
+# or-nodeport-svc.yaml
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: idevz-or-nodeport
+#   labels:
+#     run: idevz-or-nodeport
+# spec:
+#   ports:
+#   - port: 80
+#     protocol: TCP
+#   externalName: idevz-or-nodeport.com
+#   type: NodePort
+#   selector:
+#     run: idevz-or
+---
+
+# or-service-1.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: idevz-or-svc-1
+  labels:
+    run: idevz-or-svc-1
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  externalName: idevz-or-svc-1.com
+  selector:
+    run: idevz-or
+---
+
+# # or-service-2.yaml
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: idevz-or-svc-2
+#   labels:
+#     run: idevz-or-svc-2
+# spec:
+#   ports:
+#   - port: 80
+#     protocol: TCP
+#   externalName: idevz-or-svc-2.com
+#   selector:
+#     run: idevz-or
+# ---
+
+# or-ingress.yaml
+# apiVersion: extensions/v1beta1
+# kind: Ingress
+# metadata:
+#   name: test
+#   annotations:
+#     ingress.kubernetes.io/rewrite-target: /
+# spec:
+#   rules:
+#   - host: idevz.or.com
+#     http:
+#       paths:
+#       - path: /foo
+#         backend:
+#           serviceName: idevz-or-svc-1
+#           servicePort: 80
+#       - path: /bar
+#         backend:
+#           serviceName: idevz-or-svc-2
+#           servicePort: 80

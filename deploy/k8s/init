@@ -220,9 +220,22 @@ install_python() {
 }
 
 install_containerd() {
-	sudo tar Cxzvf /usr/local ${RUNX_PKGS}/k8s/containerd-1.6.14-linux-amd64.tar.gz
-	CONTAINERD_SYS=$(
-		cat <<CONTAINERD
+	local runc="${RUNX_PKGS}/runc-1.1.11.amd64"
+	local cni_plugin="${RUNX_PKGS}/cni-plugins-linux-amd64-v1.4.0.tgz"
+	local containerd="${RUNX_PKGS}/containerd-1.7.11-linux-amd64.tar.gz"
+	local nerdctl="${RUNX_PKGS}/nerdctl-1.7.2-linux-amd64.tar.gz"
+	local cri_tools="${RUNX_PKGS}/crictl-v1.29.0-linux-amd64.tar.gz"
+	sudo mkdir -p /opt/cni/bin
+	sudo tar Cxzvf /opt/cni/bin ${cni_plugin}
+	sudo install -m 755 ${runc} /usr/local/sbin/runc
+	sudo tar Cxzvf /usr/local ${containerd}
+	sudo tar Cxzvf /usr/local/bin ${nerdctl}
+	sudo tar Cxzvf /usr/local/bin ${cri_tools}
+
+local containerd_service_unit=
+	containerd_service_unit=$(
+		cat <<CONTAINERD_SERVICE
+[Unit]
 # Copyright The containerd Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -243,21 +256,24 @@ Documentation=https://containerd.io
 After=network.target local-fs.target
 
 [Service]
-#uncomment to enable the experimental sbservice (sandboxed) version of containerd/cri integration
-#Environment="ENABLE_CRI_SANDBOXES=sandboxed"
+
 ExecStartPre=-/sbin/modprobe overlay
 ExecStart=/usr/local/bin/containerd
+#ExecReload=/bin/kill -s HUP $MAINPID
+#Environment="HTTP_PROXY=${HTTP_PROXY_ADDR}" "HTTPS_PROXY=${HTTP_PROXY_ADDR}" "NO_PROXY=${NO_PROXY}"
+
 
 Type=notify
 Delegate=yes
 KillMode=process
 Restart=always
 RestartSec=5
+
 # Having non-zero Limit*s causes performance problems due to accounting overhead
 # in the kernel. We recommend using cgroups to do container-local accounting.
 LimitNPROC=infinity
 LimitCORE=infinity
-LimitNOFILE=infinity
+
 # Comment TasksMax if your systemd version does not supports it.
 # Only systemd 226 and above support this version.
 TasksMax=infinity
@@ -265,49 +281,34 @@ OOMScoreAdjust=-999
 
 [Install]
 WantedBy=multi-user.target
-CONTAINERD
+CONTAINERD_SERVICE
 	)
-	[ ! -d /usr/local/lib/systemd/system ] && sudo mkdir -p /usr/local/lib/systemd/system
-	sudo_write "${CONTAINERD_SYS}" "/usr/local/lib/systemd/system/containerd.service"
+	sudo_write "${containerd_service_unit}" "/lib/systemd/system/containerd.service"
+	sudo mkdir -p /etc/containerd
+	/usr/local/bin/containerd config default > /tmp/containerd-config.toml
+	sudo mv /tmp/containerd-config.toml /etc/containerd/config.toml
 	sudo systemctl daemon-reload
 	sudo systemctl enable --now containerd
-
-	sudo install -m 755 ${RUNX_PKGS}/k8s/runc.amd64 /usr/local/sbin/runc
-
-	sudo mkdir -p /opt/cni/bin
-	sudo tar Cxzvf /opt/cni/bin ${RUNX_PKGS}/k8s/cni-plugins-linux-amd64-v1.1.1.tgz
-
-	sudo tar Cxzvf /usr/local/bin ${RUNX_PKGS}/k8s/nerdctl-1.1.0-linux-amd64.tar.gz
-	
-	# VERSION="v1.26.0"
-	# curl -L https://github.com/kubernetes-sigs/cri-tools/releases/download/$VERSION/crictl-${VERSION}-linux-amd64.tar.gz --output crictl-${VERSION}-linux-amd64.tar.gz
-	# sudo tar zxvf crictl-$VERSION-linux-amd64.tar.gz -C /usr/local/bin
-	# rm -f crictl-$VERSION-linux-amd64.tar.gz
-	sudo tar Cxzvf /usr/local/bin ${RUNX_PKGS}/k8s/crictl-v1.26.0-linux-amd64.tar.gz
-
-	# sudo tar Cxzvf / ${RUNX_PKGS}/k8s/kata-static-3.1.0-alpha1-x86_64.tar.xz
-	sudo tar -xf ${RUNX_PKGS}/k8s/kata-static-3.1.0-alpha1-x86_64.tar.xz -C /
-	[ -f /opt/kata/bin/containerd-shim-kata-v2 ] && [ -d /usr/local/bin ] && sudo ln -s /opt/kata/bin/containerd-shim-kata-v2 /usr/local/bin/containerd-shim-kata-v2
-	echo 'export PATH=/opt/kata/bin:$PATH' | sudo tee -a /etc/profile
 }
 
 init() {
-	install_containerd
-	# sudo systemctl stop firewalld &&
-	# 	sudo systemctl disable firewalld
-	# # yum_http_proxy
+	sudo systemctl stop firewalld &&
+		sudo systemctl disable firewalld
+	# yum_http_proxy
+	echo "k8s init..."
 	# yum_packages
-	# # init_out_going
+	# init_out_going
 	# install_docker
 	# install_docker_compose
-	# # preper_kubeadm
-	# # init_kubeadm
+	# preper_kubeadm
+	# init_kubeadm
 	# sudo usermod -aG docker z
 }
 
-
-	# # install_docker
+install_containerd
+	# install_docker
 	# install_docker_compose
-	# # preper_kubeadm
-	# # init_kubeadm
+	# preper_kubeadm
+	# init_kubeadm
+
 	# sudo usermod -aG docker z
