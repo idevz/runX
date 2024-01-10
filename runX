@@ -126,7 +126,8 @@ nameserver 10.211.133.8
 CFG
 		)
 		_prlctl_exec ${HOST_NAME} "sudo echo '${DNS_RESOLV_CFG}' >/etc/resolv.conf"
-		_prlctl_exec ${HOST_NAME} 'sudo ifdown '${NET_DEVICE}' && ifup '${NET_DEVICE}
+		# _prlctl_exec ${HOST_NAME} 'sudo ifdown '${NET_DEVICE}' && ifup '${NET_DEVICE}
+		_prlctl_exec ${HOST_NAME} 'sudo nmcli con reload '${NET_DEVICE}' && nmcli con up '${NET_DEVICE}
 	fi
 }
 
